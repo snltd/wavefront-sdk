@@ -1,5 +1,6 @@
 require 'uri'
 require 'json'
+require 'time'
 require 'rest-client'
 require_relative './exception'
 #
@@ -13,7 +14,7 @@ require_relative './exception'
 #   token:    string
 # }
 #
-# Calling any of the call_ methods returns a Ruby object of the JSON
+# Calling any of the api_ methods returns a Ruby object of the JSON
 # data passed back by the API.
 #
 module Wavefront
@@ -39,6 +40,10 @@ module Wavefront
         api_base: ['', 'api', 'v2',
                    self.class.name.split('::').last.downcase].uri_concat
       }
+    end
+
+    def msg(*msg)
+      puts msg.map { |m| m.to_s }.join(' ')
     end
 
 =begin
@@ -81,37 +86,36 @@ module Wavefront
       )
     end
 
-    def call_get(path, qs = nil)
+    def api_get(path, qs = nil)
       uri = build_uri(path, qs)
 
       if verbose || noop
-        puts 'GET ' + uri.to_s
-        puts 'HEADERS ' + net[:headers].to_s
+        msg('GET', uri)
+        msg('HEADERS', net[:headers])
       end
 
       return if noop
 
-      JSON.parse(RestClient.get(uri.to_s, net[:headers]))
+      JSON.parse(RestClient.get(uri.to_s, net[:headers]) || {})
     end
 
-    def call_post(uri, body = nil, ctype = 'text/plain')
+    def api_post(uri, body = nil, ctype = 'text/plain')
       headers = net[:headers].merge(:'Content-Type' => ctype,
                                     :Accept         => 'application/json')
-
       uri = build_uri(uri)
 
       if verbose || noop
-        puts 'POST ' + uri.to_s
-        puts 'BODY ' + body if body
-        puts 'HEADERS ' + headers.to_s
+        msg('POST', uri)
+        msg('BODY', body) if body
+        msg('HEADERS', headers)
       end
 
       return if noop
 
-      JSON.parse(RestClient.post(uri.to_s, body, headers))
+      JSON.parse(RestClient.post(uri.to_s, body, headers) || {})
     end
 
-    def call_put(uri, body = nil, ctype = 'application/json')
+    def api_put(uri, body = nil, ctype = 'application/json')
       headers = net[:headers].merge(:'Content-Type' => ctype,
                                     :Accept         => 'application/json')
 
@@ -119,9 +123,9 @@ module Wavefront
       body = body.to_json
 
       if verbose || noop
-        puts 'PUT ' + uri.to_s
-        puts 'BODY ' + body if body
-        puts 'HEADERS ' + headers.to_s
+        msg('PUT', uri)
+        msg('BODY', body) if body
+        msg('HEADERS', headers)
       end
 
       return if noop
@@ -129,12 +133,12 @@ module Wavefront
       JSON.parse(RestClient.put(uri.to_s, body, headers))
     end
 
-    def call_delete(uri)
+    def api_delete(uri)
       uri = build_uri(uri)
 
       if verbose || noop
-        puts 'DELETE ' + uri.to_s
-        puts 'HEADERS ' + net[:headers].to_s
+        msg('DELETE', uri)
+        msg('HEADERS', net[:headers])
       end
 
       return if noop
@@ -142,9 +146,9 @@ module Wavefront
       JSON.parse(RestClient.delete(uri.to_s, net[:headers]))
     end
 
-    def debug(msg)
-      puts "DEBUG: #{msg}" if debug
-    end
+    #def debug(str)
+      #msg('DEBUG:', str) if debug
+    #end
   end
 end
 
@@ -154,12 +158,12 @@ class Hash
     # Make a properly escaped query string out of a key: value
     # hash.
     #
-    URI.escape(self.map { |k, v| [k, v].join('=') }.join('&'))
+    URI.encode(self.map { |k, v| [k, v].join('=') }.join('&'))
   end
 end
 
 class Array
   def uri_concat
-    self.join('/').squeeze('/').sub(/\/$/, '')
+    URI.encode(self.join('/').squeeze('/').sub(/\/$/, ''))
   end
 end
