@@ -5,14 +5,17 @@ public API.
 
 The code is based on [the original Ruby
 SDK](https://github.com/wavefrontHQ/ruby-client), to which I was a
-major contributor, but I don't know how much of it that be left by
-the end.
+major contributor. That
+[wavefront-client](https://rubygems.org/gems/wavefront-client/) gem
+was for v1 of the API, which has been obsoleted, and rather than try
+to drag the old, messy codebase up to the new spec, it seemed more
+sensible to start again.
 
 This new SDK aims to address the issues of the previous one by
 providing consistent interfaces, cleaner, DRYer, easier to
 understand internals, and support for version 2 of the API.
 
-The SDK goes beyond the common generated-from-Swagger approach,
+This SDK goes beyond the common generated-from-Swagger approach,
 providing programmer-friendly interfaces, automatic input
 validation, and other, hopefully helpful, features.
 
