@@ -1,4 +1,5 @@
 require 'pathname'
+require 'date'
 
 require_relative 'lib/wavefront-sdk/version'
 
