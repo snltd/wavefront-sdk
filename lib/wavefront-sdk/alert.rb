@@ -8,18 +8,22 @@ module Wavefront
     end
 
     def describe(id)
+      wf_alert?(id)
       api_get(id)
     end
 
     def delete(id)
+      wf_alert?(id)
       api_delete(id)
     end
 
     def undelete(id)
+      wf_alert?(id)
       api_post([id, 'undelete'].uri_concat)
     end
 
     def history(id, version = nil)
+      wf_alert?(id)
       fragments = [id, 'history']
       fragments.<< version.to_s if version
       api_get(fragments.uri_concat)
