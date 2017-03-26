@@ -3,6 +3,7 @@ require 'json'
 require 'time'
 require 'rest-client'
 require_relative './exception'
+require_relative './validators'
 #
 # base.rb
 #
@@ -19,6 +20,7 @@ require_relative './exception'
 #
 module Wavefront
   class Base
+    include Wavefront::Validators
     attr_reader :opts, :debug, :noop, :verbose, :net
 
     def initialize(creds = {}, opts = {})
