@@ -4,25 +4,25 @@ require 'time'
 require 'rest-client'
 require_relative './exception'
 require_relative './validators'
-#
-# base.rb
-#
-# All API classes inherit from this class. To create an API object
-# you must pass in a credential object of the following form
-#
-# {
-#   endpoint: uri,
-#   token:    string
-# }
-#
-# Calling any of the api_ methods returns a Ruby object of the JSON
-# data passed back by the API.
-#
+
 module Wavefront
+  #
+  # Abstract class from which all API classes inherit.
+  #
   class Base
     include Wavefront::Validators
     attr_reader :opts, :debug, :noop, :verbose, :net
 
+    # Create a new API object. This will always be called from a
+    # class which inherits this one.
+    #
+    # @param creds [Hash] must contain the keys `endpoint` (the
+    #   Wavefront API server) and `token`, the user token with which
+    #   you wish to access the endpoint.
+    # @param opts [Hash] options governing class behaviour. Expected
+    #   keys are `debug`, `noop` and `verbose`, all boolean.
+    # @return [Nil]
+    #
     def initialize(creds = {}, opts = {})
       @opts  = opts
       @debug = opts[:debug] || false
@@ -30,7 +30,6 @@ module Wavefront
       @verbose = opts[:verbose] || false
       setup_endpoint(creds)
     end
-
 
     # Return a time as an integer, however it might come in.
     #
@@ -193,11 +192,13 @@ module Wavefront
     end
 
     def msg(*msg)
-      puts msg.map { |m| m.to_s }.join(' ')
+      puts msg.map(&:to_s).join(' ')
     end
   end
 end
 
+# Extensions to stdlib Hash
+#
 class Hash
 
   # Make a properly escaped query string out of a key: value hash.
@@ -207,6 +208,8 @@ class Hash
   end
 end
 
+# Extensions to stdlib Array
+#
 class Array
 
   # Join strings together to make a URI path in a way that is more
