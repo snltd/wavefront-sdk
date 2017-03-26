@@ -8,22 +8,27 @@ module Wavefront
     end
 
     def describe(id)
+      wf_agent?(id)
       api_get(id)
     end
 
     def delete(id)
+      wf_agent?(id)
       api_delete(id)
     end
 
     def undelete(id)
+      wf_agent?(id)
       api_post([id, 'undelete'].uri_concat)
     end
 
     def update(id, payload)
+      wf_agent?(id)
       api_put(id, payload)
     end
 
     def rename(id, name)
+      wf_agent?(id)
       update(id, {name: name})
     end
   end
