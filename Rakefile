@@ -14,5 +14,5 @@ RuboCop::RakeTask.new(:rubocop) do |t|
 end
 
 YARD::Rake::YardocTask.new do |t|
-  t.files   = ['lib/**/*.rb']
+  t.files = ['lib/wavefront-sdk/*rb']
 end
