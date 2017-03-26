@@ -2,11 +2,10 @@ require 'pathname'
 
 lib = Pathname.new(__FILE__).dirname.realpath + 'lib'
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'wavefront-sdk/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'wavefront-sdk'
-  spec.version       = Wavefront::Client::VERSION
+  spec.version       = '0.0.0'
   spec.authors       = ['Robert Fisher']
   spec.email         = ['slackboy@gmail.com']
   spec.description   = %q(An simple abstraction for talking to Wavefront in Ruby.)
