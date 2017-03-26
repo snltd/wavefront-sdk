@@ -2,7 +2,7 @@ require 'yard'
 require 'rake/testtask'
 require 'rubocop/rake_task'
 
-#task :default => :spec
+task default: :test
 
 Rake::TestTask.new do |t|
   t.pattern = 'spec/wavefront-sdk/*_spec.rb'
