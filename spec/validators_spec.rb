@@ -65,7 +65,7 @@ class WavefrontValidatorsTest < MiniTest::Test
             {'k' * 130 => 'v' * 130},
            ]
 
-    good_and_bad('wf_tags?', 'InvalidTag', good, bad)
+    good_and_bad('wf_point_tags?', 'InvalidTag', good, bad)
   end
 
   def test_wf_agent?
