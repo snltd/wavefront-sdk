@@ -27,9 +27,8 @@ and API documentation ([YARD](http://yardoc.org/).
 
 ## Status
 
-+-------------+--------------+---------+--------------+---------------+
 | API path    | API Coverage | tests   | CLI coverage | RDoc coverage |
-+-------------+--------------+---------+--------------+---------------+
+| ----------- | ------------ | ------- | ------------ | ------------- |
 | Agent       | full         | full    | full         | full          |
 | Alert       | partial      | partial | partial      | none          |
 | Cloud       | none         | none    | none         | none          |
@@ -45,7 +44,6 @@ and API documentation ([YARD](http://yardoc.org/).
 | Source      | none         | none    | none         | none          |
 | User        | none         | none    | none         | none          |
 | Webhook     | none         | none    | none         | none          |
-+-------------+--------------+---------+--------------+---------------+
 
 ## CLI
 
