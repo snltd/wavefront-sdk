@@ -1,22 +1,18 @@
-#require "bundler/gem_tasks"
-#require "rspec/core/rake_task"
-#require 'yard'
+require 'yard'
 require 'rake/testtask'
-
-#RSpec::Core::RakeTask.new(:spec)
+require 'rubocop/rake_task'
 
 #task :default => :spec
-#
+
 Rake::TestTask.new do |t|
-  t.pattern = "spec/*_spec.rb"
+  t.pattern = 'spec/wavefront-sdk/*_spec.rb'
+  t.warning = false
 end
 
-task :install  do
-  sh 'gem build ./wavefront-client.gemspec'
-  sh 'gem install wavefront-client-*.gem --no-rdoc --no-ri'
-  sh 'rm wavefront-client-*.gem'
+RuboCop::RakeTask.new(:rubocop) do |t|
+  t.options = ['--display-cop-names']
 end
 
-#YARD::Rake::YardocTask.new do |t|
-  #t.files   = ['lib/**/*.rb']
-#end
+YARD::Rake::YardocTask.new do |t|
+  t.files   = ['lib/**/*.rb']
+end
