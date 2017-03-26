@@ -1,3 +1,38 @@
+require_relative './base'
+
+module Wavefront
+  class Alert < Wavefront::Base
+
+    def list(offset = 0, limit = 100)
+      api_get('', { offset: offset, limit: limit }.to_qs)
+    end
+
+    def describe(id)
+      api_get(id)
+    end
+
+    def delete(id)
+      api_delete(id)
+    end
+
+    def undelete(id)
+      api_post([id, 'undelete'].uri_concat)
+    end
+
+    def history(id, version = nil)
+      fragments = [id, 'history']
+      fragments.<< version.to_s if version
+      api_get(fragments.uri_concat)
+    end
+
+    def summary
+      api_get('summary')
+    end
+  end
+end
+
+=begin
+
 require 'rest_client'
 require 'uri'
 require 'logger'
@@ -169,3 +204,5 @@ module Wavefront
     end
   end
 end
+
+=end
