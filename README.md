@@ -1,4 +1,4 @@
-# wavefront-sdk
+# wavefront-sdk [![Build Status](https://travis-ci.org/snltd/wavefront-sdk.svg?branch=master)](https://travis-ci.org/snltd/wavefront-sdk)
 
 This is a Ruby SDK for [Wavefront](https://www.wavefront.com/)'s
 public API.
