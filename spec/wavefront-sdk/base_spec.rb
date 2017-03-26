@@ -18,7 +18,9 @@ class WavefrontBaseTest < MiniTest::Test
     assert_equal wf.parse_time('2016-07-28 14:25:36 +0100'), 1469712336
     assert_equal wf.parse_time('2016-07-28'), 1469664000
     assert_instance_of Fixnum, wf.parse_time(Time.now)
-    assert_raises(RuntimeError) { wf.parse_time('nonsense') }
+    assert_raises(Wavefront::Exception::InvalidTimestamp) do
+      wf.parse_time('nonsense')
+    end
   end
 
   def test_time_to_ms
