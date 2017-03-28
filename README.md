@@ -33,7 +33,7 @@ and API documentation ([YARD](http://yardoc.org/).
 | API path    | API Coverage | tests   | CLI coverage | RDoc coverage |
 | ----------- | ------------ | ------- | ------------ | ------------- |
 | Agent       | full         | full    | full         | full          |
-| Alert       | partial      | partial | partial      | none          |
+| Alert       | full         | partial | full         | full          |
 | Cloud       | none         | none    | none         | none          |
 | Dashboard   | none         | none    | none         | none          |
 | Event       | none         | none    | none         | none          |

@@ -1,212 +1,162 @@
 require_relative './base'
 
 module Wavefront
+  #
+  # View and manage alerts. Alerts are identified by their millisecond
+  # epoch timestamp.
+  #
   class Alert < Wavefront::Base
 
+    # Get all alerts for a customer.
+    #
+    # @param offset [Int] alert at which the list begins
+    # @param limit [Int] the number of alert to return
+    # @return [Hash]
+    #
     def list(offset = 0, limit = 100)
       api_get('', { offset: offset, limit: limit }.to_qs)
     end
 
-    def describe(id)
-      wf_alert?(id)
-      api_get(id)
+    # Create a specific alert.
+    # Refer to the Swagger API docs for valid keys.
+    #
+    # @param body [Hash] description of alert
+    # @return [Hash]
+    #
+    def create(body)
+      api_post('', body.to_json, 'application/json')
     end
 
+    # Delete a specific alert.
+    # Deleting and active alert moves it to 'trash', from where it can
+    # be restored with an #undelete operation. Deleting an alert in
+    # 'trash' removes it for ever.
+    #
+    # @param id [String] ID of the alert
+    # @return [Hash]
+    #
     def delete(id)
       wf_alert?(id)
       api_delete(id)
     end
 
+    # Get a specific alert / Get a specific historical version of a
+    # specific alert.
+    #
+    # @param id [String] ID of the alert
+    # @param version [Integer] version of alert
+    # @return [Hash]
+    #
+    def describe(id, version = nil)
+      wf_alert?(id)
+      #wf_version?(version)
+      fragments = [id]
+      fragments += ['history', version]
+      api_get(fragments.uri_concat)
+    end
+
+    def update(id, body)
+      wf_alert?(id)
+      api_put(id, body)
+    end
+
+    # Get the version history of an alert
+    #
+    # @param id [String] ID of the alert
+    # @return [Hash]
+    #
+    def history(id)
+      wf_alert?(id)
+      api_get([id, 'history'].uri_concat)
+    end
+
+    # Snooze a specific alert for some number of seconds.
+    #
+    # @param id [String] ID of the alert
+    # @param time [Integer] how many seconds to snooze for
+    # @returns [Hash] object describing the alert with status and
+    #   response keys
+    #
+    def snooze(id, time = 3600)
+      wf_alert?(id)
+      api_post([id, 'snooze'].uri_concat, time)
+    end
+
+    # Get all tags associated with a specific alert
+    #
+    # @param id [String] ID of the alert
+    # @returns [Hash] object describing the alert with status and
+    #   response keys
+    #
+    def tags(id)
+      wf_alert?(id)
+      api_get([id, 'tag'].uri_concat)
+    end
+
+    # Set all tags associated with a specific alert.
+    #
+    # @param id [String] ID of the alert
+    # @param tags [Array] list of tags to set.
+    # @returns [Hash] object describing the alert with status and
+    #   response keys
+    #
+    def tag_set(id, tags)
+      wf_alert?(id)
+      tags.each { |t| wf_string?(t) }
+      api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
+    end
+
+    # Add a tag to a specific alert.
+    #
+    # @param id [String] ID of the alert
+    # @param tag [String] tag to set.
+    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    #
+    def tag_add(id, tag)
+      wf_alert?(id)
+      wf_string?(tag)
+      api_put([id, 'tag', tag].uri_concat)
+    end
+
+    # Remove a tag from a specific alert.
+    #
+    # @param id [String] ID of the alert
+    # @param tag [String] tag to delete
+    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    #
+    def tag_delete(id, tag)
+      wf_alert?(id)
+      wf_string?(tag)
+      api_delete([id, 'tag', tag].uri_concat)
+    end
+
+    # Move an alert from 'trash' back into active service.
+    #
+    # @param id [String] ID of the alert
+    # @return [Hash]
+    #
     def undelete(id)
       wf_alert?(id)
       api_post([id, 'undelete'].uri_concat)
     end
 
-    def history(id, version = nil)
+    # Unsnooze an alert
+    #
+    # @param id [String] ID of the alert
+    # @returns [Hash] object describing the alert with status and
+    #   response keys
+    #
+    def unsnooze
       wf_alert?(id)
-      fragments = [id, 'history']
-      fragments.<< version.to_s if version
-      api_get(fragments.uri_concat)
+      api_post([id, 'unsnooze'].uri_concat)
     end
 
+    # Get a count of alerts in all possible states
+    #
+    # @return [Hash]
+    #
     def summary
       api_get('summary')
     end
   end
 end
-
-=begin
-
-require 'rest_client'
-require 'uri'
-require 'logger'
-require_relative './base'
-
-module Wavefront
-  class Alert < Wavefront::Base
-    DEFAULT_PATH = '/api/alert/'
-
-    attr_reader :token, :noop, :verbose, :endpoint, :headers, :options
-
-    def initialize(token, host = DEFAULT_HOST, debug=false, options = {})
-      #
-      # Following existing convention, 'host' is the Wavefront API endpoint.
-      #
-      @headers = { :'X-AUTH-TOKEN' => token }
-      @endpoint = host
-      @token = token
-      debug(debug)
-      @noop = options[:noop]
-      @verbose = options[:verbose]
-      @options = options
-    end
-
-    def import_to_create(raw)
-      #
-      # Take a previously exported alert, and construct a hash which
-      # create_alert() can use to re-create it.
-      #
-      ret = {
-        name:          raw['name'],
-        condition:     raw['condition'],
-        minutes:       raw['minutes'],
-        notifications: raw['target'].split(','),
-        severity:      raw['severity'],
-      }
-
-      if raw.key?('displayExpression')
-        ret[:displayExpression] = raw['displayExpression']
-      end
-
-      if raw.key?('resolveAfterMinutes')
-        ret[:resolveMinutes] = raw['resolveAfterMinutes']
-      end
-
-      if raw.key?('customerTagsWithCounts')
-        ret[:sharedTags] = raw['customerTagsWithCounts'].keys
-      end
-
-      if raw.key?('additionalInformation')
-        ret[:additionalInformation] = raw['additionalInformation']
-      end
-
-      ret
-    end
-
-    def create_alert(alert={})
-      #
-      # Create an alert. Expects you to provide it with a hash of
-      # the form:
-      #
-      # {
-      #   name:                 string
-      #   condition:            string
-      #   displayExpression:    string     (optional)
-      #   minutes:              int
-      #   resolveMinutes:       int        (optional)
-      #   notifications:        array
-      #   severity:             INFO | SMOKE | WARN | SEVERE
-      #   privateTags:          array      (optional)
-      #   sharedTags:           array      (optional)
-      #   additionalInformation string     (optional)
-      # }
-      #
-      %w(name condition minutes notifications severity).each do |f|
-        raise "missing field: #{f}" unless alert.key?(f.to_sym)
-      end
-
-      unless %w(INFO SMOKE WARN SEVERE).include?(alert[:severity])
-        raise 'invalid severity'
-      end
-
-      %w(notifications privateTags sharedTags).each do |f|
-        f = f.to_sym
-        alert[f] = alert[f].join(',') if alert[f] && alert[f].is_a?(Array)
-      end
-
-      call_post(create_uri(path: 'create'),
-                hash_to_qs(alert), 'application/x-www-form-urlencoded')
-    end
-
-    def get_alert(id, options = {})
-      #
-      # Alerts are identified by the timestamp at which they were
-      # created. Returns a hash. Exceptions are just passed on
-      # through. You get a 500 if the alert doesn't exist.
-      #
-      resp = call_get(create_uri(path: id)) || '{}'
-      return JSON.parse(resp)
-    end
-
-    def active(options={})
-      call_get(create_uri(options.merge(path: 'active',
-                                        qs: mk_qs(options))))
-    end
-
-    def all(options={})
-      call_get(create_uri(options.merge(path: 'all', qs: mk_qs(options))))
-    end
-
-    def invalid(options={})
-      call_get(create_uri(options.merge(path: 'invalid',
-                                        qs: mk_qs(options))))
-    end
-
-    def snoozed(options={})
-      call_get(create_uri(options.merge(path: 'snoozed',
-                                        qs: mk_qs(options))))
-    end
-
-    def affected_by_maintenance(options={})
-      call_get(create_uri(options.merge(path: 'affected_by_maintenance',
-                                        qs: mk_qs(options))))
-    end
-
-    private
-
-    def list_of_tags(t)
-      t.is_a?(Array) ? t : [t]
-    end
-
-    def mk_qs(options)
-      query = []
-
-      if options[:shared_tags]
-        query.push(list_of_tags(options[:shared_tags]).map do |t|
-          "customerTag=#{t}"
-        end.join('&'))
-      end
-
-      if options[:private_tags]
-        query.push(list_of_tags(options[:private_tags]).map do |t|
-          "userTag=#{t}"
-        end.join('&'))
-      end
-
-      query.join('&')
-    end
-
-    def create_uri(options = {})
-      #
-      # Build the URI we use to send a 'create' request.
-      #
-      options[:host] ||= endpoint
-      options[:path] ||= ''
-      options[:qs]   ||= nil
-
-      options[:qs] = nil if options[:qs] && options[:qs].empty?
-
-      URI::HTTPS.build(
-        host:  options[:host],
-        path:  [DEFAULT_PATH, options[:path]].uri_concat,
-        query: options[:qs],
-      )
-    end
-
-    def debug(enabled)
-      RestClient.log = 'stdout' if enabled
-    end
-  end
-end
-
-=end
