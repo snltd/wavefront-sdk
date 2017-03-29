@@ -3,6 +3,9 @@
 require_relative './spec_helper'
 require_relative '../../lib/wavefront-sdk/alert'
 
+#
+# Unit tests for Alert class
+#
 class WavefrontAlertTest < MiniTest::Test
   attr_reader :wf, :wf_noop, :uri_base, :headers
 
@@ -31,6 +34,7 @@ class WavefrontAlertTest < MiniTest::Test
     assert_raises(ArgumentError) { wf.describe }
     assert_raises(Wavefront::Exception::InvalidAlert) { wf.describe('abc') }
   end
+
   def test_describe_v
     should_work('describe', [ALERT, 4], "#{ALERT}/history/4")
   end
@@ -57,16 +61,17 @@ class WavefrontAlertTest < MiniTest::Test
   end
 
   def test_tag_set
-    should_work('tag_set', [ALERT, 'tag'], ["#{ALERT}/tag",
-                ['tag'].to_json], :post, JSON_POST_HEADERS)
-    should_work('tag_set', [ALERT, ['tag1', 'tag2']], ["#{ALERT}/tag",
-                ['tag1', 'tag2'].to_json], :post, JSON_POST_HEADERS)
+    should_work('tag_set', [ALERT, 'tag'],
+                ["#{ALERT}/tag", ['tag'].to_json], :post, JSON_POST_HEADERS)
+    should_work('tag_set', [ALERT, %w(tag1 tag2)],
+                ["#{ALERT}/tag", %w(tag1 tag2).to_json], :post,
+                JSON_POST_HEADERS)
     should_fail_tags('tag_set')
   end
 
   def test_tag_add
-    should_work('tag_add', [ALERT, 'tagval'], ["#{ALERT}/tag/tagval",
-                nil], :put, JSON_POST_HEADERS)
+    should_work('tag_add', [ALERT, 'tagval'],
+                ["#{ALERT}/tag/tagval", nil], :put, JSON_POST_HEADERS)
     should_fail_tags('tag_add')
   end
 
@@ -89,6 +94,6 @@ class WavefrontAlertTest < MiniTest::Test
   end
 
   def test_summary
-    should_work('summary', nil, '/summary')
+    should_work('summary', nil, 'summary')
   end
 end
