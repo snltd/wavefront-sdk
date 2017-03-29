@@ -19,6 +19,7 @@ module Wavefront
     class InvalidString < ::Exception; end
     class InvalidAgent < ::Exception; end
     class InvalidAlert < ::Exception; end
+    class InvalidVersion < ::Exception; end
     class ValueOutOfRange < ::Exception; end
   end
 end

@@ -140,7 +140,7 @@ module Wavefront
                                     :Accept         => 'application/json')
 
       uri = build_uri(path)
-      body = body.to_json
+      body = body.to_json if body
 
       if verbose || noop
         msg('PUT', uri)

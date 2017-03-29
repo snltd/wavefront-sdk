@@ -104,7 +104,7 @@ class WavefrontBaseTest < MiniTest::Test
       wf_noop.send("api_#{call}", '/path')
       refute rc.has_been_called?
       refute json.has_been_called?
-      count = call == 'put' ? 3 : 2
+      count = call == 'put' ? 2 : 2
       assert_equal count, msg.calls.count
       msg.unhook
       json.unhook

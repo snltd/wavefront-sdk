@@ -130,5 +130,17 @@ module Wavefront
       return true if v.is_a?(String) && v.match(/^\d{13}$/)
       raise Wavefront::Exception::InvalidAlert
     end
+
+    # Ensure the given argument is a valid version number
+    #
+    # @return True if the version is valid
+    # @raise Wavefront::Exception::InvalidVersion if the alert ID is
+    #   not valid
+    #
+    def wf_version?(v)
+      return true if v.is_a?(Integer) && v > 0
+
+      raise Wavefront::Exception::InvalidVersion
+    end
   end
 end

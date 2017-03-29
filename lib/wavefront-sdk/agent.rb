@@ -32,7 +32,6 @@ module Wavefront
     # @param id [String] ID of the agent
     # @return [Hash]
     #
-    def describe(id)
     def delete(id)
       wf_agent?(id)
       api_delete(id)

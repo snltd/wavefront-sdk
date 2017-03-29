@@ -13,30 +13,17 @@ class WavefrontAgentTest < MiniTest::Test
   end
 
   def test_list
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :get)
-    json = Spy.on(JSON, :parse)
-    wf.list(10)
-    assert rc.has_been_called_with?("#{uri_base}?offset=10&limit=100",
-                                    headers)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    should_work('list', 10, "?offset=10&limit=100")
   end
 
   def test_describe
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :get)
-    json = Spy.on(JSON, :parse)
-    wf.describe(AGENT)
-    assert rc.has_been_called_with?("#{uri_base}/#{AGENT}", headers)
-    assert json.has_been_called?
-    refute msg.has_been_called?
-
+    should_work('describe', AGENT, AGENT)
     assert_raises(ArgumentError) { wf.describe }
     assert_raises(Wavefront::Exception::InvalidAgent) { wf.describe('abc') }
   end
 
   def test_delete
+    #should_work('delete', AGENT, "#{AGENT}"
     msg = Spy.on(wf, :msg)
     rc = Spy.on(RestClient, :delete)
     json = Spy.on(JSON, :parse)

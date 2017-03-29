@@ -49,9 +49,9 @@ module Wavefront
     #
     def describe(id, version = nil)
       wf_alert?(id)
-      #wf_version?(version)
+      wf_version?(version) if version
       fragments = [id]
-      fragments += ['history', version]
+      fragments += ['history', version] if version
       api_get(fragments.uri_concat)
     end
 
@@ -102,6 +102,7 @@ module Wavefront
     #
     def tag_set(id, tags)
       wf_alert?(id)
+      tags = Array(tags)
       tags.each { |t| wf_string?(t) }
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
@@ -146,7 +147,7 @@ module Wavefront
     # @returns [Hash] object describing the alert with status and
     #   response keys
     #
-    def unsnooze
+    def unsnooze(id)
       wf_alert?(id)
       api_post([id, 'unsnooze'].uri_concat)
     end
