@@ -3,6 +3,9 @@
 require_relative './spec_helper'
 require_relative '../../lib/wavefront-sdk/agent'
 
+#
+# Unit tests for agent class
+#
 class WavefrontAgentTest < MiniTest::Test
   attr_reader :wf, :wf_noop, :uri_base, :headers
 
@@ -13,7 +16,7 @@ class WavefrontAgentTest < MiniTest::Test
   end
 
   def test_list
-    should_work('list', 10, "?offset=10&limit=100")
+    should_work('list', 10, '?offset=10&limit=100')
   end
 
   def test_describe
@@ -23,29 +26,14 @@ class WavefrontAgentTest < MiniTest::Test
   end
 
   def test_delete
-    #should_work('delete', AGENT, "#{AGENT}"
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :delete)
-    json = Spy.on(JSON, :parse)
-    wf.delete(AGENT)
-    assert rc.has_been_called_with?("#{uri_base}/#{AGENT}", headers)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    should_work('delete', AGENT, AGENT, :delete)
     assert_raises(Wavefront::Exception::InvalidAgent) { wf.delete('abc') }
   end
 
   def test_rename
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :put)
-    json = Spy.on(JSON, :parse)
-    wf.rename(AGENT, 'newname')
-    h = headers.merge(:'Content-Type' => 'application/json',
-                      :Accept         => 'application/json')
-    assert rc.has_been_called_with?("#{uri_base}/#{AGENT}",
-                                    '{"name":"newname"}', h)
-    assert json.has_been_called?
-    refute msg.has_been_called?
-
+    should_work('rename', [AGENT, 'newname'],
+                [AGENT, { name: 'newname' }.to_json], :put,
+                JSON_POST_HEADERS)
     assert_raises(ArgumentError) { wf.rename }
     assert_raises(ArgumentError) { wf.rename('abc123') }
     assert_raises(Wavefront::Exception::InvalidAgent) do
@@ -54,15 +42,9 @@ class WavefrontAgentTest < MiniTest::Test
   end
 
   def test_undelete
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :post)
-    json = Spy.on(JSON, :parse)
-    wf.undelete(AGENT)
-    h = headers.merge(:'Content-Type' => 'text/plain',
-                      :Accept         => 'application/json')
-    assert rc.has_been_called_with?("#{uri_base}/#{AGENT}/undelete", nil, h)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    should_work('undelete', AGENT, ["#{AGENT}/undelete", nil],
+                :post, POST_HEADERS)
+
     assert_raises(Wavefront::Exception::InvalidAgent) { wf.undelete('abc') }
   end
 end
