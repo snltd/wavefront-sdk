@@ -115,6 +115,24 @@ module Wavefront
       raise Wavefront::Exception::InvalidAgent
     end
 
+    # Ensure the given argument is a valid Wavefront cloud
+    # integration name
+    #
+    # @param v [String] the integration name to validate
+    # @return True if the integration name is valid
+    # @raise Wavefront::Exception::InvalidCloudIntegration if the
+    #   agent name is not valid
+    #
+    def wf_cloudintegration?(v)
+      if v.is_a?(String) && v.match(
+        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
+      )
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidCloudIntegration
+    end
+
     # Ensure the given argument is a valid Wavefront alert ID.
     # Alerts are identified by the epoch-nanosecond at which they
     # were created.
