@@ -1,20 +1,10 @@
 #!/usr/bin/env ruby
 
 require_relative './spec_helper'
-require_relative '../../lib/wavefront-sdk/alert'
 
-#
 # Unit tests for Alert class
 #
-class WavefrontAlertTest < MiniTest::Test
-  attr_reader :wf, :wf_noop, :uri_base, :headers
-
-  def setup
-    @wf = Wavefront::Alert.new(CREDS)
-    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/alert"
-    @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
-  end
-
+class WavefrontAlertTest < WavefrontTestBase
   def should_fail_tags(method)
     assert_raises(Wavefront::Exception::InvalidAlert) do
       wf.send(method, 'abc', 'tag1')
@@ -32,7 +22,7 @@ class WavefrontAlertTest < MiniTest::Test
   def test_describe
     should_work('describe', ALERT, ALERT)
     assert_raises(ArgumentError) { wf.describe }
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.describe('abc') }
+    should_be_invalid('describe')
   end
 
   def test_describe_v
@@ -41,23 +31,23 @@ class WavefrontAlertTest < MiniTest::Test
 
   def test_delete
     should_work('delete', ALERT, ALERT, :delete)
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.delete('abc') }
+    should_be_invalid('delete')
   end
 
   def test_history
     should_work('history', ALERT, "#{ALERT}/history")
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.history('abc') }
+    should_be_invalid('history')
   end
 
   def test_snooze
     should_work('snooze', ALERT, ["#{ALERT}/snooze", 3600], :post,
                 POST_HEADERS)
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.snooze('abc') }
+    should_be_invalid('snooze')
   end
 
   def test_tags
     should_work('tags', ALERT, "#{ALERT}/tag")
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.tags('abc') }
+    should_be_invalid('tags')
   end
 
   def test_tag_set
@@ -84,13 +74,13 @@ class WavefrontAlertTest < MiniTest::Test
   def test_undelete
     should_work('undelete', ALERT, ["#{ALERT}/undelete", nil], :post,
                 POST_HEADERS)
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.undelete('abc') }
+    should_be_invalid('undelete')
   end
 
   def test_unsnooze
     should_work('unsnooze', ALERT, ["#{ALERT}/unsnooze", nil], :post,
                 POST_HEADERS)
-    assert_raises(Wavefront::Exception::InvalidAlert) { wf.unsnooze('abc') }
+    should_be_invalid('unsnooze')
   end
 
   def test_summary
