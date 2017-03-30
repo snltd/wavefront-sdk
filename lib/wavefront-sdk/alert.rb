@@ -28,7 +28,7 @@ module Wavefront
     end
 
     # Delete a specific alert.
-    # Deleting and active alert moves it to 'trash', from where it can
+    # Deleting an active alert moves it to 'trash', from where it can
     # be restored with an #undelete operation. Deleting an alert in
     # 'trash' removes it for ever.
     #
