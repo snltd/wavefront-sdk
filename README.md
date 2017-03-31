@@ -26,7 +26,12 @@ which is not a feature of the API.
 I also intend to make the best Ruby project I can, with full unit
 test coverage (Minitest); machine-linted code (Rubocop and
 [Codeclimate](https://codeclimate.com/github/snltd/wavefront-sdk)
-and API documentation ([YARD](http://yardoc.org/).
+and API documentation with [YARD](http://yardoc.org/).
+
+Some functionality of the old gem is dropped, like Graphite and
+Highcharts integrations, and support for Ruby < 2.2.
+
+There's no gem as yet: the coverage is too incomplete.
 
 ## Status
 
@@ -34,8 +39,8 @@ and API documentation ([YARD](http://yardoc.org/).
 | ----------- | ------------ | ------- | ------------ | ------------- |
 | Agent       | full         | full    | full         | full          |
 | Alert       | full         | partial | full         | full          |
-| Cloud       | none         | none    | none         | none          |
-| Dashboard   | none         | none    | none         | none          |
+| Cloud       | full         | partial | full         | full          |
+| Dashboard   | full         | partial | partial      | full          |
 | Event       | none         | none    | none         | none          |
 | External    | none         | none    | none         | none          |
 | Maintenance | none         | none    | none         | none          |
