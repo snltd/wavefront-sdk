@@ -82,4 +82,10 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_cloudintegration?', 'InvalidCloudIntegration',
                  good, bad)
   end
+
+  def test_wf_dashboard?
+    good = %w(my_dash S3 123)
+    bad = ['a' * 260, 'A Dashboard Name', 'and_1_more!', {}, [], 1234]
+    good_and_bad('wf_dashboard?', 'InvalidDashboard', good, bad)
+  end
 end

@@ -149,6 +149,15 @@ module Wavefront
       raise Wavefront::Exception::InvalidAlert
     end
 
+    # There doesn't seem to be a public statement on what's allowed
+    # in a dashboard name. For now I'm going to assume up to 255 word
+    # characters.
+    #
+    def wf_dashboard?(v)
+      return true if v.is_a?(String) && v.size < 256 && v.match(/^\w+$/)
+      raise Wavefront::Exception::InvalidDashboard
+    end
+
     # Ensure the given argument is a valid version number
     #
     # @return True if the version is valid

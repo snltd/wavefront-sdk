@@ -13,6 +13,7 @@ CREDS = {
 ALERT = '1481553823153'.freeze
 AGENT = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
 CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
+DASHBOARD = 'test_dashboard'.freeze
 
 POST_HEADERS = {
   :'Content-Type' => 'text/plain', :Accept => 'application/json'
@@ -69,10 +70,10 @@ class WavefrontTestBase < MiniTest::Test
     rc.unhook
   end
 
-  def should_be_invalid(method)
+  def should_be_invalid(method, args = '!!invalid_val!!')
     assert_raises(Object.const_get('Wavefront::Exception').const_get(
       "Invalid#{class_basename}")) do
-      wf.send(method, 'abc')
+      wf.send(method, *args)
     end
   end
 end

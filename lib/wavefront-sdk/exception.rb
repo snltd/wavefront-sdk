@@ -8,6 +8,7 @@ module Wavefront
     class InvalidAgent < ::Exception; end
     class InvalidAlert < ::Exception; end
     class InvalidCloudIntegration < ::Exception; end
+    class InvalidDashboard < ::Exception; end
     class InvalidEndpoint < ::Exception; end
     class InvalidGranularity < ::Exception; end
     class InvalidHostname < ::Exception; end
