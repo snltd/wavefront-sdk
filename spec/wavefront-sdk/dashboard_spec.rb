@@ -45,7 +45,8 @@ class WavefrontDashboardTest < WavefrontTestBase
 
   def test_tag_set
     should_work('tag_set', [DASHBOARD, 'tag'],
-                ["#{DASHBOARD}/tag", ['tag'].to_json], :post, JSON_POST_HEADERS)
+                ["#{DASHBOARD}/tag", ['tag'].to_json], :post,
+                JSON_POST_HEADERS)
     should_work('tag_set', [DASHBOARD, %w(tag1 tag2)],
                 ["#{DASHBOARD}/tag", %w(tag1 tag2).to_json], :post,
                 JSON_POST_HEADERS)

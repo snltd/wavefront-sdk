@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#
+
 require_relative './spec_helper'
 require_relative '../../lib/wavefront-sdk/base'
 
@@ -53,61 +53,45 @@ class WavefrontBaseTest < MiniTest::Test
   end
 
   def test_api_get
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :get)
-    json = Spy.on(JSON, :parse)
+    uri = "#{uri_base}/path?key1=val1"
+    stub_request(:get, uri).to_return(body: {}.to_json, status: 200)
     wf.api_get('/path', 'key1=val1')
-    assert rc.has_been_called_with?("#{uri_base}/path?key1=val1", headers)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    assert_requested(:get, uri, headers: headers)
   end
 
   def test_api_post
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :post)
-    json = Spy.on(JSON, :parse)
+    uri = "#{uri_base}/path"
+    stub_request(:post, uri).to_return(body: {}.to_json, status: 200)
     wf.api_post('/path', 'body')
-    h = headers.merge(:'Content-Type' => 'text/plain',
-                      :Accept         => 'application/json')
-    assert rc.has_been_called_with?("#{uri_base}/path", 'body', h)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    assert_requested(:post, uri, body: 'body',
+                     headers: headers.merge('Content-Type': 'text/plain',
+                                            'Accept': 'application/json'))
   end
 
   def test_api_put
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :put)
-    json = Spy.on(JSON, :parse)
+    uri = "#{uri_base}/path"
+    stub_request(:put, uri).to_return(body: {}.to_json, status: 200)
     wf.api_put('/path', 'body')
-    h = headers.merge(:'Content-Type' => 'application/json',
-                      :Accept         => 'application/json')
-    assert rc.has_been_called_with?("#{uri_base}/path", '"body"', h)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    assert_requested(:put, uri, body: 'body'.to_json,
+                     headers: headers.merge(
+                       'Content-Type': 'application/json',
+                       'Accept': 'application/json'))
   end
 
   def test_api_delete
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, :delete)
-    json = Spy.on(JSON, :parse)
+    uri = "#{uri_base}/path"
+    stub_request(:delete, uri).to_return(body: {}.to_json, status: 200)
     wf.api_delete('/path')
-    assert rc.has_been_called_with?("#{uri_base}/path", headers)
-    assert json.has_been_called?
-    refute msg.has_been_called?
+    assert_requested(:delete, uri, headers: headers)
   end
 
   def test_api_noop
+    uri = "#{uri_base}/path"
+
     %w(get post put delete).each do |call|
-      msg = Spy.on(wf_noop, :msg)
-      rc = Spy.on(RestClient, call.to_sym)
-      json = Spy.on(JSON, :parse)
+      stub_request(call.to_sym, uri)
       wf_noop.send("api_#{call}", '/path')
-      refute rc.has_been_called?
-      refute json.has_been_called?
-      count = call == 'put' ? 2 : 2
-      assert_equal count, msg.calls.count
-      msg.unhook
-      json.unhook
+      refute_requested(call.to_sym, uri)
     end
   end
 end

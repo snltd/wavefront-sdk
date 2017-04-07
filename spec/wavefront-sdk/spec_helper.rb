@@ -1,9 +1,8 @@
 #
 # Stuff needed by multiple tests
 #
-require 'rest-client'
 require 'minitest/autorun'
-require 'spy/integration'
+require 'webmock/minitest'
 
 CREDS = {
   endpoint: 'test.example.com',
@@ -43,31 +42,23 @@ class WavefrontTestBase < MiniTest::Test
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
   end
 
-  def should_work(method, args, path, api_method = :get,
-                  more_headers = {})
+  def target_uri(path)
+    [uri_base, path].join(path.start_with?('?') ? '' : '/')
+  end
 
-    msg = Spy.on(wf, :msg)
-    rc = Spy.on(RestClient, api_method)
-    json = Spy.on(JSON, :parse)
+  def should_work(method, args, path, call = :get, more_headers = {})
+    path = Array(path)
+    uri = target_uri(path.first)
 
+    headers = { 'Accept': '*/*; q=0.5, application/xml',
+                'Accept-Encoding': 'gzip, deflate',
+                'Authorization': 'Bearer 0123456789-ABCDEF',
+                'User-Agent': 'Ruby'}.merge(more_headers)
+
+    stub_request(call, uri).to_return(body: {}.to_json, status: 200)
     wf.send(method, *args)
-
-    h = headers.merge(more_headers)
-    rc_args = Array(path).<< h
-    join_char = rc_args[0].start_with?('?') ? '' : '/'
-
-    rc_args[0] = [uri_base, rc_args[0]].join(join_char)
-
-    assert rc.has_been_called_with?(*rc_args)
-    assert json.has_been_called?
-    refute msg.has_been_called?
-
-    # unhook the Spy objects so we can call multiple tests from the same
-    # test_ method
-    #
-    msg.unhook
-    json.unhook
-    rc.unhook
+    assert_requested(call, uri, headers: headers)
+    WebMock.reset!
   end
 
   def should_be_invalid(method, args = '!!invalid_val!!')
