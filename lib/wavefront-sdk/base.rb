@@ -34,25 +34,39 @@ module Wavefront
     # Return a time as an integer, however it might come in.
     #
     # @param t [Integer, String, Time] timestamp
+    # @param ms [Boolean] whether to return epoch milliseconds
     # @return [Integer] epoch time in seconds
     # @raise Wavefront::InvalidTimestamp
     #
-    def parse_time(t)
+    def parse_time(t, ms = false)
+      # Numbers, or things that look like numbers, pass straight
+      # through. No validation, because maybe the user means one
+      # second past the epoch, or the year 2525.
+      #
       return t if t.is_a?(Integer)
-      return t.to_i if t.is_a?(Time)
-      return t.to_i if t.is_a?(String) && t.match(/^\d+$/)
-      DateTime.parse("#{t} #{Time.now.getlocal.zone}").to_time.utc.to_i
-    rescue
-      raise Wavefront::Exception::InvalidTimestamp
+
+      if t.is_a?(String)
+        return t.to_i if t.match(/^\d+$/)
+        begin
+          t = DateTime.parse("#{t} #{Time.now.getlocal.zone}")
+        rescue
+          raise Wavefront::Exception::InvalidTimestamp
+        end
+      end
+
+      ms ? t.to_datetime.strftime('%Q').to_i : t.strftime('%s').to_i
     end
 
-    # Convert an epoch timestamp into epoch milliseconds.
+    # Convert an epoch timestamp into epoch milliseconds. If the
+    # timestamp looks like it's already epoch milliseconds, return
+    # it as-is.
     #
     # @param t [Integer] epoch timestamp
     # @return [Ingeter] epoch millisecond timestamp
     #
     def time_to_ms(t)
       return false unless t.is_a?(Integer)
+      return t if t.to_s.size == 13
       (t.to_f * 1000).round
     end
 

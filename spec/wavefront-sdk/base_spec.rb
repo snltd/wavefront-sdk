@@ -14,17 +14,27 @@ class WavefrontBaseTest < MiniTest::Test
   end
 
   def test_parse_time
+    base_t = Time.now.to_i
     assert_equal wf.parse_time(1469711187), 1469711187
     assert_equal wf.parse_time('2016-07-28 14:25:36 +0100'), 1469712336
     assert_equal wf.parse_time('2016-07-28'), 1469664000
     assert_instance_of Fixnum, wf.parse_time(Time.now)
+    assert_instance_of Fixnum, wf.parse_time(Time.now, true)
+    assert wf.parse_time(Time.now) >= base_t
+    assert wf.parse_time(Time.now, true) >= base_t * 1000
+    assert wf.parse_time(Time.now, true) < base_t * 1001
+    assert_instance_of Fixnum, wf.parse_time(DateTime.now)
+    assert_instance_of Fixnum, wf.parse_time(DateTime.now, true)
     assert_raises(Wavefront::Exception::InvalidTimestamp) do
       wf.parse_time('nonsense')
     end
   end
 
   def test_time_to_ms
+    now_ms = Time.now.to_i * 1000
+    assert_equal wf.time_to_ms(now_ms), now_ms
     assert_equal wf.time_to_ms(1469711187), 1469711187000
+    refute wf.time_to_ms([])
     refute wf.time_to_ms('1469711187')
   end
 
@@ -38,9 +48,9 @@ class WavefrontBaseTest < MiniTest::Test
   def test_uri_concat
     assert_equal %w(a b).uri_concat, 'a/b'
     assert_equal ['', 'a', 'b'].uri_concat, '/a/b'
-    assert_equal ['a', '/b'].uri_concat, 'a/b'
+    assert_equal %w(a /b).uri_concat, 'a/b'
     assert_equal ['', 'a', 'b/'].uri_concat, '/a/b'
-    assert_equal ['/a', '/b/', '/c'].uri_concat, '/a/b/c'
+    assert_equal %w(/a /b/ /c).uri_concat, '/a/b/c'
     assert_equal ['/a', '/b c'].uri_concat, '/a/b%20c'
   end
 
