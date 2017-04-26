@@ -79,6 +79,17 @@ module Wavefront
       raise Wavefront::Exception::InvalidTimestamp
     end
 
+    # Ensure the given argument is a valid millisecond epoch timestamp
+    #
+    # @param v [Integer] the timestamp name to validate
+    # @return True if the value is valid
+    # @raise Wavefront::Exception::InvalidTimestamp
+    #
+    def wf_ms_ts?(v)
+      return true if v.is_a?(Numeric)
+      raise Wavefront::Exception::InvalidTimestamp
+    end
+
     # Ensure a hash of key:value point tags are value. Not to be
     # confused with source tags.
     #
