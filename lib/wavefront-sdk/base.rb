@@ -11,7 +11,7 @@ module Wavefront
   #
   class Base
     include Wavefront::Validators
-    attr_reader :opts, :debug, :noop, :verbose, :net
+    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base
 
     # Create a new API object. This will always be called from a
     # class which inherits this one.
@@ -68,6 +68,15 @@ module Wavefront
       return false unless t.is_a?(Integer)
       return t if t.to_s.size == 13
       (t.to_f * 1000).round
+    end
+
+    # Derive the first part of the API path from the class name. You
+    # can override this in your class if you wish
+    #
+    # @return [String] portion of API URI
+    #
+    def api_base
+      self.class.name.split('::').last.downcase
     end
 
     # Create a HTTPS URI. The server comes from the endpoint passed
@@ -200,8 +209,7 @@ module Wavefront
       @net = {
         headers:  { 'Authorization' => "Bearer #{creds[:token]}" },
         endpoint: creds[:endpoint],
-        api_base: ['', 'api', 'v2',
-                   self.class.name.split('::').last.downcase].uri_concat
+        api_base: ['', 'api', 'v2', api_base].uri_concat
       }
     end
 

@@ -10,6 +10,7 @@ module Wavefront
     class InvalidCloudIntegration < ::Exception; end
     class InvalidDashboard < ::Exception; end
     class InvalidEndpoint < ::Exception; end
+    class InvalidExternalLink < ::Exception; end
     class InvalidGranularity < ::Exception; end
     class InvalidHostname < ::Exception; end
     class InvalidMetricName < ::Exception; end
@@ -18,6 +19,7 @@ module Wavefront
     class InvalidSource < ::Exception; end
     class InvalidString < ::Exception; end
     class InvalidTag < ::Exception; end
+    class InvalidLinkTemplate < ::Exception; end
     class InvalidTimeFormat < ::Exception; end
     class InvalidTimestamp < ::Exception; end
     class InvalidVersion < ::Exception; end

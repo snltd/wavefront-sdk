@@ -52,7 +52,10 @@ module Wavefront
     #   is not valid
     #
     def wf_source?(v)
-      return true if v.is_a?(String) && v.match(/^[\w\.\-]+$/) && v.size < 1024
+      if v.is_a?(String) && v.match(/^[\w\.\-]+$/) && v.size < 1024
+        return true
+      end
+
       raise Wavefront::Exception::InvalidSource
     end
 
@@ -155,7 +158,6 @@ module Wavefront
     #
     def wf_alert?(v)
       v = v.to_s if v.is_a?(Numeric)
-
       return true if v.is_a?(String) && v.match(/^\d{13}$/)
       raise Wavefront::Exception::InvalidAlert
     end
@@ -177,8 +179,32 @@ module Wavefront
     #
     def wf_version?(v)
       return true if v.is_a?(Integer) && v > 0
-
       raise Wavefront::Exception::InvalidVersion
+    end
+
+    # Ensure the given argument is a valid external Link ID
+    #
+    # @return True if the link ID is valid
+    # @raise Wavefront::Exception::InvalidVersion if the alert ID is
+    #   not valid
+    #
+    def wf_link_id?(v)
+      return true if v.is_a?(String) && v =~ /^\w{16}$/
+      raise Wavefront::Exception::InvalidExternalLink
+    end
+
+    # Ensure the given argument is a valid external link template
+    #
+    # @return true if it is valid
+    # @raise Wavefront::Exception::InvalidTemplate if not
+    #
+    def wf_link_template?(v)
+      if v.is_a?(String) && (v.start_with?('http://') ||
+                             v.start_with?('https://'))
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidLinkTemplate
     end
   end
 end

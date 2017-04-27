@@ -69,12 +69,6 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_agent?', 'InvalidAgent', good, bad)
   end
 
-  def test_wf_alert?
-    good = [1481553823153, '1481553823153']
-    bad = [481553823153, '481553823153', [], {}, 'alert']
-    good_and_bad('wf_alert?', 'InvalidAlert', good, bad)
-  end
-
   def test_wf_cloudintegration?
     good = %w(3b56f61d-ba79-47f6-905c-d75a0f613d10
               71e435ca-3d8c-43ab-bc1e-d072a335cbe6)
@@ -83,9 +77,33 @@ class WavefrontValidatorsTest < MiniTest::Test
                  good, bad)
   end
 
+  def test_wf_alert?
+    good = [1481553823153, '1481553823153']
+    bad = [481553823153, '481553823153', [], {}, 'alert']
+    good_and_bad('wf_alert?', 'InvalidAlert', good, bad)
+  end
+
   def test_wf_dashboard?
     good = %w(my_dash S3 123)
     bad = ['a' * 260, 'A Dashboard Name', 'and_1_more!', {}, [], 1234]
     good_and_bad('wf_dashboard?', 'InvalidDashboard', good, bad)
+  end
+
+  def test_wf_version?
+    good = [1, 2, 3, 4]
+    bad = [-1, 'ab', [1]]
+    good_and_bad('wf_version?', 'InvalidVersion', good, bad)
+  end
+
+  def test_wf_link_id?
+    good = %w(lq6rPlSg2CFMSrg6)
+    bad = %w(lq%rPlSg2CFMSrg6, lq6rPlSg2CFMSrg)
+    good_and_bad('wf_link_id?', 'InvalidExternalLink', good, bad)
+  end
+
+  def test_wf_link_template?
+    good = %w(http://link.xyz https://link.xyz/{{holder}})
+    bad = %w(link.xyz https:/link.xyz/{{holder}})
+    good_and_bad('wf_link_template?', 'InvalidLinkTemplate', good, bad)
   end
 end

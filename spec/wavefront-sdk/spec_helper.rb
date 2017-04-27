@@ -9,10 +9,13 @@ CREDS = {
   token:    '0123456789-ABCDEF'
 }.freeze
 
+# Known-valid values for various objects
+#
 ALERT = '1481553823153'.freeze
 AGENT = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
 CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
 DASHBOARD = 'test_dashboard'.freeze
+EXTERNAL_LINK = 'lq6rPlSg2CFMSrg6'.freeze
 
 POST_HEADERS = {
   :'Content-Type' => 'text/plain', :Accept => 'application/json'
@@ -46,16 +49,24 @@ class WavefrontTestBase < MiniTest::Test
     [uri_base, path].join(path.start_with?('?') ? '' : '/')
   end
 
-  def should_work(method, args, path, call = :get, more_headers = {})
+  def should_work(method, args, path, call = :get, more_headers = {},
+                 body = nil)
     path = Array(path)
-    uri = target_uri(path.first)
+    uri = target_uri(path.first).sub(/\/$/, '')
 
     headers = { 'Accept': '*/*; q=0.5, application/xml',
                 'Accept-Encoding': 'gzip, deflate',
                 'Authorization': 'Bearer 0123456789-ABCDEF',
                 'User-Agent': 'Ruby'}.merge(more_headers)
 
-    stub_request(call, uri).to_return(body: {}.to_json, status: 200)
+    if body
+      headers['Content-Length'] = body.size.to_s
+      stub_request(call, uri).with(body: body, headers:headers)
+        .to_return(body: {}.to_json, status: 200)
+    else
+      stub_request(call, uri).to_return(body: {}.to_json, status: 200)
+    end
+
     wf.send(method, *args)
     assert_requested(call, uri, headers: headers)
     WebMock.reset!
