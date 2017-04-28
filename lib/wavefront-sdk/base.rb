@@ -135,6 +135,7 @@ module Wavefront
       headers = net[:headers].merge(:'Content-Type' => ctype,
                                     :Accept         => 'application/json')
       uri = build_uri(path)
+      body = body.to_json if body
 
       if verbose || noop
         msg('POST', uri)

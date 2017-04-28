@@ -36,7 +36,7 @@ module Wavefront
 
       validate_hash(body, desc)
 
-      api_post('', body.to_json, 'application/json')
+      api_post('', body, 'application/json')
     end
 
     # Get a specific maintenance window.
