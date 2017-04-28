@@ -226,7 +226,9 @@ class Hash
   # Make a properly escaped query string out of a key: value hash.
   #
   def to_qs
-    URI.encode(self.map { |k, v| [k, v].join('=') }.join('&'))
+    URI.encode(self.select{|_k, v| v }.map do |k, v|
+      [k, v].join('=')
+    end.join('&'))
   end
 end
 

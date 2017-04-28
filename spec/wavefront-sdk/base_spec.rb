@@ -43,6 +43,7 @@ class WavefrontBaseTest < MiniTest::Test
                  'key1=val1&key2=value%202')
     assert_equal({}.to_qs, '')
     assert_equal({ key1: 'val1' }.to_qs, 'key1=val1')
+    assert_equal({ key1: 'val1', key2: nil }.to_qs, 'key1=val1')
   end
 
   def test_uri_concat
