@@ -2,9 +2,24 @@
 
 require_relative './spec_helper'
 
+EVENT_BODY = {
+  name:        'test_event',
+  annotations: {
+    severity: 'info',
+    type:     'SDK test event',
+    details:  'an imaginary event to test the SDK',
+  },
+  hosts:       ['host1', 'host2'],
+  startTime:   1493385089000,
+  endTime:     1493385345678,
+  tags:        ['tag1', 'tag2'],
+  isEphemeral: false,
+}
+
 # Unit tests for event class
 #
 class WavefrontEventTest < WavefrontTestBase
+=begin
   def should_fail_tags(method)
     assert_raises(Wavefront::Exception::InvalidEvent) do
       wf.send(method, '!!invalid!!', 'tag1')
@@ -14,52 +29,32 @@ class WavefrontEventTest < WavefrontTestBase
       wf.send(method, EVENT, '<!!!>')
     end
   end
+=end
 
   def test_list
-    opts = {
-      earliestStartTimeEpochMillis: 1491592854000,
-      latestStartTimeEpochMillis: 1491592864000,
-      cursor: 1491592854000,
-      limit: 50
+    should_work('list', nil, '?limit=100')
+    should_work('list', 1493382053000,
+                '?earliestStartTimeEpochMillis=1493382053000&limit=100')
+
+    assert_raises(Wavefront::Exception::InvalidTimestamp) {
+      wf.list(Time.now)
     }
-
-    #assert_raises(Wavefront::Exception::InvalidTimestamp) {
-      #o = opts
-      #o[:earliestStartTimeEpochMillis] = 1234556
-      #wf.list(o)
-    #}
-#
-    #assert_raises(Wavefront::Exception::InvalidTimestamp) {
-      #o = opts
-      #o[:latestStartTimeEpochMillis] = 1234556
-      #wf.list(o)
-    #}
-#
-    #assert_raises(Wavefront::Exception::InvalidLimit) {
-      #o = opts
-      #o[:limit] = 'abc'
-      #wf.list(o)
-    #}
-
-    #should_work('list', opts)
-
-    #opts.keys.each do |k|
-      #opts.delete(k)
-      #should_work('list', opts)
-    #end
   end
 
+  def test_create
+    body_test(hash:     EVENT_BODY,
+              required: [:name],
+              optional: [:tags, :hosts, :isEphemeral, :startTime, :endTime],
+              invalid:  [[Wavefront::Exception::InvalidTimestamp,
+                          [:startTime, :endTime]]])
+  end
+
+=begin
   def test_describe
     should_work('describe', EVENT, EVENT)
     should_be_invalid('describe', 'abcdefg')
     assert_raises(ArgumentError) { wf.describe }
   end
-
-  #def test_create
-    #should_work('create', EVENT, EVENT, :post)
-    #assert_raises(ArgumentError) { wf.create }
-  #end
-#
   #def test_close
     #should_work('close', EVENT, "#{EVENT}/close", :post)
     #should_be_invalid('close', 'abcdefg')
@@ -98,4 +93,5 @@ class WavefrontEventTest < WavefrontTestBase
                 "#{EVENT}/tag/tagval", :delete)
     should_fail_tags('tag_delete')
   end
+=end
 end

@@ -51,6 +51,19 @@ class WavefrontTestBase < MiniTest::Test
     [uri_base, path].join(path.start_with?('?') ? '' : '/')
   end
 
+  # A shorthand method for very common tests.
+  #
+  # @param method [String] the method you wish to test
+  # @args [String, Integer, Array] arguments with which to call method
+  # @path [String] extra API path components (beyond /api/v2/class)
+  # @call [Symbol] the type of API call (:get, :put etc.)
+  # @more_headers [Hash] any additional headers which should be
+  #   sent. You will normally need to add these for :put and :post
+  #   requests.
+  # @body [String] a JSON object you expect to be sent as part of
+  #   the request
+  #
+  #
   def should_work(method, args, path, call = :get, more_headers = {},
                  body = nil)
     path = Array(path)
@@ -85,9 +98,69 @@ class WavefrontTestBase < MiniTest::Test
       wf.send(method, *args)
     end
   end
+
+  # Perform a whole bunch of tests on a post or put method.
+  #
+  def body_test(h)
+    method = h[:method] || 'create'
+    headers = { 'Content-Type': 'application/json',
+                'Accept': 'application/json' }
+    rtype = h[:rtype] || :post
+
+    # Ensure the body block works as-is
+    #
+    should_work(method, h[:hash], '', rtype, headers, h[:hash].to_json)
+
+    # One by one, remove all optional fields and make sure it still
+    # works
+    #
+    h[:optional].each do |k|
+      tmp = h[:hash].dup
+      tmp.delete(k)
+      should_work(method, tmp, '', rtype, headers, tmp.to_json)
+    end
+
+    # Remove all optional fields and make sure it still works
+    #
+    tmp = h[:hash].reject { |k, _v| h[:optional].include?(k) }
+    should_work(method, tmp, '', rtype, headers, tmp.to_json)
+
+    # Deliberately break fields which must be validated, and ensure
+    # we see the right exceptions.
+    #
+    h[:invalid].each do |exception, keys|
+      keys.each do |k|
+        tmp = h[:hash].dup
+        tmp[k] = '!! invalid field !!'
+        assert_raises(exception) { wf.send(method, tmp) }
+      end
+    end
+
+    # Make sure things break properly when we don't pass required
+    # keys
+    #
+    h[:required].each do |k|
+      tmp = h[:hash].dup
+      tmp.delete(k)
+      assert_raises("missing key: #{k}") { wf.send(method, tmp) }
+    end
+
+    assert_raises(ArgumentError) { wf.send(method) }
+    assert_raises(ArgumentError) { wf.send(method, 'rubbish') }
+  end
+
+  # Check that invalid fields produce the right exception
+  #
+  def hash_invalid_fields(hash, keys, exception, headers, method = 'create')
+
+
+  end
 end
 
 class Hash
+
+  # A quick way to deep-copy a hash.
+  #
   def dup
     Marshal.load(Marshal.dump(self))
   end

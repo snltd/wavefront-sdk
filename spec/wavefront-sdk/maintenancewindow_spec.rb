@@ -26,40 +26,14 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
   end
 
   def test_create
-    headers ={'Content-Type': 'application/json',
-              'Accept': 'application/json'}
-
-    t1 = WINDOW_BODY.dup
-
-    should_work('create', t1, '', :post, headers, t1.to_json)
-
-    # Tags aren't essential.
-    #
-    [:tags, :hostTags].each do |k|
-      t2 = WINDOW_BODY.dup
-      t2.delete(k)
-      should_work('create', t2, '', :post, headers, t2.to_json)
-    end
-
-    # But start and end times are
-    #
-    [:start, :end].each do |k|
-      t3 = WINDOW_BODY.dup
-      t3[k] = 'not_a_timestamp'
-      assert_raises(Wavefront::Exception::InvalidTimestamp) {
-        wf.create(t3)
-      }
-
-      t3.delete(k)
-      assert_raises("missing key: #{k}") {
-        wf.create(t4)
-      }
-    end
-
-    assert_raises(ArgumentError) { wf.create }
-    assert_raises(ArgumentError) { wf.create('test') }
+    body_test(hash:     WINDOW_BODY.dup,
+              required: [:reason, :title, :start, :end],
+              optional: [:tags, :hostTags],
+              invalid:
+              [[Wavefront::Exception::InvalidTimestamp, [:start, :end]],
+               [Wavefront::Exception::InvalidTag, [:tags, :hostTags]]
+    ])
   end
-
 
   def test_delete
     should_work('delete', WINDOW, WINDOW, :delete)
