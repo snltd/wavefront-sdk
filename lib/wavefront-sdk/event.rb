@@ -7,8 +7,26 @@ module Wavefront
   #
   class Event < Wavefront::Base
 
+    # Define the object used to create or update an event.
+    #
+    def body_desc
+      { name:        [:wf_name?, :required],
+        startTime:   [:wf_ms_ts?],
+        endTime:     [:wf_ms_ts?],
+        annotations: [:is_hash?],
+        hosts:       [:is_array?],
+        tags:        [:wf_tag?],
+        isEphemeral: [:is_bool?] }
+    end
+
+    def annotations_desc
+      { severity:   [:wf_alert_severity?],
+        type:       [:wf_string?],
+        details:    [:wf_string?] }
+    end
+
     # GET /api/v2/event
-    # List all the events for a customer within a time range
+    # List all the events for a customer within a time range.
     #
     # @param from [Time, Integer] start of time range. The API
     #   requires this time as epoch milliseconds, but we will also
@@ -16,35 +34,50 @@ module Wavefront
     # @param to [Time, Integer] end ot time range. Can be epoch
     #   millisecods or a Ruby time. If not supplied, defaults to the
     #   current time.
-    # @cursor
+    # @cursor [String] I think this is the 
+    #   must start with a timestamp.
     # @limit [Integer] the number of events to return
     # @return [Hash]
     #
-    def list(from, to = nil, cursor = nil, limit = 100)
+    def list(from = nil, to = nil, limit = 100, cursor = nil)
+      wf_ms_ts?(from) if from
+      wf_ms_ts?(to) if to
+      wf_event?(cursor) if cursor
+      raise ArgumentError unless limit.is_a?(Integer)
+
       api_get('', { earliestStartTimeEpochMillis: from,
                     latestStartTimeEpochMillis: to,
                     cursor: cursor,
                     limit: limit }.to_qs)
     end
 
+    # POST /api/v2/event
     # Create a specific event.
-    # Refer to the Swagger API docs for valid keys.
     #
-    # @param body [Hash] description of events
+    # @param body [Hash] description of event
     # @return [Hash]
     #
     def create(body)
+      raise ArgumentError unless body.is_a?(Hash)
+
+      if body.key?(:startTime)
+        body[:startTime] = parse_time(body[:startTime], true)
+      end
+
+      if body.key?(:endTime)
+        body[:endTime] = parse_time(body[:endTime], true)
+      end
+
+      validate_hash(body, body_desc)
+
+      if body.key?(:annotation)
+        validate_hash(body[:annotation], annotations_desc)
+      end
+
       api_post('', body.to_json, 'application/json')
     end
 
-    # Close a specific event.
-    #
-    # @param id [String] the ID of the event
-    #
-    def close(id)
-      api_post([id, 'close'].uri_concat)
-    end
-
+    # DELETE /api/v2/event/{id}
     # Delete a specific event.
     #
     # @param id [String] ID of the alert
@@ -55,6 +88,7 @@ module Wavefront
       api_delete(id)
     end
 
+    # GET /api/v2/event/{id}
     # Get a specific event / Get a specific historical version of a
     # specific event.
     #
@@ -70,11 +104,45 @@ module Wavefront
       api_get(fragments.uri_concat)
     end
 
+    # PUT /api/v2/event/{id}
+    # Update a specific event
+    #
+    # @param id [String] a Wavefront Event ID
+    # @param body [Hash] description of event. See body_desc()
+    # @return [Hash]
+    #
     def update(id, body)
       wf_event?(id)
-      api_put(id, body)
+      raise ArgumentError unless body.is_a?(Hash)
+
+      if body.key?(:startTime)
+        body[:startTime] = parse_time(body[:startTime], true)
+      end
+
+      if body.key?(:endTime)
+        body[:endTime] = parse_time(body[:endTime], true)
+      end
+
+      validate_hash(body, body_desc, true)
+
+      if body.key?(:annotation)
+        validate_hash(body[:annotation], annotations_desc)
+      end
+
+      api_put(id, body, 'application/json')
     end
 
+    # POST /api/v2/event/{id}/close
+    # Close a specific event.
+    #
+    # @param id [String] the ID of the event
+    #
+    def close(id)
+      wf_event?(id)
+      api_post([id, 'close'].uri_concat)
+    end
+
+    # GET /api/v2/event/{id}/tag
     # Get all tags associated with a specific event
     #
     # @param id [String] ID of the event
@@ -86,6 +154,7 @@ module Wavefront
       api_get([id, 'tag'].uri_concat)
     end
 
+    # POST /api/v2/event/{id}/tag
     # Set all tags associated with a specific event.
     #
     # @param id [String] ID of the event
@@ -100,18 +169,7 @@ module Wavefront
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
-    # Add a tag to a specific event.
-    #
-    # @param id [String] ID of the event
-    # @param tag [String] tag to set.
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
-    #
-    def tag_add(id, tag)
-      wf_event?(id)
-      wf_string?(tag)
-      api_put([id, 'tag', tag].uri_concat)
-    end
-
+    # DELETE /api/v2/event/{id}/tag/{tagValue}
     # Remove a tag from a specific event.
     #
     # @param id [String] ID of the event
@@ -122,6 +180,19 @@ module Wavefront
       wf_event?(id)
       wf_string?(tag)
       api_delete([id, 'tag', tag].uri_concat)
+    end
+
+    # PUT /api/v2/event/{id}/tag/{tagValue}
+    # Add a tag to a specific event.
+    #
+    # @param id [String] ID of the event
+    # @param tag [String] tag to set.
+    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    #
+    def tag_add(id, tag)
+      wf_event?(id)
+      wf_string?(tag)
+      api_put([id, 'tag', tag].uri_concat)
     end
   end
 end

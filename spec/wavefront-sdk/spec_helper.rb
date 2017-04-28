@@ -15,7 +15,7 @@ ALERT = '1481553823153'.freeze
 AGENT = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
 CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
 DASHBOARD = 'test_dashboard'.freeze
-EVENT = '1481553823153'.freeze
+EVENT = '1481553823153:testev'.freeze
 EXTERNAL_LINK = 'lq6rPlSg2CFMSrg6'.freeze
 WINDOW = '1493324005091'.freeze
 
@@ -65,7 +65,7 @@ class WavefrontTestBase < MiniTest::Test
   #
   #
   def should_work(method, args, path, call = :get, more_headers = {},
-                 body = nil)
+                 body = nil, id = nil)
     path = Array(path)
     uri = target_uri(path.first).sub(/\/$/, '')
 
@@ -83,9 +83,17 @@ class WavefrontTestBase < MiniTest::Test
     end
 
     if args.is_a?(Hash)
-      wf.send(method, args)
+      if id
+        wf.send(method, id, args)
+      else
+        wf.send(method, args)
+      end
     else
-      wf.send(method, *args)
+      if id
+        wf.send(method, id, *args)
+      else
+        wf.send(method, *args)
+      end
     end
 
     assert_requested(call, uri, headers: headers)
@@ -103,13 +111,15 @@ class WavefrontTestBase < MiniTest::Test
   #
   def body_test(h)
     method = h[:method] || 'create'
-    headers = { 'Content-Type': 'application/json',
-                'Accept': 'application/json' }
+    headers = JSON_POST_HEADERS
     rtype = h[:rtype] || :post
+    id = h[:id] || nil
+    path = h[:id] ? h[:id] : ''
 
     # Ensure the body block works as-is
     #
-    should_work(method, h[:hash], '', rtype, headers, h[:hash].to_json)
+    should_work(method, h[:hash], path, rtype, headers,
+                h[:hash].to_json, id)
 
     # One by one, remove all optional fields and make sure it still
     # works
@@ -117,13 +127,13 @@ class WavefrontTestBase < MiniTest::Test
     h[:optional].each do |k|
       tmp = h[:hash].dup
       tmp.delete(k)
-      should_work(method, tmp, '', rtype, headers, tmp.to_json)
+      should_work(method, tmp, path, rtype, headers, tmp.to_json, id)
     end
 
     # Remove all optional fields and make sure it still works
     #
     tmp = h[:hash].reject { |k, _v| h[:optional].include?(k) }
-    should_work(method, tmp, '', rtype, headers, tmp.to_json)
+    should_work(method, tmp, path, rtype, headers, tmp.to_json, id)
 
     # Deliberately break fields which must be validated, and ensure
     # we see the right exceptions.
@@ -132,7 +142,11 @@ class WavefrontTestBase < MiniTest::Test
       keys.each do |k|
         tmp = h[:hash].dup
         tmp[k] = '!! invalid field !!'
-        assert_raises(exception) { wf.send(method, tmp) }
+        if id
+          assert_raises(exception) { wf.send(method, id, tmp) }
+        else
+          assert_raises(exception) { wf.send(method, tmp) }
+        end
       end
     end
 
@@ -149,11 +163,43 @@ class WavefrontTestBase < MiniTest::Test
     assert_raises(ArgumentError) { wf.send(method, 'rubbish') }
   end
 
-  # Check that invalid fields produce the right exception
+  # Generic tag method testing.
   #
-  def hash_invalid_fields(hash, keys, exception, headers, method = 'create')
+  def tag_tester(id)
+    # Can we get tags? : tests #tags
+    #
+    should_work('tags', id, "#{id}/tag")
+    should_be_invalid('tags')
 
+    # Can we set tags? tests #tag_set
+    #
+    should_work('tag_set', [id, 'tag'],
+                ["#{id}/tag", ['tag'].to_json], :post, JSON_POST_HEADERS)
+    should_work('tag_set', [id, %w(tag1 tag2)],
+                ["#{id}/tag", %w(tag1 tag2).to_json], :post,
+                JSON_POST_HEADERS)
+    should_fail_tags('tag_set', id)
 
+    # Can we add tags? : tests #tag_add
+    #
+    should_work('tag_add', [id, 'tagval'],
+                ["#{id}/tag/tagval", nil], :put, JSON_POST_HEADERS)
+    should_fail_tags('tag_add', id)
+
+    # Can we delete tags? : tests #tag_delete
+    #
+    should_work('tag_delete', [id, 'tagval'], "#{id}/tag/tagval", :delete)
+    should_fail_tags('tag_delete', id)
+  end
+
+  def should_fail_tags(method, id)
+    assert_raises(Wavefront::Exception::InvalidEvent) do
+      wf.send(method, '!!invalid!!', 'tag1')
+    end
+
+    assert_raises(Wavefront::Exception::InvalidString) do
+      wf.send(method, id, '<!!!>')
+    end
   end
 end
 

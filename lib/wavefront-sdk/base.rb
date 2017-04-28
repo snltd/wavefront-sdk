@@ -39,6 +39,7 @@ module Wavefront
     # @raise Wavefront::InvalidTimestamp
     #
     def parse_time(t, ms = false)
+      #
       # Numbers, or things that look like numbers, pass straight
       # through. No validation, because maybe the user means one
       # second past the epoch, or the year 2525.

@@ -24,11 +24,13 @@ module Wavefront
     # @raise ArgumentError if 'hash' is not a Hash; 'unknown key k'
     #   if any key in 'hash' is not described in 'desc';
     #
-    def validate_hash(hash, desc)
+    def validate_hash(hash, desc, no_required = false)
       raise ArgumentError unless hash.is_a?(Hash) && desc.is_a?(Hash)
 
-      desc.select { |k, v| v.include?(:required) }.each do |k, _v|
-        raise "missing key: #{k}" unless hash.key?(k)
+      unless no_required
+        desc.select { |k, v| v.include?(:required) }.each do |k, _v|
+          raise "missing key: #{k}" unless hash.key?(k)
+        end
       end
 
       hash.each do |k, v|
@@ -316,6 +318,29 @@ module Wavefront
     def wf_alert_severity?(v)
       return true if %w(info smoke warn severe).include?(v)
       raise Wavefront::Exception::InvalidAlertSeverity
+    end
+
+    # Some wrappers around is_a? to help fit with our semi-automated
+    # hash validation.
+    #
+    def is_bool?(v)
+      return true if v == true || v == false
+      raise ValueError
+    end
+
+    def is_hash?(v)
+      return true if v.is_a?(Hash)
+      raise ValueError
+    end
+
+    def is_array?(v)
+      return true if v.is_a?(Array)
+      raise ValueError
+    end
+
+    def is_integer?(v)
+      return true if v.is_a?(Integer)
+      raise ValueError
     end
   end
 end

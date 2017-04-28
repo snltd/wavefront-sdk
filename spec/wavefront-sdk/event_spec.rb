@@ -19,18 +19,6 @@ EVENT_BODY = {
 # Unit tests for event class
 #
 class WavefrontEventTest < WavefrontTestBase
-=begin
-  def should_fail_tags(method)
-    assert_raises(Wavefront::Exception::InvalidEvent) do
-      wf.send(method, '!!invalid!!', 'tag1')
-    end
-
-    assert_raises(Wavefront::Exception::InvalidString) do
-      wf.send(method, EVENT, '<!!!>')
-    end
-  end
-=end
-
   def test_list
     should_work('list', nil, '?limit=100')
     should_work('list', 1493382053000,
@@ -49,17 +37,29 @@ class WavefrontEventTest < WavefrontTestBase
                           [:startTime, :endTime]]])
   end
 
-=begin
   def test_describe
     should_work('describe', EVENT, EVENT)
     should_be_invalid('describe', 'abcdefg')
     assert_raises(ArgumentError) { wf.describe }
   end
-  #def test_close
-    #should_work('close', EVENT, "#{EVENT}/close", :post)
-    #should_be_invalid('close', 'abcdefg')
-    #assert_raises(ArgumentError) { wf.close }
-  #end
+
+  def test_close
+    should_work('close', EVENT, "#{EVENT}/close", :post, POST_HEADERS)
+    should_be_invalid('close', 'abcdefg')
+    assert_raises(ArgumentError) { wf.close }
+  end
+
+  def test_update
+    body_test(hash:     EVENT_BODY,
+              method:   'update',
+              id:       EVENT,
+              rtype:    :put,
+              required: [],
+              optional: [:name, :tags, :hosts, :isEphemeral, :startTime,
+                         :endTime],
+              invalid:  [[Wavefront::Exception::InvalidTimestamp,
+                          [:startTime, :endTime]]])
+  end
 
   def test_delete
     should_work('delete', EVENT, EVENT, :delete)
@@ -68,30 +68,6 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def test_tags
-    should_work('tags', EVENT, "#{EVENT}/tag")
-    should_be_invalid('tags')
+    tag_tester(EVENT)
   end
-
-  def test_tag_set
-    should_work('tag_set', [EVENT, 'tag'],
-                ["#{EVENT}/tag", ['tag'].to_json], :post,
-                JSON_POST_HEADERS)
-    should_work('tag_set', [EVENT, %w(tag1 tag2)],
-                ["#{EVENT}/tag", %w(tag1 tag2).to_json], :post,
-                JSON_POST_HEADERS)
-    should_fail_tags('tag_set')
-  end
-
-  def test_tag_add
-    should_work('tag_add', [EVENT, 'tagval'],
-                ["#{EVENT}/tag/tagval", nil], :put, JSON_POST_HEADERS)
-    should_fail_tags('tag_add')
-  end
-
-  def test_tag_delete
-    should_work('tag_delete', [EVENT, 'tagval'],
-                "#{EVENT}/tag/tagval", :delete)
-    should_fail_tags('tag_delete')
-  end
-=end
 end
