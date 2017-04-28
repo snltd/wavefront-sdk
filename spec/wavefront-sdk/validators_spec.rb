@@ -42,6 +42,12 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_ts?', 'InvalidTimestamp', good, bad)
   end
 
+  def test_wf_tag?
+    good = ['abc', 'abc123', '__tag__', 'my:tag', ['abc', 'abc123']]
+    bad = ['^^^', Time.now, 'bad tag', ['abc', '!BAD!']]
+    good_and_bad('wf_tag?', 'InvalidTag', good, bad)
+  end
+
   def test_wf_point_tags?
     good = [{},
             {tag1: 'val1', tag2: 'val2'},
@@ -105,5 +111,12 @@ class WavefrontValidatorsTest < MiniTest::Test
     good = %w(http://link.xyz https://link.xyz/{{holder}})
     bad = %w(link.xyz https:/link.xyz/{{holder}})
     good_and_bad('wf_link_template?', 'InvalidLinkTemplate', good, bad)
+  end
+
+  def test_wf_maintenance_window?
+    good = ['1493324005091', 1493324005091, Time.now.to_i * 1000]
+    bad = [149332400509, '14933240050', Time.now, [], 'abcdef']
+    good_and_bad('wf_maintenance_window?', 'InvalidMaintenanceWindow',
+                 good, bad)
   end
 end

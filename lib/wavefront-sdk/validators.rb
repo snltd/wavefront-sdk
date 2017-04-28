@@ -10,6 +10,33 @@ module Wavefront
   # directly from Wavefront engineers.
   #
   module Validators
+
+    # Ensure a hash of options matches requirements.
+    #
+    # @param hash [Hash] the hash to validate
+    # @param desc [Hash] a description of 'hash'. Keys are the
+    #   keys 'hash' may contain, values are an array where the first
+    #   element is the method used to validate the 'hash' value, and
+    #   the second element says whether the key is :required or
+    #   :optional.
+    # @return True if everything checks out
+    # @raise ArgumentError if 'hash' is not a Hash; 'unknown key k'
+    #   if any key in 'hash' is not described in 'desc';
+    #
+    def validate_hash(hash, desc)
+      raise ArgumentError unless hash.is_a?(Hash)
+
+      desc.select { |k, v| v.include?(:required) }.each do |k, _v|
+        raise "missing key: #{k}" unless hash.key?(k)
+      end
+
+      hash.each do |k, v|
+        raise "unknown key: #{k}" unless desc.key?(k)
+        validator = desc[k].first
+        public_send(validator, v)
+      end
+    end
+
     # Ensure the given argument is a valid Wavefront metric name, or
     # path.
     #
@@ -93,6 +120,25 @@ module Wavefront
       raise Wavefront::Exception::InvalidTimestamp
     end
 
+    # Ensure one, or an array, of tags are valid. These tags are
+    # used as source tags, or tags for maintenance windows etc. They
+    # can contain letters, numbers, -, _ and :, and must be less
+    # than 256 characters long
+    #
+    # @param v [String, Array] a tag or list of tags
+    # @return True if all tags are valid
+    # @raise Wavefront::Exception::InvalidTag
+    #
+    def wf_tag?(*v)
+      Array(*v).each do |t|
+        unless t.is_a?(String) && t.size < 255 && t =~ /^[\w:\-\.]+$/
+          raise Wavefront::Exception::InvalidTag
+        end
+      end
+
+      true
+    end
+
     # Ensure a hash of key:value point tags are value. Not to be
     # confused with source tags.
     #
@@ -105,7 +151,7 @@ module Wavefront
       raise Wavefront::Exception::InvalidTag unless tags.is_a?(Hash)
 
       tags.each do |k, v|
-        unless (k.size + v.size < 254) && k.match(/^[\w\-\.]+$/)
+        unless (k.size + v.size < 254) && k.match(/^[\w\-\.:]+$/)
           raise Wavefront::Exception::InvalidTag
         end
       end
@@ -171,6 +217,14 @@ module Wavefront
       raise Wavefront::Exception::InvalidDashboard
     end
 
+    # Ensure the given argument is a valid event ID
+    #
+    def wf_event?(v)
+      v = v.to_s if v.is_a?(Numeric)
+      return true if v.is_a?(String) && v =~ /^\d{13}$/
+      raise Wavefront::Exception::InvalidEvent
+    end
+
     # Ensure the given argument is a valid version number
     #
     # @return True if the version is valid
@@ -205,6 +259,32 @@ module Wavefront
       end
 
       raise Wavefront::Exception::InvalidLinkTemplate
+    end
+
+    # Ensure the given argument is a valid maintenance window ID.
+    # IDs are the millisecond epoch timestamp at which the window
+    # was created.
+    #
+    # @param v [String, Integer]
+    # @return True if the ID is valid
+    # @raise Wavefront::Exception::InvalidMaintenanceWindow
+    #
+    def wf_maintenance_window?(v)
+      v = v.to_s if v.is_a?(Numeric)
+      return true if v.is_a?(String) && v =~ /^\d{13}$/
+
+      raise Wavefront::Exception::InvalidMaintenanceWindow
+    end
+
+    # Ensure the given argument is a valid epoch timestamp.
+    #
+    # @param v [String, Integer]
+    # @return True if the timestamp is valid
+    # @raise Wavefront::Exception::InvalidMaintenanceWindow
+    #
+    def wf_epoch?(v)
+      v = v.to_s if v.is_a?(Numeric)
+      return true if v.is_a?(String) && v =~ /^\d{10}$/
     end
   end
 end

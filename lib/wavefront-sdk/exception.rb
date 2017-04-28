@@ -10,9 +10,11 @@ module Wavefront
     class InvalidCloudIntegration < ::Exception; end
     class InvalidDashboard < ::Exception; end
     class InvalidEndpoint < ::Exception; end
+    class InvalidEvent < ::Exception; end
     class InvalidExternalLink < ::Exception; end
     class InvalidGranularity < ::Exception; end
     class InvalidHostname < ::Exception; end
+    class InvalidMaintenanceWindow < ::Exception; end
     class InvalidMetricName < ::Exception; end
     class InvalidMetricValue < ::Exception; end
     class InvalidPrefixLength < ::Exception; end

@@ -15,7 +15,9 @@ ALERT = '1481553823153'.freeze
 AGENT = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
 CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
 DASHBOARD = 'test_dashboard'.freeze
+EVENT = '1481553823153'.freeze
 EXTERNAL_LINK = 'lq6rPlSg2CFMSrg6'.freeze
+WINDOW = '1493324005091'.freeze
 
 POST_HEADERS = {
   :'Content-Type' => 'text/plain', :Accept => 'application/json'
@@ -67,7 +69,12 @@ class WavefrontTestBase < MiniTest::Test
       stub_request(call, uri).to_return(body: {}.to_json, status: 200)
     end
 
-    wf.send(method, *args)
+    if args.is_a?(Hash)
+      wf.send(method, args)
+    else
+      wf.send(method, *args)
+    end
+
     assert_requested(call, uri, headers: headers)
     WebMock.reset!
   end
@@ -77,5 +84,11 @@ class WavefrontTestBase < MiniTest::Test
       "Invalid#{class_basename}")) do
       wf.send(method, *args)
     end
+  end
+end
+
+class Hash
+  def dup
+    Marshal.load(Marshal.dump(self))
   end
 end
