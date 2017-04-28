@@ -17,14 +17,15 @@ module Wavefront
     # @param desc [Hash] a description of 'hash'. Keys are the
     #   keys 'hash' may contain, values are an array where the first
     #   element is the method used to validate the 'hash' value, and
-    #   the second element says whether the key is :required or
-    #   :optional.
+    #   the optional second element says whether the key is
+    #   :required or If you do not wish the field to be validated,
+    #   set the validator to nil.
     # @return True if everything checks out
     # @raise ArgumentError if 'hash' is not a Hash; 'unknown key k'
     #   if any key in 'hash' is not described in 'desc';
     #
     def validate_hash(hash, desc)
-      raise ArgumentError unless hash.is_a?(Hash)
+      raise ArgumentError unless hash.is_a?(Hash) && desc.is_a?(Hash)
 
       desc.select { |k, v| v.include?(:required) }.each do |k, _v|
         raise "missing key: #{k}" unless hash.key?(k)
@@ -33,6 +34,7 @@ module Wavefront
       hash.each do |k, v|
         raise "unknown key: #{k}" unless desc.key?(k)
         validator = desc[k].first
+        next if validator.nil?
         public_send(validator, v)
       end
     end
@@ -66,9 +68,21 @@ module Wavefront
       # commas in tags and descriptions. This might be too restrictive,
       # but if it is, this is the only place we need to change it.
       #
-      return true if v.is_a?(String) && v.match(/^[\-\w \.,]*$/)
+      return true if v.is_a?(String) && v.size < 1024 && v =~ /^[\-\w \.,]*$/
 
       raise Wavefront::Exception::InvalidString
+    end
+
+    # Ensure the given argument is a valid name, for instance for an
+    # event. Names can contain, AFAIK, word characters.
+    #
+    # @param v [String] the name to validate
+    # @return true if the name is valid
+    # raise Wavefront::Exception::InvalidName if name is not valid
+    #
+    def wf_name?(v)
+      return true if v.is_a?(String) && v.size < 1024 && v =~ /^\w+$/
+      raise Wavefront::Exception::InvalidName
     end
 
     # Ensure the given argument is a valid Wavefront source name
@@ -109,13 +123,28 @@ module Wavefront
       raise Wavefront::Exception::InvalidTimestamp
     end
 
-    # Ensure the given argument is a valid millisecond epoch timestamp
+    # Ensure the given argument is a valid millisecond epoch
+    # timestamp. We do no checking of the value, because who am I to
+    # say that the user doesn't want to send a point relating to 1ms
+    # after the epoch, or a thousand years in the future?
     #
     # @param v [Integer] the timestamp name to validate
     # @return True if the value is valid
     # @raise Wavefront::Exception::InvalidTimestamp
     #
     def wf_ms_ts?(v)
+      return true if v.is_a?(Numeric)
+      raise Wavefront::Exception::InvalidTimestamp
+    end
+
+    # Ensure the given argument is a valid epoch timestamp. Again,
+    # no range checking.
+    #
+    # @param v [String, Integer]
+    # @return True if the timestamp is valid
+    # @raise Wavefront::Exception::InvalidMaintenanceWindow
+    #
+    def wf_epoch?(v)
       return true if v.is_a?(Numeric)
       raise Wavefront::Exception::InvalidTimestamp
     end
@@ -217,11 +246,12 @@ module Wavefront
       raise Wavefront::Exception::InvalidDashboard
     end
 
-    # Ensure the given argument is a valid event ID
+    # Ensure the given argument is a valid event ID. Event IDs are
+    # an epoch-millisecond timestamp followed by a : followed by the
+    # name of the event.
     #
     def wf_event?(v)
-      v = v.to_s if v.is_a?(Numeric)
-      return true if v.is_a?(String) && v =~ /^\d{13}$/
+      return true if v.is_a?(String) && v =~ /^\d{13}:\w+$/
       raise Wavefront::Exception::InvalidEvent
     end
 
@@ -276,15 +306,16 @@ module Wavefront
       raise Wavefront::Exception::InvalidMaintenanceWindow
     end
 
-    # Ensure the given argument is a valid epoch timestamp.
+    # Ensure the given argument is a valid alert severity
     #
-    # @param v [String, Integer]
-    # @return True if the timestamp is valid
-    # @raise Wavefront::Exception::InvalidMaintenanceWindow
+    # @param v [String] severity
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidAlertSeverity if not
+    # valid
     #
-    def wf_epoch?(v)
-      v = v.to_s if v.is_a?(Numeric)
-      return true if v.is_a?(String) && v =~ /^\d{10}$/
+    def wf_alert_severity?(v)
+      return true if %w(info smoke warn severe).include?(v)
+      raise Wavefront::Exception::InvalidAlertSeverity
     end
   end
 end

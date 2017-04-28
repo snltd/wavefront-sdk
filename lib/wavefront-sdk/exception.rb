@@ -7,6 +7,7 @@ module Wavefront
     class InvalidResponseFormat < ::Exception; end
     class InvalidAgent < ::Exception; end
     class InvalidAlert < ::Exception; end
+    class InvalidAlertSeverity < ::Exception; end
     class InvalidCloudIntegration < ::Exception; end
     class InvalidDashboard < ::Exception; end
     class InvalidEndpoint < ::Exception; end
@@ -17,6 +18,7 @@ module Wavefront
     class InvalidMaintenanceWindow < ::Exception; end
     class InvalidMetricName < ::Exception; end
     class InvalidMetricValue < ::Exception; end
+    class InvalidName < ::Exception; end
     class InvalidPrefixLength < ::Exception; end
     class InvalidSource < ::Exception; end
     class InvalidString < ::Exception; end

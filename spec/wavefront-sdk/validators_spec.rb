@@ -15,11 +15,51 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad.each { |m| assert_raises(ex) { send(method, m) } }
   end
 
+  def test_validate_hash
+    assert_raises(ArgumentError) { validate_hash([], {}) }
+    assert_raises(ArgumentError) { validate_hash({}, []) }
+
+    h1 = { tags: %w(tag1 tag2 tag3), source: 'wfsource' }
+    d1 = { source:    [:wf_source?, :required],
+           tags:      [:wf_tag?],
+           otherTags: [:wf_tag?] }
+
+    assert validate_hash(h1, d1)
+
+    d2 = { source: [:wf_source?, :required], }
+    assert_raises('unknown key: tags') { validate_hash(h1, d2) }
+
+    h2 = { tags: %w(tag1 tag2 tag3) }
+    assert_raises('missing key: source') { validate_hash(h2, d1) }
+
+    h3 = { source: '!bad source!' }
+    assert_raises(Wavefront::Exception::InvalidSource) {
+      validate_hash(h3, d1)
+    }
+
+    h4 = { source: 'source', thing: 123 }
+    d4 = { source: [:wf_source?, :required], thing: [nil] }
+    assert validate_hash(h4, d4)
+  end
+
   def test_wf_metric_name?
     good = ['a.l33t.metric_path-passes', 'NO.NEED.TO.SHOUT',
              '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"']
     bad  = ['metric.is.(>_<)', { key: 'val' }, 'no/slash', 'no,comma', []]
     good_and_bad('wf_metric_name?', 'InvalidMetricName', good, bad)
+  end
+
+  def test_wf_string?
+    good = ['string', 'valid string', 'valid, valid string.',
+             'valid-string', ' VALID_string']
+    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123456]
+    good_and_bad('wf_string?', 'InvalidString', good, bad)
+  end
+
+  def test_wf_name?
+    good = %w(name name123)
+    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123456, '']
+    good_and_bad('wf_name?', 'InvalidName', good, bad)
   end
 
   def test_wf_source?
@@ -40,6 +80,18 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad  = ['2017-03-25 23:52:22 +0000', 1490485946,
             '#<Date: 2017-03-25 ((2457838j,0s,0n),+0s,2299161j)>']
     good_and_bad('wf_ts?', 'InvalidTimestamp', good, bad)
+  end
+
+  def test_wf_ms_ts?
+    good = [Time.now.to_i * 1000]
+    bad  = ['2017-03-25 23:52:22 +0000']
+    good_and_bad('wf_ms_ts?', 'InvalidTimestamp', good, bad)
+  end
+
+  def test_wf_epoch?
+    good = [Time.now.to_i]
+    bad  = ['2017-03-25 23:52:22 +0000']
+    good_and_bad('wf_epoch?', 'InvalidTimestamp', good, bad)
   end
 
   def test_wf_tag?
@@ -95,6 +147,12 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_dashboard?', 'InvalidDashboard', good, bad)
   end
 
+  def test_wf_event?
+    good = %w(1493370839062:test1)
+    bad = %w(1493370839062 1493370839062:test!)
+    good_and_bad('wf_event?', 'InvalidEvent', good, bad)
+  end
+
   def test_wf_version?
     good = [1, 2, 3, 4]
     bad = [-1, 'ab', [1]]
@@ -118,5 +176,11 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = [149332400509, '14933240050', Time.now, [], 'abcdef']
     good_and_bad('wf_maintenance_window?', 'InvalidMaintenanceWindow',
                  good, bad)
+  end
+
+  def test_wf_alert_severity?
+    good = %w(info smoke warn severe)
+    bad = %w(any thing else)
+    good_and_bad('wf_alert_severity?', 'InvalidAlertSeverity', good, bad)
   end
 end
