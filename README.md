@@ -38,13 +38,13 @@ There's no gem as yet: the coverage is too incomplete.
 | API path    | API Coverage | tests   | CLI coverage | RDoc coverage |
 | ----------- | ------------ | ------- | ------------ | ------------- |
 | Agent       | full         | full    | full         | full          |
-| Alert       | full         | partial | full         | full          |
-| Cloud       | full         | partial | full         | full          |
-| Dashboard   | full         | partial | partial      | full          |
+| Alert       | full         | full    | full         | full          |
+| Cloud       | full         | full    | full         | full          |
+| Dashboard   | full         | full    | partial      | full          |
 | Event       | full         | full    | none         | full          |
 | External    | full         | full    | none         | full          |
-| Maintenance | full         | partial | none         | full          |
-| Message     | none         | none    | none         | none          |
+| Maintenance | full         | full    | none         | full          |
+| Message     | full         | full    | none         | full          |
 | Metric      | none         | none    | none         | none          |
 | Query       | none         | none    | none         | none          |
 | Saved       | none         | none    | none         | none          |

@@ -289,5 +289,17 @@ module Wavefront
       return true if %w(info smoke warn severe).include?(v)
       raise Wavefront::Exception::InvalidAlertSeverity
     end
+
+    # Ensure the given argument is a valid message ID
+    #
+    # @param v [String] severity
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidAlertSeverity if not
+    # valid
+    #
+    def wf_message?(v)
+      return true if v.is_a?(String) && v =~ /^\w+$/
+      raise Wavefront::Exception::InvalidMessage
+    end
   end
 end
