@@ -41,8 +41,8 @@ There's no gem as yet: the coverage is too incomplete.
 | Alert       | full         | partial | full         | full          |
 | Cloud       | full         | partial | full         | full          |
 | Dashboard   | full         | partial | partial      | full          |
-| Event       | none         | partial | none         | partial       |
-| External    | full         | full    | none         | full
+| Event       | full         | full    | none         | full          |
+| External    | full         | full    | none         | full          |
 | Maintenance | full         | partial | none         | full          |
 | Message     | none         | none    | none         | none          |
 | Metric      | none         | none    | none         | none          |
