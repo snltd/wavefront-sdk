@@ -6,7 +6,8 @@ module Wavefront
   #
   class Agent < Wavefront::Base
 
-    # Returns a list of all agents in your account
+    # GET /api/v2/agent
+    # Get all agents for a customer
     #
     # @param offset [Int] agent at which the list begins
     # @param limit [Int] the number of agents to return
@@ -15,19 +16,12 @@ module Wavefront
       api_get('', { offset: offset, limit: limit }.to_qs)
     end
 
-    # presents everything the server knows about the given agent
+    # DELETE /api/v2/agent/{id}
+    # Delete a specific agent
     #
-    # @param id [String] ID of the agent
-    # @return [Hash]
-    #
-    def describe(id)
-      wf_agent?(id)
-      api_get(id)
-    end
-
-    # Delete the given agent. Deleting and active agent moves it to
-    # 'trash', from where it can be restored with an #undelete
-    # operation. Deleting an agent in 'trash' removes it for ever.
+    # Deleting an active agent moves it to 'trash', from where it
+    # can be restored with an #undelete operation. Deleting an agent
+    # in 'trash' removes it for ever.
     #
     # @param id [String] ID of the agent
     # @return [Hash]
@@ -37,6 +31,20 @@ module Wavefront
       api_delete(id)
     end
 
+    # GET /api/v2/agent/{id}
+    # Get a specific agent
+    #
+    # @param id [String] ID of the agent
+    # @return [Hash]
+    #
+    def describe(id)
+      wf_agent?(id)
+      api_get(id)
+    end
+
+    # POST /api/v2/agent/{id}/undelete
+    # Undelete a specific agent
+    #
     # Move an agent from 'trash' back into active service.
     #
     # @param id [String] ID of the agent
@@ -45,6 +53,22 @@ module Wavefront
     def undelete(id)
       wf_agent?(id)
       api_post([id, 'undelete'].uri_concat)
+    end
+
+    # PUT /api/v2/agent/{id}
+    # Update the name of a specific agent
+    #
+    # Rename an agent. This changes the human-readable name, not the
+    # unique identifier.
+    #
+    # @param id [String] ID of the agent
+    # @param name [String] new name
+    # @return [Hash]
+    #
+    def rename(id, name)
+      wf_agent?(id)
+      wf_string?(name)
+      update(id, {name: name})
     end
 
     # A generic function to change properties of an agent. So far as I
@@ -60,19 +84,6 @@ module Wavefront
     def update(id, payload)
       wf_agent?(id)
       api_put(id, payload)
-    end
-
-    # Rename an agent. This changes the human-readable name, not the
-    # unique identifier.
-    #
-    # @param id [String] ID of the agent
-    # @param name [String] new name
-    # @return [Hash]
-    #
-    def rename(id, name)
-      wf_agent?(id)
-      wf_string?(name)
-      update(id, {name: name})
     end
   end
 end

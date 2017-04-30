@@ -74,7 +74,7 @@ module Wavefront
         validate_hash(body[:annotation], annotations_desc)
       end
 
-      api_post('', body.to_json, 'application/json')
+      api_post('', body, 'application/json')
     end
 
     # DELETE /api/v2/event/{id}
@@ -166,7 +166,7 @@ module Wavefront
       wf_event?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
-      api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
+      api_post([id, 'tag'].uri_concat, tags, 'application/json')
     end
 
     # DELETE /api/v2/event/{id}/tag/{tagValue}

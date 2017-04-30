@@ -29,7 +29,7 @@ module Wavefront
       wf_link_template?(template)
       api_post('', { name:        name,
                      template:    template,
-                     description: description}.to_json, 'application/json')
+                     description: description }, 'application/json')
     end
 
     # presents everything the server knows about the given link

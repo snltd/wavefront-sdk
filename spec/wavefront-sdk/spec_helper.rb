@@ -142,6 +142,7 @@ class WavefrontTestBase < MiniTest::Test
       keys.each do |k|
         tmp = h[:hash].dup
         tmp[k] = '!! invalid field !!'
+
         if id
           assert_raises(exception) { wf.send(method, id, tmp) }
         else

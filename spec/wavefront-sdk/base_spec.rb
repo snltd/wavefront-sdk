@@ -74,7 +74,7 @@ class WavefrontBaseTest < MiniTest::Test
     uri = "#{uri_base}/path"
     stub_request(:post, uri).to_return(body: {}.to_json, status: 200)
     wf.api_post('/path', 'body')
-    assert_requested(:post, uri, body: 'body',
+    assert_requested(:post, uri, body: '"body"',
                      headers: headers.merge('Content-Type': 'text/plain',
                                             'Accept': 'application/json'))
   end
