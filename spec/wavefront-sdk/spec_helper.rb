@@ -107,63 +107,6 @@ class WavefrontTestBase < MiniTest::Test
     end
   end
 
-  # Perform a whole bunch of tests on a post or put method.
-  #
-  def body_test(h)
-    method = h[:method] || 'create'
-    headers = JSON_POST_HEADERS
-    rtype = h[:rtype] || :post
-    id = h[:id] || nil
-    path = h[:id] ? h[:id] : ''
-
-    # Ensure the body block works as-is
-    #
-    should_work(method, h[:hash], path, rtype, headers,
-                h[:hash].to_json, id)
-
-    # One by one, remove all optional fields and make sure it still
-    # works
-    #
-    h[:optional].each do |k|
-      tmp = h[:hash].dup
-      tmp.delete(k)
-      should_work(method, tmp, path, rtype, headers, tmp.to_json, id)
-    end
-
-    # Remove all optional fields and make sure it still works
-    #
-    tmp = h[:hash].reject { |k, _v| h[:optional].include?(k) }
-    should_work(method, tmp, path, rtype, headers, tmp.to_json, id)
-
-    # Deliberately break fields which must be validated, and ensure
-    # we see the right exceptions.
-    #
-    h[:invalid].each do |exception, keys|
-      keys.each do |k|
-        tmp = h[:hash].dup
-        tmp[k] = '!! invalid field !!'
-
-        if id
-          assert_raises(exception) { wf.send(method, id, tmp) }
-        else
-          assert_raises(exception) { wf.send(method, tmp) }
-        end
-      end
-    end
-
-    # Make sure things break properly when we don't pass required
-    # keys
-    #
-    h[:required].each do |k|
-      tmp = h[:hash].dup
-      tmp.delete(k)
-      assert_raises("missing key: #{k}") { wf.send(method, tmp) }
-    end
-
-    assert_raises(ArgumentError) { wf.send(method) }
-    assert_raises(ArgumentError) { wf.send(method, 'rubbish') }
-  end
-
   # Generic tag method testing.
   #
   def tag_tester(id)
@@ -201,14 +144,5 @@ class WavefrontTestBase < MiniTest::Test
     assert_raises(Wavefront::Exception::InvalidString) do
       wf.send(method, id, '<!!!>')
     end
-  end
-end
-
-class Hash
-
-  # A quick way to deep-copy a hash.
-  #
-  def dup
-    Marshal.load(Marshal.dump(self))
   end
 end

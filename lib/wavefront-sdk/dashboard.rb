@@ -6,6 +6,7 @@ module Wavefront
   #
   class Dashboard < Wavefront::Base
 
+    # GET /api/v2/dashboard
     # Get all dashboards for a customer.
     #
     # @param offset [Int] dashboard at which the list begins
@@ -16,6 +17,7 @@ module Wavefront
       api_get('', { offset: offset, limit: limit }.to_qs)
     end
 
+    # POST /api/v2/dashboard
     # Create a specific dashboard.
     # Refer to the Swagger API docs for valid keys.
     #
@@ -26,6 +28,7 @@ module Wavefront
       api_post('', body.to_json, 'application/json')
     end
 
+    # DELETE /api/v2/dashboard/{id}
     # Delete a specific dashboard.
     # Deleting an active dashboard moves it to 'trash', from where it can
     # be restored with an #undelete operation. Deleting an dashboard in
@@ -39,6 +42,7 @@ module Wavefront
       api_delete(id)
     end
 
+    # GET /api/v2/dashboard/{id}
     # Get a specific dashboard / Get a specific historical version of a
     # specific dashboard.
     #
@@ -54,12 +58,21 @@ module Wavefront
       api_get(fragments.uri_concat)
     end
 
+    # PUT /api/v2/dashboard/{id}
+    # Update a specific dashboard.
+    #
+    # Refer to the Swagger API docs for valid keys.
+    #
+    # @param body [Hash] description of dashboard
+    # @return [Hash]
+    #
     def update(id, body)
       wf_dashboard?(id)
       api_put(id, body)
     end
 
-    # Get the version history of an dashboard
+    # GET /api/v2/dashboard/{id}/history
+    # Get the version history of an dashboard.
     #
     # @param id [String] ID of the dashboard
     # @return [Hash]
@@ -69,19 +82,8 @@ module Wavefront
       api_get([id, 'history'].uri_concat)
     end
 
-    # Snooze a specific dashboard for some number of seconds.
-    #
-    # @param id [String] ID of the dashboard
-    # @param time [Integer] how many seconds to snooze for
-    # @returns [Hash] object describing the dashboard with status and
-    #   response keys
-    #
-    def snooze(id, time = 3600)
-      wf_dashboard?(id)
-      api_post([id, 'snooze'].uri_concat, time)
-    end
-
-    # Get all tags associated with a specific dashboard
+    # GET /api/v2/dashboard/{id}/tag
+    # Get all tags associated with a specific dashboard.
     #
     # @param id [String] ID of the dashboard
     # @returns [Hash] object describing the dashboard with status and
@@ -92,6 +94,7 @@ module Wavefront
       api_get([id, 'tag'].uri_concat)
     end
 
+    # POST /api/v2/dashboard/{id}/tag
     # Set all tags associated with a specific dashboard.
     #
     # @param id [String] ID of the dashboard
@@ -106,18 +109,7 @@ module Wavefront
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
-    # Add a tag to a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tag [String] tag to set.
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
-    #
-    def tag_add(id, tag)
-      wf_dashboard?(id)
-      wf_string?(tag)
-      api_put([id, 'tag', tag].uri_concat)
-    end
-
+    # DELETE /api/v2/dashboard/{id}/tag/{tagValue}
     # Remove a tag from a specific dashboard.
     #
     # @param id [String] ID of the dashboard
@@ -130,6 +122,20 @@ module Wavefront
       api_delete([id, 'tag', tag].uri_concat)
     end
 
+    # PUT /api/v2/dashboard/{id}/tag/{tagValue}
+    # Add a tag to a specific dashboard.
+    #
+    # @param id [String] ID of the dashboard
+    # @param tag [String] tag to set.
+    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    #
+    def tag_add(id, tag)
+      wf_dashboard?(id)
+      wf_string?(tag)
+      api_put([id, 'tag', tag].uri_concat)
+    end
+
+    # POST /api/v2/dashboard/{id}/undelete
     # Move an dashboard from 'trash' back into active service.
     #
     # @param id [String] ID of the dashboard
@@ -138,25 +144,6 @@ module Wavefront
     def undelete(id)
       wf_dashboard?(id)
       api_post([id, 'undelete'].uri_concat)
-    end
-
-    # Unsnooze an dashboard
-    #
-    # @param id [String] ID of the dashboard
-    # @returns [Hash] object describing the dashboard with status and
-    #   response keys
-    #
-    def unsnooze(id)
-      wf_dashboard?(id)
-      api_post([id, 'unsnooze'].uri_concat)
-    end
-
-    # Get a count of dashboards in all possible states
-    #
-    # @return [Hash]
-    #
-    def summary
-      api_get('summary')
     end
   end
 end

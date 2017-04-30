@@ -15,33 +15,6 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad.each { |m| assert_raises(ex) { send(method, m) } }
   end
 
-  def test_validate_hash
-    assert_raises(ArgumentError) { validate_hash([], {}) }
-    assert_raises(ArgumentError) { validate_hash({}, []) }
-
-    h1 = { tags: %w(tag1 tag2 tag3), source: 'wfsource' }
-    d1 = { source:    [:wf_source?, :required],
-           tags:      [:wf_tag?],
-           otherTags: [:wf_tag?] }
-
-    assert validate_hash(h1, d1)
-
-    d2 = { source: [:wf_source?, :required], }
-    assert_raises('unknown key: tags') { validate_hash(h1, d2) }
-
-    h2 = { tags: %w(tag1 tag2 tag3) }
-    assert_raises('missing key: source') { validate_hash(h2, d1) }
-
-    h3 = { source: '!bad source!' }
-    assert_raises(Wavefront::Exception::InvalidSource) {
-      validate_hash(h3, d1)
-    }
-
-    h4 = { source: 'source', thing: 123 }
-    d4 = { source: [:wf_source?, :required], thing: [nil] }
-    assert validate_hash(h4, d4)
-  end
-
   def test_wf_metric_name?
     good = ['a.l33t.metric_path-passes', 'NO.NEED.TO.SHOUT',
              '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"']

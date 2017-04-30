@@ -11,36 +11,6 @@ module Wavefront
   #
   module Validators
 
-    # Ensure a hash of options matches requirements.
-    #
-    # @param hash [Hash] the hash to validate
-    # @param desc [Hash] a description of 'hash'. Keys are the
-    #   keys 'hash' may contain, values are an array where the first
-    #   element is the method used to validate the 'hash' value, and
-    #   the optional second element says whether the key is
-    #   :required or If you do not wish the field to be validated,
-    #   set the validator to nil.
-    # @return True if everything checks out
-    # @raise ArgumentError if 'hash' is not a Hash; 'unknown key k'
-    #   if any key in 'hash' is not described in 'desc';
-    #
-    def validate_hash(hash, desc, no_required = false)
-      raise ArgumentError unless hash.is_a?(Hash) && desc.is_a?(Hash)
-
-      unless no_required
-        desc.select { |k, v| v.include?(:required) }.each do |k, _v|
-          raise "missing key: #{k}" unless hash.key?(k)
-        end
-      end
-
-      hash.each do |k, v|
-        raise "unknown key: #{k}" unless desc.key?(k)
-        validator = desc[k].first
-        next if validator.nil?
-        public_send(validator, v)
-      end
-    end
-
     # Ensure the given argument is a valid Wavefront metric name, or
     # path.
     #
@@ -318,29 +288,6 @@ module Wavefront
     def wf_alert_severity?(v)
       return true if %w(info smoke warn severe).include?(v)
       raise Wavefront::Exception::InvalidAlertSeverity
-    end
-
-    # Some wrappers around is_a? to help fit with our semi-automated
-    # hash validation.
-    #
-    def is_bool?(v)
-      return true if v == true || v == false
-      raise ValueError
-    end
-
-    def is_hash?(v)
-      return true if v.is_a?(Hash)
-      raise ValueError
-    end
-
-    def is_array?(v)
-      return true if v.is_a?(Array)
-      raise ValueError
-    end
-
-    def is_integer?(v)
-      return true if v.is_a?(Integer)
-      raise ValueError
     end
   end
 end

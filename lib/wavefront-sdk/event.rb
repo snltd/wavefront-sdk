@@ -7,24 +7,6 @@ module Wavefront
   #
   class Event < Wavefront::Base
 
-    # Define the object used to create or update an event.
-    #
-    def body_desc
-      { name:        [:wf_name?, :required],
-        startTime:   [:wf_ms_ts?],
-        endTime:     [:wf_ms_ts?],
-        annotations: [:is_hash?],
-        hosts:       [:is_array?],
-        tags:        [:wf_tag?],
-        isEphemeral: [:is_bool?] }
-    end
-
-    def annotations_desc
-      { severity:   [:wf_alert_severity?],
-        type:       [:wf_string?],
-        details:    [:wf_string?] }
-    end
-
     # GET /api/v2/event
     # List all the events for a customer within a time range.
     #
@@ -54,26 +36,15 @@ module Wavefront
     # POST /api/v2/event
     # Create a specific event.
     #
+    # We used to validate keys and provide helpers for time fields.
+    # Now ensuring a valid hash is entirely left up to the user.
+    # Refer to the Swagger docs for more information.
+    #
     # @param body [Hash] description of event
     # @return [Hash]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-
-      if body.key?(:startTime)
-        body[:startTime] = parse_time(body[:startTime], true)
-      end
-
-      if body.key?(:endTime)
-        body[:endTime] = parse_time(body[:endTime], true)
-      end
-
-      validate_hash(body, body_desc)
-
-      if body.key?(:annotation)
-        validate_hash(body[:annotation], annotations_desc)
-      end
-
       api_post('', body, 'application/json')
     end
 
@@ -108,27 +79,12 @@ module Wavefront
     # Update a specific event
     #
     # @param id [String] a Wavefront Event ID
-    # @param body [Hash] description of event. See body_desc()
+    # @param body [Hash] description of event.
     # @return [Hash]
     #
     def update(id, body)
       wf_event?(id)
       raise ArgumentError unless body.is_a?(Hash)
-
-      if body.key?(:startTime)
-        body[:startTime] = parse_time(body[:startTime], true)
-      end
-
-      if body.key?(:endTime)
-        body[:endTime] = parse_time(body[:endTime], true)
-      end
-
-      validate_hash(body, body_desc, true)
-
-      if body.key?(:annotation)
-        validate_hash(body[:annotation], annotations_desc)
-      end
-
       api_put(id, body, 'application/json')
     end
 

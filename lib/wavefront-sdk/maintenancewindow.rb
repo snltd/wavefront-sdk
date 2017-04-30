@@ -6,6 +6,7 @@ module Wavefront
   #
   class MaintenanceWindow < Wavefront::Base
 
+    # GET /api/v2/maintenancewindow
     # Get all maintenance windows for a customer.
     #
     # @param offset [Integer] link at which the list begins
@@ -15,40 +16,22 @@ module Wavefront
       api_get('', { offset: offset, limit: limit }.to_qs)
     end
 
+    # POST /api/v2/maintenancewindow
     # Create a maintenance window.
     #
+    # We used to validate input here but do not any more.
+    #
     # @param body [Hash] a hash of parameters describing the window.
+    #   Please refer to the Wavefront Swagger docs for key:value
+    #   information
     # @return [Hash]
-    # @raise any validation errors from body
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-
-      desc = { reason:   [:wf_string?, :required],
-               title:    [:wf_string?, :required],
-               start:    [:wf_epoch?, :required],
-               end:      [:wf_epoch?, :required],
-               tags:     [:wf_tag?, :optional],
-               hostTags: [:wf_tag?, :optional] }
-
-      body[:start] = parse_time(body[:start]) if body[:start]
-      body[:end] = parse_time(body[:end]) if body[:end]
-
-      validate_hash(body, desc)
-
       api_post('', body, 'application/json')
     end
 
-    # Get a specific maintenance window.
-    #
-    # @param id [String, Integer] ID of the maintenance window
-    # @return [Hash]
-    #
-    def describe(id)
-      wf_maintenance_window?(id)
-      api_get(id)
-    end
-
+    # DELETE /api/v2/maintenancewindow/{id}
     # Delete a specific maintenance window.
     #
     # @param id [String, Integer] ID of the maintenance window
@@ -59,6 +42,18 @@ module Wavefront
       api_delete(id)
     end
 
+    # GET /api/v2/maintenancewindow/{id}
+    # Get a specific maintenance window.
+    #
+    # @param id [String, Integer] ID of the maintenance window
+    # @return [Hash]
+    #
+    def describe(id)
+      wf_maintenance_window?(id)
+      api_get(id)
+    end
+
+    # PUT /api/v2/maintenancewindow/{id}
     # Update a specific maintenance window.
     #
     # @param body [Hash] a hash of parameters describing the window.
@@ -66,20 +61,8 @@ module Wavefront
     # @raise any validation errors from body
     #
     def update(id, body)
+      wf_maintenance_window?(id)
       raise ArgumentError unless body.is_a?(Hash)
-
-      desc = { reason:   [:wf_string?, :optional],
-               title:    [:wf_string?, :optional],
-               start:    [:wf_epoch?, :optional],
-               end:      [:wf_epoch?, :optional],
-               tags:     [:wf_tag?, :optional],
-               hostTags: [:wf_tag?, :optional] }
-
-      body[:start] = parse_time(body[:start]) if body[:start]
-      body[:end] = parse_time(body[:end]) if body[:end]
-
-      validate_hash(body, desc)
-
       api_put(id, payload)
     end
   end
