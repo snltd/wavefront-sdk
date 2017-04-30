@@ -2,6 +2,16 @@
 
 require_relative './spec_helper'
 
+ALERT_BODY = {
+  name:               'SDK test alert',
+  target:             'user@example.com',
+  condition:          'ts("app.errors") > 0',
+  displayExpression:  'ts("app.errors")',
+  minutes:             5,
+  resolveAfterMinutes: 5,
+  severity:            'INFO',
+}.freeze
+
 # Unit tests for Alert class
 #
 class WavefrontAlertTest < WavefrontTestBase
@@ -25,6 +35,13 @@ class WavefrontAlertTest < WavefrontTestBase
     should_be_invalid('describe')
   end
 
+  def test_create
+    should_work('create', ALERT_BODY, '', :post,
+                JSON_POST_HEADERS, ALERT_BODY.to_json)
+    assert_raises(ArgumentError) { wf.create }
+    assert_raises(ArgumentError) { wf.create('test') }
+  end
+
   def test_describe_v
     should_work('describe', [ALERT, 4], "#{ALERT}/history/4")
   end
@@ -43,6 +60,13 @@ class WavefrontAlertTest < WavefrontTestBase
     should_work('snooze', ALERT, ["#{ALERT}/snooze", 3600], :post,
                 POST_HEADERS)
     should_be_invalid('snooze')
+  end
+
+  def test_update
+    should_work('update', [ALERT, ALERT_BODY], ALERT, :put,
+                JSON_POST_HEADERS, ALERT_BODY.to_json )
+    should_be_invalid('update', ['abcde', ALERT_BODY])
+    assert_raises(ArgumentError) { wf.update }
   end
 
   def test_tags

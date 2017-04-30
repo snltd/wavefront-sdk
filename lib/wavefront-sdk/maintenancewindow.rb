@@ -63,7 +63,7 @@ module Wavefront
     def update(id, body)
       wf_maintenance_window?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, payload)
+      api_put(id, body)
     end
   end
 end

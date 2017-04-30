@@ -26,7 +26,8 @@ module Wavefront
     # @return [Hash]
     #
     def create(body)
-      api_post('', body.to_json, 'application/json')
+      raise ArgumentError unless body.is_a?(Hash)
+      api_post('', body, 'application/json')
     end
 
     # DELETE /api/v2/cloudintegration/{id}
@@ -62,7 +63,8 @@ module Wavefront
     # @param body [Hash] description of integration
     #
     def update(id, body)
-      wf_alert?(id)
+      wf_cloudintegration?(id)
+      raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end
 

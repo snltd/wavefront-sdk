@@ -26,6 +26,10 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
   end
 
   def test_create
+    should_work('create', WINDOW_BODY, '', :post,
+                JSON_POST_HEADERS, WINDOW_BODY.to_json)
+    assert_raises(ArgumentError) { wf.create }
+    assert_raises(ArgumentError) { wf.create('test') }
   end
 
   def test_delete
@@ -35,5 +39,9 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
   end
 
   def test_update
+    should_work('update', [WINDOW, WINDOW_BODY], WINDOW, :put,
+                JSON_POST_HEADERS, WINDOW_BODY.to_json )
+    should_be_invalid('update', ['abcde', WINDOW_BODY])
+    assert_raises(ArgumentError) { wf.update }
   end
 end

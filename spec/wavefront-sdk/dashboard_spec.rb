@@ -2,6 +2,26 @@
 
 require_relative './spec_helper'
 
+DASHBOARD_BODY = {
+  name: 'SDK Dashboard test',
+  id: 'sdk-test',
+  description: 'dummy test dashboard',
+  sections: [
+    name: 'Section 1',
+    rows: [
+      { charts: [
+        name: 'S1 Chart1',
+        description: 'chart',
+        sources: [
+          { name: 'S1 C1 Source 1',
+            query: 'ts("some.series")'
+          }
+        ]
+      ]}
+    ]
+  ]
+}.freeze
+
 # Unit tests for dashboard class
 #
 class WavefrontDashboardTest < WavefrontTestBase
@@ -17,6 +37,13 @@ class WavefrontDashboardTest < WavefrontTestBase
 
   def test_list
     should_work('list', 10, '?offset=10&limit=100')
+  end
+
+  def test_create
+    should_work('create', DASHBOARD_BODY, '', :post,
+                JSON_POST_HEADERS, DASHBOARD_BODY.to_json)
+    assert_raises(ArgumentError) { wf.create }
+    assert_raises(ArgumentError) { wf.create('test') }
   end
 
   def test_describe
@@ -36,6 +63,13 @@ class WavefrontDashboardTest < WavefrontTestBase
   def test_history
     should_work('history', DASHBOARD, "#{DASHBOARD}/history")
     should_be_invalid('history')
+  end
+
+  def test_update
+    should_work('update', [DASHBOARD, DASHBOARD_BODY], DASHBOARD, :put,
+                JSON_POST_HEADERS, DASHBOARD_BODY.to_json )
+    should_be_invalid('update', ['!invalid dash!', DASHBOARD_BODY])
+    assert_raises(ArgumentError) { wf.update }
   end
 
   def test_tags

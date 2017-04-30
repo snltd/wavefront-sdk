@@ -27,14 +27,11 @@ class WavefrontExternalLinkTest < WavefrontTestBase
   end
 
   def test_create
-    headers ={'Content-Type': 'application/json',
-              'Accept': 'application/json'}
-
-    should_work('create', EXTERNAL_LINK_BODY, '',
-                :post, headers, EXTERNAL_LINK_BODY.to_json)
+    should_work('create', EXTERNAL_LINK_BODY, '', :post,
+                JSON_POST_HEADERS, EXTERNAL_LINK_BODY.to_json)
 
     should_work('create', EXTERNAL_LINK_BODY_2, '', :post,
-                headers, EXTERNAL_LINK_BODY_2
+                JSON_POST_HEADERS, EXTERNAL_LINK_BODY_2
                 .merge!(description: '').to_json)
 
     assert_raises(ArgumentError) { wf.create }
@@ -48,15 +45,12 @@ class WavefrontExternalLinkTest < WavefrontTestBase
   end
 
   def test_update
-    headers ={'Content-Type': 'application/json',
-              'Accept': 'application/json'}
-
     should_work('update', [EXTERNAL_LINK, EXTERNAL_LINK_BODY],
-                EXTERNAL_LINK, :put, headers,
+                EXTERNAL_LINK, :put, JSON_POST_HEADERS,
                 EXTERNAL_LINK_BODY.to_json)
 
     should_work('update', [EXTERNAL_LINK, EXTERNAL_LINK_BODY_2],
-                EXTERNAL_LINK, :put, headers,
+                EXTERNAL_LINK, :put, JSON_POST_HEADERS,
                 EXTERNAL_LINK_BODY_2.to_json )
 
     should_be_invalid('update', ['abcde', EXTERNAL_LINK_BODY])

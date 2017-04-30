@@ -30,6 +30,10 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def test_create
+    should_work('create', EVENT_BODY, '', :post,
+                JSON_POST_HEADERS, EVENT_BODY.to_json)
+    assert_raises(ArgumentError) { wf.create }
+    assert_raises(ArgumentError) { wf.create('test') }
   end
 
   def test_describe
@@ -45,6 +49,10 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def test_update
+    should_work('update', [EVENT, EVENT_BODY], EVENT, :put,
+                JSON_POST_HEADERS, EVENT_BODY.to_json )
+    should_be_invalid('update', ['abcde', EVENT_BODY])
+    assert_raises(ArgumentError) { wf.update }
   end
 
   def test_delete
