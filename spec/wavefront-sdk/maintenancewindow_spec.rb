@@ -26,13 +26,6 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
   end
 
   def test_create
-    body_test(hash:     WINDOW_BODY.dup,
-              required: [:reason, :title, :start, :end],
-              optional: [:tags, :hostTags],
-              invalid:
-              [[Wavefront::Exception::InvalidTimestamp, [:start, :end]],
-               [Wavefront::Exception::InvalidTag, [:tags, :hostTags]]
-    ])
   end
 
   def test_delete
@@ -41,28 +34,6 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.delete }
   end
 
-=begin
   def test_update
-    headers ={'Content-Type': 'application/json',
-              'Accept': 'application/json'}
-
-    should_work('update', [WINDOW_BODY],
-                WINDOW, :put, headers,
-                WINDOW_BODY.to_json)
-
-    should_work('update', [WINDOW_BODY_2],
-                WINDOW, :put, headers,
-                WINDOW_BODY_2.to_json )
-
-    should_work('update', [WINDOW_BODY_3],
-                WINDOW, :put, headers,
-                WINDOW_BODY_3.to_json )
-
-    should_be_invalid('update', ['abcde', WINDOW_BODY])
-    assert_raises(ArgumentError) { wf.update }
-    assert_raises(ArgumentError) { wf.update(WINDOW) }
-    assert_raises(Wavefront::Exception::InvalidLinkTemplate) {
-      wf.update(WINDOW, { template: 'invalid' }) }
   end
-=end
 end

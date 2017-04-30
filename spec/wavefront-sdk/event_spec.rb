@@ -30,11 +30,6 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def test_create
-    body_test(hash:     EVENT_BODY,
-              required: [:name],
-              optional: [:tags, :hosts, :isEphemeral, :startTime, :endTime],
-              invalid:  [[Wavefront::Exception::InvalidTimestamp,
-                          [:startTime, :endTime]]])
   end
 
   def test_describe
@@ -50,15 +45,6 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def test_update
-    body_test(hash:     EVENT_BODY,
-              method:   'update',
-              id:       EVENT,
-              rtype:    :put,
-              required: [],
-              optional: [:name, :tags, :hosts, :isEphemeral, :startTime,
-                         :endTime],
-              invalid:  [[Wavefront::Exception::InvalidTimestamp,
-                          [:startTime, :endTime]]])
   end
 
   def test_delete

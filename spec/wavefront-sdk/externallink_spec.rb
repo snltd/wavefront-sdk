@@ -13,10 +13,6 @@ EXTERNAL_LINK_BODY_2 = {
   template:    'https://example.com/link/{{value}}',
 }
 
-EXTERNAL_LINK_BODY_3 = {
-  template:    'https://example.com/link/{{value}}',
-}
-
 # Unit tests for ExternalLink class
 #
 class WavefrontExternalLinkTest < WavefrontTestBase
@@ -34,18 +30,15 @@ class WavefrontExternalLinkTest < WavefrontTestBase
     headers ={'Content-Type': 'application/json',
               'Accept': 'application/json'}
 
-    should_work('create', EXTERNAL_LINK_BODY.values, '',
+    should_work('create', EXTERNAL_LINK_BODY, '',
                 :post, headers, EXTERNAL_LINK_BODY.to_json)
 
-    should_work('create', EXTERNAL_LINK_BODY_2.values, '', :post,
+    should_work('create', EXTERNAL_LINK_BODY_2, '', :post,
                 headers, EXTERNAL_LINK_BODY_2
                 .merge!(description: '').to_json)
 
     assert_raises(ArgumentError) { wf.create }
     assert_raises(ArgumentError) { wf.create('test') }
-    assert_raises(Wavefront::Exception::InvalidLinkTemplate) {
-      wf.create('test link', 'invalid')
-    }
   end
 
   def test_delete
@@ -66,14 +59,8 @@ class WavefrontExternalLinkTest < WavefrontTestBase
                 EXTERNAL_LINK, :put, headers,
                 EXTERNAL_LINK_BODY_2.to_json )
 
-    should_work('update', [EXTERNAL_LINK, EXTERNAL_LINK_BODY_3],
-                EXTERNAL_LINK, :put, headers,
-                EXTERNAL_LINK_BODY_3.to_json )
-
     should_be_invalid('update', ['abcde', EXTERNAL_LINK_BODY])
     assert_raises(ArgumentError) { wf.update }
     assert_raises(ArgumentError) { wf.update(EXTERNAL_LINK) }
-    assert_raises(Wavefront::Exception::InvalidLinkTemplate) {
-      wf.update(EXTERNAL_LINK, { template: 'invalid' }) }
   end
 end

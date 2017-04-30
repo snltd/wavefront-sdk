@@ -7,18 +7,6 @@ module Wavefront
   #
   class Alert < Wavefront::Base
 
-    def body_desc
-      { name:                  [:wf_string?, :required],
-        target:                [:wf_string?, :required],
-        serverity:             [:wf_alert_severity?, :required],
-        condition:             [nil, :required],
-        displayExpression:     [nil],
-        minutes:               [is_integer?],
-        resolveAfterMinutes:   [is_integer?],
-        additionalInformation: [nil],
-        tags:                  [:wf_tag?],
-    end
-
     # GET /api/v2/alert
     # Get all alerts for a customer
     #
@@ -31,18 +19,18 @@ module Wavefront
     end
 
     # POST /api/v2/alert
-    # Create a specific alert.
+    # Create a specific alert. We used to validate input here, but
+    # this couples the SDK too tightly to the API. Now it's just a
+    # generic POST of a hash.
     #
     # @param body [Hash] description of alert
     # @return [Hash]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      validate_hash(body, body_desc)
       api_post('', body, 'application/json')
     end
 
-    #
     # DELETE /api/v2/alert/{id}
     # Delete a specific alert.
     #
@@ -85,7 +73,6 @@ module Wavefront
     def update(id, body)
       wf_alert?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      validate_hash(body, body_desc, true)
       api_put(id, body, 'application/json')
     end
 
