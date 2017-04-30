@@ -9,16 +9,6 @@ CREDS = {
   token:    '0123456789-ABCDEF'
 }.freeze
 
-# Known-valid values for various objects
-#
-ALERT = '1481553823153'.freeze
-AGENT = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
-CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
-DASHBOARD = 'test_dashboard'.freeze
-EVENT = '1481553823153:testev'.freeze
-EXTERNAL_LINK = 'lq6rPlSg2CFMSrg6'.freeze
-WINDOW = '1493324005091'.freeze
-
 POST_HEADERS = {
   :'Content-Type' => 'text/plain', :Accept => 'application/json'
 }.freeze
