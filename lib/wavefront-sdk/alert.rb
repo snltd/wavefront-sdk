@@ -76,11 +76,6 @@ module Wavefront
       api_put(id, body, 'application/json')
     end
 
-    def update(id, body)
-      wf_alert?(id)
-      api_put(id, body)
-    end
-
     # GET /api/v2/alert/{id}/history
     # Get the version history of a specific alert.
     #
