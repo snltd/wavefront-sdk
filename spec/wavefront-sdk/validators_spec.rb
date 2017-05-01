@@ -156,4 +156,10 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = %w(any thing else)
     good_and_bad('wf_alert_severity?', 'InvalidAlertSeverity', good, bad)
   end
+
+  def test_wf_granularity?
+    good = %w(d h m s)
+    bad = %w(1 a day hour)
+    good_and_bad('wf_granularity?', 'InvalidGranularity', good, bad)
+  end
 end

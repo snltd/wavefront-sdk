@@ -5,7 +5,9 @@ module Wavefront
   # Manage and query Wavefront external links.
   #
   class ExternalLink < Wavefront::Base
-    api_base = '/extlink'
+    def api_base
+      '/extlink'
+    end
 
     # GET /api/v2/extlink
     # Get all external links for a customer

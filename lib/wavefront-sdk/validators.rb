@@ -301,5 +301,17 @@ module Wavefront
       return true if v.is_a?(String) && v =~ /^\w+$/
       raise Wavefront::Exception::InvalidMessage
     end
+
+    # Ensure the given argument is a valid query granularity
+    #
+    # @param v [String] granularity
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidGranularity if not
+    # valid
+    #
+    def wf_granularity?(v)
+      return true if %w(d h m s).include?(v)
+      raise Wavefront::Exception::InvalidGranularity
+    end
   end
 end
