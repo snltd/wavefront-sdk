@@ -29,11 +29,14 @@ class WavefrontTestBase < MiniTest::Test
     self.class.name.match(/Wavefront(\w+)Test/)[1]
   end
 
+  def api_base
+    class_basename.downcase
+  end
+
   def setup
     klass = Object.const_get('Wavefront').const_get(class_basename)
     @wf = klass.new(CREDS)
-    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/" +
-                class_basename.downcase
+    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/" + api_base
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
   end
 

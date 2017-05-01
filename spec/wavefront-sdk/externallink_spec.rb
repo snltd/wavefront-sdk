@@ -17,6 +17,10 @@ EXTERNAL_LINK_BODY_2 = {
 # Unit tests for ExternalLink class
 #
 class WavefrontExternalLinkTest < WavefrontTestBase
+  def api_base
+    'extlink'
+  end
+
   def test_list
     should_work(:list, 10, '?offset=10&limit=100')
   end
