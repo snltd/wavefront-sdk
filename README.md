@@ -46,7 +46,7 @@ There's no gem as yet: the coverage is too incomplete.
 | Maintenance | full         | full    | none         | full          |
 | Message     | full         | full    | none         | full          |
 | Metric      | full         | full    | none         | full          |
-| Query       | none         | none    | none         | none          |
+| Query       | full         | full    | none         | full          |
 | Saved       | none         | none    | none         | none          |
 | Search      | none         | none    | none         | none          |
 | Source      | none         | none    | none         | none          |
