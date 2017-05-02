@@ -9,7 +9,7 @@ module Wavefront
       'chart'
     end
 
-    # Get /api/v2/chart/api
+    # GET /api/v2/chart/api
     # Perform a charting query against Wavefront servers that
     # returns the appropriate points in the specified time window
     # and granularity. Any options can be pased through in the
@@ -39,6 +39,34 @@ module Wavefront
       options[:e] = parse_time(t_end, true) if t_end
 
       api_get('api', options.to_qs)
+    end
+
+    # GET /api/v2/chart/raw
+    # Perform a raw data query against Wavefront servers that
+    # returns second granularity points grouped by tags
+    #
+    # @param metric [String]  metric to query ingested points for
+    #   (cannot contain wildcards)
+    # @param source [String] source to query ingested points for
+    #   (cannot contain wildcards).
+    # @param t_start [Time, Integer] start time of window: defaults
+    #   to one hour before t_end
+    # @param t_start [Time, Integer] start time of window: defaults
+    #   to now
+    #
+    def raw(metric, source = nil, t_start = nil, t_end = nil)
+      raise ArgumentError unless metric.is_a?(String)
+      wf_source?(source)
+
+      options = {
+        metric: metric,
+        source: source
+      }
+
+      options[:startTime] = parse_time(t_start, true) if t_start
+      options[:endTime] = parse_time(t_end, true) if t_end
+
+      api_get('raw', options.to_qs)
     end
   end
 end
