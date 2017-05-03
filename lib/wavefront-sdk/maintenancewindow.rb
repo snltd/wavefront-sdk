@@ -38,7 +38,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_maintenance_window?(id)
+      wf_maintenance_window_id?(id)
       api_delete(id)
     end
 
@@ -49,7 +49,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id)
-      wf_maintenance_window?(id)
+      wf_maintenance_window_id?(id)
       api_get(id)
     end
 
@@ -61,7 +61,7 @@ module Wavefront
     # @raise any validation errors from body
     #
     def update(id, body)
-      wf_maintenance_window?(id)
+      wf_maintenance_window_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end

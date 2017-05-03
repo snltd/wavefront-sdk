@@ -22,7 +22,7 @@ module Wavefront
       q.<< [:c, cursor] unless cursor.empty?
 
       sources.each do |s|
-        raise Wavefront::Exception::InvalidSource unless wf_source?(s)
+        raise Wavefront::Exception::InvalidSource unless wf_source_id?(s)
         q.<< [:h, s]
       end
 

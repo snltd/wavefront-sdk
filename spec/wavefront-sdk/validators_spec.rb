@@ -35,11 +35,11 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_name?', 'InvalidName', good, bad)
   end
 
-  def test_wf_source?
+  def test_wf_source_id?
     good = ['validsource1', 'valid-source', 'valid_source',
              'valid.source', 'Valid_Source', 'a' * 1023, '123456']
     bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123456]
-    good_and_bad('wf_source?', 'InvalidSource', good, bad)
+    good_and_bad('wf_source_id?', 'InvalidSourceId', good, bad)
   end
 
   def test_wf_value?
@@ -93,37 +93,37 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_point_tags?', 'InvalidTag', good, bad)
   end
 
-  def test_wf_agent?
+  def test_wf_agent_id?
     good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
               917102d1-a10e-497b-ba63-95058f98d4fb)
     bad = %w(agent 17102d1-a10e-497b-ba63-95058f98d4fb)
-    good_and_bad('wf_agent?', 'InvalidAgent', good, bad)
+    good_and_bad('wf_agent_id?', 'InvalidAgentId', good, bad)
   end
 
-  def test_wf_cloudintegration?
+  def test_wf_cloudintegration_id?
     good = %w(3b56f61d-ba79-47f6-905c-d75a0f613d10
               71e435ca-3d8c-43ab-bc1e-d072a335cbe6)
     bad = %w(agent 71e43dca-3d8c-41ab-bc1e-d072a335Xbe6)
-    good_and_bad('wf_cloudintegration?', 'InvalidCloudIntegration',
+    good_and_bad('wf_cloudintegration_id?', 'InvalidCloudIntegrationId',
                  good, bad)
   end
 
-  def test_wf_alert?
+  def test_wf_alert_id?
     good = [1481553823153, '1481553823153']
     bad = [481553823153, '481553823153', [], {}, 'alert']
-    good_and_bad('wf_alert?', 'InvalidAlert', good, bad)
+    good_and_bad('wf_alert_id?', 'InvalidAlertId', good, bad)
   end
 
-  def test_wf_dashboard?
+  def test_wf_dashboard_id?
     good = %w(my_dash S3 123)
     bad = ['a' * 260, 'A Dashboard Name', 'and_1_more!', {}, [], 1234]
-    good_and_bad('wf_dashboard?', 'InvalidDashboard', good, bad)
+    good_and_bad('wf_dashboard_id?', 'InvalidDashboardId', good, bad)
   end
 
-  def test_wf_event?
+  def test_wf_event_id?
     good = %w(1493370839062:test1)
     bad = %w(1493370839062 1493370839062:test!)
-    good_and_bad('wf_event?', 'InvalidEvent', good, bad)
+    good_and_bad('wf_event_id?', 'InvalidEventId', good, bad)
   end
 
   def test_wf_version?
@@ -135,7 +135,7 @@ class WavefrontValidatorsTest < MiniTest::Test
   def test_wf_link_id?
     good = %w(lq6rPlSg2CFMSrg6)
     bad = %w(lq%rPlSg2CFMSrg6, lq6rPlSg2CFMSrg)
-    good_and_bad('wf_link_id?', 'InvalidExternalLink', good, bad)
+    good_and_bad('wf_link_id?', 'InvalidExternalLinkId', good, bad)
   end
 
   def test_wf_link_template?
@@ -144,10 +144,10 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_link_template?', 'InvalidLinkTemplate', good, bad)
   end
 
-  def test_wf_maintenance_window?
+  def test_wf_maintenance_window_id?
     good = ['1493324005091', 1493324005091, Time.now.to_i * 1000]
     bad = [149332400509, '14933240050', Time.now, [], 'abcdef']
-    good_and_bad('wf_maintenance_window?', 'InvalidMaintenanceWindow',
+    good_and_bad('wf_maintenance_window_id?', 'InvalidMaintenanceWindowId',
                  good, bad)
   end
 
@@ -163,11 +163,11 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_granularity?', 'InvalidGranularity', good, bad)
   end
 
-  def test_wf_savedsearch?
+  def test_wf_savedsearch_id?
     good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
               917102d1-a10e-497b-ba63-95058f98d4fb)
     bad = %w(agent 17102d1-a10e-497b-ba63-95058f98d4fb)
-    good_and_bad('wf_savedsearch?', 'InvalidSavedSearch', good, bad)
+    good_and_bad('wf_savedsearch_id?', 'InvalidSavedSearchId', good, bad)
   end
 
   def test_wf_savedsearch_entity?
@@ -177,15 +177,15 @@ class WavefrontValidatorsTest < MiniTest::Test
                  'InvalidSavedSearchEntity', good, bad)
   end
 
-  def test_wf_user?
+  def test_wf_user_id?
     good = %w(Some.User@example.com general99+specific@somewhere.net)
     bad = %w(word Name)
-    good_and_bad('wf_user?', 'InvalidUser', good, bad)
+    good_and_bad('wf_user_id?', 'InvalidUserId', good, bad)
   end
 
-  def test_wf_webhook?
+  def test_wf_webhook_id?
     good = %w(4OfsEM8RcvkM7nwG)
     bad = %w(4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw)
-    good_and_bad('wf_webhook?', 'InvalidWebhook', good, bad)
+    good_and_bad('wf_webhook_id?', 'InvalidWebhookId', good, bad)
   end
 end

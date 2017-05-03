@@ -37,7 +37,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_savedsearch?(id)
+      wf_savedsearch_id?(id)
       api_delete(id)
     end
 
@@ -48,7 +48,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id)
-      wf_savedsearch?(id)
+      wf_savedsearch_id?(id)
       api_get(id)
     end
 
@@ -59,7 +59,7 @@ module Wavefront
     # @param body [Hash] description of saved search
     #
     def update(id, body)
-      wf_savedsearch?(id)
+      wf_savedsearch_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end

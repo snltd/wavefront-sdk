@@ -33,7 +33,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_user?(id)
+      wf_user_id?(id)
       api_delete(id)
     end
 
@@ -44,7 +44,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id)
-      wf_user?(id)
+      wf_user_id?(id)
       api_get(id)
     end
 
@@ -62,7 +62,7 @@ module Wavefront
     # @return [Hash]
     #
     def grant(id, group)
-      wf_user?(id)
+      wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
       api_post([id, 'grant'].uri_concat, "group=#{group}",
                'application/x-www-form-urlencoded')
@@ -78,7 +78,7 @@ module Wavefront
     # @return [Hash]
     #
     def revoke(id, group)
-      wf_user?(id)
+      wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
       api_post([id, 'revoke'].uri_concat, "group=#{group}",
                'application/x-www-form-urlencoded')

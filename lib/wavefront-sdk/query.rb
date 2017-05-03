@@ -56,7 +56,7 @@ module Wavefront
     #
     def raw(metric, source = nil, t_start = nil, t_end = nil)
       raise ArgumentError unless metric.is_a?(String)
-      wf_source?(source)
+      wf_source_id?(source)
 
       options = {
         metric: metric,

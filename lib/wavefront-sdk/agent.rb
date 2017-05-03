@@ -27,7 +27,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_agent?(id)
+      wf_agent_id?(id)
       api_delete(id)
     end
 
@@ -38,7 +38,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id)
-      wf_agent?(id)
+      wf_agent_id?(id)
       api_get(id)
     end
 
@@ -51,7 +51,7 @@ module Wavefront
     # @return [Hash]
     #
     def undelete(id)
-      wf_agent?(id)
+      wf_agent_id?(id)
       api_post([id, 'undelete'].uri_concat)
     end
 
@@ -66,7 +66,7 @@ module Wavefront
     # @return [Hash]
     #
     def rename(id, name)
-      wf_agent?(id)
+      wf_agent_id?(id)
       wf_string?(name)
       update(id, {name: name})
     end
@@ -82,7 +82,7 @@ module Wavefront
     # @return [Hash]
     #
     def update(id, payload)
-      wf_agent?(id)
+      wf_agent_id?(id)
       api_put(id, payload)
     end
   end

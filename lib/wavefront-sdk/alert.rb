@@ -42,7 +42,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_alert?(id)
+      wf_alert_id?(id)
       api_delete(id)
     end
 
@@ -56,7 +56,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id, version = nil)
-      wf_alert?(id)
+      wf_alert_id?(id)
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
@@ -71,7 +71,7 @@ module Wavefront
     # @return [Hash]
     #
     def update(id, body)
-      wf_alert?(id)
+      wf_alert_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body, 'application/json')
     end
@@ -83,7 +83,7 @@ module Wavefront
     # @return [Hash]
     #
     def history(id)
-      wf_alert?(id)
+      wf_alert_id?(id)
       api_get([id, 'history'].uri_concat)
     end
 
@@ -96,7 +96,7 @@ module Wavefront
     #   response keys
     #
     def snooze(id, time = 3600)
-      wf_alert?(id)
+      wf_alert_id?(id)
       api_post([id, 'snooze'].uri_concat, time)
     end
 
@@ -108,7 +108,7 @@ module Wavefront
     #   response keys
     #
     def tags(id)
-      wf_alert?(id)
+      wf_alert_id?(id)
       api_get([id, 'tag'].uri_concat)
     end
 
@@ -121,7 +121,7 @@ module Wavefront
     #   response keys
     #
     def tag_set(id, tags)
-      wf_alert?(id)
+      wf_alert_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
@@ -135,7 +135,7 @@ module Wavefront
     # @returns [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_delete(id, tag)
-      wf_alert?(id)
+      wf_alert_id?(id)
       wf_string?(tag)
       api_delete([id, 'tag', tag].uri_concat)
     end
@@ -148,7 +148,7 @@ module Wavefront
     # @returns [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_add(id, tag)
-      wf_alert?(id)
+      wf_alert_id?(id)
       wf_string?(tag)
       api_put([id, 'tag', tag].uri_concat)
     end
@@ -160,7 +160,7 @@ module Wavefront
     # @return [Hash]
     #
     def undelete(id)
-      wf_alert?(id)
+      wf_alert_id?(id)
       api_post([id, 'undelete'].uri_concat)
     end
 
@@ -172,7 +172,7 @@ module Wavefront
     #   response keys
     #
     def unsnooze(id)
-      wf_alert?(id)
+      wf_alert_id?(id)
       api_post([id, 'unsnooze'].uri_concat)
     end
 

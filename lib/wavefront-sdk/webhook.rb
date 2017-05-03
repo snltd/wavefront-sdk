@@ -36,7 +36,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_webhook?(id)
+      wf_webhook_id?(id)
       api_delete(id)
     end
 
@@ -47,7 +47,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id)
-      wf_webhook?(id)
+      wf_webhook_id?(id)
       api_get(id)
     end
 
@@ -59,7 +59,7 @@ module Wavefront
     # @raise any validation errors from body
     #
     def update(id, body)
-      wf_webhook?(id)
+      wf_webhook_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end

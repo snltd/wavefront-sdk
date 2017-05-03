@@ -37,7 +37,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_source?(id)
+      wf_source_id?(id)
       api_delete(id)
     end
 
@@ -48,7 +48,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id, version = nil)
-      wf_source?(id)
+      wf_source_id?(id)
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
@@ -64,7 +64,7 @@ module Wavefront
     # @return [Hash]
     #
     def update(id, body)
-      wf_source?(id)
+      wf_source_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end
@@ -77,7 +77,7 @@ module Wavefront
     #   response keys
     #
     def tags(id)
-      wf_source?(id)
+      wf_source_id?(id)
       api_get([id, 'tag'].uri_concat)
     end
 
@@ -90,7 +90,7 @@ module Wavefront
     #   response keys
     #
     def tag_set(id, tags)
-      wf_source?(id)
+      wf_source_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
@@ -104,7 +104,7 @@ module Wavefront
     # @returns [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_delete(id, tag)
-      wf_source?(id)
+      wf_source_id?(id)
       wf_string?(tag)
       api_delete([id, 'tag', tag].uri_concat)
     end
@@ -117,7 +117,7 @@ module Wavefront
     # @returns [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_add(id, tag)
-      wf_source?(id)
+      wf_source_id?(id)
       wf_string?(tag)
       api_put([id, 'tag', tag].uri_concat)
     end

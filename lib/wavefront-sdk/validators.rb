@@ -11,6 +11,20 @@ module Wavefront
   #
   module Validators
 
+    # Ensure the given argument is a valid external link template
+    #
+    # @return true if it is valid
+    # @raise Wavefront::Exception::InvalidTemplate if not
+    #
+    def wf_link_template?(v)
+      if v.is_a?(String) && (v.start_with?('http://') ||
+                             v.start_with?('https://'))
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidLinkTemplate
+    end
+
     # Ensure the given argument is a valid Wavefront metric name, or
     # path.
     #
@@ -28,6 +42,18 @@ module Wavefront
       raise Wavefront::Exception::InvalidMetricName
     end
 
+    # Ensure the given argument is a valid name, for instance for an
+    # event. Names can contain, AFAIK, word characters.
+    #
+    # @param v [String] the name to validate
+    # @return true if the name is valid
+    # raise Wavefront::Exception::InvalidName if name is not valid
+    #
+    def wf_name?(v)
+      return true if v.is_a?(String) && v.size < 1024 && v =~ /^\w+$/
+      raise Wavefront::Exception::InvalidName
+    end
+
     # Ensure the given argument is a valid string, for a tag name.
     #
     # @param v [String] the string name to validate
@@ -43,45 +69,6 @@ module Wavefront
       return true if v.is_a?(String) && v.size < 1024 && v =~ /^[\-\w \.,]*$/
 
       raise Wavefront::Exception::InvalidString
-    end
-
-    # Ensure the given argument is a valid name, for instance for an
-    # event. Names can contain, AFAIK, word characters.
-    #
-    # @param v [String] the name to validate
-    # @return true if the name is valid
-    # raise Wavefront::Exception::InvalidName if name is not valid
-    #
-    def wf_name?(v)
-      return true if v.is_a?(String) && v.size < 1024 && v =~ /^\w+$/
-      raise Wavefront::Exception::InvalidName
-    end
-
-    # Ensure the given argument is a valid Wavefront source name
-    #
-    # @param v [String] the source name to validate
-    # @return True if the source name is valid
-    # @raise Wavefront::Exception::InvalidSource if the source name
-    #   is not valid
-    #
-    def wf_source?(v)
-      if v.is_a?(String) && v.match(/^[\w\.\-]+$/) && v.size < 1024
-        return true
-      end
-
-      raise Wavefront::Exception::InvalidSource
-    end
-
-    # Ensure the given argument is a valid Wavefront value. Can be
-    # any form of Numeric, including standard notation.
-    #
-    # @param v [Numeric] the source name to validate
-    # @return True if the value is valid
-    # @raise Wavefront::Exception::InvalidValue if the value is not valid
-    #
-    def wf_value?(v)
-      return true if v.is_a?(Numeric)
-      raise Wavefront::Exception::InvalidMetricValue
     end
 
     # Ensure the given argument is a valid timestamp
@@ -140,6 +127,30 @@ module Wavefront
       true
     end
 
+    # Ensure the given argument is a valid Wavefront value. Can be
+    # any form of Numeric, including standard notation.
+    #
+    # @param v [Numeric] the source name to validate
+    # @return True if the value is valid
+    # @raise Wavefront::Exception::InvalidValue if the value is not valid
+    #
+    def wf_value?(v)
+      return true if v.is_a?(Numeric)
+      raise Wavefront::Exception::InvalidMetricValue
+    end
+
+    # Ensure the given argument is a valid version number
+    #
+    # @param [Integer] the version number to validate
+    # @return True if the version is valid
+    # @raise Wavefront::Exception::InvalidVersion if the alert ID is
+    #   not valid
+    #
+    def wf_version?(v)
+      return true if v.is_a?(Integer) && v > 0
+      raise Wavefront::Exception::InvalidVersion
+    end
+
     # Ensure a hash of key:value point tags are value. Not to be
     # confused with source tags.
     #
@@ -159,39 +170,21 @@ module Wavefront
       true
     end
 
-    # Ensure the given argument is a valid Wavefront agent name
+    # Ensure the given argument is a valid Wavefront agent ID
     #
-    # @param v [String] the agent name to validate
-    # @return True if the agent name is valid
-    # @raise Wavefront::Exception::InvalidAgent if the agent name
+    # @param v [String] the agent ID to validate
+    # @return True if the agent ID is valid
+    # @raise Wavefront::Exception::InvalidAgentId if the agent ID
     #   is not valid
     #
-    def wf_agent?(v)
+    def wf_agent_id?(v)
       if v.is_a?(String) && v.match(
         /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
       )
         return true
       end
 
-      raise Wavefront::Exception::InvalidAgent
-    end
-
-    # Ensure the given argument is a valid Wavefront cloud
-    # integration name
-    #
-    # @param v [String] the integration name to validate
-    # @return True if the integration name is valid
-    # @raise Wavefront::Exception::InvalidCloudIntegration if the
-    #   agent name is not valid
-    #
-    def wf_cloudintegration?(v)
-      if v.is_a?(String) && v.match(
-        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
-      )
-        return true
-      end
-
-      raise Wavefront::Exception::InvalidCloudIntegration
+      raise Wavefront::Exception::InvalidAgentId
     end
 
     # Ensure the given argument is a valid Wavefront alert ID.
@@ -200,67 +193,71 @@ module Wavefront
     #
     # @param v [String] the alert ID to validate
     # @return True if the alert ID is valid
-    # @raise Wavefront::Exception::InvalidAlert if the alert ID is
+    # @raise Wavefront::Exception::InvalidAlertId if the alert ID is
     #   not valid
     #
-    def wf_alert?(v)
+    def wf_alert_id?(v)
       v = v.to_s if v.is_a?(Numeric)
       return true if v.is_a?(String) && v.match(/^\d{13}$/)
-      raise Wavefront::Exception::InvalidAlert
+      raise Wavefront::Exception::InvalidAlertId
+    end
+
+    # Ensure the given argument is a valid Wavefront cloud
+    # integration ID
+    #
+    # @param v [String] the integration name to validate
+    # @return True if the integration name is valid
+    # @raise Wavefront::Exception::InvalidCloudIntegrationId if the
+    #   integration ID is not valid
+    #
+    def wf_cloudintegration_id?(v)
+      if v.is_a?(String) && v.match(
+        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
+      )
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidCloudIntegrationId
     end
 
     # There doesn't seem to be a public statement on what's allowed
     # in a dashboard name. For now I'm going to assume up to 255 word
     # characters.
     #
-    def wf_dashboard?(v)
+    # @param v [String] the dashboard ID to validate
+    # @return true if the dashboard ID is valid
+    # @raise Wavefront::Exception::InvalidDashboardID if the
+    #   dashboard ID is not valid
+    #
+    def wf_dashboard_id?(v)
       return true if v.is_a?(String) && v.size < 256 && v.match(/^\w+$/)
-      raise Wavefront::Exception::InvalidDashboard
+      raise Wavefront::Exception::InvalidDashboardId
     end
 
     # Ensure the given argument is a valid event ID. Event IDs are
     # an epoch-millisecond timestamp followed by a : followed by the
     # name of the event.
     #
-    def wf_event?(v)
+    # @param v [String] the event ID to validate
+    # @return true if the event ID is valid
+    # @raise Wavefront::Exception::InvalidEventID if the
+    #   event ID is not valid
+    #
+    def wf_event_id?(v)
       return true if v.is_a?(String) && v =~ /^\d{13}:\w+$/
-      raise Wavefront::Exception::InvalidEvent
-    end
-
-    # Ensure the given argument is a valid version number
-    #
-    # @return True if the version is valid
-    # @raise Wavefront::Exception::InvalidVersion if the alert ID is
-    #   not valid
-    #
-    def wf_version?(v)
-      return true if v.is_a?(Integer) && v > 0
-      raise Wavefront::Exception::InvalidVersion
+      raise Wavefront::Exception::InvalidEventId
     end
 
     # Ensure the given argument is a valid external Link ID
     #
+    # @param v [String] the external link ID to validate
     # @return True if the link ID is valid
-    # @raise Wavefront::Exception::InvalidVersion if the alert ID is
-    #   not valid
+    # @raise Wavefront::Exception::InvalidExternalLinkId if the
+    #   link ID is not valid
     #
     def wf_link_id?(v)
       return true if v.is_a?(String) && v =~ /^\w{16}$/
-      raise Wavefront::Exception::InvalidExternalLink
-    end
-
-    # Ensure the given argument is a valid external link template
-    #
-    # @return true if it is valid
-    # @raise Wavefront::Exception::InvalidTemplate if not
-    #
-    def wf_link_template?(v)
-      if v.is_a?(String) && (v.start_with?('http://') ||
-                             v.start_with?('https://'))
-        return true
-      end
-
-      raise Wavefront::Exception::InvalidLinkTemplate
+      raise Wavefront::Exception::InvalidExternalLinkId
     end
 
     # Ensure the given argument is a valid maintenance window ID.
@@ -269,13 +266,13 @@ module Wavefront
     #
     # @param v [String, Integer]
     # @return True if the ID is valid
-    # @raise Wavefront::Exception::InvalidMaintenanceWindow
+    # @raise Wavefront::Exception::InvalidMaintenanceWindowId
     #
-    def wf_maintenance_window?(v)
+    def wf_maintenance_window_id?(v)
       v = v.to_s if v.is_a?(Numeric)
       return true if v.is_a?(String) && v =~ /^\d{13}$/
 
-      raise Wavefront::Exception::InvalidMaintenanceWindow
+      raise Wavefront::Exception::InvalidMaintenanceWindowId
     end
 
     # Ensure the given argument is a valid alert severity
@@ -294,12 +291,12 @@ module Wavefront
     #
     # @param v [String] severity
     # @return true if valid
-    # @raise Wavefront::Exceptions::InvalidAlertSeverity if not
+    # @raise Wavefront::Exceptions::InvalidMessageId if not
     #   valid
     #
-    def wf_message?(v)
+    def wf_message_id?(v)
       return true if v.is_a?(String) && v =~ /^\w+$/
-      raise Wavefront::Exception::InvalidMessage
+      raise Wavefront::Exception::InvalidMessageId
     end
 
     # Ensure the given argument is a valid query granularity
@@ -318,15 +315,15 @@ module Wavefront
     #
     # @param v [String] saved search ID
     # @return true if valid
-    # @raise Wavefront::Exceptions::InvalidSavedSearch if not valid
+    # @raise Wavefront::Exceptions::InvalidSavedSearchId if not valid
     #
-    def wf_savedsearch?(v)
+    def wf_savedsearch_id?(v)
       if v.is_a?(String) && v.match(
         /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
       )
         return true
       end
-      raise Wavefront::Exception::InvalidSavedSearch
+      raise Wavefront::Exception::InvalidSavedSearchId
     end
 
     # Ensure the given argument is a valid saved search entity type.
@@ -343,16 +340,31 @@ module Wavefront
       raise Wavefront::Exception::InvalidSavedSearchEntity
     end
 
+    # Ensure the given argument is a valid Wavefront source name
+    #
+    # @param v [String] the source name to validate
+    # @return True if the source name is valid
+    # @raise Wavefront::Exception::InvalidSourceId if the source name
+    #   is not valid
+    #
+    def wf_source_id?(v)
+      if v.is_a?(String) && v.match(/^[\w\.\-]+$/) && v.size < 1024
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidSourceId
+    end
+
     # Ensure the given argument is a valid user.
     #
     # @param v [String] user identifier
     # @return true if valid
-    # @raise Wavefront::Exceptions::InvalidUser if not valid
+    # @raise Wavefront::Exceptions::InvalidUserId if not valid
     #
-    def wf_user?(v)
+    def wf_user_id?(v)
       return true if v.is_a?(String) &&
          v =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-      raise Wavefront::Exception::InvalidUser
+      raise Wavefront::Exception::InvalidUserId
     end
 
     # Ensure the given argument is a valid webhook ID.
@@ -361,9 +373,9 @@ module Wavefront
     # @return true if valid
     # @raise Wavefront::Exceptions::InvalidWebhook if not valid
     #
-    def wf_webhook?(v)
+    def wf_webhook_id?(v)
       return true if v.is_a?(String) && v =~ /^[a-zA-Z0-9]{16}$/
-      raise Wavefront::Exception::InvalidWebhook
+      raise Wavefront::Exception::InvalidWebhookId
     end
   end
 end

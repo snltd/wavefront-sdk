@@ -24,7 +24,7 @@ module Wavefront
     def list(from = nil, to = nil, limit = 100, cursor = nil)
       wf_ms_ts?(from) if from
       wf_ms_ts?(to) if to
-      wf_event?(cursor) if cursor
+      wf_event_id?(cursor) if cursor
       raise ArgumentError unless limit.is_a?(Integer)
 
       api_get('', { earliestStartTimeEpochMillis: from,
@@ -55,7 +55,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_event?(id)
+      wf_event_id?(id)
       api_delete(id)
     end
 
@@ -68,7 +68,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id, version = nil)
-      wf_event?(id)
+      wf_event_id?(id)
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
@@ -83,7 +83,7 @@ module Wavefront
     # @return [Hash]
     #
     def update(id, body)
-      wf_event?(id)
+      wf_event_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body, 'application/json')
     end
@@ -94,7 +94,7 @@ module Wavefront
     # @param id [String] the ID of the event
     #
     def close(id)
-      wf_event?(id)
+      wf_event_id?(id)
       api_post([id, 'close'].uri_concat)
     end
 
@@ -106,7 +106,7 @@ module Wavefront
     #   response keys
     #
     def tags(id)
-      wf_event?(id)
+      wf_event_id?(id)
       api_get([id, 'tag'].uri_concat)
     end
 
@@ -119,7 +119,7 @@ module Wavefront
     #   response keys
     #
     def tag_set(id, tags)
-      wf_event?(id)
+      wf_event_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
       api_post([id, 'tag'].uri_concat, tags, 'application/json')
@@ -133,7 +133,7 @@ module Wavefront
     # @returns [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_delete(id, tag)
-      wf_event?(id)
+      wf_event_id?(id)
       wf_string?(tag)
       api_delete([id, 'tag', tag].uri_concat)
     end
@@ -146,7 +146,7 @@ module Wavefront
     # @returns [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_add(id, tag)
-      wf_event?(id)
+      wf_event_id?(id)
       wf_string?(tag)
       api_put([id, 'tag', tag].uri_concat)
     end

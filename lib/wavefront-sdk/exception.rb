@@ -4,33 +4,32 @@ module Wavefront
   #
   class Exception
     class EmptyMetricName < ::Exception; end
-    class InvalidResponseFormat < ::Exception; end
-    class InvalidAgent < ::Exception; end
-    class InvalidAlert < ::Exception; end
+    class InvalidAgentId < ::Exception; end
+    class InvalidAlertId < ::Exception; end
     class InvalidAlertSeverity < ::Exception; end
-    class InvalidCloudIntegration < ::Exception; end
-    class InvalidDashboard < ::Exception; end
+    class InvalidCloudIntegrationId < ::Exception; end
+    class InvalidDashboardId < ::Exception; end
     class InvalidEndpoint < ::Exception; end
-    class InvalidEvent < ::Exception; end
-    class InvalidExternalLink < ::Exception; end
+    class InvalidEventId < ::Exception; end
+    class InvalidExternalLinkId < ::Exception; end
     class InvalidGranularity < ::Exception; end
     class InvalidHostname < ::Exception; end
-    class InvalidMaintenanceWindow < ::Exception; end
-    class InvalidMessage < ::Exception; end
+    class InvalidMaintenanceWindowId < ::Exception; end
+    class InvalidMessageId < ::Exception; end
     class InvalidMetricName < ::Exception; end
     class InvalidMetricValue < ::Exception; end
     class InvalidName < ::Exception; end
     class InvalidPrefixLength < ::Exception; end
-    class InvalidSavedSearch < ::Exception; end
+    class InvalidSavedSearchId < ::Exception; end
     class InvalidSavedSearchEntity < ::Exception; end
-    class InvalidSource < ::Exception; end
+    class InvalidSourceId < ::Exception; end
     class InvalidString < ::Exception; end
     class InvalidTag < ::Exception; end
     class InvalidLinkTemplate < ::Exception; end
     class InvalidTimeFormat < ::Exception; end
     class InvalidTimestamp < ::Exception; end
-    class InvalidUser < ::Exception; end
-    class InvalidWebhook < ::Exception; end
+    class InvalidUserId < ::Exception; end
+    class InvalidWebhookId < ::Exception; end
     class InvalidVersion < ::Exception; end
     class NotImplemented < ::Exception; end
     class ValueOutOfRange < ::Exception; end

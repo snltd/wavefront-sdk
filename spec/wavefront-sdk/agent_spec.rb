@@ -28,7 +28,7 @@ class WavefrontAgentTest < WavefrontTestBase
                 JSON_POST_HEADERS)
     assert_raises(ArgumentError) { wf.rename }
     assert_raises(ArgumentError) { wf.rename('abc123') }
-    assert_raises(Wavefront::Exception::InvalidAgent) do
+    assert_raises(Wavefront::Exception::InvalidAgentId) do
       wf.rename('abc', 'name')
     end
   end

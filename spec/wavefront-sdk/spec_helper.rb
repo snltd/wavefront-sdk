@@ -95,7 +95,7 @@ class WavefrontTestBase < MiniTest::Test
 
   def standard_exception
     Object.const_get('Wavefront::Exception')
-      .const_get("Invalid#{class_basename}")
+      .const_get("Invalid#{class_basename}Id")
   end
 
   def should_be_invalid(method, args = '!!invalid_val!!')

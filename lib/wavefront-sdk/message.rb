@@ -23,7 +23,7 @@ module Wavefront
     # @param [id] message ID to mark as read
     #
     def read(id)
-      wf_message?(id)
+      wf_message_id?(id)
       api_post([id, 'read'].uri_concat)
     end
   end

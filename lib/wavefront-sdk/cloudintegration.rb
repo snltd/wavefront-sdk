@@ -41,7 +41,7 @@ module Wavefront
     # @return [Hash]
     #
     def delete(id)
-      wf_cloudintegration?(id)
+      wf_cloudintegration_id?(id)
       api_delete(id)
     end
 
@@ -52,7 +52,7 @@ module Wavefront
     # @return [Hash]
     #
     def describe(id)
-      wf_cloudintegration?(id)
+      wf_cloudintegration_id?(id)
       api_get(id)
     end
 
@@ -63,7 +63,7 @@ module Wavefront
     # @param body [Hash] description of integration
     #
     def update(id, body)
-      wf_cloudintegration?(id)
+      wf_cloudintegration_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end
@@ -75,7 +75,7 @@ module Wavefront
     # @return [Hash]
     #
     def undelete(id)
-      wf_cloudintegration?(id)
+      wf_cloudintegration_id?(id)
       api_post([id, 'undelete'].uri_concat)
     end
   end
