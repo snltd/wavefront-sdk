@@ -182,4 +182,10 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = %w(word Name)
     good_and_bad('wf_user?', 'InvalidUser', good, bad)
   end
+
+  def test_wf_webhook?
+    good = %w(4OfsEM8RcvkM7nwG)
+    bad = %w(4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw)
+    good_and_bad('wf_webhook?', 'InvalidWebhook', good, bad)
+  end
 end

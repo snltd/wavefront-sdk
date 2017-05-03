@@ -31,7 +31,7 @@ and API documentation with [YARD](http://yardoc.org/).
 Some functionality of the old gem is dropped, like Graphite and
 Highcharts integrations, and support for Ruby < 2.2.
 
-There's no gem as yet: the coverage is too incomplete.
+There's no gem as yet: it's not battle-hardened.
 
 ## Status
 
@@ -51,7 +51,7 @@ There's no gem as yet: the coverage is too incomplete.
 | Search      | full         | full    | none         | full          |
 | Source      | full         | full    | none         | full          |
 | User        | full         | full    | none         | full          |
-| Webhook     | none         | none    | none         | none          |
+| Webhook     | full         | full    | none         | full          |
 
 ## CLI
 

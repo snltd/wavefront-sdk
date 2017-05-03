@@ -354,5 +354,16 @@ module Wavefront
          v =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
       raise Wavefront::Exception::InvalidUser
     end
+
+    # Ensure the given argument is a valid webhook ID.
+    #
+    # @param v [String] webhook ID
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidWebhook if not valid
+    #
+    def wf_webhook?(v)
+      return true if v.is_a?(String) && v =~ /^[a-zA-Z0-9]{16}$/
+      raise Wavefront::Exception::InvalidWebhook
+    end
   end
 end
