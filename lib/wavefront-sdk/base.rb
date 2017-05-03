@@ -132,7 +132,7 @@ module Wavefront
     def api_post(path, body = nil, ctype = 'text/plain')
       conn = mk_conn(:post, path, { 'Content-Type': ctype,
                                     'Accept': 'application/json'})
-      body = body.to_json
+      body = body.to_json unless body.is_a?(String)
       msg('BODY', body) if body && (verbose || noop)
       return if noop
       JSON.parse(conn.post(nil, body).body || {})
@@ -207,6 +207,6 @@ class Array
   # @return [String] a URI path
   #
   def uri_concat
-    URI.encode(self.join('/').squeeze('/').sub(/\/$/, ''))
+    URI.encode(self.join('/').squeeze('/').sub(/\/$/, '').sub(/\/\?/, '?'))
   end
 end

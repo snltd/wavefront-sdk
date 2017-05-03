@@ -342,5 +342,17 @@ module Wavefront
                         CLOUD_INTEGRATION).include?(v)
       raise Wavefront::Exception::InvalidSavedSearchEntity
     end
+
+    # Ensure the given argument is a valid user.
+    #
+    # @param v [String] user identifier
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidUser if not valid
+    #
+    def wf_user?(v)
+      return true if v.is_a?(String) &&
+         v =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+      raise Wavefront::Exception::InvalidUser
+    end
   end
 end

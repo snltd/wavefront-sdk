@@ -176,4 +176,10 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_savedsearch_entity?',
                  'InvalidSavedSearchEntity', good, bad)
   end
+
+  def test_wf_user?
+    good = %w(Some.User@example.com general99+specific@somewhere.net)
+    bad = %w(word Name)
+    good_and_bad('wf_user?', 'InvalidUser', good, bad)
+  end
 end

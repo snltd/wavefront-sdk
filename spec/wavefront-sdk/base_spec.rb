@@ -59,9 +59,13 @@ class WavefrontBaseTest < MiniTest::Test
 
   def test_api_post
     uri = "#{uri_base}/path"
+    obj = {key: 'value'}
     stub_request(:post, uri).to_return(body: {}.to_json, status: 200)
-    wf.api_post('/path', 'body')
-    assert_requested(:post, uri, body: '"body"',
+    wf.api_post('/path', 'string')
+    assert_requested(:post, uri, body: 'string',
+                                 headers: headers.merge(POST_HEADERS))
+    wf.api_post('/path', obj)
+    assert_requested(:post, uri, body: obj.to_json,
                                  headers: headers.merge(POST_HEADERS))
   end
 

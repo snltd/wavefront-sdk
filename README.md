@@ -50,7 +50,7 @@ There's no gem as yet: the coverage is too incomplete.
 | Saved       | full         | full    | none         | full          |
 | Search      | full         | full    | none         | full          |
 | Source      | full         | full    | none         | full          |
-| User        | none         | none    | none         | none          |
+| User        | full         | full    | none         | full          |
 | Webhook     | none         | none    | none         | none          |
 
 ## CLI

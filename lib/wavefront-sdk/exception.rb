@@ -29,6 +29,7 @@ module Wavefront
     class InvalidLinkTemplate < ::Exception; end
     class InvalidTimeFormat < ::Exception; end
     class InvalidTimestamp < ::Exception; end
+    class InvalidUser < ::Exception; end
     class InvalidVersion < ::Exception; end
     class NotImplemented < ::Exception; end
     class ValueOutOfRange < ::Exception; end
