@@ -12,7 +12,7 @@ EXTERNAL_LINK_BODY = {
 EXTERNAL_LINK_BODY_2 = {
   name:        'test link',
   template:    'https://example.com/link/{{value}}'
-}.freeze
+}
 
 # Unit tests for ExternalLink class
 #
