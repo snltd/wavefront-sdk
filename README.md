@@ -35,33 +35,33 @@ There's no gem as yet: it's not battle-hardened.
 
 ## Status
 
-### Wavefront API
+### Wavefront API Coverage
 
-| API path    | API Coverage | tests   | CLI coverage | RDoc coverage |
-| ----------- | ------------ | ------- | ------------ | ------------- |
-| Agent       | full         | full    | full         | full          |
-| Alert       | full         | full    | full         | full          |
-| Cloud       | full         | full    | full         | full          |
-| Dashboard   | full         | full    | partial      | full          |
-| Event       | full         | full    | none         | full          |
-| External    | full         | full    | none         | full          |
-| Maintenance | full         | full    | none         | full          |
-| Message     | full         | full    | none         | full          |
-| Metric      | full         | full    | none         | full          |
-| Query       | full         | full    | none         | full          |
-| Saved       | full         | full    | none         | full          |
-| Search      | full         | full    | none         | full          |
-| Source      | full         | full    | none         | full          |
-| User        | full         | full    | none         | full          |
-| Webhook     | full         | full    | none         | full          |
+| API path           | Coverage | tests | CLI     | RDoc |
+| ------------------ | -------- | ----- | ------- | ---- |
+| Agent              | full     | full  | full    | full |
+| Alert              | full     | full  | full    | full |
+| Cloud Integration  | full     | full  | full    | full |
+| Dashboard          | full     | full  | partial | full |
+| Event              | full     | full  | none    | full |
+| External Link      | full     | full  | none    | full |
+| Maintenance Window | full     | full  | none    | full |
+| Message            | full     | full  | none    | full |
+| Metric             | full     | full  | none    | full |
+| Query              | full     | full  | none    | full |
+| Saved Search       | full     | full  | none    | full |
+| Search             | full     | full  | none    | full |
+| Source             | full     | full  | none    | full |
+| User               | full     | full  | none    | full |
+| Webhook            | full     | full  | none    | full |
 
-### Additional
+### Additional Coverage
 
 The following are classes which do not cover a Wavefront API path.
 
-| SDK class   | API Coverage | tests   | CLI coverage | RDoc coverage |
-| ----------- | ------------ | ------- | ------------ | ------------- |
-| write       | none         | none    | none         | none          |
+| SDK class | Coverage | tests | CLI  | RDoc |
+| --------- | -------- | ----- | ---- | ---- |
+| write     | none     | none  | none | none |
 
 
 ## CLI
