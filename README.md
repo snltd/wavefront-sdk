@@ -49,7 +49,7 @@ There's no gem as yet: the coverage is too incomplete.
 | Query       | full         | full    | none         | full          |
 | Saved       | full         | full    | none         | full          |
 | Search      | full         | full    | none         | full          |
-| Source      | none         | none    | none         | none          |
+| Source      | full         | full    | none         | full          |
 | User        | none         | none    | none         | none          |
 | Webhook     | none         | none    | none         | none          |
 
