@@ -3,7 +3,7 @@
 This is a Ruby SDK for [Wavefront](https://www.wavefront.com/)'s
 public API.
 
-The code is based on [the original Ruby
+This code supersedes [the original Ruby
 SDK](https://github.com/wavefrontHQ/ruby-client), to which I was a
 major contributor. That
 [wavefront-client](https://rubygems.org/gems/wavefront-client/) gem
