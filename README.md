@@ -35,6 +35,8 @@ There's no gem as yet: it's not battle-hardened.
 
 ## Status
 
+### Wavefront API
+
 | API path    | API Coverage | tests   | CLI coverage | RDoc coverage |
 | ----------- | ------------ | ------- | ------------ | ------------- |
 | Agent       | full         | full    | full         | full          |
@@ -52,6 +54,15 @@ There's no gem as yet: it's not battle-hardened.
 | Source      | full         | full    | none         | full          |
 | User        | full         | full    | none         | full          |
 | Webhook     | full         | full    | none         | full          |
+
+### Additional
+
+The following are classes which do not cover a Wavefront API path.
+
+| SDK class   | API Coverage | tests   | CLI coverage | RDoc coverage |
+| ----------- | ------------ | ------- | ------------ | ------------- |
+| write       | none         | none    | none         | none          |
+
 
 ## CLI
 

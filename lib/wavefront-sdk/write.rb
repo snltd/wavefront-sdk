@@ -1,3 +1,5 @@
+require_relative './base'
+
 require 'wavefront/client/version'
 require 'wavefront/exception'
 require 'wavefront/constants'
