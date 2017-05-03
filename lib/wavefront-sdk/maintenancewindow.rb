@@ -2,15 +2,15 @@ require_relative './base'
 
 module Wavefront
   #
-  # Manage and query Wavefront external links.
+  # Manage and query Wavefront maintenance windows
   #
   class MaintenanceWindow < Wavefront::Base
 
     # GET /api/v2/maintenancewindow
     # Get all maintenance windows for a customer.
     #
-    # @param offset [Integer] link at which the list begins
-    # @param limit [Integer] the number of link to return
+    # @param offset [Integer] window at which the list begins
+    # @param limit [Integer] the number of window to return
     #
     def list(offset = 0, limit = 100)
       api_get('', { offset: offset, limit: limit })
