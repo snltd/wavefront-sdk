@@ -283,10 +283,10 @@ module Wavefront
     # @param v [String] severity
     # @return true if valid
     # @raise Wavefront::Exceptions::InvalidAlertSeverity if not
-    # valid
+    #   valid
     #
     def wf_alert_severity?(v)
-      return true if %w(info smoke warn severe).include?(v)
+      return true if %w(INFO SMOKE WARN SEVERE).include?(v)
       raise Wavefront::Exception::InvalidAlertSeverity
     end
 
@@ -295,7 +295,7 @@ module Wavefront
     # @param v [String] severity
     # @return true if valid
     # @raise Wavefront::Exceptions::InvalidAlertSeverity if not
-    # valid
+    #   valid
     #
     def wf_message?(v)
       return true if v.is_a?(String) && v =~ /^\w+$/
@@ -307,11 +307,40 @@ module Wavefront
     # @param v [String] granularity
     # @return true if valid
     # @raise Wavefront::Exceptions::InvalidGranularity if not
-    # valid
+    #   valid
     #
     def wf_granularity?(v)
       return true if %w(d h m s).include?(v)
       raise Wavefront::Exception::InvalidGranularity
+    end
+
+    # Ensure the given argument is a valid saved search ID.
+    #
+    # @param v [String] saved search ID
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidSavedSearch if not valid
+    #
+    def wf_savedsearch?(v)
+      if v.is_a?(String) && v.match(
+        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
+      )
+        return true
+      end
+      raise Wavefront::Exception::InvalidSavedSearch
+    end
+
+    # Ensure the given argument is a valid saved search entity type.
+    #
+    # @param v [String] entity type
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidSavedSearchEntity if not
+    #   valid
+    #
+    def wf_savedsearch_entity?(v)
+      return true if %w(DASHBOARD ALERT MAINTENANCE_WINDOW
+                        NOTIFICANT EVENT SOURCE EXTERNAL_LINK AGENT
+                        CLOUD_INTEGRATION).include?(v)
+      raise Wavefront::Exception::InvalidSavedSearchEntity
     end
   end
 end

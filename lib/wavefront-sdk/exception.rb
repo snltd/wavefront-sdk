@@ -21,6 +21,8 @@ module Wavefront
     class InvalidMetricValue < ::Exception; end
     class InvalidName < ::Exception; end
     class InvalidPrefixLength < ::Exception; end
+    class InvalidSavedSearch < ::Exception; end
+    class InvalidSavedSearchEntity < ::Exception; end
     class InvalidSource < ::Exception; end
     class InvalidString < ::Exception; end
     class InvalidTag < ::Exception; end

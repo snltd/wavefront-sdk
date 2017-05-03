@@ -152,8 +152,8 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_alert_severity?
-    good = %w(info smoke warn severe)
-    bad = %w(any thing else)
+    good = %w(INFO SMOKE WARN SEVERE)
+    bad = %w(any THING else)
     good_and_bad('wf_alert_severity?', 'InvalidAlertSeverity', good, bad)
   end
 
@@ -161,5 +161,19 @@ class WavefrontValidatorsTest < MiniTest::Test
     good = %w(d h m s)
     bad = %w(1 a day hour)
     good_and_bad('wf_granularity?', 'InvalidGranularity', good, bad)
+  end
+
+  def test_wf_savedsearch?
+    good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
+              917102d1-a10e-497b-ba63-95058f98d4fb)
+    bad = %w(agent 17102d1-a10e-497b-ba63-95058f98d4fb)
+    good_and_bad('wf_savedsearch?', 'InvalidSavedSearch', good, bad)
+  end
+
+  def test_wf_savedsearch_entity?
+    good = %w(EVENT MAINTENANCE_WINDOW DASHBOARD ALERT)
+    bad = %w(1 a day hour)
+    good_and_bad('wf_savedsearch_entity?',
+                 'InvalidSavedSearchEntity', good, bad)
   end
 end
