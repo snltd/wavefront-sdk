@@ -93,11 +93,13 @@ class WavefrontTestBase < MiniTest::Test
     WebMock.reset!
   end
 
+  def standard_exception
+    Object.const_get('Wavefront::Exception')
+      .const_get("Invalid#{class_basename}")
+  end
+
   def should_be_invalid(method, args = '!!invalid_val!!')
-    assert_raises(Object.const_get('Wavefront::Exception').const_get(
-      "Invalid#{class_basename}")) do
-      wf.send(method, *args)
-    end
+    assert_raises(standard_exception) { wf.send(method, *args) }
   end
 
   # Generic tag method testing.
@@ -130,7 +132,7 @@ class WavefrontTestBase < MiniTest::Test
   end
 
   def should_fail_tags(method, id)
-    assert_raises(Wavefront::Exception::InvalidEvent) do
+    assert_raises(standard_exception) do
       wf.send(method, '!!invalid!!', 'tag1')
     end
 
