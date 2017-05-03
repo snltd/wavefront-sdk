@@ -65,7 +65,7 @@ class WavefrontTestBase < MiniTest::Test
     headers = { 'Accept':          /.*/,
                 'Accept-Encoding': /.*/,
                 'Authorization':  'Bearer 0123456789-ABCDEF',
-                'User-Agent':     /wavefront-sdk v.*/
+                'User-Agent':     "wavefront-sdk #{WF_SDK_VERSION}"
                 }.merge(more_headers)
 
     if body

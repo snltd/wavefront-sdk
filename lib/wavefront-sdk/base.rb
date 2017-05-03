@@ -3,6 +3,7 @@ require 'time'
 require 'faraday'
 require_relative './exception'
 require_relative './validators'
+require_relative './version'
 
 module Wavefront
   #
@@ -182,7 +183,7 @@ module Wavefront
 
       @net = {
         headers:  { 'Authorization': "Bearer #{creds[:token]}",
-                    'user-agent':    'wavefront-sdk v0.0',
+                    'user-agent':    "wavefront-sdk #{WF_SDK_VERSION}",
                   },
         endpoint: creds[:endpoint],
         api_base: ['', 'api', 'v2', api_base].uri_concat
