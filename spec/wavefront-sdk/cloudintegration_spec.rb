@@ -41,7 +41,7 @@ class WavefrontCloudIntegrationTest < WavefrontTestBase
 
   def test_update
     should_work(:update, [CLOUD, CLOUD_BODY], CLOUD, :put,
-                JSON_POST_HEADERS, CLOUD_BODY.to_json )
+                JSON_POST_HEADERS, CLOUD_BODY.to_json)
     should_be_invalid(:update, ['abcde', CLOUD_BODY])
     assert_raises(ArgumentError) { wf.update }
   end

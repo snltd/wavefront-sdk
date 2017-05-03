@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = %w(lib)
 
-  gem.add_runtime_dependency 'rest-client', '>= 1.6.7', '< 1.8'
+  gem.add_runtime_dependency 'faraday', '>= 0.12.1', '< 0.13'
 
   gem.add_development_dependency 'bundler', '~> 1.3'
   gem.add_development_dependency 'rake', '~> 12.0'

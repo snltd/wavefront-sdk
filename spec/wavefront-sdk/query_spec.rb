@@ -3,13 +3,13 @@
 require 'date'
 require_relative './spec_helper'
 
-SERIES = 'test.metric'
+SERIES = 'test.metric'.freeze
 T = Time.now.freeze
 T_MS = T.to_datetime.strftime('%Q').freeze
 TE = (T + 10).freeze
 TE_MS = TE.to_datetime.strftime('%Q')
-Q = "ts(\"#{SERIES}\")"
-QE = URI.encode(Q)
+Q = "ts(\"#{SERIES}\")".freeze
+QE = URI.encode(Q).freeze
 
 # Unit tests for Query class
 #

@@ -8,8 +8,8 @@ WINDOW_BODY = {
   title:    'test window',
   start:    Time.now.to_i,
   end:      Time.now.to_i + 600,
-  tags:     ['testtag1', 'testtag2'],
-  hostTags: ['hosttag1', 'hosttag2'],
+  tags:     %w(testtag1 testtag2),
+  hostTags: %w(hosttag1 hosttag2)
 }.freeze
 
 # Unit tests for MaintenanceWindow class
@@ -41,7 +41,7 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
 
   def test_update
     should_work(:update, [WINDOW, WINDOW_BODY], WINDOW, :put,
-                JSON_POST_HEADERS, WINDOW_BODY.to_json )
+                JSON_POST_HEADERS, WINDOW_BODY.to_json)
     should_be_invalid(:update, ['abcde', WINDOW_BODY])
     assert_raises(ArgumentError) { wf.update }
   end

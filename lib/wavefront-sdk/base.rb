@@ -1,7 +1,6 @@
-require 'uri'
 require 'json'
 require 'time'
-require 'rest-client'
+require 'faraday'
 require_relative './exception'
 require_relative './validators'
 
@@ -11,7 +10,7 @@ module Wavefront
   #
   class Base
     include Wavefront::Validators
-    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base
+    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn
 
     # Create a new API object. This will always be called from a
     # class which inherits this one.
@@ -80,50 +79,49 @@ module Wavefront
       self.class.name.split('::').last.downcase
     end
 
-    # Create a HTTPS URI. The server comes from the endpoint passed
-    # to the initializer in the 'creds' hash; the root of the URI
-    # is dynamically derived by the #setup_endpoint method.
+    # Create a Faraday connection object. The server comes from the
+    # endpoint passed to the initializer in the 'creds' hash; the
+    # root of the URI is dynamically derived by the #setup_endpoint
+    # method.
     #
-    # @param path [String] path to append to the #net[:api_base]
-    #   path.
-    # @param qs [String] optinal query string
+    # @param headers [Hash] additional headers
     # @return [URI::HTTPS]
     #
-    def build_uri(path, qs = nil)
-      URI::HTTPS.build(host:  net[:endpoint],
-                       path:  [net[:api_base], path].uri_concat,
-                       query: qs)
+    def mk_conn(method, path, headers = {})
+      if verbose || noop
+        msg(method.upcase,
+            net[:endpoint] + [net[:api_base], path].uri_concat)
+        msg('HEADERS', net[:headers])
+      end
+
+      return false if noop
+
+      Faraday.new(
+        url:     net[:endpoint] + [net[:api_base], path].uri_concat,
+        headers: net[:headers].merge(headers)
+      )
     end
 
-    # Make a GET call using an object automatically created by
-    # #build_uri, and return the result as a Ruby hash. Can
-    # optionally perform a verbose noop, if the #noop class variable
-    # is set. If #verbose is set, then prints the information used
-    # to build the URI.
+    # Make a GET call to the Wavefront API and return the result as
+    # a Ruby hash. Can optionally perform a verbose noop, if the
+    # #noop class variable is set. If #verbose is set, then prints
+    # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
     # @param qs [String] optional query string
     # @return [Hash] API response
     #
-    def api_get(path, qs = nil)
-      uri = build_uri(path, qs)
-
-      if verbose || noop
-        msg('GET', uri)
-        msg('HEADERS', net[:headers])
-      end
-
+    def api_get(path, query = {})
+      conn = mk_conn(:get, path)
       return if noop
-
-      JSON.parse(RestClient.get(uri.to_s, net[:headers]) || {})
+      JSON.parse(conn.get(nil, query).body || {})
     end
 
-    # Make a POST call using an object automatically created by
-    # #build_uri, and return the result as a Ruby hash. Can
-    # optionally perform a verbose noop, if the #noop class variable
-    # is set. If #verbose is set, then prints the information used
-    # to build the URI.
+    # Make a POST call to the Wavefront API and return the result as
+    # a Ruby hash. Can optionally perform a verbose noop, if the
+    # #noop class variable is set. If #verbose is set, then prints
+    # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
@@ -132,27 +130,18 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_post(path, body = nil, ctype = 'text/plain')
-      headers = net[:headers].merge(:'Content-Type' => ctype,
-                                    :Accept         => 'application/json')
-      uri = build_uri(path)
-      body = body.to_json if body
-
-      if verbose || noop
-        msg('POST', uri)
-        msg('BODY', body) if body
-        msg('HEADERS', headers)
-      end
-
+      conn = mk_conn(:post, path, { 'Content-Type': ctype,
+                                    'Accept': 'application/json'})
+      body = body.to_json
+      msg('BODY', body) if body && (verbose || noop)
       return if noop
-
-      JSON.parse(RestClient.post(uri.to_s, body, headers) || {})
+      JSON.parse(conn.post(nil, body).body || {})
     end
 
-    # Make a PUT call using an object automatically created by
-    # #build_uri, and return the result as a Ruby hash. Can
-    # optionally perform a verbose noop, if the #noop class variable
-    # is set. If #verbose is set, then prints the information used
-    # to build the URI.
+    # Make a PUT call to the Wavefront API and return the result as
+    # a Ruby hash. Can optionally perform a verbose noop, if the
+    # #noop class variable is set. If #verbose is set, then prints
+    # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
@@ -161,44 +150,27 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_put(path, body = nil, ctype = 'application/json')
-      headers = net[:headers].merge(:'Content-Type' => ctype,
-                                    :Accept         => 'application/json')
-
-      uri = build_uri(path)
-      body = body.to_json if body
-
-      if verbose || noop
-        msg('PUT', uri)
-        msg('BODY', body) if body
-        msg('HEADERS', headers)
-      end
-
+      conn = mk_conn(:put, path, { 'Content-Type': ctype,
+                                   'Accept': 'application/json' })
+      body = body.to_json
+      msg('BODY', body) if body && (verbose || noop)
       return if noop
-
-      JSON.parse(RestClient.put(uri.to_s, body, headers))
+      JSON.parse(conn.put(nil, body).body || {})
     end
 
-    # Make a DELETE call using an object automatically created by
-    # #build_uri, and return the result as a Ruby hash. Can
-    # optionally perform a verbose noop, if the #noop class variable
-    # is set. If #verbose is set, then prints the information used
-    # to build the URI.
+    # Make a DELETE call to the Wavefront API and return the result
+    # as a Ruby hash. Can optionally perform a verbose noop, if the
+    # #noop class variable is set. If #verbose is set, then prints
+    # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
     # @return [Hash] API response
     #
     def api_delete(path)
-      uri = build_uri(path)
-
-      if verbose || noop
-        msg('DELETE', uri)
-        msg('HEADERS', net[:headers])
-      end
-
+      conn = mk_conn(:delete, path)
       return if noop
-
-      JSON.parse(RestClient.delete(uri.to_s, net[:headers]))
+      JSON.parse(conn.delete.body || {})
     end
 
     private
@@ -209,7 +181,9 @@ module Wavefront
       end
 
       @net = {
-        headers:  { 'Authorization' => "Bearer #{creds[:token]}" },
+        headers:  { 'Authorization': "Bearer #{creds[:token]}",
+                    'user-agent':    'wavefront-sdk v0.0',
+                  },
         endpoint: creds[:endpoint],
         api_base: ['', 'api', 'v2', api_base].uri_concat
       }
@@ -218,19 +192,6 @@ module Wavefront
     def msg(*msg)
       puts msg.map(&:to_s).join(' ')
     end
-  end
-end
-
-# Extensions to stdlib Hash
-#
-class Hash
-
-  # Make a properly escaped query string out of a key: value hash.
-  #
-  def to_qs
-    URI.encode(self.select{|_k, v| v }.map do |k, v|
-      [k, v].join('=')
-    end.join('&'))
   end
 end
 

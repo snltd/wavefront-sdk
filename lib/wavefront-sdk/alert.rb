@@ -11,11 +11,11 @@ module Wavefront
     # Get all alerts for a customer
     #
     # @param offset [Int] alert at which the list begins
-    # @param limit [Int] the number of alert to return
+    # @param limit [Int] the number of alerts to return
     # @return [Hash]
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit }.to_qs)
+      api_get('', { offset: offset, limit: limit })
     end
 
     # POST /api/v2/alert

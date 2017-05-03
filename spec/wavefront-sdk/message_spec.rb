@@ -2,7 +2,7 @@
 
 require_relative './spec_helper'
 
-MESSAGE = 'message_id' # don't know what these look like yet
+MESSAGE = 'message_id'.freeze # don't know what these look like yet
 
 # Unit tests for Message class
 #

@@ -18,6 +18,7 @@ class WavefrontSavedSearchTest < WavefrontTestBase
     should_work(:list, 10, '?offset=10&limit=100')
     should_work(:list, [20, 250], '?offset=20&limit=250')
   end
+
   def test_create
     should_work(:create, SEARCH_BODY, '', :post, JSON_POST_HEADERS,
                 SEARCH_BODY.to_json)
@@ -35,10 +36,9 @@ class WavefrontSavedSearchTest < WavefrontTestBase
     should_be_invalid(:describe)
   end
 
-
   def test_update
     should_work(:update, [SEARCH, SEARCH_BODY], SEARCH, :put,
-                JSON_POST_HEADERS, SEARCH_BODY.to_json )
+                JSON_POST_HEADERS, SEARCH_BODY.to_json)
     should_be_invalid(:update, ['abcde', SEARCH_BODY])
     assert_raises(ArgumentError) { wf.update }
   end

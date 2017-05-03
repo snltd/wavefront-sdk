@@ -5,7 +5,7 @@ require 'minitest/autorun'
 require 'webmock/minitest'
 
 CREDS = {
-  endpoint: 'test.example.com',
+  endpoint: 'https://test.example.com',
   token:    '0123456789-ABCDEF'
 }.freeze
 
@@ -36,7 +36,7 @@ class WavefrontTestBase < MiniTest::Test
   def setup
     klass = Object.const_get('Wavefront').const_get(class_basename)
     @wf = klass.new(CREDS)
-    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/" + api_base
+    @uri_base = "#{CREDS[:endpoint]}/api/v2/" + api_base
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
   end
 
@@ -58,17 +58,17 @@ class WavefrontTestBase < MiniTest::Test
   #
   #
   def should_work(method, args, path, call = :get, more_headers = {},
-                 body = nil, id = nil)
+                  body = nil, id = nil)
     path = Array(path)
     uri = target_uri(path.first).sub(/\/$/, '')
 
-    headers = { 'Accept': '*/*; q=0.5, application/xml',
-                'Accept-Encoding': 'gzip, deflate',
-                'Authorization': 'Bearer 0123456789-ABCDEF',
-                'User-Agent': 'Ruby'}.merge(more_headers)
+    headers = { 'Accept':          /.*/,
+                'Accept-Encoding': /.*/,
+                'Authorization':  'Bearer 0123456789-ABCDEF',
+                'User-Agent':     /wavefront-sdk v.*/
+                }.merge(more_headers)
 
     if body
-      headers['Content-Length'] = body.size.to_s
       stub_request(call, uri).with(body: body, headers:headers)
         .to_return(body: {}.to_json, status: 200)
     else

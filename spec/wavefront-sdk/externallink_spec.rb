@@ -7,12 +7,12 @@ EXTERNAL_LINK_BODY = {
   name:        'test link',
   template:    'https://example.com/link/{{value}}',
   description: 'an imaginary link for unit testing purposes'
-}
+}.freeze
 
 EXTERNAL_LINK_BODY_2 = {
   name:        'test link',
-  template:    'https://example.com/link/{{value}}',
-}
+  template:    'https://example.com/link/{{value}}'
+}.freeze
 
 # Unit tests for ExternalLink class
 #
@@ -56,7 +56,7 @@ class WavefrontExternalLinkTest < WavefrontTestBase
 
     should_work(:update, [EXTERNAL_LINK, EXTERNAL_LINK_BODY_2],
                 EXTERNAL_LINK, :put, JSON_POST_HEADERS,
-                EXTERNAL_LINK_BODY_2.to_json )
+                EXTERNAL_LINK_BODY_2.to_json)
 
     should_be_invalid(:update, ['abcde', EXTERNAL_LINK_BODY])
     assert_raises(ArgumentError) { wf.update }

@@ -15,10 +15,9 @@ DASHBOARD_BODY = {
         description: 'chart',
         sources: [
           { name: 'S1 C1 Source 1',
-            query: 'ts("some.series")'
-          }
+            query: 'ts("some.series")' }
         ]
-      ]}
+      ] }
     ]
   ]
 }.freeze
@@ -68,7 +67,7 @@ class WavefrontDashboardTest < WavefrontTestBase
 
   def test_update
     should_work(:update, [DASHBOARD, DASHBOARD_BODY], DASHBOARD, :put,
-                JSON_POST_HEADERS, DASHBOARD_BODY.to_json )
+                JSON_POST_HEADERS, DASHBOARD_BODY.to_json)
     should_be_invalid(:update, ['!invalid dash!', DASHBOARD_BODY])
     assert_raises(ArgumentError) { wf.update }
   end
@@ -102,7 +101,7 @@ class WavefrontDashboardTest < WavefrontTestBase
 
   def test_undelete
     should_work(:undelete, DASHBOARD, ["#{DASHBOARD}/undelete",
-                                        nil], :post, POST_HEADERS)
+                                       nil], :post, POST_HEADERS)
     should_be_invalid(:undelete)
   end
 end

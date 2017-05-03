@@ -13,7 +13,7 @@ module Wavefront
     # @param limit [Int] the number of agents to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit }.to_qs)
+      api_get('', { offset: offset, limit: limit })
     end
 
     # DELETE /api/v2/agent/{id}

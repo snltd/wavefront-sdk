@@ -38,7 +38,7 @@ module Wavefront
       options[:s] = parse_time(t_start, true)
       options[:e] = parse_time(t_end, true) if t_end
 
-      api_get('api', options.to_qs)
+      api_get('api', options)
     end
 
     # GET /api/v2/chart/raw
@@ -66,7 +66,7 @@ module Wavefront
       options[:startTime] = parse_time(t_start, true) if t_start
       options[:endTime] = parse_time(t_end, true) if t_end
 
-      api_get('raw', options.to_qs)
+      api_get('raw', options)
     end
   end
 end

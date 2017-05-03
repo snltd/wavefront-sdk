@@ -30,7 +30,7 @@ module Wavefront
       api_get('', { earliestStartTimeEpochMillis: from,
                     latestStartTimeEpochMillis: to,
                     cursor: cursor,
-                    limit: limit }.to_qs)
+                    limit: limit }.select { |_k, v| v })
     end
 
     # POST /api/v2/event

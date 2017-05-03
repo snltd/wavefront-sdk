@@ -18,16 +18,15 @@ module Wavefront
       raise ArgumentError unless sources.is_a?(Array)
       raise ArgumentError unless cursor.is_a?(String)
 
-      qs = [URI.encode(metric)]
+      q = [[:m, metric]]
+      q.<< [:c, cursor] unless cursor.empty?
 
       sources.each do |s|
         raise Wavefront::Exception::InvalidSource unless wf_source?(s)
-        qs.<< "h=#{s}"
+        q.<< [:h, s]
       end
 
-      qs.<< "c=#{cursor}" unless cursor.empty?
-
-      api_get('detail', URI.encode(qs.join('&')))
+      api_get('detail', q)
     end
   end
 end

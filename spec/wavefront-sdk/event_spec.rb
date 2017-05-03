@@ -8,14 +8,14 @@ EVENT_BODY = {
   annotations: {
     severity: 'info',
     type:     'SDK test event',
-    details:  'an imaginary event to test the SDK',
+    details:  'an imaginary event to test the SDK'
   },
-  hosts:       ['host1', 'host2'],
+  hosts:       %w(host1 host2),
   startTime:   1493385089000,
   endTime:     1493385345678,
-  tags:        ['tag1', 'tag2'],
-  isEphemeral: false,
-}
+  tags:        %w(tag1 tag2),
+  isEphemeral: false
+}.freeze
 
 # Unit tests for event class
 #
@@ -25,9 +25,9 @@ class WavefrontEventTest < WavefrontTestBase
     should_work(:list, 1493382053000,
                 '?earliestStartTimeEpochMillis=1493382053000&limit=100')
 
-    assert_raises(Wavefront::Exception::InvalidTimestamp) {
+    assert_raises(Wavefront::Exception::InvalidTimestamp) do
       wf.list(Time.now)
-    }
+    end
   end
 
   def test_create
@@ -51,7 +51,7 @@ class WavefrontEventTest < WavefrontTestBase
 
   def test_update
     should_work(:update, [EVENT, EVENT_BODY], EVENT, :put,
-                JSON_POST_HEADERS, EVENT_BODY.to_json )
+                JSON_POST_HEADERS, EVENT_BODY.to_json)
     should_be_invalid(:update, ['abcde', EVENT_BODY])
     assert_raises(ArgumentError) { wf.update }
   end
