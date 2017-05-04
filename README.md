@@ -61,7 +61,7 @@ The following are classes which do not cover a Wavefront API path.
 
 | SDK class | Coverage | tests | CLI  | RDoc |
 | --------- | -------- | ----- | ---- | ---- |
-| write     | none     | none  | none | none |
+| write     | full     | full  | none | full |
 
 
 ## CLI

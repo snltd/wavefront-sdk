@@ -377,5 +377,22 @@ module Wavefront
       return true if v.is_a?(String) && v =~ /^[a-zA-Z0-9]{16}$/
       raise Wavefront::Exception::InvalidWebhookId
     end
+
+    # Validate a point so it conforms to the standard described in
+    # https://community.wavefront.com/docs/DOC-1031
+    #
+    # @param v [Hash] description of point
+    # @return true if valie
+    # @raise whichever exception is thrown first when validating
+    #   each component of the point.
+    #
+    def wf_point?(v)
+      wf_metric_name?(v[:path])
+      wf_value?(v[:value])
+      wf_epoch?(v[:ts]) if v[:ts]
+      wf_source_id?(v[:source])
+      wf_point_tags?(v[:tags]) if v[:tags]
+      true
+    end
   end
 end

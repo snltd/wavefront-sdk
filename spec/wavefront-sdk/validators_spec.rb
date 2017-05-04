@@ -188,4 +188,52 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = %w(4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw)
     good_and_bad('wf_webhook_id?', 'InvalidWebhookId', good, bad)
   end
+
+  def test_wf_point?
+    good = { path: 'test.metric', value: 123456, ts: Time.now.to_i,
+             source: 'testhost', tags: { t1: 'v 1', t2: 'v2' } }
+
+    assert(wf_point?(good))
+
+    %w(tags source ts).each do |t|
+      p = good.dup
+      p.delete(t)
+      assert(wf_point?(p))
+    end
+
+    bad = good.dup
+    bad[:path] = '!n\/@1!d_metric'
+
+    assert_raises(Wavefront::Exception::InvalidMetricName) do
+      wf_point?(bad)
+    end
+
+    bad = good.dup
+    bad[:value] = 'abc'
+
+    assert_raises(Wavefront::Exception::InvalidMetricValue) do
+      wf_point?(bad)
+    end
+
+    bad = good.dup
+    bad[:ts] = 'abc'
+
+    assert_raises(Wavefront::Exception::InvalidTimestamp) do
+      wf_point?(bad)
+    end
+
+    bad = good.dup
+    bad[:source] = '<------>'
+
+    assert_raises(Wavefront::Exception::InvalidSourceId) do
+      wf_point?(bad)
+    end
+
+    bad = good.dup
+    bad[:tags] = {'<------>': 45}
+
+    assert_raises(Wavefront::Exception::InvalidTag) do
+      wf_point?(bad)
+    end
+  end
 end
