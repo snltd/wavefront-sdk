@@ -127,7 +127,7 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_version?
-    good = [1, 2, 3, 4]
+    good = [1, 2, 3, 4, '10']
     bad = [-1, 'ab', [1]]
     good_and_bad('wf_version?', 'InvalidVersion', good, bad)
   end
