@@ -115,7 +115,7 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_dashboard_id?
-    good = %w(my_dash S3 123)
+    good = %w(my_dash my-dashboard S3 123)
     bad = ['a' * 260, 'A Dashboard Name', 'and_1_more!', {}, [], 1234]
     good_and_bad('wf_dashboard_id?', 'InvalidDashboardId', good, bad)
   end

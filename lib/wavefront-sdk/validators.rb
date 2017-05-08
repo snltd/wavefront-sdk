@@ -230,7 +230,7 @@ module Wavefront
     #   dashboard ID is not valid
     #
     def wf_dashboard_id?(v)
-      return true if v.is_a?(String) && v.size < 256 && v.match(/^\w+$/)
+      return true if v.is_a?(String) && v.size < 256 && v.match(/^[\w\-]+$/)
       raise Wavefront::Exception::InvalidDashboardId
     end
 
