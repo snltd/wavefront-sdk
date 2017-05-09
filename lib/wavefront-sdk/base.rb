@@ -2,6 +2,7 @@ require 'json'
 require 'time'
 require 'faraday'
 require_relative './exception'
+require_relative './mixins'
 require_relative './validators'
 require_relative './version'
 
@@ -11,6 +12,7 @@ module Wavefront
   #
   class Base
     include Wavefront::Validators
+    include Wavefront::Mixins
     attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn
 
     # Create a new API object. This will always be called from a
@@ -29,33 +31,6 @@ module Wavefront
       @noop = opts[:noop] || false
       @verbose = opts[:verbose] || false
       setup_endpoint(creds)
-    end
-
-    # Return a time as an integer, however it might come in.
-    #
-    # @param t [Integer, String, Time] timestamp
-    # @param ms [Boolean] whether to return epoch milliseconds
-    # @return [Integer] epoch time in seconds
-    # @raise Wavefront::InvalidTimestamp
-    #
-    def parse_time(t, ms = false)
-      #
-      # Numbers, or things that look like numbers, pass straight
-      # through. No validation, because maybe the user means one
-      # second past the epoch, or the year 2525.
-      #
-      return t if t.is_a?(Integer)
-
-      if t.is_a?(String)
-        return t.to_i if t.match(/^\d+$/)
-        begin
-          t = DateTime.parse("#{t} #{Time.now.getlocal.zone}")
-        rescue
-          raise Wavefront::Exception::InvalidTimestamp
-        end
-      end
-
-      ms ? t.to_datetime.strftime('%Q').to_i : t.strftime('%s').to_i
     end
 
     # Convert an epoch timestamp into epoch milliseconds. If the
@@ -191,6 +166,7 @@ module Wavefront
     end
 
     def msg(*msg)
+      puts "mssage"
       puts msg.map(&:to_s).join(' ')
     end
   end
@@ -208,6 +184,6 @@ class Array
   # @return [String] a URI path
   #
   def uri_concat
-    URI.encode(self.join('/').squeeze('/').sub(/\/$/, '').sub(/\/\?/, '?'))
+    self.join('/').squeeze('/').sub(/\/$/, '').sub(/\/\?/, '?')
   end
 end

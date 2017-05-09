@@ -21,12 +21,27 @@ EVENT_BODY = {
 #
 class WavefrontEventTest < WavefrontTestBase
   def test_list
-    should_work(:list, nil, '?limit=100')
-    should_work(:list, 1493382053000,
-                '?earliestStartTimeEpochMillis=1493382053000&limit=100')
+
+    t1 = Time.now - 600
+    t2 = Time.now
+    tms1 = t1.to_datetime.strftime('%Q')
+    tms2 = t2.to_datetime.strftime('%Q')
+
+    assert_raises(ArgumentError) {  wf.list }
+    assert_raises(ArgumentError) {  wf.list(tms1) }
+
+    should_work(:list, [t1, t2],
+                "?earliestStartTimeEpochMillis=#{tms1}" \
+                "&latestStartTimeEpochMillis=#{tms2}" \
+                '&limit=100')
+
+    should_work(:list, [tms1, tms2],
+                "?earliestStartTimeEpochMillis=#{tms1}" \
+                "&latestStartTimeEpochMillis=#{tms2}" \
+                '&limit=100')
 
     assert_raises(Wavefront::Exception::InvalidTimestamp) do
-      wf.list(Time.now)
+      wf.list(t1, 'abc')
     end
   end
 
@@ -50,10 +65,10 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [EVENT, EVENT_BODY], EVENT, :put,
+    should_work(:update, [EVENT, EVENT_BODY, false], EVENT, :put,
                 JSON_POST_HEADERS, EVENT_BODY.to_json)
-    should_be_invalid(:update, ['abcde', EVENT_BODY])
-    assert_raises(ArgumentError) { wf.update }
+    #should_be_invalid(:update, ['abcde', EVENT_BODY])
+    #assert_raises(ArgumentError) { wf.update }
   end
 
   def test_delete

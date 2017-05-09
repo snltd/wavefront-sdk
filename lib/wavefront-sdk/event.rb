@@ -22,8 +22,11 @@ module Wavefront
     # @return [Hash]
     #
     def list(from = nil, to = nil, limit = 100, cursor = nil)
-      wf_ms_ts?(from) if from
-      wf_ms_ts?(to) if to
+      raise ArgumentError unless from && to
+      from = parse_time(from, true)
+      to = parse_time(to, true)
+      wf_ms_ts?(from)
+      wf_ms_ts?(to)
       wf_event_id?(cursor) if cursor
       raise ArgumentError unless limit.is_a?(Integer)
 
@@ -78,14 +81,28 @@ module Wavefront
     # PUT /api/v2/event/{id}
     # Update a specific event
     #
+    # This method
     # @param id [String] a Wavefront Event ID
     # @param body [Hash] description of event.
+    # @param modify [Bool] if this is true, then the existing event
+    #   object will be fetched and merged with the user-supplied body.
+    #   The resulting object will be passed to the API. If this is
+    #   false, the body will be passed through unmodified.
     # @return [Hash]
     #
-    def update(id, body)
+    def update(id, body, modify = true)
       wf_event_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body, 'application/json')
+
+      return api_put(id, body, 'application/json') unless modify
+
+      old = describe(id)
+
+      new = old['response'].merge(body).select do |k, _v|
+        %w(startTime endTime name annotations).include?(k)
+      end
+
+      api_put(id, new, 'application/json')
     end
 
     # POST /api/v2/event/{id}/close

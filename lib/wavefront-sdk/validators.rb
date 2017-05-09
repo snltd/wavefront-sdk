@@ -245,7 +245,7 @@ module Wavefront
     #   event ID is not valid
     #
     def wf_event_id?(v)
-      return true if v.is_a?(String) && v =~ /^\d{13}:\w+$/
+      return true if v.is_a?(String) && v =~ /^\d{13}:[\w\- ]+$/
       raise Wavefront::Exception::InvalidEventId
     end
 
