@@ -14,6 +14,7 @@ class WavefrontBaseTest < MiniTest::Test
     @wf_noop = Wavefront::Base.new(CREDS, noop: true)
     @uri_base = "#{CREDS[:endpoint]}/api/v2/base"
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
+    @update_keys = []
   end
 
   def test_time_to_ms
@@ -75,5 +76,13 @@ class WavefrontBaseTest < MiniTest::Test
       wf_noop.send("api_#{call}", '/path')
       refute_requested(call.to_sym, uri)
     end
+  end
+
+  def test_hash_for_update
+    wf.instance_variable_set('@update_keys',  [:k1, :k2])
+    body = { k1: 'ov1', k2: 'ov2', k3: 'ov3'}
+    upd = { k2: 'nv1' }
+
+    assert_equal(wf.hash_for_update(body, upd), { k1: 'ov1', k2: 'nv1'})
   end
 end

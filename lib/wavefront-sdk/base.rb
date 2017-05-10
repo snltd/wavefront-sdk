@@ -13,7 +13,8 @@ module Wavefront
   class Base
     include Wavefront::Validators
     include Wavefront::Mixins
-    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn
+    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn,
+                :update_keys
 
     # Create a new API object. This will always be called from a
     # class which inherits this one.
@@ -147,6 +148,23 @@ module Wavefront
       conn = mk_conn(:delete, path)
       return if noop
       JSON.parse(conn.delete.body || {})
+    end
+
+    # doing a PUT to update an object requires only a certain subset of
+    # the keys returned by #describe().
+    #
+    # @param body [Hash] a hash of the existing object merged with the
+    #   hash describing the user's change(s).
+    # @param keys [Array, String] the keys(s) the user wishes to update
+    # @return [Hash] a hash containing only the keys which need to be
+    #   sent to the API. Keys will be symbolized.
+    #
+    def hash_for_update(old, new)
+      raise ArgumentError unless old.is_a?(Hash) && new.is_a?(Hash)
+
+      Hash[old.merge(new).map { |k, v| [k.to_sym, v] }].select do |k, v|
+        update_keys.include?(k)
+      end
     end
 
     private

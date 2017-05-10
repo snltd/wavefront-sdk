@@ -6,6 +6,7 @@ module Wavefront
   # epoch timestamp.
   #
   class Event < Wavefront::Base
+    @update_keys = [:startTime, :endTime, :name, :annotations]
 
     # GET /api/v2/event
     # List all the events for a customer within a time range.
@@ -81,7 +82,8 @@ module Wavefront
     # PUT /api/v2/event/{id}
     # Update a specific event
     #
-    # This method
+    # This method helps you update one or more properties of an event.
+    #
     # @param id [String] a Wavefront Event ID
     # @param body [Hash] description of event.
     # @param modify [Bool] if this is true, then the existing event
@@ -96,13 +98,7 @@ module Wavefront
 
       return api_put(id, body, 'application/json') unless modify
 
-      old = describe(id)
-
-      new = old['response'].merge(body).select do |k, _v|
-        %w(startTime endTime name annotations).include?(k)
-      end
-
-      api_put(id, new, 'application/json')
+      api_put(id, hash_for_update(describe(id), body), 'application/json')
     end
 
     # POST /api/v2/event/{id}/close
