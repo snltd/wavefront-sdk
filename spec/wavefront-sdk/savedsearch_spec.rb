@@ -2,7 +2,7 @@
 
 require_relative './spec_helper'
 
-SEARCH = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
+SEARCH = 'e2hLH2FR'.freeze
 SEARCH_BODY = {
   query: {
     foo: '{"searchTerms":[{"type":"freetext","value":"foo"}]}'
