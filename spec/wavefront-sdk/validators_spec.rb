@@ -164,9 +164,8 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_savedsearch_id?
-    good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
-              917102d1-a10e-497b-ba63-95058f98d4fb)
-    bad = %w(proxy 17102d1-a10e-497b-ba63-95058f98d4fb)
+    good = %w(e2hLH2FR)
+    bad = %w(e2hLH2F e2hLH2FRz)
     good_and_bad('wf_savedsearch_id?', 'InvalidSavedSearchId', good, bad)
   end
 

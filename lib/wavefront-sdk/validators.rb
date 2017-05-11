@@ -319,11 +319,7 @@ module Wavefront
     # @raise Wavefront::Exceptions::InvalidSavedSearchId if not valid
     #
     def wf_savedsearch_id?(v)
-      if v.is_a?(String) && v.match(
-        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
-      )
-        return true
-      end
+      return true if v.is_a?(String) && v =~ /^\w{8}$/
       raise Wavefront::Exception::InvalidSavedSearchId
     end
 
