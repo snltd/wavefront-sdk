@@ -4,7 +4,6 @@ module Wavefront
   #
   class Exception
     class EmptyMetricName < ::Exception; end
-    class InvalidAgentId < ::Exception; end
     class InvalidAlertId < ::Exception; end
     class InvalidAlertSeverity < ::Exception; end
     class InvalidCloudIntegrationId < ::Exception; end
@@ -20,6 +19,7 @@ module Wavefront
     class InvalidMetricValue < ::Exception; end
     class InvalidName < ::Exception; end
     class InvalidPrefixLength < ::Exception; end
+    class InvalidProxyId < ::Exception; end
     class InvalidSavedSearchId < ::Exception; end
     class InvalidSavedSearchEntity < ::Exception; end
     class InvalidSourceId < ::Exception; end

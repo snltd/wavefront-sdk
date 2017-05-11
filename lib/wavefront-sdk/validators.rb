@@ -171,21 +171,21 @@ module Wavefront
       true
     end
 
-    # Ensure the given argument is a valid Wavefront agent ID
+    # Ensure the given argument is a valid Wavefront proxy ID
     #
-    # @param v [String] the agent ID to validate
-    # @return True if the agent ID is valid
-    # @raise Wavefront::Exception::InvalidAgentId if the agent ID
+    # @param v [String] the proxy ID to validate
+    # @return True if the proxy ID is valid
+    # @raise Wavefront::Exception::InvalidProxyId if the proxy ID
     #   is not valid
     #
-    def wf_agent_id?(v)
+    def wf_proxy_id?(v)
       if v.is_a?(String) && v.match(
         /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
       )
         return true
       end
 
-      raise Wavefront::Exception::InvalidAgentId
+      raise Wavefront::Exception::InvalidProxyId
     end
 
     # Ensure the given argument is a valid Wavefront alert ID.

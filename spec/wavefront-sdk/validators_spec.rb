@@ -93,17 +93,17 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_point_tags?', 'InvalidTag', good, bad)
   end
 
-  def test_wf_agent_id?
+  def test_wf_proxy_id?
     good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
               917102d1-a10e-497b-ba63-95058f98d4fb)
-    bad = %w(agent 17102d1-a10e-497b-ba63-95058f98d4fb)
-    good_and_bad('wf_agent_id?', 'InvalidAgentId', good, bad)
+    bad = %w(proxy 17102d1-a10e-497b-ba63-95058f98d4fb)
+    good_and_bad('wf_proxy_id?', 'InvalidProxyId', good, bad)
   end
 
   def test_wf_cloudintegration_id?
     good = %w(3b56f61d-ba79-47f6-905c-d75a0f613d10
               71e435ca-3d8c-43ab-bc1e-d072a335cbe6)
-    bad = %w(agent 71e43dca-3d8c-41ab-bc1e-d072a335Xbe6)
+    bad = %w(proxy 71e43dca-3d8c-41ab-bc1e-d072a335Xbe6)
     good_and_bad('wf_cloudintegration_id?', 'InvalidCloudIntegrationId',
                  good, bad)
   end
@@ -166,7 +166,7 @@ class WavefrontValidatorsTest < MiniTest::Test
   def test_wf_savedsearch_id?
     good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
               917102d1-a10e-497b-ba63-95058f98d4fb)
-    bad = %w(agent 17102d1-a10e-497b-ba63-95058f98d4fb)
+    bad = %w(proxy 17102d1-a10e-497b-ba63-95058f98d4fb)
     good_and_bad('wf_savedsearch_id?', 'InvalidSavedSearchId', good, bad)
   end
 
