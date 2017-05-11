@@ -21,7 +21,12 @@ module Wavefront
       raise ArgumentError unless sources.is_a?(Array)
 
       q = [[:m, metric]]
-      q.<< [:c, cursor] if cursor
+
+      if cursor
+        raise ArgumentError unless cursor.is_a?(String)
+        q.<< [:c, cursor]
+      end
+
       sources.each { |s| q.<< [:h, s] }
 
       api_get('detail', q)

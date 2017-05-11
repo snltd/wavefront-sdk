@@ -17,6 +17,5 @@ class WavefrontMetricTest < WavefrontTestBase
                 'detail?m=metric.1&h=host1&h=host2&c=abc')
     assert_raises(ArgumentError) { wf.detail }
     assert_raises(ArgumentError) { wf.detail('m1', 'm2') }
-    assert_raises(ArgumentError) { wf.detail('m1', ['m2'], []) }
   end
 end
