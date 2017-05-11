@@ -5,6 +5,10 @@ require_relative './spec_helper'
 # Unit tests for Metric class
 #
 class WavefrontMetricTest < WavefrontTestBase
+  def api_base
+    'chart/metric'
+  end
+
   def test_detail
     should_work(:detail, 'metric.1', 'detail?m=metric.1')
     should_work(:detail, ['metric.1', %w(host1 host2)],
