@@ -92,7 +92,9 @@ module Wavefront
     def api_get(path, query = {})
       conn = mk_conn(:get, path)
       return if noop
-      JSON.parse(conn.get(nil, query).body || {})
+      res = conn.get(nil, query)
+      #p res
+      JSON.parse(res.body || {})
     end
 
     # Make a POST call to the Wavefront API and return the result as
