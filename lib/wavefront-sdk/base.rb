@@ -90,11 +90,7 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_get(path, query = {})
-      conn = mk_conn(:get, path)
-      return if noop
-      res = conn.get(nil, query)
-      #p res
-      JSON.parse(res.body || {})
+      make_call(mk_conn(:get, path), :get, nil, query)
     end
 
     # Make a POST call to the Wavefront API and return the result as
@@ -109,12 +105,10 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_post(path, body = nil, ctype = 'text/plain')
-      conn = mk_conn(:post, path, { 'Content-Type': ctype,
-                                    'Accept': 'application/json'})
       body = body.to_json unless body.is_a?(String)
-      msg('BODY', body) if body && (verbose || noop)
-      return if noop
-      JSON.parse(conn.post(nil, body).body || {})
+      make_call(mk_conn(:post, path, { 'Content-Type': ctype,
+                                       'Accept': 'application/json'}),
+                :post, nil, body)
     end
 
     # Make a PUT call to the Wavefront API and return the result as
@@ -129,12 +123,9 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_put(path, body = nil, ctype = 'application/json')
-      conn = mk_conn(:put, path, { 'Content-Type': ctype,
-                                   'Accept': 'application/json' })
-      body = body.to_json
-      msg('BODY', body) if body && (verbose || noop)
-      return if noop
-      JSON.parse(conn.put(nil, body).body || {})
+      make_call(mk_conn(:put, path, { 'Content-Type': ctype,
+                                      'Accept': 'application/json' }),
+                :put, nil, body.to_json)
     end
 
     # Make a DELETE call to the Wavefront API and return the result
@@ -147,9 +138,7 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_delete(path)
-      conn = mk_conn(:delete, path)
-      return if noop
-      JSON.parse(conn.delete.body || {})
+      make_call(mk_conn(:delete, path), :delete)
     end
 
     # doing a PUT to update an object requires only a certain subset of
@@ -164,12 +153,18 @@ module Wavefront
     def hash_for_update(old, new)
       raise ArgumentError unless old.is_a?(Hash) && new.is_a?(Hash)
 
-      Hash[old.merge(new).map { |k, v| [k.to_sym, v] }].select do |k, v|
+      Hash[old.merge(new).map { |k, v| [k.to_sym, v] }].select do |k, _v|
         update_keys.include?(k)
       end
     end
 
     private
+
+    def make_call(conn, method, *args)
+      return if noop
+      resp = conn.public_send(method, *args)
+      JSON.parse(resp.body || {})
+    end
 
     def setup_endpoint(creds)
       %w(endpoint token).each do |k|
