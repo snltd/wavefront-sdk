@@ -129,6 +129,7 @@ module Wavefront
     #
     def hash_to_wf(p)
       raise ArgumentError unless (p[:path] && p[:value] && p[:source])
+
       m = [p[:path], p[:value]]
       m.<< p[:ts] if p[:ts]
       m.<< 'source=' + p[:source]
@@ -155,6 +156,7 @@ module Wavefront
       rescue => e
         summary[:unsent] += 1
         log('WARNING: failed to send point.')
+        log(e.to_s, :debug)
         return false
       end
 
