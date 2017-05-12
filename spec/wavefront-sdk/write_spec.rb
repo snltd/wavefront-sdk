@@ -107,8 +107,14 @@ class WavefrontWriteTest < MiniTest::Test
     [:value, :source, :path].each do |k|
       p3 = POINT.dup
       p3.delete(k)
-      assert_raises(ArgumentError) { wf.hash_to_wf(p3) }
-      assert_raises(ArgumentError) { wf_tags.hash_to_wf(p3) }
+
+      assert_raises(Wavefront::Exception::InvalidPoint) do
+        wf.hash_to_wf(p3)
+      end
+
+      assert_raises(Wavefront::Exception::InvalidPoint) do
+        wf_tags.hash_to_wf(p3)
+      end
     end
   end
 

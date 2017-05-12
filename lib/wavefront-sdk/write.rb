@@ -58,13 +58,12 @@ module Wavefront
     #   :debug to DEBUG.
     #
     def log(msg, level = nil)
-      if level.nil?
-        puts msg
-      elsif level == :debug
-        puts msg if opts[:debug]
-      elsif level == :info
-        puts msg if opts[:verbose] || opts[:debug]
-      end
+      # print it unless it's a debug and we're not in debug
+      #
+      return if level == :debug && ! opts[:debug]
+      return if level == :info && ! opts[:verbose]
+
+      puts msg
     end
 
     # Send multiple points to a Wavefront proxy.
@@ -128,7 +127,9 @@ module Wavefront
     #   the format.
     #
     def hash_to_wf(p)
-      raise ArgumentError unless (p[:path] && p[:value] && p[:source])
+      unless ([:path, :value, :source] - p.keys).empty?
+        raise Wavefront::Exception::InvalidPoint
+      end
 
       m = [p[:path], p[:value]]
       m.<< p[:ts] if p[:ts]

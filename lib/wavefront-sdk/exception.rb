@@ -18,6 +18,7 @@ module Wavefront
     class InvalidMetricName < ::Exception; end
     class InvalidMetricValue < ::Exception; end
     class InvalidName < ::Exception; end
+    class InvalidPoint < ::Exception; end
     class InvalidPrefixLength < ::Exception; end
     class InvalidProxyId < ::Exception; end
     class InvalidSavedSearchId < ::Exception; end
