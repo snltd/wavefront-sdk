@@ -30,3 +30,31 @@ module Wavefront
     end
   end
 end
+
+# Extensions to the Hash class
+#
+class Hash
+
+  # Convert a tag hash into a string. The quoting is recommended in
+  # the WF wire-format guide. No validation is performed here.
+  #
+  def to_wf_tag
+    self.map { |k, v| "#{k}=\"#{v}\"" }.join(' ')
+  end
+end
+
+# Extensions to stdlib Array
+#
+class Array
+
+  # Join strings together to make a URI path in a way that is more
+  # flexible than URI::Join.  Removes multiple and trailing
+  # separators. Does not have to produce fully qualified paths. Has
+  # no concept of protocols, hostnames, or query strings.
+  #
+  # @return [String] a URI path
+  #
+  def uri_concat
+    self.join('/').squeeze('/').sub(/\/$/, '').sub(/\/\?/, '?')
+  end
+end
