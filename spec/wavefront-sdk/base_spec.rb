@@ -16,7 +16,7 @@ class WavefrontBaseTest < MiniTest::Test
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
     @update_keys = []
   end
-=begin
+
   def test_time_to_ms
     now_ms = Time.now.to_i * 1000
     assert_equal wf.time_to_ms(now_ms), now_ms
@@ -33,13 +33,14 @@ class WavefrontBaseTest < MiniTest::Test
     assert_equal %w(/a /b/ /c).uri_concat, '/a/b/c'
     assert_equal ['/a', '/b c'].uri_concat, '/a/b c'
   end
-=end
+
   def test_api_get
     uri = "#{uri_base}/path?key1=val1"
     stub_request(:get, uri).to_return(body: {}.to_json, status: 200)
     wf.api_get('/path', key1: 'val1')
     assert_requested(:get, uri, headers: headers)
   end
+
   def test_api_post
     uri = "#{uri_base}/path"
     obj = {key: 'value'}
@@ -67,7 +68,6 @@ class WavefrontBaseTest < MiniTest::Test
     assert_requested(:delete, uri, headers: headers)
   end
 
-=begin
   def test_api_noop
     uri = "#{uri_base}/path"
 
@@ -85,5 +85,4 @@ class WavefrontBaseTest < MiniTest::Test
 
     assert_equal(wf.hash_for_update(body, upd), { k1: 'ov1', k2: 'nv1'})
   end
-=end
 end
