@@ -1,20 +1,20 @@
-require_relative './validators'
 require 'socket'
+require_relative './base'
 
-HOSTNAME = Socket.gethostname
+HOSTNAME = Socket.gethostname.freeze
 
 module Wavefront
   #
   # This class helps you send points to a Wavefront proxy in native
   # format. Usually this is done on port 2878.
   #
-  class Write
-    attr_reader :sock, :opts, :summary
-    include Wavefront::Validators
+  class Write < Wavefront::Base
+    attr_reader :sock, :summary
 
     # Construct an object which allows us to write points to a
     # Wavefront proxy.
     #
+    # @pram creds [Hash] must contain the keys endpoint: and port.
     # @param options [Hash] can contain the following keys:
     #   proxy [String] the address of the Wavefront proxy. ('wavefront')
     #   port [Integer] the port of the Wavefront proxy (2878)
@@ -28,10 +28,8 @@ module Wavefront
     #   verbose [Bool]
     #   debug [Bool]
     #
-    def initialize(options = {})
-      defaults = { proxy:      'wavefront',
-                   port:       2878,
-                   tags:       nil,
+    def post_initialize(creds = {}, options = {})
+      defaults = { tags:       nil,
                    noop:       false,
                    novalidate: false,
                    verbose:    false,
@@ -43,27 +41,26 @@ module Wavefront
       wf_point_tags?(opts[:tags]) if opts[:tags]
     end
 
-    # Fill in some defaults, if the user hasn't supplied them
-    #
     def setup_options(user, defaults)
       defaults.merge(user)
     end
 
-    # Print a message to standard output. If you wish to integrate
-    # with a logging framework, this is your hook.
+    # Send raw data to a Wavefront proxy, automatically opening and
+    # closing a socket.
     #
-    # @param msg [String] the string to print
-    # @param level [Symbol] the level of the message.
-    #   :verbose messages equate to a standard INFO log level and
-    #   :debug to DEBUG.
+    # @param point [Array[String]] an array of points in native
+    #   Wavefront wire format, as described in
+    #   https://community.wavefront.com/docs/DOC-1031. No validation
+    #   is performed.
     #
-    def log(msg, level = nil)
-      # print it unless it's a debug and we're not in debug
-      #
-      return if level == :debug && ! opts[:debug]
-      return if level == :info && ! opts[:verbose]
+    def raw(points, openclose = true)
+      open if openclose
 
-      puts msg
+      begin
+        [points].flatten.each{ |p| send_point(p) }
+      ensure
+        close if openclose
+      end
     end
 
     # Send multiple points to a Wavefront proxy.
@@ -127,9 +124,11 @@ module Wavefront
     #   the format.
     #
     def hash_to_wf(p)
-      unless ([:path, :value, :source] - p.keys).empty?
+      unless p.key?(:path) && p.key?(:value)
         raise Wavefront::Exception::InvalidPoint
       end
+
+      p[:source] = HOSTNAME unless p.key?(:source)
 
       m = [p[:path], p[:value]]
       m.<< p[:ts] if p[:ts]
@@ -174,11 +173,13 @@ module Wavefront
         return true
       end
 
-      log("Connecting to #{opts[:proxy]}:#{opts[:port]}.", :info)
+      log("Connecting to #{net[:proxy]}:#{net[:port]}.", :info)
 
+      p net
       begin
-        @sock = TCPSocket.new(opts[:proxy], opts[:port])
-      rescue
+        @sock = TCPSocket.new(net[:proxy], net[:port])
+      rescue => e
+        log(e, :error)
         raise Wavefront::Exception::InvalidEndpoint
       end
     end
@@ -190,17 +191,15 @@ module Wavefront
       log('Closing connection to proxy.', :info)
       sock.close
     end
-  end
-end
 
-# Extensions to the Hash class
-#
-class Hash
+    private
 
-  # Convert a tag hash into a string. The quoting is recommended in
-  # the WF wire-format guide. No validation is performed here.
-  #
-  def to_wf_tag
-    self.map { |k, v| "#{k}=\"#{v}\"" }.join(' ')
+    # Overload the method which sets an API endpoint. A proxy
+    # endpoint has an address and a port, rather than an address and
+    # a token.
+    #
+    def setup_endpoint(creds)
+      @net = creds
+    end
   end
 end
