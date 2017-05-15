@@ -1,6 +1,7 @@
 require 'json'
 require 'time'
 require 'faraday'
+require 'pp'
 require_relative './exception'
 require_relative './mixins'
 require_relative './validators'
@@ -14,16 +15,19 @@ module Wavefront
     include Wavefront::Validators
     include Wavefront::Mixins
     attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn,
-                :update_keys
+                :update_keys, :logger
 
     # Create a new API object. This will always be called from a
-    # class which inherits this one.
+    # class which inherits this one. If the inheriting class defines
+    # #post_initialize, that method will be called afterwards, with
+    # the same arguments.
     #
     # @param creds [Hash] must contain the keys `endpoint` (the
     #   Wavefront API server) and `token`, the user token with which
     #   you wish to access the endpoint.
     # @param opts [Hash] options governing class behaviour. Expected
-    #   keys are `debug`, `noop` and `verbose`, all boolean.
+    #   keys are `debug`, `noop` and `verbose`, all boolean; and
+    #   `logger`, which must be a standard Ruby logger object.
     # @return [Nil]
     #
     def initialize(creds = {}, opts = {})
@@ -31,7 +35,10 @@ module Wavefront
       @debug = opts[:debug] || false
       @noop = opts[:noop] || false
       @verbose = opts[:verbose] || false
+      @logger = opts[:logger] || nil
       setup_endpoint(creds)
+
+      post_initialize(creds, opts) if respond_to?(:post_initialize)
     end
 
     # Convert an epoch timestamp into epoch milliseconds. If the
@@ -65,14 +72,6 @@ module Wavefront
     # @return [URI::HTTPS]
     #
     def mk_conn(method, path, headers = {})
-      if verbose || noop
-        msg(method.upcase,
-            net[:endpoint] + [net[:api_base], path].uri_concat)
-        msg('HEADERS', net[:headers])
-      end
-
-      return false if noop
-
       Faraday.new(
         url:     net[:endpoint] + [net[:api_base], path].uri_concat,
         headers: net[:headers].merge(headers)
@@ -158,11 +157,55 @@ module Wavefront
       end
     end
 
+    # Send a message to a Ruby logger object if the user supplied
+    # one, or print to standard out if not.
+    #
+    # @param msg [String] the string to print
+    # @param level [Symbol] the level of the message.
+    #   :verbose messages equate to a standard INFO log level and
+    #   :debug to DEBUG.
+    #
+    def log(msg, level = nil)
+
+      if logger
+        logger.send(level || :info, msg)
+      else
+        # print it unless it's a debug and we're not in debug
+        #
+        return if level == :debug && ! opts[:debug]
+        return if level == :info && ! opts[:verbose]
+
+        puts msg
+      end
+    end
+
     private
 
+    # Try to describe the actual HTTP calls we make. There's a bit
+    # of clumsy guesswork here
+    #
+    def verbosity(conn, method, *args)
+      log "uri: #{method.upcase} #{conn.url_prefix.to_s}"
+
+      if args.last && ! args.last.empty?
+        puts log method == :get ? "params: #{args.last}" :
+                                  "body: #{args.last}"
+      end
+    end
+
+    # Make the API call, or not, if noop is set.
+    #
     def make_call(conn, method, *args)
+      verbosity(conn, method, *args) if noop || verbose
       return if noop
+
       resp = conn.public_send(method, *args)
+
+      if debug
+        require 'pp'
+        pp resp
+      end
+
       JSON.parse(resp.body || {})
     end
 
@@ -179,26 +222,5 @@ module Wavefront
         api_base: ['', 'api', 'v2', api_base].uri_concat
       }
     end
-
-    def msg(*msg)
-      puts "mssage"
-      puts msg.map(&:to_s).join(' ')
-    end
-  end
-end
-
-# Extensions to stdlib Array
-#
-class Array
-
-  # Join strings together to make a URI path in a way that is more
-  # flexible than URI::Join.  Removes multiple and trailing
-  # separators. Does not have to produce fully qualified paths. Has
-  # no concept of protocols, hostnames, or query strings.
-  #
-  # @return [String] a URI path
-  #
-  def uri_concat
-    self.join('/').squeeze('/').sub(/\/$/, '').sub(/\/\?/, '?')
   end
 end
