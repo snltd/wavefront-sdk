@@ -7,6 +7,8 @@ require 'spy'
 require 'spy/integration'
 require 'socket'
 
+W_CREDS = { proxy: 'wavefront', port: 2878 }
+
 TAGS = { gt1: 'gv1', gt2: 'gv2' }.freeze
 
 POINT =  { path:   'test.metric',
@@ -28,15 +30,13 @@ class WavefrontWriteTest < MiniTest::Test
   attr_reader :wf, :wf_noop, :wf_tags
 
   def setup
-    @wf = Wavefront::Write.new
-    @wf_noop = Wavefront::Write.new(noop: true)
-    @wf_tags = Wavefront::Write.new(tags: TAGS)
+    @wf = Wavefront::Write.new(W_CREDS)
+    @wf_noop = Wavefront::Write.new(W_CREDS, noop: true)
+    @wf_tags = Wavefront::Write.new(W_CREDS, tags: TAGS)
   end
 
   def test_initialize
-    assert_equal(wf.opts[:port], 2878)
     refute(wf.opts[:tags])
-    assert_equal(wf.opts[:proxy], 'wavefront')
     refute(wf.opts[:verbose])
     refute(wf.opts[:debug])
     refute(wf.opts[:noop])
@@ -104,7 +104,7 @@ class WavefrontWriteTest < MiniTest::Test
     assert_equal(wf.hash_to_wf(p2),
                  'test.metric 123456 1469987572 source=testhost')
 
-    [:value, :source, :path].each do |k|
+    [:value, :path].each do |k|
       p3 = POINT.dup
       p3.delete(k)
 
