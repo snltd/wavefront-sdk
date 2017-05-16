@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 WEBHOOK = '9095WaGklE8Gy3M1'.freeze
 

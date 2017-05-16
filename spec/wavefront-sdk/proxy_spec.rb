@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 PROXY = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
 

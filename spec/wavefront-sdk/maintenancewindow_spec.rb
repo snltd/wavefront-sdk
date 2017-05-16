@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 WINDOW = '1493324005091'.freeze
 WINDOW_BODY = {

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'date'
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 SERIES = 'test.metric'.freeze
 T = Time.now.freeze

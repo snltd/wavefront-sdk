@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 DASHBOARD = 'test_dashboard'.freeze
 DASHBOARD_BODY = {

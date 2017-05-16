@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
 CLOUD_BODY = {

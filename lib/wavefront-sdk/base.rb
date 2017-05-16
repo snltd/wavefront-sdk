@@ -24,7 +24,9 @@ module Wavefront
     #
     # @param creds [Hash] must contain the keys `endpoint` (the
     #   Wavefront API server) and `token`, the user token with which
-    #   you wish to access the endpoint.
+    #   you wish to access the endpoint. Can optionally contain
+    #   `agent`, which will become the `user-agent` string sent with
+    #   all requests.
     # @param opts [Hash] options governing class behaviour. Expected
     #   keys are `debug`, `noop` and `verbose`, all boolean; and
     #   `logger`, which must be a standard Ruby logger object.
@@ -214,10 +216,13 @@ module Wavefront
         raise "creds must contain #{k}" unless creds.key?(k.to_sym)
       end
 
+      unless creds.key?(:agent) && creds[:agent]
+        creds[:agent] = "wavefront-sdk #{WF_SDK_VERSION}"
+      end
+
       @net = {
         headers:  { 'Authorization': "Bearer #{creds[:token]}",
-                    'user-agent':    "wavefront-sdk #{WF_SDK_VERSION}",
-                  },
+                    'user-agent':    creds[:agent] },
         endpoint: creds[:endpoint],
         api_base: ['', 'api', 'v2', api_base].uri_concat
       }

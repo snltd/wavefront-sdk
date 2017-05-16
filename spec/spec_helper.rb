@@ -7,7 +7,7 @@ require 'webmock/minitest'
 CREDS = {
   endpoint: 'https://test.example.com',
   token:    '0123456789-ABCDEF'
-}.freeze
+}
 
 POST_HEADERS = {
   :'Content-Type' => 'text/plain', :Accept => 'application/json'
@@ -21,7 +21,7 @@ class WavefrontTestBase < MiniTest::Test
   attr_reader :wf, :wf_noop, :uri_base, :headers
 
   def initialize(args)
-    require_relative "../../lib/wavefront-sdk/#{class_basename.downcase}"
+    require_relative "../lib/wavefront-sdk/#{class_basename.downcase}"
     super(args)
   end
 

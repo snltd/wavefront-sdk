@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 SAVED_SEARCH = 'e2hLH2FR'.freeze
 SAVED_SEARCH_BODY = {

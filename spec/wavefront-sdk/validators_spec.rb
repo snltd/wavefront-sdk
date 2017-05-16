@@ -2,7 +2,7 @@
 
 require 'date'
 require 'minitest/autorun'
-require_relative './spec_helper'
+require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/validators'
 
 class WavefrontValidatorsTest < MiniTest::Test

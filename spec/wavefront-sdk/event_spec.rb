@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 EVENT = '1481553823153:testev'.freeze
 EVENT_BODY = {

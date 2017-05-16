@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 MESSAGE = 'message_id'.freeze # don't know what these look like yet
 

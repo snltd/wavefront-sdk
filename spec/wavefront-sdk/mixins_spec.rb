@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/mixins'
 
 # Test SDK mixins

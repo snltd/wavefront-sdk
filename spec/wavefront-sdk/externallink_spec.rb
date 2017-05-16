@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 EXTERNAL_LINK = 'lq6rPlSg2CFMSrg6'.freeze
 EXTERNAL_LINK_BODY = {

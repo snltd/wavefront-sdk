@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 SOURCE = '74a247a9-f67c-43ad-911f-fabafa9dc2f3joyent'
 SOURCE_BODY = {

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './spec_helper'
+require_relative '../spec_helper'
 
 USER = 'user@example.com'.freeze
 GROUP = 'agent_management'.freeze
