@@ -175,7 +175,6 @@ module Wavefront
 
       log("Connecting to #{net[:proxy]}:#{net[:port]}.", :info)
 
-      p net
       begin
         @sock = TCPSocket.new(net[:proxy], net[:port])
       rescue => e
