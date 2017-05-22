@@ -21,7 +21,7 @@ $ gem build wavefront-sdk.gemspec
 ```ruby
 # Define our API endpoint. (This is not a valid token!)
 
-CREDS = { endpoint: 'https://metrics.wavefront.com',
+CREDS = { endpoint: 'metrics.wavefront.com',
           token: 'c7a1ff30-0dd8-fa60-e14d-f58f91bafc0e' }
 
 # Retrieve a timeseries over the last 10 minutes, with one minute

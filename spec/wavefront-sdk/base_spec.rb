@@ -12,7 +12,7 @@ class WavefrontBaseTest < MiniTest::Test
   def setup
     @wf = Wavefront::Base.new(CREDS)
     @wf_noop = Wavefront::Base.new(CREDS, noop: true)
-    @uri_base = "#{CREDS[:endpoint]}/api/v2/base"
+    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/base"
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
     @update_keys = []
   end

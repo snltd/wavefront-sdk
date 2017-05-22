@@ -5,7 +5,7 @@ require 'minitest/autorun'
 require 'webmock/minitest'
 
 CREDS = {
-  endpoint: 'https://test.example.com',
+  endpoint: 'test.example.com',
   token:    '0123456789-ABCDEF'
 }
 
@@ -36,7 +36,7 @@ class WavefrontTestBase < MiniTest::Test
   def setup
     klass = Object.const_get('Wavefront').const_get(class_basename)
     @wf = klass.new(CREDS)
-    @uri_base = "#{CREDS[:endpoint]}/api/v2/" + api_base
+    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/" + api_base
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
   end
 
