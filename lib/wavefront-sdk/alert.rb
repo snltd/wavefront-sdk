@@ -91,13 +91,14 @@ module Wavefront
     # Snooze a specific alert for some number of seconds.
     #
     # @param id [String] ID of the alert
-    # @param time [Integer] how many seconds to snooze for
+    # @param time [Integer] how many seconds to snooze for. Nil is indefinite
     # @returns [Hash] object describing the alert with status and
     #   response keys
     #
-    def snooze(id, time = 3600)
+    def snooze(id, seconds = nil)
       wf_alert_id?(id)
-      api_post([id, 'snooze'].uri_concat, time)
+      qs = seconds ? "?seconds=#{seconds}" : ''
+      api_post([id, "snooze#{qs}"].uri_concat, nil)
     end
 
     # GET /api/v2/alert/{id}/tag

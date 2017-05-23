@@ -48,7 +48,8 @@ class WavefrontAlertTest < WavefrontTestBase
   end
 
   def test_snooze
-    should_work(:snooze, ALERT, ["#{ALERT}/snooze", 3600], :post,
+    should_work(:snooze, ALERT, "#{ALERT}/snooze", :post, POST_HEADERS)
+    should_work(:snooze, [ALERT, 3600], "#{ALERT}/snooze?seconds=3600", :post,
                 POST_HEADERS)
     should_be_invalid(:snooze)
   end
