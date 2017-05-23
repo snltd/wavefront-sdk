@@ -177,7 +177,7 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_user_id?
-    good = %w(Some.User@example.com general99+specific@somewhere.net)
+    good = %w(Some.User@example.com general99+specific@somewhere.net someone@somewhere.com)
     bad = %w(word Name)
     good_and_bad('wf_user_id?', 'InvalidUserId', good, bad)
   end
