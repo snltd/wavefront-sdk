@@ -3,6 +3,7 @@ PATH
   specs:
     wavefront-sdk (0.0.0)
       faraday (>= 0.12.1, < 0.13)
+      inifile (>= 3.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -15,6 +16,7 @@ GEM
     faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
     hashdiff (0.3.2)
+    inifile (3.0.0)
     minitest (5.8.5)
     multipart-post (2.0.0)
     parser (2.4.0.0)
