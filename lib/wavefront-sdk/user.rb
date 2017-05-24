@@ -65,7 +65,7 @@ module Wavefront
       wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
       api_post([id, 'grant'].uri_concat, "group=#{group}",
-               'application/x-www-form-urlencoded')
+               'application/json')
     end
 
     # PUT /api/v2/user/{id}/revoke
@@ -81,7 +81,7 @@ module Wavefront
       wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
       api_post([id, 'revoke'].uri_concat, "group=#{group}",
-               'application/x-www-form-urlencoded')
+               'application/json')
     end
   end
 end

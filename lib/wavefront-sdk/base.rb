@@ -75,7 +75,7 @@ module Wavefront
     #
     def mk_conn(method, path, headers = {})
       Faraday.new(
-        url:     net[:endpoint] + [net[:api_base], path].uri_concat,
+        url:     "https://#{net[:endpoint]}" + [net[:api_base], path].uri_concat,
         headers: net[:headers].merge(headers)
       )
     end

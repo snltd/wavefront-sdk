@@ -13,8 +13,8 @@ module Wavefront
     # @param offset [Int] agent at which the list begins
     # @param limit [Int] the number of agents to return
     #
-    def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+    def list(offset = 0, limit = 100, unread_only = true)
+      api_get('', { offset: offset, limit: limit, unreadOnly: unread_only })
     end
 
     # POST /api/v2/message/{id}/read
