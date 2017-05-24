@@ -38,6 +38,10 @@ module Wavefront
       options[:s] = parse_time(t_start, true)
       options[:e] = parse_time(t_end, true) if t_end
 
+      options.delete_if do |k, v|
+        v == false && k != :i
+      end
+
       api_get('api', options)
     end
 
