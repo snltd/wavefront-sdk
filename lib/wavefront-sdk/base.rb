@@ -73,7 +73,7 @@ module Wavefront
     # @param headers [Hash] additional headers
     # @return [URI::HTTPS]
     #
-    def mk_conn(method, path, headers = {})
+    def mk_conn(path, headers = {})
       Faraday.new(
         url:     "https://#{net[:endpoint]}" + [net[:api_base], path].uri_concat,
         headers: net[:headers].merge(headers)
@@ -91,7 +91,7 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_get(path, query = {})
-      make_call(mk_conn(:get, path), :get, nil, query)
+      make_call(mk_conn(path), :get, nil, query)
     end
 
     # Make a POST call to the Wavefront API and return the result as
@@ -107,7 +107,7 @@ module Wavefront
     #
     def api_post(path, body = nil, ctype = 'text/plain')
       body = body.to_json unless body.is_a?(String)
-      make_call(mk_conn(:post, path, { 'Content-Type': ctype,
+      make_call(mk_conn(path, { 'Content-Type': ctype,
                                        'Accept': 'application/json'}),
                 :post, nil, body)
     end
@@ -124,7 +124,7 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_put(path, body = nil, ctype = 'application/json')
-      make_call(mk_conn(:put, path, { 'Content-Type': ctype,
+      make_call(mk_conn(path, { 'Content-Type': ctype,
                                       'Accept': 'application/json' }),
                 :put, nil, body.to_json)
     end
@@ -139,7 +139,7 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_delete(path)
-      make_call(mk_conn(:delete, path), :delete)
+      make_call(mk_conn(path), :delete)
     end
 
     # doing a PUT to update an object requires only a certain subset of
@@ -187,7 +187,7 @@ module Wavefront
     # of clumsy guesswork here
     #
     def verbosity(conn, method, *args)
-      log "uri: #{method.upcase} #{conn.url_prefix.to_s}"
+      log "uri: #{method.upcase} #{conn.url_prefix}"
 
       if args.last && ! args.last.empty?
         puts log method == :get ? "params: #{args.last}" :

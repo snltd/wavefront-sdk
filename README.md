@@ -17,7 +17,6 @@ $ gem build wavefront-sdk.gemspec
 
 ## Examples
 
-
 ```ruby
 # Define our API endpoint. (This is not a valid token!)
 
@@ -43,4 +42,22 @@ p wf.list
 # And delete the user 'lolex@oldplace.com'
 
 wf.delete('lolex@oldplace.com')
+```
+
+The SDK also provides a helper class for extracting credentials from a
+configuration file:
+
+```ruby
+require 'wavefront-sdk/credentials'
+
+# Get an object which contains credentials
+
+Wavefront::Credentials.new.to_obj
+
+# Now use that to list the proxies in our account
+
+require 'pp'
+require 'wavefront-sdk/proxy'
+
+pp Wavefront::Proxy.new(c.creds).list
 ```

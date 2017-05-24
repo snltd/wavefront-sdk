@@ -7,7 +7,7 @@ SEARCH_BODY = {
   offset: 0,
   query: [{ key:            'name',
             value:          'Wavefront',
-            matchingMethod: 'CONTAINS'}],
+            matchingMethod: 'CONTAINS' }],
   sort: { field:     'string',
           ascending: true }
 }.freeze

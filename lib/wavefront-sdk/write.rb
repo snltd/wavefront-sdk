@@ -28,7 +28,7 @@ module Wavefront
     #   verbose [Bool]
     #   debug [Bool]
     #
-    def post_initialize(creds = {}, options = {})
+    def post_initialize(_creds = {}, options = {})
       defaults = { tags:       nil,
                    noop:       false,
                    novalidate: false,

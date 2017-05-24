@@ -12,7 +12,7 @@ WEBHOOK_BODY = {
   recipient:         'http://example.com',
   customHttpHeaders: {},
   contentType:       'text/plain'
-}
+}.freeze
 
 # Unit tests for Webhook class
 #

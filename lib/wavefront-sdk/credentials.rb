@@ -1,64 +1,63 @@
 require 'pathname'
 require 'inifile'
+require 'ostruct'
 
 module Wavefront
 
   # Helper methods to get Wavefront credentials
   #
   class Credentials
-    attr_reader :opts
+    attr_reader :opts, :conf, :to_obj
 
-    # Returns you a hash of credentials for Wavefront. It will look
-    # in the following places:
+    # Gives you an object or hash of credentials and options for speaking to
+    # Wavefront. It will look in the following places:
     #
     # ~/.wavefront
     # /etc/wavefront/credentials
     # WAVEFRONT_ENDPOINT and WAVEFRONT_TOKEN environment variables
     #
-    # @param options [Hash] can have keys
-    #   file [Pathname, String] the path to a config file to search
-    #   profile [String] the profile inside the config file
-    #   only_creds [Bool] whether to only return endpoint and token
-    #   information rather than the entire contents of a config
-    #   file.
+    # @param options [Hash] keys may be 'file', which
+    #   specifies a config file which will be loaded and parsed. If no file is
+    #   supplied, those listed above will be used.; and/or 'profile' which select a
+    #   profile section from 'file'
     #
-    def initialize(options = { only_creds: true })
+    def initialize(options = {})
       @opts = options
+      conf = load_from_file || {}
+      conf[:endpoint] = ENV['WAVEFRONT_ENDPOINT'] if ENV['WAVEFRONT_ENDPOINT']
+      conf[:token] = ENV['WAVEFRONT_TOKEN'] if ENV['WAVEFRONT_TOKEN']
+      @conf = conf
+    end
 
-      ret = load_from_file || {}
+    def to_hash
+      { config: conf,
+        creds: conf.select { |k, _v| [:endpoint, :token].include?(k) },
+        proxy: conf.select { |k, _v| [:proxy, :port].include?(k) } }
+    end
 
-      if ENV['WAVEFRONT_ENDPOINT']
-        ret[:endpoint] = ENV['WAVEFRONT_ENDPOINT']
-      end
-
-      ret[:token] = ENV['WAVEFRONT_TOKEN'] if ENV['WAVEFRONT_TOKEN']
+    def to_obj
+      OpenStruct.new(to_hash)
     end
 
     def load_from_file
-      conf = false
+      ret = {}
 
       profile = opts[:profile] || 'default'
 
-      c_file = if opts[:file]
-                 Array(Pathname.new(file))
+      c_file = if opts.key?(:file)
+                 Array(Pathname.new(opts[:file]))
                else
                  [Pathname.new('/etc/wavefront/credentials'),
                   Pathname.new(ENV['HOME']) + '.wavefront']
                end
 
       c_file.each do |f|
-        conf = load_config(f, profile) if f.exist?
+        next unless f.exist?
+        ret = load_profile(f, profile)
+        ret[:file] = f
       end
 
-      filter_config(conf)
-    end
-
-    def filter_config(conf)
-      if opts[:only_creds]
-        conf.select! { |k, _v| k == :endpoint || k == :token }
-      end
-
-      conf
+      ret
     end
 
     # Load in configuration (optionally) given section of an

@@ -7,21 +7,21 @@ require 'spy'
 require 'spy/integration'
 require 'socket'
 
-W_CREDS = { proxy: 'wavefront', port: 2878 }
+W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 
 TAGS = { gt1: 'gv1', gt2: 'gv2' }.freeze
 
 POINT =  { path:   'test.metric',
-           value:  123456,
-           ts:     1469987572,
+           value:  123_456,
+           ts:     1_469_987_572,
            source: 'testhost',
-           tags:   { t1: 'v1', t2: 'v2' } }
+           tags:   { t1: 'v1', t2: 'v2' } }.freeze
 
-POINT_L = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'
+POINT_L = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'.freeze
 
 POINT_A = [
-  POINT, POINT.dup.update(ts: 1469987588, value: 54321)
-]
+  POINT, POINT.dup.update(ts: 1_469_987_588, value: 54_321)
+].freeze
 
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
@@ -42,7 +42,7 @@ class WavefrontWriteTest < MiniTest::Test
     refute(wf.opts[:noop])
     assert(wf_noop.opts[:noop])
     assert_equal(wf_tags.opts[:tags], TAGS)
-    assert_equal(wf.summary, { sent: 0, rejected: 0, unsent: 0 })
+    assert_equal(wf.summary, sent: 0, rejected: 0, unsent: 0)
   end
 
   def test_write_openclose
@@ -67,6 +67,7 @@ class WavefrontWriteTest < MiniTest::Test
     Spy.on(TCPSocket, :new).and_return(mocket)
     mocket_spy = Spy.on(mocket, :puts)
     wf_noop.write(POINT)
+    refute mocket_spy.has_been_called?
   end
 
   def test_write
@@ -89,15 +90,17 @@ class WavefrontWriteTest < MiniTest::Test
 
   def test_hash_to_wf
     assert_equal(wf.hash_to_wf(POINT),
-        'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"')
+                 'test.metric 123456 1469987572 ' \
+                 'source=testhost t1="v1" t2="v2"')
     assert_equal(wf_tags.hash_to_wf(POINT),
-        'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2" ' \
-        'gt1="gv1" gt2="gv2"')
+                 'test.metric 123456 1469987572 ' \
+                 'source=testhost t1="v1" t2="v2" ' \
+                 'gt1="gv1" gt2="gv2"')
 
     p1 = POINT.dup
     p1.delete(:ts)
     assert_equal(wf.hash_to_wf(p1),
-                'test.metric 123456 source=testhost t1="v1" t2="v2"')
+                 'test.metric 123456 source=testhost t1="v1" t2="v2"')
 
     p2 = POINT.dup
     p2.delete(:tags)
@@ -155,10 +158,10 @@ class WavefrontWriteTest < MiniTest::Test
   end
 end
 
+# A mock socket
+#
 class Mocket
-  def puts(s)
-  end
+  def puts(s); end
 
-  def close
-  end
+  def close; end
 end

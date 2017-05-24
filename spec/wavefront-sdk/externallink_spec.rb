@@ -7,7 +7,7 @@ EXTERNAL_LINK_BODY = {
   name:        'test link',
   template:    'https://example.com/link/{{value}}',
   description: 'an imaginary link for unit testing purposes'
-}.freeze
+}
 
 EXTERNAL_LINK_BODY_2 = {
   name:        'test link',
