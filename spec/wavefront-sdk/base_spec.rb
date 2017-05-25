@@ -36,7 +36,7 @@ class WavefrontBaseTest < MiniTest::Test
 
   def test_api_get
     uri = "#{uri_base}/path?key1=val1"
-    stub_request(:get, uri).to_return(body: {}.to_json, status: 200)
+    stub_request(:get, uri).to_return(body: DUMMY_RESPONSE, status: 200)
     wf.api_get('/path', key1: 'val1')
     assert_requested(:get, uri, headers: headers)
   end
@@ -44,7 +44,7 @@ class WavefrontBaseTest < MiniTest::Test
   def test_api_post
     uri = "#{uri_base}/path"
     obj = {key: 'value'}
-    stub_request(:post, uri).to_return(body: {}.to_json, status: 200)
+    stub_request(:post, uri).to_return(body: DUMMY_RESPONSE, status: 200)
     wf.api_post('/path', 'string')
     assert_requested(:post, uri, body: 'string',
                                  headers: headers.merge(POST_HEADERS))
@@ -55,7 +55,7 @@ class WavefrontBaseTest < MiniTest::Test
 
   def test_api_put
     uri = "#{uri_base}/path"
-    stub_request(:put, uri).to_return(body: {}.to_json, status: 200)
+    stub_request(:put, uri).to_return(body: DUMMY_RESPONSE, status: 200)
     wf.api_put('/path', 'body')
     assert_requested(:put, uri, body: 'body'.to_json,
                                 headers: headers.merge(JSON_POST_HEADERS))
@@ -63,7 +63,7 @@ class WavefrontBaseTest < MiniTest::Test
 
   def test_api_delete
     uri = "#{uri_base}/path"
-    stub_request(:delete, uri).to_return(body: {}.to_json, status: 200)
+    stub_request(:delete, uri).to_return(body: DUMMY_RESPONSE, status: 200)
     wf.api_delete('/path')
     assert_requested(:delete, uri, headers: headers)
   end

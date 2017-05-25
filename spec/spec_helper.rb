@@ -17,6 +17,10 @@ JSON_POST_HEADERS = {
   :'Content-Type' => 'application/json', :Accept => 'application/json'
 }.freeze
 
+DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
+                 '"response":{"items":[{"name":"test data"}],"offset":0,' \
+                 '"limit":100,"totalItems":3,"moreItems":false}}'
+
 class WavefrontTestBase < MiniTest::Test
   attr_reader :wf, :wf_noop, :uri_base, :headers
 
@@ -70,9 +74,9 @@ class WavefrontTestBase < MiniTest::Test
 
     if body
       stub_request(call, uri).with(body: body, headers:headers)
-        .to_return(body: {}.to_json, status: 200)
+        .to_return(body: DUMMY_RESPONSE, status: 200)
     else
-      stub_request(call, uri).to_return(body: {}.to_json, status: 200)
+      stub_request(call, uri).to_return(body: DUMMY_RESPONSE, status: 200)
     end
 
     if args.is_a?(Hash)

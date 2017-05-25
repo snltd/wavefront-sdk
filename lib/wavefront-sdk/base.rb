@@ -2,14 +2,20 @@ require 'json'
 require 'time'
 require 'faraday'
 require 'pp'
+require 'ostruct'
 require_relative './exception'
 require_relative './mixins'
+require_relative './response'
 require_relative './validators'
 require_relative './version'
 
 module Wavefront
   #
-  # Abstract class from which all API classes inherit.
+  # Abstract class from which all API classes inherit. When you make
+  # any call to the Wavefront API from this SDK, you are returned an
+  # OpenStruct object.
+  #
+  # @returns a Wavefront::Response object
   #
   class Base
     include Wavefront::Validators
@@ -29,7 +35,10 @@ module Wavefront
     #   all requests.
     # @param opts [Hash] options governing class behaviour. Expected
     #   keys are `debug`, `noop` and `verbose`, all boolean; and
-    #   `logger`, which must be a standard Ruby logger object.
+    #   `logger`, which must be a standard Ruby logger object. You
+    #   can also pass :response_only. If this is true, you will only
+    #   be returned a hash of the 'response' object returned by
+    #   Wavefront.
     # @return [Nil]
     #
     def initialize(creds = {}, opts = {})
@@ -208,7 +217,7 @@ module Wavefront
         pp resp
       end
 
-      JSON.parse(resp.body || {})
+      Wavefront::Response.new(resp.body || {}, debug)
     end
 
     def setup_endpoint(creds)

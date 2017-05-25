@@ -21,6 +21,7 @@ module Wavefront
     class InvalidPoint < ::Exception; end
     class InvalidPrefixLength < ::Exception; end
     class InvalidProxyId < ::Exception; end
+    class InvalidResponse < ::Exception; end
     class InvalidSavedSearchId < ::Exception; end
     class InvalidSavedSearchEntity < ::Exception; end
     class InvalidSourceId < ::Exception; end
