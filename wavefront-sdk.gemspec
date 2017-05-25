@@ -1,10 +1,6 @@
 require 'pathname'
 require 'date'
-
 require_relative 'lib/wavefront-sdk/version'
-
-#lib = Pathname.new(__FILE__).dirname.realpath + 'lib'
-#$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |gem|
   gem.name          = 'wavefront-sdk'
