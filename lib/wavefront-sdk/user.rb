@@ -84,4 +84,8 @@ module Wavefront
                'application/json')
     end
   end
+
+  class Response
+    class User < Base; end
+  end
 end

@@ -66,4 +66,10 @@ module Wavefront
       api_put(id, body)
     end
   end
+
+  # A standard response.
+  #
+  class Response
+    class MaintenanceWindow < Base; end
+  end
 end

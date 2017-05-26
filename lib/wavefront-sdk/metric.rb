@@ -32,4 +32,8 @@ module Wavefront
       api_get('detail', q)
     end
   end
+
+  class Response
+    class Metric < Base; end
+  end
 end

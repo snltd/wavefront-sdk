@@ -79,4 +79,10 @@ module Wavefront
       api_post([id, 'undelete'].uri_concat)
     end
   end
+
+  # A standard response.
+  #
+  class Response
+    class CloudIntegration < Base; end
+  end
 end

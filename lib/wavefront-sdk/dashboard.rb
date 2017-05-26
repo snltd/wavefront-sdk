@@ -148,4 +148,10 @@ module Wavefront
       api_post([id, 'undelete'].uri_concat)
     end
   end
+
+  # A standard response.
+  #
+  class Response
+    class Dashboard < Base; end
+  end
 end

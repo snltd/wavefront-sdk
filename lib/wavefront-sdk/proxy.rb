@@ -86,4 +86,10 @@ module Wavefront
       api_put(id, payload)
     end
   end
+
+  # A standard response
+  #
+  class Response
+    class Proxy < Base; end
+  end
 end

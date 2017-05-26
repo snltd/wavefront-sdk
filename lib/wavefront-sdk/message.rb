@@ -27,4 +27,10 @@ module Wavefront
       api_post([id, 'read'].uri_concat)
     end
   end
+
+  # A standard response.
+  #
+  class Response
+    class Message < Base; end
+  end
 end

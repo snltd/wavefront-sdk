@@ -73,4 +73,8 @@ module Wavefront
       api_get('raw', options)
     end
   end
+
+  class Response
+    class Query < Base; end
+  end
 end

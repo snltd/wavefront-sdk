@@ -79,4 +79,10 @@ module Wavefront
 
     end
   end
+
+  # A standard response
+  #
+  class Response
+    class SavedSearch < Base; end
+  end
 end

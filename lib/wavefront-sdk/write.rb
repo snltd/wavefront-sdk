@@ -201,4 +201,9 @@ module Wavefront
       @net = creds
     end
   end
+
+  class Response
+    class Write < Base
+    end
+  end
 end

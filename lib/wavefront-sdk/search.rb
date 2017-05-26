@@ -49,4 +49,10 @@ module Wavefront
       api_post(path, body, 'application/json')
     end
   end
+
+  # A standard response
+  #
+  class Response
+    class Search < Base; end
+  end
 end

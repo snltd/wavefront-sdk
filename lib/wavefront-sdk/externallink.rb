@@ -68,4 +68,10 @@ module Wavefront
       api_put(id, body)
     end
   end
+
+  # A standard response.
+  #
+  class Response
+    class ExternalLink < Base; end
+  end
 end

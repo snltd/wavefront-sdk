@@ -15,7 +15,8 @@ module Wavefront
   # any call to the Wavefront API from this SDK, you are returned an
   # OpenStruct object.
   #
-  # @returns a Wavefront::Response object
+  # @returns a Wavefront::Class::Response object where Class matches
+  # the inheriting class name.
   #
   class Base
     include Wavefront::Validators
@@ -84,7 +85,8 @@ module Wavefront
     #
     def mk_conn(path, headers = {})
       Faraday.new(
-        url:     "https://#{net[:endpoint]}" + [net[:api_base], path].uri_concat,
+        url:     "https://#{net[:endpoint]}" +
+                 [net[:api_base], path].uri_concat,
         headers: net[:headers].merge(headers)
       )
     end
@@ -217,7 +219,12 @@ module Wavefront
         pp resp
       end
 
-      Wavefront::Response.new(resp.body || {}, debug)
+      response_class.send(:new, resp.body || {})
+    end
+
+    def response_class
+       Object.const_get(
+        "Wavefront::Response::#{self.class.name.split('::').last}")
     end
 
     def setup_endpoint(creds)

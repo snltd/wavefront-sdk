@@ -164,4 +164,10 @@ module Wavefront
       api_put([id, 'tag', tag].uri_concat)
     end
   end
+
+  # A standard response.
+  #
+  class Response
+    class Event < Base; end
+  end
 end

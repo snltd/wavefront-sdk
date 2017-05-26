@@ -3,7 +3,7 @@ require_relative './base'
 module Wavefront
   #
   # View and manage alerts. Alerts are identified by their millisecond
-  # epoch timestamp.
+  # epoch timestamp. Returns a Wavefront::Response::Alert object.
   #
   class Alert < Wavefront::Base
 
@@ -185,5 +185,11 @@ module Wavefront
     def summary
       api_get('summary')
     end
+  end
+
+  # A standard response
+  #
+  class Response
+    class Alert < Base; end
   end
 end
