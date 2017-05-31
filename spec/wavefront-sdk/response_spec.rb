@@ -17,11 +17,11 @@ class WavefrontResponseTest < MiniTest::Test
     assert_instance_of(Wavefront::Response::Base, wf)
     assert_respond_to(wf, :status)
     assert_respond_to(wf, :response)
+    assert_respond_to(wf.response, :items)
     refute_respond_to(wf, :to_a)
     [:code, :message, :result].each { |m| assert_respond_to(wf.status, m) }
     assert_equal(wf.status.code, 200)
-    assert_instance_of(Hash, wf.response)
-    wf.response.keys.each { |k| assert_instance_of(Symbol, k) }
+    assert_instance_of(Array, wf.response.items)
   end
 
   def test_initialize_bad_data
