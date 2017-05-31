@@ -31,7 +31,8 @@ module Wavefront
         raw = JSON.parse(json, symbolize_names: true)
         @status = Struct.new(*raw[:status].keys).
                          new(*raw[:status].values).freeze
-        @response = raw[:response].freeze
+        @response = Struct.new(*raw[:response].keys).
+                         new(*raw[:response].values).freeze
       rescue => e
         puts e.message if debug
         raise Wavefront::Exception::InvalidResponse
