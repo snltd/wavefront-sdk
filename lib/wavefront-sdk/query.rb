@@ -60,7 +60,7 @@ module Wavefront
     #
     def raw(metric, source = nil, t_start = nil, t_end = nil)
       raise ArgumentError unless metric.is_a?(String)
-      wf_source_id?(source)
+      wf_source_id?(source) if source
 
       options = {
         metric: metric,
@@ -75,6 +75,21 @@ module Wavefront
   end
 
   class Response
-    class Query < Base; end
+
+    # The Query response forges status and response methods to look
+    # like other classes and create a more consistent interface
+    #
+    class Query < Base
+      def populate(raw, status)
+        @response = Struct.new(*raw.keys).new(*raw.values).freeze
+
+        result = status == 200 ? 'OK' : 'ERROR'
+
+        if raw.key?(:warnings) || raw.key?(:error)
+          @status = Struct.new(:result, :message, :code).
+            new(result, raw[:message] || raw[:error], status)
+        end
+      end
+    end
   end
 end

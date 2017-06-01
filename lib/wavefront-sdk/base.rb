@@ -219,7 +219,7 @@ module Wavefront
         pp resp
       end
 
-      response_class.send(:new, resp.body || {})
+      response_class.send(:new, resp.body, resp.status || {})
     end
 
     def response_class

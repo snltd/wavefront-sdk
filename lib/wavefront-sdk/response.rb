@@ -17,25 +17,31 @@ module Wavefront
   #
   class Response
     class Base
-      attr_reader :status, :response
+      attr_reader :status, :response, :debug
 
       # Create and return a Wavefront::Response object
-      # @param json [String] a raw response from the Wavefront API
+      # @param json [String] a raw response body from the Wavefront API
+      # @param status [Integer] HTTP return code from the API
       # @param debug [Boolean] whether or not to print the exception
       #   message if one is thrown
       # @raise Wavefront::InvalidResponse if the response cannot be
       #   parsed
       # @return a Wavefront::Response object
       #
-      def initialize(json, debug = false)
-        raw = JSON.parse(json, symbolize_names: true)
-        @status = Struct.new(*raw[:status].keys).
-                         new(*raw[:status].values).freeze
-        @response = Struct.new(*raw[:response].keys).
-                         new(*raw[:response].values).freeze
+      def initialize(json, status, debug = false)
+        @debug = debug
+        populate(JSON.parse(json, symbolize_names: true), status)
       rescue => e
+       p e
         puts e.message if debug
         raise Wavefront::Exception::InvalidResponse
+      end
+
+      def populate(raw, status = 200)
+        @status = Struct.new(*raw[:status].keys).
+          new(*raw[:status].values).freeze
+        @response = Struct.new(*raw[:response].keys).
+          new(*raw[:response].values).freeze
       end
     end
   end
