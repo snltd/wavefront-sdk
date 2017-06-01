@@ -65,7 +65,7 @@ module Wavefront
       wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
       api_post([id, 'grant'].uri_concat, "group=#{group}",
-               'application/json')
+               'application/x-www-form-urlencoded')
     end
 
     # PUT /api/v2/user/{id}/revoke
@@ -81,11 +81,29 @@ module Wavefront
       wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
       api_post([id, 'revoke'].uri_concat, "group=#{group}",
-               'application/json')
+               'application/x-www-form-urlencoded')
     end
   end
 
   class Response
-    class User < Base; end
+
+    # The User response forges status and response methods to look
+    # like other classes and create a more consistent interface
+    #
+    class User < Base
+      def populate(raw, status)
+
+        @response = if raw.is_a?(Array)
+                      Struct.new(:items).new(raw).freeze
+                    elsif raw.is_a?(Hash)
+                      Struct.new(*raw.keys).new(*raw.values)
+                    end
+
+        result = status == 200 ? 'OK' : 'ERROR'
+
+        @status = Struct.new(:result, :message, :code).
+            new(result, raw[:message] || raw[:error] || nil, status)
+      end
+    end
   end
 end
