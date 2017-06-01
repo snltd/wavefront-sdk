@@ -34,6 +34,19 @@ module Wavefront
   end
 
   class Response
-    class Metric < Base; end
+
+    # The Metric response forges status and response methods to look
+    # like other classes and create a more consistent interface.
+    #
+    class Metric < Base
+      def populate(raw, status)
+        @response = Struct.new(*raw.keys).new(*raw.values).freeze
+
+        result = status == 200 ? 'OK' : 'ERROR'
+
+        @status = Struct.new(:result, :message, :code).
+          new(result, raw[:message] || raw[:error], status)
+      end
+    end
   end
 end
