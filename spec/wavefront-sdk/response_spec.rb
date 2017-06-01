@@ -13,7 +13,7 @@ WF_JSON = '{"status":{"result":"OK","message":"","code":200},' \
 class WavefrontResponseTest < MiniTest::Test
 
   def test_initialize_good_data
-    wf = Wavefront::Response::Base.new(WF_JSON)
+    wf = Wavefront::Response::Base.new(WF_JSON, 200)
     assert_instance_of(Wavefront::Response::Base, wf)
     assert_respond_to(wf, :status)
     assert_respond_to(wf, :response)
@@ -26,22 +26,22 @@ class WavefrontResponseTest < MiniTest::Test
 
   def test_initialize_bad_data
     assert_raises(Wavefront::Exception::InvalidResponse) do
-      Wavefront::Response::Base.new('merp')
+      Wavefront::Response::Base.new('merp', 200)
     end
 
     assert_raises(Wavefront::Exception::InvalidResponse) do
       Wavefront::Response::Base.new(
-        '{"status":{"result":"OK","message":"","code":200}')
+        '{"status":{"result":"OK","message":"","code":200}', 200)
     end
 
     assert_raises(Wavefront::Exception::InvalidResponse) do
       Wavefront::Response::Base.new(
-        '{"status":{"result":"OK","message":"","code":200}')
+        '{"status":{"result":"OK","message":"","code":200}', 200)
     end
 
     assert_raises(Wavefront::Exception::InvalidResponse) do
       Wavefront::Response::Base.new(
-        '{"response":{"items":[{"name":"test agent"}],"offset":0 }')
+        '{"response":{"items":[{"name":"test agent"}],"offset":0 }', 200)
     end
   end
 end
