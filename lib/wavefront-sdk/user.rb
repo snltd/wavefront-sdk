@@ -88,7 +88,7 @@ module Wavefront
   class Response
 
     # The User response forges status and response methods to look
-    # like other classes and create a more consistent interface
+    # like other classes and create a more consistent interface.
     #
     class User < Base
       def populate(raw, status)
