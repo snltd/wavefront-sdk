@@ -60,12 +60,13 @@ module Wavefront
     #
     def raw(metric, source = nil, t_start = nil, t_end = nil)
       raise ArgumentError unless metric.is_a?(String)
-      wf_source_id?(source) if source
 
-      options = {
-        metric: metric,
-        source: source
-      }
+      options = { metric: metric, }
+
+      if source
+        wf_source_id?(source)
+        options[:source] = source
+      end
 
       options[:startTime] = parse_time(t_start, true) if t_start
       options[:endTime] = parse_time(t_end, true) if t_end
