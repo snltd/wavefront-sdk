@@ -308,7 +308,7 @@ module Wavefront
     #   valid
     #
     def wf_granularity?(v)
-      return true if %w(d h m s).include?(v)
+      return true if %w(d h m s).include?(v.to_s)
       raise Wavefront::Exception::InvalidGranularity
     end
 
@@ -387,7 +387,7 @@ module Wavefront
       wf_metric_name?(v[:path])
       wf_value?(v[:value])
       wf_epoch?(v[:ts]) if v[:ts]
-      wf_source_id?(v[:source])
+      wf_source_id?(v[:source]) if v[:source]
       wf_point_tags?(v[:tags]) if v[:tags]
       true
     end
