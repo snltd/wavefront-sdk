@@ -1,15 +1,14 @@
 require 'pathname'
 require 'inifile'
-require 'ostruct'
 
 module Wavefront
 
   # Helper methods to get Wavefront credentials
   #
   class Credentials
-    attr_reader :opts, :conf, :to_obj
+    attr_reader :opts, :config, :creds, :proxy
 
-    # Gives you an object or hash of credentials and options for speaking to
+    # Gives you an object of credentials and options for speaking to
     # Wavefront. It will look in the following places:
     #
     # ~/.wavefront
@@ -17,29 +16,31 @@ module Wavefront
     # WAVEFRONT_ENDPOINT and WAVEFRONT_TOKEN environment variables
     #
     # @param options [Hash] keys may be 'file', which
-    #   specifies a config file which will be loaded and parsed. If no file is
-    #   supplied, those listed above will be used.; and/or 'profile' which select a
-    #   profile section from 'file'
+    #   specifies a config file which will be loaded and parsed. If
+    #   no file is supplied, those listed above will be used.;
+    #   and/or 'profile' which select a profile section from 'file'
     #
     def initialize(options = {})
-      @opts = options
-      conf = load_from_file || {}
-      conf[:endpoint] = ENV['WAVEFRONT_ENDPOINT'] if ENV['WAVEFRONT_ENDPOINT']
-      conf[:token] = ENV['WAVEFRONT_TOKEN'] if ENV['WAVEFRONT_TOKEN']
-      @conf = conf
+      raw = load_from_file(options)
+      raw = env_override(raw)
+      populate(raw)
     end
 
-    def to_hash
-      { config: conf,
-        creds: conf.select { |k, _v| [:endpoint, :token].include?(k) },
-        proxy: conf.select { |k, _v| [:proxy, :port].include?(k) } }
+    def env_override(raw)
+      { endpoint: 'WAVEFRONT_ENDPOINT',
+        token:    'WAVEFRONT_TOKEN',
+        proxy:    'WAVEFRONT_PROXY'
+      }.each { |k, v| raw[k] = ENV[v] if ENV[v] }
+      raw
     end
 
-    def to_obj
-      OpenStruct.new(to_hash)
+    def populate(raw)
+      @config = raw
+      @creds = raw.select { |k, _v| [:endpoint, :token].include?(k) }
+      @proxy = raw.select { |k, _v| [:proxy, :port].include?(k) }
     end
 
-    def load_from_file
+    def load_from_file(opts)
       ret = {}
 
       profile = opts[:profile] || 'default'

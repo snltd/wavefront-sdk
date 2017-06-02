@@ -14,39 +14,42 @@ class WavefrontCredentialsTest < MiniTest::Test
   def test_initialize_1
     ENV.delete('WAVEFRONT_ENDPOINT')
     ENV.delete('WAVEFRONT_TOKEN')
-    wf = Wavefront::Credentials.new(file: CONF)
-    o = wf.to_obj
-    assert_instance_of(OpenStruct, o)
-    assert_instance_of(Hash, wf.to_hash)
+    c = Wavefront::Credentials.new(file: CONF)
+    assert_instance_of(Wavefront::Credentials, c)
+    assert_instance_of(Hash, c.creds)
+    assert_instance_of(Hash, c.proxy)
+    assert_instance_of(Hash, c.config)
 
-    assert_equal(o.creds.keys, [:token, :endpoint])
-    assert_equal(o.creds[:token], '12345678-abcd-1234-abcd-123456789012')
-    assert_equal(o.creds[:endpoint], 'default.wavefront.com')
+    assert_equal(c.creds.keys, [:token, :endpoint])
+    assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')
+    assert_equal(c.creds[:endpoint], 'default.wavefront.com')
   end
 
   def test_initialize_env_token
     ENV.delete('WAVEFRONT_ENDPOINT')
     ENV['WAVEFRONT_TOKEN'] = 'abcdefgh'
-    wf = Wavefront::Credentials.new(file: CONF)
-    o = wf.to_obj
-    assert_instance_of(OpenStruct, o)
-    assert_instance_of(Hash, wf.to_hash)
+    c = Wavefront::Credentials.new(file: CONF)
+    assert_instance_of(Wavefront::Credentials, c)
+    assert_instance_of(Hash, c.creds)
+    assert_instance_of(Hash, c.proxy)
+    assert_instance_of(Hash, c.config)
 
-    assert_equal(o.creds.keys, [:token, :endpoint])
-    assert_equal(o.creds[:token], 'abcdefgh')
-    assert_equal(o.creds[:endpoint], 'default.wavefront.com')
+    assert_equal(c.creds.keys, [:token, :endpoint])
+    assert_equal(c.creds[:token], 'abcdefgh')
+    assert_equal(c.creds[:endpoint], 'default.wavefront.com')
   end
 
   def test_initialize_env_endpoint
     ENV.delete('WAVEFRONT_TOKEN')
     ENV['WAVEFRONT_ENDPOINT'] = 'endpoint.wavefront.com'
-    wf = Wavefront::Credentials.new(file: CONF)
-    o = wf.to_obj
-    assert_instance_of(OpenStruct, o)
-    assert_instance_of(Hash, wf.to_hash)
+    c = Wavefront::Credentials.new(file: CONF)
+    assert_instance_of(Wavefront::Credentials, c)
+    assert_instance_of(Hash, c.creds)
+    assert_instance_of(Hash, c.proxy)
+    assert_instance_of(Hash, c.config)
 
-    assert_equal(o.creds.keys, [:token, :endpoint])
-    assert_equal(o.creds[:token], '12345678-abcd-1234-abcd-123456789012')
-    assert_equal(o.creds[:endpoint], 'endpoint.wavefront.com')
+    assert_equal(c.creds.keys, [:token, :endpoint])
+    assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')
+    assert_equal(c.creds[:endpoint], 'endpoint.wavefront.com')
   end
 end

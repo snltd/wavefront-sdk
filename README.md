@@ -63,24 +63,6 @@ Wavefront::Query.new(CREDS).query(
 )
 ```
 
-The SDK also provides a helper class for extracting credentials from a
-configuration file:
-
-```ruby
-require 'wavefront-sdk/credentials'
-
-# Get an object which contains credentials
-
-Wavefront::Credentials.new.to_obj
-
-# Now use that to list the proxies in our account
-
-require 'pp'
-require 'wavefront-sdk/proxy'
-
-pp Wavefront::Proxy.new(c.creds).list
-```
-
 We can write points too, assuming we have a proxy. You can't write points
 directly via the API. Unlike all other classes, this one requires the proxy
 address and port as its credential hash.
@@ -98,4 +80,24 @@ p task.response
 #<struct sent=1, rejected=0, unsent=0>
 puts task.status.result
 #OK
+```
+
+The SDK also provides a helper class for extracting credentials from a
+configuration file. If you don't supply a file, defaults will be
+used.
+
+```ruby
+require 'wavefront-sdk/credentials'
+
+c = Wavefront::Credentials.new
+
+# Now use that to list the proxies in our account
+
+require 'wavefront-sdk/proxy'
+
+p Wavefront::Proxy.new(c.creds).list
+
+# It works for proxies too:
+
+wf = Wavefront::Write.new(c.proxy)
 ```
