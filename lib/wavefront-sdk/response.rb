@@ -36,7 +36,7 @@ module Wavefront
         raise Wavefront::Exception::InvalidResponse
       end
 
-      def populate(raw, status = 200)
+      def populate(raw, _status = 200)
         @status = Struct.new(*raw[:status].keys).
           new(*raw[:status].values).freeze
         @response = Struct.new(*raw[:response].keys).
