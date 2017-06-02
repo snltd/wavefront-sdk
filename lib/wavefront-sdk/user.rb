@@ -92,7 +92,6 @@ module Wavefront
     #
     class User < Base
       def populate(raw, status)
-
         @response = if raw.is_a?(Array)
                       Struct.new(:items).new(raw).freeze
                     elsif raw.is_a?(Hash)
