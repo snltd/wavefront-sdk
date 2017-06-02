@@ -37,10 +37,15 @@ module Wavefront
       end
 
       def populate(raw, _status = 200)
-        @status = Struct.new(*raw[:status].keys).
-          new(*raw[:status].values).freeze
-        @response = Struct.new(*raw[:response].keys).
-          new(*raw[:response].values).freeze
+        if raw.key?(:status)
+          @status = Struct.new(*raw[:status].keys).
+            new(*raw[:status].values).freeze
+        end
+
+        if raw.key?(:response)
+          @response = Struct.new(*raw[:response].keys).
+            new(*raw[:response].values).freeze
+        end
       end
     end
   end
