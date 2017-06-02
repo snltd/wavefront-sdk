@@ -192,6 +192,10 @@ module Wavefront
       end
     end
 
+    def respond(resp)
+      response_class.send(:new, resp.body, resp.status || {})
+    end
+
     private
 
     # Try to describe the actual HTTP calls we make. There's a bit
@@ -219,7 +223,7 @@ module Wavefront
         pp resp
       end
 
-      response_class.send(:new, resp.body, resp.status || {})
+      respond(resp)
     end
 
     def response_class
