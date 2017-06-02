@@ -96,13 +96,13 @@ module Wavefront
         @response = if raw.is_a?(Array)
                       Struct.new(:items).new(raw).freeze
                     elsif raw.is_a?(Hash)
-                      Struct.new(*raw.keys).new(*raw.values)
+                      Struct.new(*raw.keys).new(*raw.values).freeze
                     end
 
         result = status == 200 ? 'OK' : 'ERROR'
 
         @status = Struct.new(:result, :message, :code).
-            new(result, raw[:message] || raw[:error] || nil, status)
+            new(result, nil, status)
       end
     end
   end
