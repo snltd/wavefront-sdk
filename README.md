@@ -21,31 +21,40 @@ $ gem build wavefront-sdk.gemspec
 
 ## Examples
 
+First, let's list the IDs of the users in our account. The `list()` method
+will return a `Wavefront::Response::User` object with a list of items. Most
+response classes behave this way.
+
 ```ruby
 # Define our API endpoint. (This is not a valid token!)
 
 CREDS = { endpoint: 'metrics.wavefront.com',
           token: 'c7a1ff30-0dd8-fa60-e14d-f58f91bafc0e' }
 
-# Retrieve a timeseries over the last 10 minutes, with one minute
-# bucket granularity.
-
-require 'wavefront-sdk/query'
-
-wf = Wavefront::Query.new(CREDS)
-wf.query('ts("prod.www.host.tenant.physicalmem.usage")', 'm',
-        (Time.now - 600).to_i)
-
-# List the users in our account
-
 require 'wavefront-sdk/user'
 
 wf = Wavefront::User.new(CREDS)
-p wf.list
+
+wf.list.response.items.each { |user| puts user[:identifier] }
 
 # And delete the user 'lolex@oldplace.com'
 
 wf.delete('lolex@oldplace.com')
+```
+
+Retrieve a timeseries over the last 10 minutes, with one minute bucket
+granularity. We will describe the time as a Ruby object, but could also use
+an epoch timestamp.
+
+
+```ruby
+require 'wavefront-sdk/query'
+
+Wavefront::Query.new(CREDS).query(
+  'ts("prod.www.host.tenant.physicalmem.usage")',
+  :m,
+  (Time.now - 600)
+)
 ```
 
 The SDK also provides a helper class for extracting credentials from a
@@ -64,4 +73,23 @@ require 'pp'
 require 'wavefront-sdk/proxy'
 
 pp Wavefront::Proxy.new(c.creds).list
+```
+
+We can write points too, assuming we have a proxy. You can't write points
+directly via the API. Unlike all other classes, this one requires the proxy
+address and port as its credential hash.
+
+```ruby
+require 'wavefront-sdk/write'
+
+W_CREDS = { proxy: 'wavefront.localnet', port: 2878 }
+
+wf = Wavefront::Write.new(W_CREDS, debug: true)
+
+task = wf.write( [{ path: 'dev.test.sdk', value: 10 }])
+
+p task.response
+#<struct sent=1, rejected=0, unsent=0>
+puts task.status.result
+#OK
 ```
