@@ -33,7 +33,13 @@ CREDS = { endpoint: 'metrics.wavefront.com',
 
 require 'wavefront-sdk/user'
 
-wf = Wavefront::User.new(CREDS)
+# You can pass in a Ruby logger object, and tell the SDK to be
+# verbose.
+
+require 'logger'
+log = Logger.new(STDOUT)
+
+wf = Wavefront::User.new(CREDS, verbose: true, logger: log)
 
 wf.list.response.items.each { |user| puts user[:identifier] }
 
