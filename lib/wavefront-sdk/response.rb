@@ -32,7 +32,6 @@ module Wavefront
         @debug = debug
         populate(JSON.parse(json, symbolize_names: true), status)
       rescue => e
-       p e
         puts e.message if debug
         raise Wavefront::Exception::InvalidResponse
       end
