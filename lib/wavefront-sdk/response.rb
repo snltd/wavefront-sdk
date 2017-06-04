@@ -43,8 +43,12 @@ module Wavefront
         end
 
         if raw.key?(:response)
-          @response = Struct.new(*raw[:response].keys).
-            new(*raw[:response].values).freeze
+          if raw[:response].key?(:items)
+            @response = Struct.new(*raw[:response].keys).
+              new(*raw[:response].values).freeze
+          else
+            @response = raw[:response]
+          end
         end
       end
     end
