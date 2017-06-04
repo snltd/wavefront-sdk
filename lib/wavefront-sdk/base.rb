@@ -3,6 +3,7 @@ require 'time'
 require 'faraday'
 require 'pp'
 require 'ostruct'
+require 'addressable'
 require_relative './exception'
 require_relative './mixins'
 require_relative './response'
@@ -85,8 +86,8 @@ module Wavefront
     #
     def mk_conn(path, headers = {})
       Faraday.new(
-        url:     "https://#{net[:endpoint]}" +
-                 [net[:api_base], path].uri_concat,
+        url:     Addressable::URI.encode("https://#{net[:endpoint]}" +
+                 [net[:api_base], path].uri_concat),
         headers: net[:headers].merge(headers)
       )
     end
