@@ -122,7 +122,7 @@ class WavefrontValidatorsTest < MiniTest::Test
 
   def test_wf_event_id?
     good = %w(1493370839062:test1)
-    bad = %w(1493370839062 1493370839062:test!)
+    bad = %w(1493370839062 1493370839062test!)
     good_and_bad('wf_event_id?', 'InvalidEventId', good, bad)
   end
 
