@@ -40,7 +40,7 @@ module Wavefront
     #
     class Metric < Base
       def populate(raw, status)
-        @response = raw.freeze
+        @response = raw
 
         result = status == 200 ? 'OK' : 'ERROR'
 
