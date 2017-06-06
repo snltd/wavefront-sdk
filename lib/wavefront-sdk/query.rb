@@ -82,12 +82,29 @@ module Wavefront
     #
     class Query < Base
       def populate(raw, status)
-        @response = Struct.new(*raw.keys).new(*raw.values)
+        @response = if raw.is_a?(Hash)
+                      Struct.new(*raw.keys).new(*raw.values)
+                    else
+                      raw
+                    end
 
         result = status == 200 ? 'OK' : 'ERROR'
 
+
+        if raw.is_a?(Hash)
+          msg = if raw.key?(:message)
+                  raw[:message]
+                elsif raw.key?(:error)
+                  raw[:error]
+                else
+                  nil
+                end
+        else
+          msg = nil
+        end
+
         @status = Struct.new(:result, :message, :code).
-            new(result, raw[:message] || raw[:error] || nil, status)
+            new(result, msg, status)
       end
     end
   end
