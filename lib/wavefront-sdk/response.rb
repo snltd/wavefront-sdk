@@ -30,7 +30,12 @@ module Wavefront
       #
       def initialize(json, status, debug = false)
         @debug = debug
-        populate(JSON.parse(json, symbolize_names: true), status)
+
+        if json.empty?
+          populate([], status)
+        else
+          populate(JSON.parse(json, symbolize_names: true), status)
+        end
       rescue => e
         puts e.message if debug
         raise Wavefront::Exception::InvalidResponse

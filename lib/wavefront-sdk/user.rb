@@ -93,9 +93,9 @@ module Wavefront
     class User < Base
       def populate(raw, status)
         @response = if raw.is_a?(Array)
-                      Struct.new(:items).new(raw).freeze
+                      Struct.new(:items).new(raw)
                     elsif raw.is_a?(Hash)
-                      Struct.new(*raw.keys).new(*raw.values).freeze
+                      raw
                     end
 
         result = status == 200 ? 'OK' : 'ERROR'
