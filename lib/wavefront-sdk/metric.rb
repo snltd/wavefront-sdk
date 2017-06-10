@@ -13,8 +13,9 @@ module Wavefront
     # Get more details on a metric, including reporting sources and
     # approximate last time reported
     #
-    # @param offset [Int] agent at which the list begins
-    # @param limit [Int] the number of agents to return
+    # @param metric [String] the metric to fetch
+    # @param sources [Array[String]] a list of sources to check.
+    # @param cursor [String] optionally begin from this result
     #
     def detail(metric, sources = [], cursor = nil)
       raise ArgumentError unless metric.is_a?(String)

@@ -16,7 +16,7 @@ module Wavefront
   # any call to the Wavefront API from this SDK, you are returned an
   # OpenStruct object.
   #
-  # @returns a Wavefront::Class::Response object where Class matches
+  # @return a Wavefront::Class::Response object where Class matches
   # the inheriting class name.
   #
   class Base
@@ -99,7 +99,8 @@ module Wavefront
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
-    # @param qs [String] optional query string
+    # @param query [Hash] optional key-value pairs with will be made
+    #   into aquery string
     # @return [Hash] API response
     #
     def api_get(path, query = {})
@@ -155,11 +156,12 @@ module Wavefront
     end
 
     # doing a PUT to update an object requires only a certain subset of
-    # the keys returned by #describe().
+    # the keys returned by #describe(). This method takes the
+    # existing description of an object and turns it into a new has
+    # which can be PUT.
     #
-    # @param body [Hash] a hash of the existing object merged with the
-    #   hash describing the user's change(s).
-    # @param keys [Array, String] the keys(s) the user wishes to update
+    # @param old [Hash] a hash of the existing object
+    # @param new [Hash] the keys you wish to update
     # @return [Hash] a hash containing only the keys which need to be
     #   sent to the API. Keys will be symbolized.
     #

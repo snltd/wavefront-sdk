@@ -30,7 +30,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/cloudintegration/{id}
+    # DELETE /api/v2/cloudintegration/id
     # Delete a specific cloud integration
     #
     # Deleting an active integration moves it to 'trash', from where
@@ -45,7 +45,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/cloudintegration/{id}
+    # GET /api/v2/cloudintegration/id
     # Get a specific cloud integration
     #
     # @param id [String] ID of the integration
@@ -56,7 +56,7 @@ module Wavefront
       api_get(id)
     end
 
-    # PUT /api/v2/cloudintegration/{id}
+    # PUT /api/v2/cloudintegration/id
     # Update a specific cloud integration
     #
     # @param id [String] ID of the integration
@@ -68,7 +68,7 @@ module Wavefront
       api_put(id, body)
     end
 
-    # POST /api/v2/cloudintegration/{id}/undelete
+    # POST /api/v2/cloudintegration/id/undelete
     # Undelete a specific cloud integration
     #
     # @param id [String] ID of the integration

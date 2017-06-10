@@ -29,7 +29,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/dashboard/{id}
+    # DELETE /api/v2/dashboard/id
     # Delete a specific dashboard.
     # Deleting an active dashboard moves it to 'trash', from where it can
     # be restored with an #undelete operation. Deleting an dashboard in
@@ -43,7 +43,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/dashboard/{id}
+    # GET /api/v2/dashboard/id
     # Get a specific dashboard / Get a specific historical version of a
     # specific dashboard.
     #
@@ -59,7 +59,7 @@ module Wavefront
       api_get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/dashboard/{id}
+    # PUT /api/v2/dashboard/id
     # Update a specific dashboard.
     #
     # Refer to the Swagger API docs for valid keys.
@@ -73,7 +73,7 @@ module Wavefront
       api_put(id, body)
     end
 
-    # GET /api/v2/dashboard/{id}/history
+    # GET /api/v2/dashboard/id/history
     # Get the version history of an dashboard.
     #
     # @param id [String] ID of the dashboard
@@ -84,11 +84,11 @@ module Wavefront
       api_get([id, 'history'].uri_concat)
     end
 
-    # GET /api/v2/dashboard/{id}/tag
+    # GET /api/v2/dashboard/id/tag
     # Get all tags associated with a specific dashboard.
     #
     # @param id [String] ID of the dashboard
-    # @returns [Hash] object describing the dashboard with status and
+    # @return [Hash] object describing the dashboard with status and
     #   response keys
     #
     def tags(id)
@@ -96,12 +96,12 @@ module Wavefront
       api_get([id, 'tag'].uri_concat)
     end
 
-    # POST /api/v2/dashboard/{id}/tag
+    # POST /api/v2/dashboard/id/tag
     # Set all tags associated with a specific dashboard.
     #
     # @param id [String] ID of the dashboard
     # @param tags [Array] list of tags to set.
-    # @returns [Hash] object describing the dashboard with status and
+    # @return [Hash] object describing the dashboard with status and
     #   response keys
     #
     def tag_set(id, tags)
@@ -111,12 +111,12 @@ module Wavefront
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
-    # DELETE /api/v2/dashboard/{id}/tag/{tagValue}
+    # DELETE /api/v2/dashboard/id/tag/tagValue
     # Remove a tag from a specific dashboard.
     #
     # @param id [String] ID of the dashboard
     # @param tag [String] tag to delete
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_delete(id, tag)
       wf_dashboard_id?(id)
@@ -124,12 +124,12 @@ module Wavefront
       api_delete([id, 'tag', tag].uri_concat)
     end
 
-    # PUT /api/v2/dashboard/{id}/tag/{tagValue}
+    # PUT /api/v2/dashboard/id/tag/tagValue
     # Add a tag to a specific dashboard.
     #
     # @param id [String] ID of the dashboard
     # @param tag [String] tag to set.
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_add(id, tag)
       wf_dashboard_id?(id)
@@ -137,7 +137,7 @@ module Wavefront
       api_put([id, 'tag', tag].uri_concat)
     end
 
-    # POST /api/v2/dashboard/{id}/undelete
+    # POST /api/v2/dashboard/id/undelete
     # Move an dashboard from 'trash' back into active service.
     #
     # @param id [String] ID of the dashboard

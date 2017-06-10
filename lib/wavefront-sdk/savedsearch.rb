@@ -30,7 +30,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/savedsearch/{id}
+    # DELETE /api/v2/savedsearch/id
     # Delete a specific saved search.
     #
     # @param id [String] ID of the saved search
@@ -41,7 +41,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/savedsearch/{id}
+    # GET /api/v2/savedsearch/id
     # Get a specific saved search.
     #
     # @param id [String] ID of the saved search
@@ -52,7 +52,7 @@ module Wavefront
       api_get(id)
     end
 
-    # PUT /api/v2/savedsearch/{id}
+    # PUT /api/v2/savedsearch/id
     # Update a specific saved search.
     #
     # @param id [String] ID of the saved search
@@ -64,7 +64,7 @@ module Wavefront
       api_put(id, body)
     end
 
-    # GET /api/v2/savedsearch/type/{entitytype}
+    # GET /api/v2/savedsearch/type/entitytype
     # Get all saved searches for a specific entity type for a user.
     #
     # @param entitytype [String] type of entity to retrieve

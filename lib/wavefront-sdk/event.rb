@@ -17,9 +17,8 @@ module Wavefront
     # @param to [Time, Integer] end ot time range. Can be epoch
     #   millisecods or a Ruby time. If not supplied, defaults to the
     #   current time.
-    # @cursor [String] I think this is the 
-    #   must start with a timestamp.
-    # @limit [Integer] the number of events to return
+    # @param cursor [String] I think this must start with a timestamp.
+    # @param limit [Integer] the number of events to return
     # @return [Hash]
     #
     def list(from = nil, to = nil, limit = 100, cursor = nil)
@@ -52,7 +51,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/event/{id}
+    # DELETE /api/v2/event/id
     # Delete a specific event.
     #
     # @param id [String] ID of the alert
@@ -63,7 +62,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/event/{id}
+    # GET /api/v2/event/id
     # Get a specific event / Get a specific historical version of a
     # specific event.
     #
@@ -79,7 +78,7 @@ module Wavefront
       api_get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/event/{id}
+    # PUT /api/v2/event/id
     # Update a specific event
     #
     # This method helps you update one or more properties of an event.
@@ -101,7 +100,7 @@ module Wavefront
       api_put(id, hash_for_update(describe(id), body), 'application/json')
     end
 
-    # POST /api/v2/event/{id}/close
+    # POST /api/v2/event/id/close
     # Close a specific event.
     #
     # @param id [String] the ID of the event
@@ -111,11 +110,11 @@ module Wavefront
       api_post([id, 'close'].uri_concat)
     end
 
-    # GET /api/v2/event/{id}/tag
+    # GET /api/v2/event/id/tag
     # Get all tags associated with a specific event
     #
     # @param id [String] ID of the event
-    # @returns [Hash] object describing the event with status and
+    # @return [Hash] object describing the event with status and
     #   response keys
     #
     def tags(id)
@@ -123,12 +122,12 @@ module Wavefront
       api_get([id, 'tag'].uri_concat)
     end
 
-    # POST /api/v2/event/{id}/tag
+    # POST /api/v2/event/id/tag
     # Set all tags associated with a specific event.
     #
     # @param id [String] ID of the event
     # @param tags [Array] list of tags to set.
-    # @returns [Hash] object describing the event with status and
+    # @return [Hash] object describing the event with status and
     #   response keys
     #
     def tag_set(id, tags)
@@ -138,12 +137,12 @@ module Wavefront
       api_post([id, 'tag'].uri_concat, tags, 'application/json')
     end
 
-    # DELETE /api/v2/event/{id}/tag/{tagValue}
+    # DELETE /api/v2/event/id/tag/tagValue
     # Remove a tag from a specific event.
     #
     # @param id [String] ID of the event
     # @param tag [String] tag to delete
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_delete(id, tag)
       wf_event_id?(id)
@@ -151,12 +150,12 @@ module Wavefront
       api_delete([id, 'tag', tag].uri_concat)
     end
 
-    # PUT /api/v2/event/{id}/tag/{tagValue}
+    # PUT /api/v2/event/id/tag/tagValue
     # Add a tag to a specific event.
     #
     # @param id [String] ID of the event
     # @param tag [String] tag to set.
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_add(id, tag)
       wf_event_id?(id)

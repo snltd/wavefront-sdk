@@ -25,6 +25,8 @@ module Wavefront
     # @param t_end [Time, Integer] The end of the query window.
     #   May be a Ruby Time object, or epoch milliseconds.
     # @param options [Hash] any other options defined in the API
+    # @raise [ArgumentError] if query is not a string
+    # @return [Wavefront::Response::Query]
     #
     def query(query, granularity = nil, t_start = nil, t_end = nil,
                options = {})
@@ -55,7 +57,7 @@ module Wavefront
     #   (cannot contain wildcards).
     # @param t_start [Time, Integer] start time of window: defaults
     #   to one hour before t_end
-    # @param t_start [Time, Integer] start time of window: defaults
+    # @param t_end [Time, Integer] end time of window: defaults
     #   to now
     #
     def raw(metric, source = nil, t_start = nil, t_end = nil)
@@ -75,10 +77,12 @@ module Wavefront
     end
   end
 
+
   class Response
 
     # The Query response forges status and response methods to look
-    # like other classes and create a more consistent interface
+    # like other classes and create a more consistent interface.
+    # (see Wavefront::Response::Base)
     #
     class Query < Base
       def populate(raw, status)

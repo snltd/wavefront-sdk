@@ -14,7 +14,8 @@ module Wavefront
     # Construct an object which allows us to write points to a
     # Wavefront proxy.
     #
-    # @pram creds [Hash] must contain the keys endpoint: and port.
+    # @param _creds [Hash] dummy parameter for correct method
+    #   signature.
     # @param options [Hash] can contain the following keys:
     #   proxy [String] the address of the Wavefront proxy. ('wavefront')
     #   port [Integer] the port of the Wavefront proxy (2878)
@@ -48,10 +49,13 @@ module Wavefront
     # Send raw data to a Wavefront proxy, automatically opening and
     # closing a socket.
     #
-    # @param point [Array[String]] an array of points in native
+    # @param points [Array[String]] an array of points in native
     #   Wavefront wire format, as described in
     #   https://community.wavefront.com/docs/DOC-1031. No validation
     #   is performed.
+    # @param openclose [Boolean] whether or not to automatically
+    #   open a socket to the proxy before sending points, and
+    #   afterwards, close it.
     #
     def raw(points, openclose = true)
       open if openclose

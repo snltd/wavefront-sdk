@@ -22,9 +22,7 @@ module Wavefront
     # POST /api/v2/extlink
     # Create a specific external link.
     #
-    # @param name [String] a plaintext name for the link
-    # @param template [String] a mustache template for the link target
-    # @param description [String] a plaintext description of the link
+    # @param body [Hash] a description of the external link.
     # @return [Hash]
     #
     def create(body)
@@ -32,7 +30,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/extlink/{id}
+    # DELETE /api/v2/extlink/id
     # Delete a specific external link.
     #
     # @param id [String] ID of the link
@@ -43,7 +41,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/extlink/{id}
+    # GET /api/v2/extlink/id
     # Get a specific external link.
     #
     # @param id [String] ID of the limnk
@@ -54,11 +52,11 @@ module Wavefront
       api_get(id)
     end
 
-    # PUT /api/v2/extlink/{id}
+    # PUT /api/v2/extlink/id
     # Update a specific external link.
     #
     # @param id [String] ID of the link
-    # @param payload [Hash] a key:value hash where the key is the
+    # @param body [Hash] a key:value hash where the key is the
     #   property to change and the value is its desired value
     # @return [Hash]
     #

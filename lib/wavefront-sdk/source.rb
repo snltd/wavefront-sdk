@@ -30,7 +30,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/source/{id}
+    # DELETE /api/v2/source/id
     # Delete metadata (description and tags) for a specific source.
     #
     # @param id [String] ID of the source
@@ -41,7 +41,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/source/{id}
+    # GET /api/v2/source/id
     # Get a specific source for a customer.
     #
     # @param id [String] ID of the source
@@ -55,7 +55,7 @@ module Wavefront
       api_get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/source/{id}
+    # PUT /api/v2/source/id
     # Update metadata (description or tags) for a specific source.
     #
     # Refer to the Swagger API docs for valid keys.
@@ -69,11 +69,11 @@ module Wavefront
       api_put(id, body)
     end
 
-    # GET /api/v2/source/{id}/tag
+    # GET /api/v2/source/id/tag
     # Get all tags associated with a specific source.
     #
     # @param id [String] ID of the source
-    # @returns [Hash] object describing the source with status and
+    # @return [Hash] object describing the source with status and
     #   response keys
     #
     def tags(id)
@@ -81,12 +81,12 @@ module Wavefront
       api_get([id, 'tag'].uri_concat)
     end
 
-    # POST /api/v2/source/{id}/tag
+    # POST /api/v2/source/id/tag
     # Set all tags associated with a specific source.
     #
     # @param id [String] ID of the source
     # @param tags [Array] list of tags to set.
-    # @returns [Hash] object describing the source with status and
+    # @return [Hash] object describing the source with status and
     #   response keys
     #
     def tag_set(id, tags)
@@ -96,12 +96,12 @@ module Wavefront
       api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
-    # DELETE /api/v2/source/{id}/tag/{tagValue}
+    # DELETE /api/v2/source/id/tag/tagValue
     # Remove a tag from a specific source.
     #
     # @param id [String] ID of the source
     # @param tag [String] tag to delete
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_delete(id, tag)
       wf_source_id?(id)
@@ -109,12 +109,12 @@ module Wavefront
       api_delete([id, 'tag', tag].uri_concat)
     end
 
-    # PUT /api/v2/source/{id}/tag/{tagValue}
+    # PUT /api/v2/source/id/tag/tagValue
     # Add a tag to a specific source
     #
     # @param id [String] ID of the source
     # @param tag [String] tag to set.
-    # @returns [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Hash] object with 'status' key and empty 'repsonse'
     #
     def tag_add(id, tag)
       wf_source_id?(id)

@@ -141,7 +141,7 @@ module Wavefront
 
     # Ensure the given argument is a valid version number
     #
-    # @param [Integer] the version number to validate
+    # @param v [Integer] the version number to validate
     # @return True if the version is valid
     # @raise Wavefront::Exception::InvalidVersion if the alert ID is
     #   not valid

@@ -29,7 +29,7 @@ module Wavefront
       api_post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/webhook/{id}
+    # DELETE /api/v2/webhook/id
     # Delete a specific webhook.
     #
     # @param id [String, Integer] ID of the webhook
@@ -40,7 +40,7 @@ module Wavefront
       api_delete(id)
     end
 
-    # GET /api/v2/webhook/{id}
+    # GET /api/v2/webhook/id
     # Get a specific webhook.
     #
     # @param id [String, Integer] ID of the webhook
@@ -51,7 +51,7 @@ module Wavefront
       api_get(id)
     end
 
-    # PUT /api/v2/webhook/{id}
+    # PUT /api/v2/webhook/id
     # Update a specific webhook.
     #
     # @param body [Hash] a hash of parameters describing the webhook.
