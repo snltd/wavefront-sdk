@@ -1,4 +1,5 @@
 require 'json'
+require 'map'
 require_relative './exception'
 
 module Wavefront
@@ -6,60 +7,50 @@ module Wavefront
   # Every API path has its own response class, which allows us to
   # provide a stable interface. If the API changes underneath us,
   # the SDK will break in a predictable way, throwing a
-  # Wavefront::Exception::InvalidResponse exception.
+  # Wavefront::Exception::UnparseableResponse exception.
   #
   # Most Wavefront::Response classes present the returned data in
   # two parts, each accessible by dot notation.
   #
   # @!attribute [r] status
   #   @return [Wavefront::Types::Status]
-  # @attr_reader response [Hash, Array] the JSON response body,
-  #   turned into a Ruby object. All hash keys are symbols.
+  # @!attribute [r] response
+  #   @return [Map] the response from the API turned into a Map,
+  #     which  allows
   #
   class Response
-    attr_reader :status, :response, :debug
+    attr_reader :status, :response
 
     # Create and return a Wavefront::Response object
     # @param json [String] a raw response body from the Wavefront API
     # @param status [Integer] HTTP return code from the API
     # @param debug [Boolean] whether or not to print the exception
     #   message if one is thrown
-    # @raise [Wavefront::InvalidResponse] if the response cannot be
-    #   parsed. This may be because the API itself has changed.
+    # @raise [Wavefront::Exception::UnparseableResponse] if the
+    #   response cannot be parsed. This may be because the API
+    #   has changed underneath us.
     #
     def initialize(json, status, debug = false)
       raw = json.empty? {} || JSON.parse(json, symbolize_names: true)
 
-      @debug = debug
       @status = build_status(raw, status)
       @response = build_response(raw)
       p self if debug
     rescue => e
-      p "could not parse:\n#{json}"
-      p e
+      puts "could not parse:\n#{json}" if debug
       puts e.message if debug
-      raise Wavefront::Exception::InvalidResponse
-    end
-
-    def class_word
-      self.class.name.split('::').last
+      raise Wavefront::Exception::UnparseableResponse
     end
 
     def build_status(raw, status)
-      Object.const_get('Wavefront::Type::Status').new(raw, status)
-    rescue => e
-      p e if debug
+      Wavefront::Type::Status.new(raw, status)
     end
 
     def build_response(raw)
-      Object.const_get('Wavefront::Type::Response').new(raw)
-    rescue => e
-      p e if debug
+      Map(raw.is_a?(Hash) && raw.key?(:response) ? raw[:response] : raw)
     end
   end
 
-  # These type classes encapsulate the Wavefront API responses.
-  #
   class Type
     #
     # An object which provides information about whether the request
@@ -87,36 +78,6 @@ module Wavefront
         @result = obj[:result] || nil
         @message = obj[:message] || nil
         @code = obj[:code] || status
-      end
-    end
-
-    # An object which contains the data returned from the API. This
-    # is a hash of the response, with attr_readers for each key.
-    #
-    class Response
-      attr_reader :raw
-
-      def initialize(raw)
-        @raw = raw.key?(:response) ? raw[:response] : raw
-
-        # Most responses bundle multiple objects (like dashboards or
-        # alerts) into an items array. Some (users) don't, so fake
-        # the items for those.
-        #
-        @raw = { items: @raw } unless @raw.is_a?(Hash)
-
-        @raw.each do |k, v|
-          self.class.send(:attr_accessor, k)
-          instance_variable_set("@#{k}", v)
-        end
-      end
-
-      def [](k)
-        raw[k.to_sym]
-      end
-
-      def keys
-        raw.keys
       end
     end
   end
