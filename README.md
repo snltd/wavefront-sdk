@@ -22,10 +22,16 @@ $ gem build wavefront-sdk.gemspec
 ## Examples
 
 First, let's list the IDs of the users in our account. The `list()` method
-will return a `Wavefront::Response` object. This in turn contains
-`Wavefront::Type::Status` and `Wavefront::Type::Response` objects,
-which can be accessed with the `status` and `response` methods
-respectively.
+will return a `Wavefront::Response` object. This object has
+`status` and `response` methods. `status` always yields a
+structure containing `result`, `message` and `code` fields which can
+be inspected to ensure an API call was processed successfully.
+`response` gives you a the JSON response from the API, conveniently
+processed and turned into a
+[`Map`](https://github.com/ahoward/map) object. Map objects can be
+interrogated in various ways. For instance `map['items']`,
+`map[:items]` and `map.items` will all get you to the same place.
+
 
 ```ruby
 # Define our API endpoint. (This is not a valid token!)
@@ -43,19 +49,24 @@ log = Logger.new(STDOUT)
 
 wf = Wavefront::User.new(CREDS, verbose: true, logger: log)
 
-# The response object can be accessed as a hash, but each key has an
-# attr_accessor so you can access it with dot notation.
+# See how things went:
+
+p wf.status
+#<Wavefront::Type::Status:0x007feb99185538 @result="OK", @message="", @code=200>
+
+# And print each user's ID
 
 wf.list.response.items.each { |user| puts user[:identifier] }
 
-# And delete the user 'lolex@oldplace.com'
+# Now delete the user 'lolex@oldplace.com', disregarding the
+# response.
 
 wf.delete('lolex@oldplace.com')
 ```
 
 Retrieve a timeseries over the last 10 minutes, with one minute bucket
 granularity. We will describe the time as a Ruby object, but could also use
-an epoch timestamp.
+an epoch timestamp. The SDK happily converts between the two.
 
 
 ```ruby
@@ -68,9 +79,9 @@ Wavefront::Query.new(CREDS).query(
 )
 ```
 
-We can write points too, assuming we have a proxy. You can't write points
-directly via the API. Unlike all other classes, this one requires the proxy
-address and port as its credential hash.
+We can write points too, assuming we have access to a proxy, because
+you can't write points directly via the API. Unlike all other classes, this
+one requires the proxy address and port as its credential hash.
 
 ```ruby
 require 'wavefront-sdk/write'
@@ -82,7 +93,7 @@ wf = Wavefront::Write.new(W_CREDS, debug: true)
 task = wf.write( [{ path: 'dev.test.sdk', value: 10 }])
 
 p task.response
-#<struct sent=1, rejected=0, unsent=0>
+#{"sent"=>1, "rejected"=>0, "unsent"=>0}
 puts task.status.result
 #OK
 ```

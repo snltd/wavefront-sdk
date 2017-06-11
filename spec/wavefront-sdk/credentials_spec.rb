@@ -16,11 +16,11 @@ class WavefrontCredentialsTest < MiniTest::Test
     ENV.delete('WAVEFRONT_TOKEN')
     c = Wavefront::Credentials.new(file: CONF)
     assert_instance_of(Wavefront::Credentials, c)
-    assert_instance_of(Hash, c.creds)
-    assert_instance_of(Hash, c.proxy)
-    assert_instance_of(Hash, c.config)
+    assert_instance_of(Map, c.creds)
+    assert_instance_of(Map, c.proxy)
+    assert_instance_of(Map, c.config)
 
-    assert_equal(c.creds.keys, [:token, :endpoint])
+    assert_equal(c.creds.keys, %w(token endpoint))
     assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')
     assert_equal(c.creds[:endpoint], 'default.wavefront.com')
   end
@@ -30,11 +30,11 @@ class WavefrontCredentialsTest < MiniTest::Test
     ENV['WAVEFRONT_TOKEN'] = 'abcdefgh'
     c = Wavefront::Credentials.new(file: CONF)
     assert_instance_of(Wavefront::Credentials, c)
-    assert_instance_of(Hash, c.creds)
-    assert_instance_of(Hash, c.proxy)
-    assert_instance_of(Hash, c.config)
+    assert_instance_of(Map, c.creds)
+    assert_instance_of(Map, c.proxy)
+    assert_instance_of(Map, c.config)
 
-    assert_equal(c.creds.keys, [:token, :endpoint])
+    assert_equal(c.creds.keys, %w(token endpoint))
     assert_equal(c.creds[:token], 'abcdefgh')
     assert_equal(c.creds[:endpoint], 'default.wavefront.com')
   end
@@ -44,11 +44,11 @@ class WavefrontCredentialsTest < MiniTest::Test
     ENV['WAVEFRONT_ENDPOINT'] = 'endpoint.wavefront.com'
     c = Wavefront::Credentials.new(file: CONF)
     assert_instance_of(Wavefront::Credentials, c)
-    assert_instance_of(Hash, c.creds)
-    assert_instance_of(Hash, c.proxy)
-    assert_instance_of(Hash, c.config)
+    assert_instance_of(Map, c.creds)
+    assert_instance_of(Map, c.proxy)
+    assert_instance_of(Map, c.config)
 
-    assert_equal(c.creds.keys, [:token, :endpoint])
+    assert_equal(c.creds.keys, %w(token endpoint))
     assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')
     assert_equal(c.creds[:endpoint], 'endpoint.wavefront.com')
   end

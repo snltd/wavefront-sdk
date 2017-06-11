@@ -1,9 +1,19 @@
 require 'pathname'
 require 'inifile'
+require 'map'
 
 module Wavefront
 
-  # Helper methods to get Wavefront credentials
+  # Helper methods to get Wavefront credentials.
+  #
+  # @return [Wavefront::Credentials]
+  #
+  # @!attribute config [r]
+  #   @return [Map] the entire loaded config
+  # @!attribute creds [r]
+  #   @return [Map] credentials for speaking to the Wavefront API
+  # @!attribute proxy [r]
+  #   @return [Map] information for speaking to a Wavefront proxy
   #
   class Credentials
     attr_reader :opts, :config, :creds, :proxy
@@ -35,9 +45,9 @@ module Wavefront
     end
 
     def populate(raw)
-      @config = raw
-      @creds = raw.select { |k, _v| [:endpoint, :token].include?(k) }
-      @proxy = raw.select { |k, _v| [:proxy, :port].include?(k) }
+      @config = Map(raw)
+      @creds = Map(raw.select { |k, _v| [:endpoint, :token].include?(k) })
+      @proxy = Map(raw.select { |k, _v| [:proxy, :port].include?(k) })
     end
 
     def load_from_file(opts)
