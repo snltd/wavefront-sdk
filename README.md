@@ -15,7 +15,7 @@ $ gem install wavefront-sdk
 
 or to build locally,
 
-
+```
 $ gem build wavefront-sdk.gemspec
 ```
 
@@ -27,16 +27,16 @@ rubydoc.info](http://www.rubydoc.info/gems/wavefront-sdk/).
 
 ## Examples
 
-First, let's list the IDs of the users in our account. The `list()` method
-will return a `Wavefront::Response` object. This object has
-`status` and `response` methods. `status` always yields a
-structure containing `result`, `message` and `code` fields which can
-be inspected to ensure an API call was processed successfully.
+First, let's list the IDs of the users in our account. The `list()`
+method will return a `Wavefront::Response` object. This object has
+`status` and `response` methods. `status` always yields a structure
+containing `result`, `message` and `code` fields which can be
+inspected to ensure an API call was processed successfully.
 `response` gives you a the JSON response from the API, conveniently
-processed and turned into a
-[`Map`](https://github.com/ahoward/map) object. Map objects can be
-interrogated in various ways. For instance `map['items']`,
-`map[:items]` and `map.items` will all get you to the same place.
+processed and turned into a [`Map`](https://github.com/ahoward/map)
+object. Map objects can be interrogated in various ways. For
+instance `map['items']`, `map[:items]` and `map.items` will all get
+you to the same place.
 
 
 ```ruby
