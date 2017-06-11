@@ -15,9 +15,15 @@ $ gem install wavefront-sdk
 
 or to build locally,
 
-```
+
 $ gem build wavefront-sdk.gemspec
 ```
+
+## Documentation
+
+The code is documented with [YARD](http://yardoc.org/) and
+automatically generated documentation is [available on
+rubydoc.info](http://www.rubydoc.info/gems/wavefront-sdk/).
 
 ## Examples
 
