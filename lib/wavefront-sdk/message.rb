@@ -4,7 +4,7 @@ module Wavefront
   #
   # Manage and query Wavefront messages.
   #
-  class Message < Wavefront::Base
+  class Message < Base
 
     # GET /api/v2/message
     # Gets messages applicable to the current user, i.e. within time
@@ -26,11 +26,5 @@ module Wavefront
       wf_message_id?(id)
       api_post([id, 'read'].uri_concat)
     end
-  end
-
-  # A standard response.
-  #
-  class Response
-    class Message < Base; end
   end
 end

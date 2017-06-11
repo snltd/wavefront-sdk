@@ -4,7 +4,7 @@ module Wavefront
   #
   # Manage and query Wavefront users
   #
-  class User < Wavefront::Base
+  class User < Base
 
     # GET /api/v2/user
     # Get all users.
@@ -83,26 +83,17 @@ module Wavefront
       api_post([id, 'revoke'].uri_concat, "group=#{group}",
                'application/x-www-form-urlencoded')
     end
-  end
 
-  class Response
-
-    # The User response forges status and response methods to look
-    # like other classes and create a more consistent interface.
+    # Fake a response which looks like we get from all the other
+    # paths. I'm expecting the user response model to be made
+    # consistent with others in the future.
     #
-    class User < Base
-      def populate(raw, status)
-        @response = if raw.is_a?(Array)
-                      Struct.new(:items).new(raw)
-                    elsif raw.is_a?(Hash)
-                      raw
-                    end
-
-        result = status == 200 ? 'OK' : 'ERROR'
-
-        @status = Struct.new(:result, :message, :code).
-            new(result, nil, status)
-      end
+    def response_shim(body, status)
+      { response: JSON.parse(body),
+        status:   { result:  status == 200 ? 'OK' : 'ERROR',
+                    message: '',
+                    code:    status },
+      }.to_json
     end
   end
 end

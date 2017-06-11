@@ -4,7 +4,7 @@ module Wavefront
   #
   # View and manage dashboards.
   #
-  class Dashboard < Wavefront::Base
+  class Dashboard < Base
 
     # GET /api/v2/dashboard
     # Get all dashboards for a customer.
@@ -147,11 +147,5 @@ module Wavefront
       wf_dashboard_id?(id)
       api_post([id, 'undelete'].uri_concat)
     end
-  end
-
-  # A standard response.
-  #
-  class Response
-    class Dashboard < Base; end
   end
 end

@@ -5,7 +5,7 @@ module Wavefront
   # View and manage Cloud Integrations. These are identified by
   # a UUID.
   #
-  class SavedSearch < Wavefront::Base
+  class SavedSearch < Base
 
     # GET /api/v2/savedsearch
     # Get all saved searches for a user.
@@ -78,11 +78,5 @@ module Wavefront
                                                  limit: limit })
 
     end
-  end
-
-  # A standard response
-  #
-  class Response
-    class SavedSearch < Base; end
   end
 end

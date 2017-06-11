@@ -22,8 +22,10 @@ $ gem build wavefront-sdk.gemspec
 ## Examples
 
 First, let's list the IDs of the users in our account. The `list()` method
-will return a `Wavefront::Response::User` object with a list of items. Most
-response classes behave this way.
+will return a `Wavefront::Response` object. This in turn contains
+`Wavefront::Type::Status` and `Wavefront::Type::Response` objects,
+which can be accessed with the `status` and `response` methods
+respectively.
 
 ```ruby
 # Define our API endpoint. (This is not a valid token!)
@@ -40,6 +42,9 @@ require 'logger'
 log = Logger.new(STDOUT)
 
 wf = Wavefront::User.new(CREDS, verbose: true, logger: log)
+
+# The response object can be accessed as a hash, but each key has an
+# attr_accessor so you can access it with dot notation.
 
 wf.list.response.items.each { |user| puts user[:identifier] }
 

@@ -4,7 +4,7 @@ module Wavefront
   #
   # Query Wavefront metrics.
   #
-  class Query < Wavefront::Base
+  class Query < Base
     def api_base
       'chart'
     end
@@ -74,42 +74,6 @@ module Wavefront
       options[:endTime] = parse_time(t_end, true) if t_end
 
       api_get('raw', options)
-    end
-  end
-
-
-  class Response
-
-    # The Query response forges status and response methods to look
-    # like other classes and create a more consistent interface.
-    # (see Wavefront::Response::Base)
-    #
-    class Query < Base
-      def populate(raw, status)
-        @response = if raw.is_a?(Hash)
-                      Struct.new(*raw.keys).new(*raw.values)
-                    else
-                      raw
-                    end
-
-        result = status == 200 ? 'OK' : 'ERROR'
-
-
-        if raw.is_a?(Hash)
-          msg = if raw.key?(:message)
-                  raw[:message]
-                elsif raw.key?(:error)
-                  raw[:error]
-                else
-                  nil
-                end
-        else
-          msg = nil
-        end
-
-        @status = Struct.new(:result, :message, :code).
-            new(result, msg, status)
-      end
     end
   end
 end

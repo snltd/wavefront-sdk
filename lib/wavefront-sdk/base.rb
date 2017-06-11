@@ -16,8 +16,7 @@ module Wavefront
   # any call to the Wavefront API from this SDK, you are returned an
   # OpenStruct object.
   #
-  # @return a Wavefront::Class::Response object where Class matches
-  # the inheriting class name.
+  # @return a Wavefront::Response object
   #
   class Base
     include Wavefront::Validators
@@ -190,13 +189,20 @@ module Wavefront
         #
         return if level == :debug && ! opts[:debug]
         return if level == :info && ! opts[:verbose]
-
         puts msg
       end
     end
 
+    # If we need to massage a raw response to fit what the
+    # Wavefront::Response class expects (I'm looking at you,
+    # 'User'), a class can provide a {#response_shim} method.
+    #
     def respond(resp)
-      response_class.send(:new, resp.body, resp.status || {})
+      body = respond_to?(:response_shim) ? response_shim(resp.body,
+                                                         resp.status) :
+                                           resp.body
+
+      Wavefront::Response.new(body, resp.status)
     end
 
     private
@@ -227,11 +233,6 @@ module Wavefront
       end
 
       respond(resp)
-    end
-
-    def response_class
-       Object.const_get(
-        "Wavefront::Response::#{self.class.name.split('::').last}")
     end
 
     def setup_endpoint(creds)

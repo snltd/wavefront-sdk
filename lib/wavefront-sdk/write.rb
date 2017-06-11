@@ -8,7 +8,7 @@ module Wavefront
   # This class helps you send points to a Wavefront proxy in native
   # format. Usually this is done on port 2878.
   #
-  class Write < Wavefront::Base
+  class Write < Base
     attr_reader :sock, :summary
 
     # Construct an object which allows us to write points to a
@@ -99,7 +99,13 @@ module Wavefront
         close if openclose
       end
 
-      Wavefront::Response::Write.new(summary.to_json, nil)
+      s_str = summary[:unsent] == 0 && summary[:rejected] == 0 ? 'OK' :
+                                                                 'ERROR'
+
+      resp = { status:   { result: s_str, message: nil, code: nil },
+               response: summary }.to_json
+
+      Wavefront::Response.new(resp, nil)
     end
 
     def valid_point?(p)
@@ -206,7 +212,7 @@ module Wavefront
     end
   end
 
-  class Response
+  #class Response
     # The Write response forges status and response methods to look
     # like other classes and create a more consistent interface. As
     # the request does not happen over HTTP, there's not much to put
@@ -216,14 +222,14 @@ module Wavefront
     # @response=#<struct  sent=1, rejected=0, unsent=0>,
     # @status=#<struct  result="OK", message=nil, code=nil>>
     #
-    class Write < Base
-      def populate(raw, status)
-        @response = Struct.new(*raw.keys).new(*raw.values).freeze
-
-        ok = raw[:rejected] == 0 && raw[:unsent] == 0 ? 'OK' : 'ERROR'
-
-        @status = Struct.new(:result, :message, :code).new(ok, nil, nil)
-      end
-    end
-  end
+    #class Write < Base
+      #def populate(raw, status)
+        #@response = Struct.new(*raw.keys).new(*raw.values).freeze
+#
+        #ok = raw[:rejected] == 0 && raw[:unsent] == 0 ? 'OK' : 'ERROR'
+#
+        #@status = Struct.new(:result, :message, :code).new(ok, nil, nil)
+      #end
+    #end
+  #end
 end

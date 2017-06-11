@@ -4,7 +4,7 @@ module Wavefront
   #
   # Manage and query Wavefront proxies.
   #
-  class Proxy < Wavefront::Base
+  class Proxy < Base
 
     # GET /api/v2/proxy
     # Get all proxies for a customer
@@ -85,11 +85,5 @@ module Wavefront
       wf_proxy_id?(id)
       api_put(id, payload)
     end
-  end
-
-  # A standard response
-  #
-  class Response
-    class Proxy < Base; end
   end
 end

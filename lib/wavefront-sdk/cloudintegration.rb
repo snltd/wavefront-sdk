@@ -5,7 +5,7 @@ module Wavefront
   # View and manage Cloud Integrations. These are identified by
   # a UUID.
   #
-  class CloudIntegration < Wavefront::Base
+  class CloudIntegration < Base
 
     # GET /api/v2/cloudintegration
     # Get all cloud integrations for a customer
@@ -78,11 +78,5 @@ module Wavefront
       wf_cloudintegration_id?(id)
       api_post([id, 'undelete'].uri_concat)
     end
-  end
-
-  # A standard response.
-  #
-  class Response
-    class CloudIntegration < Base; end
   end
 end

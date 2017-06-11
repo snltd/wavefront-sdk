@@ -5,7 +5,7 @@ module Wavefront
   # View and manage events. Events are identified by their millisecond
   # epoch timestamp.
   #
-  class Event < Wavefront::Base
+  class Event < Base
     @update_keys = [:startTime, :endTime, :name, :annotations]
 
     # GET /api/v2/event
@@ -162,11 +162,5 @@ module Wavefront
       wf_string?(tag)
       api_put([id, 'tag', tag].uri_concat)
     end
-  end
-
-  # A standard response.
-  #
-  class Response
-    class Event < Base; end
   end
 end

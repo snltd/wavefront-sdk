@@ -5,7 +5,7 @@ module Wavefront
   # View and manage alerts. Alerts are identified by their millisecond
   # epoch timestamp. Returns a Wavefront::Response::Alert object.
   #
-  class Alert < Wavefront::Base
+  class Alert < Base
 
     # GET /api/v2/alert
     # Get all alerts for a customer
@@ -186,11 +186,5 @@ module Wavefront
     def summary
       api_get('summary')
     end
-  end
-
-  # A standard response
-  #
-  class Response
-    class Alert < Base; end
   end
 end

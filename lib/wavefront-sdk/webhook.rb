@@ -4,7 +4,7 @@ module Wavefront
   #
   # Manage and query Wavefront webhooks
   #
-  class Webhook < Wavefront::Base
+  class Webhook < Base
 
     # GET /api/v2/webhook
     # Get all webhooks for a customer.
@@ -63,11 +63,5 @@ module Wavefront
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end
-  end
-
-  # A standard response
-  #
-  class Response
-    class Webhook < Base; end
   end
 end

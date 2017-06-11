@@ -4,7 +4,7 @@ module Wavefront
   #
   # View and manage source metadata.
   #
-  class Source < Wavefront::Base
+  class Source < Base
 
     # GET /api/v2/source
     # Get all sources for a customer
@@ -121,11 +121,5 @@ module Wavefront
       wf_string?(tag)
       api_put([id, 'tag', tag].uri_concat)
     end
-  end
-
-  # A standard response
-  #
-  class Response
-    class Source < Base; end
   end
 end

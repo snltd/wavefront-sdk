@@ -7,7 +7,7 @@ module Wavefront
   # this class covers the whole API with two methods, but leaves a
   # lot up to the user. It may grow, with convenience methods.
   #
-  class Search < Wavefront::Base
+  class Search < Base
 
     # POST /api/v2/search/agent
     # POST /api/v2/search/agent/deleted
@@ -48,11 +48,5 @@ module Wavefront
       path.<< facet ? facet : 'facets'
       api_post(path, body, 'application/json')
     end
-  end
-
-  # A standard response
-  #
-  class Response
-    class Search < Base; end
   end
 end

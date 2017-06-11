@@ -4,7 +4,7 @@ module Wavefront
   #
   # Manage and query Wavefront maintenance windows
   #
-  class MaintenanceWindow < Wavefront::Base
+  class MaintenanceWindow < Base
 
     # GET /api/v2/maintenancewindow
     # Get all maintenance windows for a customer.
@@ -65,11 +65,5 @@ module Wavefront
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end
-  end
-
-  # A standard response.
-  #
-  class Response
-    class MaintenanceWindow < Base; end
   end
 end

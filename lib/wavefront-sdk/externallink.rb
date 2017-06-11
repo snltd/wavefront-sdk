@@ -4,7 +4,7 @@ module Wavefront
   #
   # Manage and query Wavefront external links.
   #
-  class ExternalLink < Wavefront::Base
+  class ExternalLink < Base
     def api_base
       '/extlink'
     end
@@ -65,11 +65,5 @@ module Wavefront
       raise ArgumentError unless body.is_a?(Hash)
       api_put(id, body)
     end
-  end
-
-  # A standard response.
-  #
-  class Response
-    class ExternalLink < Base; end
   end
 end
