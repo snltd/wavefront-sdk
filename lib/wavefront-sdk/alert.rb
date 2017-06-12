@@ -6,6 +6,10 @@ module Wavefront
   # epoch timestamp. Returns a Wavefront::Response::Alert object.
   #
   class Alert < Base
+    def update_keys
+      %i(id name target condition displayExpression minutes
+         resolveAfterMinutes severity additionalInformation)
+    end
 
     # GET /api/v2/alert
     # Get all alerts for a customer
@@ -24,7 +28,7 @@ module Wavefront
     # generic POST of a hash.
     #
     # @param body [Hash] description of alert
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -39,7 +43,7 @@ module Wavefront
     # 'trash' removes it for ever.
     #
     # @param id [String] ID of the alert
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_alert_id?(id)
@@ -53,7 +57,7 @@ module Wavefront
     #
     # @param id [String] ID of the alert
     # @param version [Integer] version of alert
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id, version = nil)
       wf_alert_id?(id)
@@ -67,24 +71,32 @@ module Wavefront
     # Update a specific alert.
     #
     # @param id [String] a Wavefront alert ID
-    # @param body [Hash] description of event. See body_desc()
-    # @return [Hash]
-    #
-    def update(id, body)
+    # @param body [Hash] key-value hash of the parameters you wish
+    #   to change
+    # @param modify [true, false] if true, use {#describe()} to get
+    #   a hash describing the existing object, and modify that with
+    #   the new body. If false, pass the new body straight through.
+    # @return [Wavefront::Response]
+
+    def update(id, body, modify = true)
       wf_alert_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body, 'application/json')
+
+      return api_put(id, body, 'application/json') unless modify
+
+      api_put(id, hash_for_update(describe(id).response, body),
+              'application/json')
     end
 
     # GET /api/v2/alert/id/history
     # Get the version history of a specific alert.
     #
     # @param id [String] ID of the alert
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
-    def history(id)
+    def history(id, offset = 0, limit = 100)
       wf_alert_id?(id)
-      api_get([id, 'history'].uri_concat)
+      api_get([id, 'history'].uri_concat, { offset: offset, limit: limit })
     end
 
     # POST /api/v2/alert/id/snooze
@@ -92,9 +104,8 @@ module Wavefront
     #
     # @param id [String] ID of the alert
     # @param seconds [Integer] how many seconds to snooze for.
-    #   Nil is indefinite
-    # @return [Hash] object describing the alert with status and
-    #   response keys
+    #   Nil is indefinite.
+    # @return [Wavefront::Response]
     #
     def snooze(id, seconds = nil)
       wf_alert_id?(id)
@@ -106,8 +117,7 @@ module Wavefront
     # Get all tags associated with a specific alert.
     #
     # @param id [String] ID of the alert
-    # @return [Hash] object describing the alert with status and
-    #   response keys
+    # @return [Wavefront::Response]
     #
     def tags(id)
       wf_alert_id?(id)
@@ -119,8 +129,7 @@ module Wavefront
     #
     # @param id [String] ID of the alert
     # @param tags [Array] list of tags to set.
-    # @return [Hash] object describing the alert with status and
-    #   response keys
+    # @return [Wavefront::Response]
     #
     def tag_set(id, tags)
       wf_alert_id?(id)
@@ -134,7 +143,7 @@ module Wavefront
     #
     # @param id [String] ID of the alert
     # @param tag [String] tag to delete
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_delete(id, tag)
       wf_alert_id?(id)
@@ -147,7 +156,7 @@ module Wavefront
     #
     # @param id [String] ID of the alert
     # @param tag [String] tag to set.
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_add(id, tag)
       wf_alert_id?(id)
@@ -159,7 +168,7 @@ module Wavefront
     # Undelete a specific alert.
     #
     # @param id [String] ID of the alert
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def undelete(id)
       wf_alert_id?(id)
@@ -170,8 +179,7 @@ module Wavefront
     # Unsnooze a specific alert.
     #
     # @param id [String] ID of the alert
-    # @return [Hash] object describing the alert with status and
-    #   response keys
+    # @return [Wavefront::Response]
     #
     def unsnooze(id)
       wf_alert_id?(id)
@@ -181,7 +189,7 @@ module Wavefront
     # GET /api/v2/alert/summary
     # Count alerts of various statuses for a customer
     #
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def summary
       api_get('summary')
