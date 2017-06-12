@@ -67,8 +67,8 @@ class WavefrontEventTest < WavefrontTestBase
   def test_update
     should_work(:update, [EVENT, EVENT_BODY, false], EVENT, :put,
                 JSON_POST_HEADERS, EVENT_BODY.to_json)
-    #should_be_invalid(:update, ['abcde', EVENT_BODY])
-    #assert_raises(ArgumentError) { wf.update }
+    should_be_invalid(:update, ['abcde', EVENT_BODY])
+    assert_raises(ArgumentError) { wf.update }
   end
 
   def test_delete
