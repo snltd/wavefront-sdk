@@ -6,7 +6,9 @@ module Wavefront
   # epoch timestamp.
   #
   class Event < Base
-    @update_keys = [:startTime, :endTime, :name, :annotations]
+    def update_keys
+      %i(startTime endTime name annotations)
+    end
 
     # GET /api/v2/event
     # List all the events for a customer within a time range.
