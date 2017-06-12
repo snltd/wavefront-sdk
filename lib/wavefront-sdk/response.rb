@@ -47,7 +47,7 @@ module Wavefront
     end
 
     def build_response(raw)
-      Map(raw.is_a?(Hash) && raw.key?(:response) ? raw[:response] : raw)
+      Map(raw.is_a?(Hash) && raw.key?(:response) ? raw[:response] : {})
     end
   end
 

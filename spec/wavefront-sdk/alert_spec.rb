@@ -55,8 +55,8 @@ class WavefrontAlertTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [ALERT, ALERT_BODY], ALERT, :put,
-                JSON_POST_HEADERS, ALERT_BODY.to_json)
+    should_work(:update, [ALERT, ALERT_BODY, false], ALERT, :put,
+                JSON_POST_HEADERS, ALERT_BODY)
     should_be_invalid(:update, ['abcde', ALERT_BODY])
     assert_raises(ArgumentError) { wf.update }
   end

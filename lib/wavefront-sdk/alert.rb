@@ -94,9 +94,13 @@ module Wavefront
     # @param id [String] ID of the alert
     # @return [Wavefront::Response]
     #
-    def history(id, offset = 0, limit = 100)
+    def history(id, offset = nil, limit = nil)
       wf_alert_id?(id)
-      api_get([id, 'history'].uri_concat, { offset: offset, limit: limit })
+      qs = {}
+      qs[:offset] = offset if offset
+      qs[:limit] = limit if limit
+
+      api_get([id, 'history'].uri_concat, qs)
     end
 
     # POST /api/v2/alert/id/snooze
