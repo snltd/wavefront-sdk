@@ -14,7 +14,7 @@ module Wavefront
     #
     # @param offset [Int] dashboard at which the list begins
     # @param limit [Int] the number of dashboard to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
       api_get('', { offset: offset, limit: limit })
@@ -25,7 +25,7 @@ module Wavefront
     # Refer to the Swagger API docs for valid keys.
     #
     # @param body [Hash] description of dashboard
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -39,7 +39,7 @@ module Wavefront
     # 'trash' removes it for ever.
     #
     # @param id [String] ID of the dashboard
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_dashboard_id?(id)
@@ -52,7 +52,7 @@ module Wavefront
     #
     # @param id [String] ID of the dashboard
     # @param version [Integer] version of dashboard
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id, version = nil)
       wf_dashboard_id?(id)
@@ -88,7 +88,7 @@ module Wavefront
     # Get the version history of an dashboard.
     #
     # @param id [String] ID of the dashboard
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def history(id)
       wf_dashboard_id?(id)
@@ -99,7 +99,7 @@ module Wavefront
     # Get all tags associated with a specific dashboard.
     #
     # @param id [String] ID of the dashboard
-    # @return [Hash] object describing the dashboard with status and
+    # @return [Wavefront::Response]
     #   response keys
     #
     def tags(id)
@@ -112,7 +112,7 @@ module Wavefront
     #
     # @param id [String] ID of the dashboard
     # @param tags [Array] list of tags to set.
-    # @return [Hash] object describing the dashboard with status and
+    # @return [Wavefront::Response]
     #   response keys
     #
     def tag_set(id, tags)
@@ -127,7 +127,7 @@ module Wavefront
     #
     # @param id [String] ID of the dashboard
     # @param tag [String] tag to delete
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_delete(id, tag)
       wf_dashboard_id?(id)
@@ -140,7 +140,7 @@ module Wavefront
     #
     # @param id [String] ID of the dashboard
     # @param tag [String] tag to set.
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_add(id, tag)
       wf_dashboard_id?(id)
@@ -152,7 +152,7 @@ module Wavefront
     # Move an dashboard from 'trash' back into active service.
     #
     # @param id [String] ID of the dashboard
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def undelete(id)
       wf_dashboard_id?(id)

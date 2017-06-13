@@ -24,7 +24,7 @@ module Wavefront
     # in 'trash' removes it for ever.
     #
     # @param id [String] ID of the proxy
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_proxy_id?(id)
@@ -35,7 +35,7 @@ module Wavefront
     # Get a specific proxy
     #
     # @param id [String] ID of the proxy
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id)
       wf_proxy_id?(id)
@@ -48,7 +48,7 @@ module Wavefront
     # Move an proxy from 'trash' back into active service.
     #
     # @param id [String] ID of the proxy
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def undelete(id)
       wf_proxy_id?(id)
@@ -63,7 +63,7 @@ module Wavefront
     #
     # @param id [String] ID of the proxy
     # @param name [String] new name
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def rename(id, name)
       wf_proxy_id?(id)
@@ -79,7 +79,7 @@ module Wavefront
     # @param payload [Hash] a key: value hash, where the key is the
     #   property to change and the value is its desired value. No
     #   validation is performed on any part of the payload.
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def update(id, payload)
       wf_proxy_id?(id)

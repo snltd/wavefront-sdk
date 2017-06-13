@@ -24,7 +24,7 @@ module Wavefront
     # @param body [Hash] a hash of parameters describing the window.
     #   Please refer to the Wavefront Swagger docs for key:value
     #   information
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -35,7 +35,7 @@ module Wavefront
     # Delete a specific maintenance window.
     #
     # @param id [String, Integer] ID of the maintenance window
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_maintenance_window_id?(id)
@@ -46,7 +46,7 @@ module Wavefront
     # Get a specific maintenance window.
     #
     # @param id [String, Integer] ID of the maintenance window
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id)
       wf_maintenance_window_id?(id)
@@ -57,7 +57,7 @@ module Wavefront
     # Update a specific maintenance window.
     #
     # @param body [Hash] a hash of parameters describing the window.
-    # @return [Hash]
+    # @return [Wavefront::Response]
     # @raise any validation errors from body
     #
     def update(id, body)

@@ -21,7 +21,7 @@ module Wavefront
     #   current time.
     # @param cursor [String] I think this must start with a timestamp.
     # @param limit [Integer] the number of events to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def list(from = nil, to = nil, limit = 100, cursor = nil)
       raise ArgumentError unless from && to
@@ -46,7 +46,7 @@ module Wavefront
     # Refer to the Swagger docs for more information.
     #
     # @param body [Hash] description of event
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -57,7 +57,7 @@ module Wavefront
     # Delete a specific event.
     #
     # @param id [String] ID of the alert
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_event_id?(id)
@@ -70,7 +70,7 @@ module Wavefront
     #
     # @param id [String] ID of the event
     # @param version [Integer] version of event
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id, version = nil)
       wf_event_id?(id)
@@ -91,7 +91,7 @@ module Wavefront
     #   object will be fetched and merged with the user-supplied body.
     #   The resulting object will be passed to the API. If this is
     #   false, the body will be passed through unmodified.
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def update(id, body, modify = true)
       wf_event_id?(id)
@@ -116,7 +116,7 @@ module Wavefront
     # Get all tags associated with a specific event
     #
     # @param id [String] ID of the event
-    # @return [Hash] object describing the event with status and
+    # @return [Wavefront::Response]
     #   response keys
     #
     def tags(id)
@@ -129,7 +129,7 @@ module Wavefront
     #
     # @param id [String] ID of the event
     # @param tags [Array] list of tags to set.
-    # @return [Hash] object describing the event with status and
+    # @return [Wavefront::Response]
     #   response keys
     #
     def tag_set(id, tags)
@@ -144,7 +144,7 @@ module Wavefront
     #
     # @param id [String] ID of the event
     # @param tag [String] tag to delete
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_delete(id, tag)
       wf_event_id?(id)
@@ -157,7 +157,7 @@ module Wavefront
     #
     # @param id [String] ID of the event
     # @param tag [String] tag to set.
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_add(id, tag)
       wf_event_id?(id)

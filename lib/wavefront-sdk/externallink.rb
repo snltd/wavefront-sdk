@@ -23,7 +23,7 @@ module Wavefront
     # Create a specific external link.
     #
     # @param body [Hash] a description of the external link.
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -34,7 +34,7 @@ module Wavefront
     # Delete a specific external link.
     #
     # @param id [String] ID of the link
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_link_id?(id)
@@ -45,7 +45,7 @@ module Wavefront
     # Get a specific external link.
     #
     # @param id [String] ID of the limnk
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id)
       wf_link_id?(id)
@@ -58,7 +58,7 @@ module Wavefront
     # @param id [String] ID of the link
     # @param body [Hash] a key:value hash where the key is the
     #   property to change and the value is its desired value
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def update(id, body)
       wf_link_id?(id)

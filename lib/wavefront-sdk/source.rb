@@ -11,7 +11,7 @@ module Wavefront
     #
     # @param offset [Int] source at which the list begins
     # @param limit [Int] the number of sources to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
       api_get('', { offset: offset, limit: limit })
@@ -23,7 +23,7 @@ module Wavefront
     # Refer to the Swagger API docs for valid keys.
     #
     # @param body [Hash] description of source
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -34,7 +34,7 @@ module Wavefront
     # Delete metadata (description and tags) for a specific source.
     #
     # @param id [String] ID of the source
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_source_id?(id)
@@ -45,7 +45,7 @@ module Wavefront
     # Get a specific source for a customer.
     #
     # @param id [String] ID of the source
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id, version = nil)
       wf_source_id?(id)
@@ -61,7 +61,7 @@ module Wavefront
     # Refer to the Swagger API docs for valid keys.
     #
     # @param body [Hash] description of source
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def update(id, body)
       wf_source_id?(id)
@@ -73,8 +73,7 @@ module Wavefront
     # Get all tags associated with a specific source.
     #
     # @param id [String] ID of the source
-    # @return [Hash] object describing the source with status and
-    #   response keys
+    # @return [Wavefront::Response]
     #
     def tags(id)
       wf_source_id?(id)
@@ -86,8 +85,7 @@ module Wavefront
     #
     # @param id [String] ID of the source
     # @param tags [Array] list of tags to set.
-    # @return [Hash] object describing the source with status and
-    #   response keys
+    # @return [Wavefront::Response]
     #
     def tag_set(id, tags)
       wf_source_id?(id)
@@ -101,7 +99,7 @@ module Wavefront
     #
     # @param id [String] ID of the source
     # @param tag [String] tag to delete
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_delete(id, tag)
       wf_source_id?(id)
@@ -114,7 +112,7 @@ module Wavefront
     #
     # @param id [String] ID of the source
     # @param tag [String] tag to set.
-    # @return [Hash] object with 'status' key and empty 'repsonse'
+    # @return [Wavefront::Response]
     #
     def tag_add(id, tag)
       wf_source_id?(id)

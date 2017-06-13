@@ -19,7 +19,7 @@ module Wavefront
     # @param body [Hash] a hash of parameters describing the user.
     #   Please refer to the Wavefront Swagger docs for key:value
     #   information
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body, send_email = false)
       raise ArgumentError unless body.is_a?(Hash)
@@ -30,7 +30,7 @@ module Wavefront
     # Delete a specific user.
     #
     # @param id [String] ID of the user
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_user_id?(id)
@@ -41,7 +41,7 @@ module Wavefront
     # Retrieves a user by identifier (email addr).
     #
     # @param id [String] ID of the user
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id)
       wf_user_id?(id)
@@ -59,7 +59,7 @@ module Wavefront
     #   embedded_charts, events_management,
     #   external_links_management, host_tag_management,
     #   metrics_management, user_management,
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def grant(id, group)
       wf_user_id?(id)
@@ -75,7 +75,7 @@ module Wavefront
     # @param group [String] group to add user to. We do not validate
     #   this so that changes to the API do not mandate changes to
     #   the SDK. See #update for valid values.
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def revoke(id, group)
       wf_user_id?(id)

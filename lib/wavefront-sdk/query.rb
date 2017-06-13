@@ -26,7 +26,7 @@ module Wavefront
     #   May be a Ruby Time object, or epoch milliseconds.
     # @param options [Hash] any other options defined in the API
     # @raise [ArgumentError] if query is not a string
-    # @return [Wavefront::Response::Query]
+    # @return [Wavefront::Response]
     #
     def query(query, granularity = nil, t_start = nil, t_end = nil,
                options = {})

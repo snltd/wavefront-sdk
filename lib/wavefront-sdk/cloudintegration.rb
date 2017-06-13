@@ -12,7 +12,7 @@ module Wavefront
     #
     # @param offset [Int] integration at which the list begins
     # @param limit [Int] the number of integration to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
       api_get('', { offset: offset, limit: limit })
@@ -23,7 +23,7 @@ module Wavefront
     # valid keys.
     #
     # @param body [Hash] description of integration
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -38,7 +38,7 @@ module Wavefront
     # integration in 'trash' removes it for ever.
     #
     # @param id [String] ID of the integration
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_cloudintegration_id?(id)
@@ -49,7 +49,7 @@ module Wavefront
     # Get a specific cloud integration
     #
     # @param id [String] ID of the integration
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id)
       wf_cloudintegration_id?(id)
@@ -60,7 +60,7 @@ module Wavefront
     # Update a specific cloud integration
     #
     # @param id [String] ID of the integration
-    # @param body [Hash] description of integration
+    # @param body [Wavefront::Response]
     #
     def update(id, body)
       wf_cloudintegration_id?(id)
@@ -72,7 +72,7 @@ module Wavefront
     # Undelete a specific cloud integration
     #
     # @param id [String] ID of the integration
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def undelete(id)
       wf_cloudintegration_id?(id)

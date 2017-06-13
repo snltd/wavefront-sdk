@@ -12,7 +12,7 @@ module Wavefront
     #
     # @param offset [Int] saved search at which the list begins
     # @param limit [Int] the number of saved searches to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
       api_get('', { offset: offset, limit: limit })
@@ -23,7 +23,7 @@ module Wavefront
     # valid keys.
     #
     # @param body [Hash] description of saved search
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
@@ -34,7 +34,7 @@ module Wavefront
     # Delete a specific saved search.
     #
     # @param id [String] ID of the saved search
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def delete(id)
       wf_savedsearch_id?(id)
@@ -45,7 +45,7 @@ module Wavefront
     # Get a specific saved search.
     #
     # @param id [String] ID of the saved search
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def describe(id)
       wf_savedsearch_id?(id)
@@ -56,7 +56,7 @@ module Wavefront
     # Update a specific saved search.
     #
     # @param id [String] ID of the saved search
-    # @param body [Hash] description of saved search
+    # @param body [Wavefront::Response]
     #
     def update(id, body)
       wf_savedsearch_id?(id)
@@ -70,7 +70,7 @@ module Wavefront
     # @param entitytype [String] type of entity to retrieve
     # @param offset [Int] saved search at which the list begins
     # @param limit [Int] the number of saved searches to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def entity(entitytype, offset = 0, limit = 100)
       wf_savedsearch_entity?(entitytype)
