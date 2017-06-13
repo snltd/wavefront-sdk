@@ -5,6 +5,10 @@ module Wavefront
   # Manage and query Wavefront maintenance windows
   #
   class MaintenanceWindow < Base
+    def update_keys
+      %i(reason title startTimeInSeconds endTimeInSeconds
+         relevantCustomerTags relevantHostTags)
+    end
 
     # GET /api/v2/maintenancewindow
     # Get all maintenance windows for a customer.
@@ -56,14 +60,22 @@ module Wavefront
     # PUT /api/v2/maintenancewindow/id
     # Update a specific maintenance window.
     #
-    # @param body [Hash] a hash of parameters describing the window.
+    # @param id [String] a Wavefront maintenance window ID
+    # @param body [Hash] key-value hash of the parameters you wish
+    #   to change
+    # @param modify [true, false] if true, use {#describe()} to get
+    #   a hash describing the existing object, and modify that with
+    #   the new body. If false, pass the new body straight through.
     # @return [Wavefront::Response]
-    # @raise any validation errors from body
-    #
-    def update(id, body)
+
+    def update(id, body, modify = true)
       wf_maintenance_window_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body)
+
+      return api_put(id, body, 'application/json') unless modify
+
+      api_put(id, hash_for_update(describe(id).response, body),
+              'application/json')
     end
   end
 end
