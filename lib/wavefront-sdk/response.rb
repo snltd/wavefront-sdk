@@ -31,7 +31,11 @@ module Wavefront
     #   has changed underneath us.
     #
     def initialize(json, status, debug = false)
-      raw = json.empty? {} || JSON.parse(json, symbolize_names: true)
+      begin
+        raw = json.empty? {} || JSON.parse(json, symbolize_names: true)
+      rescue
+        raw = { message: json, code: status }
+      end
 
       @status = build_status(raw, status)
       @response = build_response(raw)
