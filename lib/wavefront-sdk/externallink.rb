@@ -9,6 +9,10 @@ module Wavefront
       '/extlink'
     end
 
+    def update_keys
+      %i(name template description)
+    end
+
     # GET /api/v2/extlink
     # Get all external links for a customer
     #
@@ -55,15 +59,22 @@ module Wavefront
     # PUT /api/v2/extlink/id
     # Update a specific external link.
     #
-    # @param id [String] ID of the link
-    # @param body [Hash] a key:value hash where the key is the
-    #   property to change and the value is its desired value
+    # @param id [String] a Wavefront external link ID
+    # @param body [Hash] key-value hash of the parameters you wish
+    #   to change
+    # @param modify [true, false] if true, use {#describe()} to get
+    #   a hash describing the existing object, and modify that with
+    #   the new body. If false, pass the new body straight through.
     # @return [Wavefront::Response]
-    #
-    def update(id, body)
+
+    def update(id, body, modify = true)
       wf_link_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body)
+
+      return api_put(id, body, 'application/json') unless modify
+
+      api_put(id, hash_for_update(describe(id).response, body),
+              'application/json')
     end
   end
 end

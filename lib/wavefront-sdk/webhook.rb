@@ -5,6 +5,9 @@ module Wavefront
   # Manage and query Wavefront webhooks
   #
   class Webhook < Base
+    def update_keys
+      %i(title description template title triggers recipient)
+    end
 
     # GET /api/v2/webhook
     # Get all webhooks for a customer.
@@ -54,14 +57,22 @@ module Wavefront
     # PUT /api/v2/webhook/id
     # Update a specific webhook.
     #
-    # @param body [Hash] a hash of parameters describing the webhook.
+    # @param id [String] a Wavefront webhook ID
+    # @param body [Hash] key-value hash of the parameters you wish
+    #   to change
+    # @param modify [true, false] if true, use {#describe()} to get
+    #   a hash describing the existing object, and modify that with
+    #   the new body. If false, pass the new body straight through.
     # @return [Wavefront::Response]
-    # @raise any validation errors from body
-    #
-    def update(id, body)
+
+    def update(id, body, modify = true)
       wf_webhook_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body)
+
+      return api_put(id, body, 'application/json') unless modify
+
+      api_put(id, hash_for_update(describe(id).response, body),
+              'application/json')
     end
   end
 end
