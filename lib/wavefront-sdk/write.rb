@@ -211,25 +211,4 @@ module Wavefront
       @net = creds
     end
   end
-
-  #class Response
-    # The Write response forges status and response methods to look
-    # like other classes and create a more consistent interface. As
-    # the request does not happen over HTTP, there's not much to put
-    # in the status object. The response object is the contents of
-    # the summary variable.
-    #
-    # @response=#<struct  sent=1, rejected=0, unsent=0>,
-    # @status=#<struct  result="OK", message=nil, code=nil>>
-    #
-    #class Write < Base
-      #def populate(raw, status)
-        #@response = Struct.new(*raw.keys).new(*raw.values).freeze
-#
-        #ok = raw[:rejected] == 0 && raw[:unsent] == 0 ? 'OK' : 'ERROR'
-#
-        #@status = Struct.new(:result, :message, :code).new(ok, nil, nil)
-      #end
-    #end
-  #end
 end
