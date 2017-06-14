@@ -5,6 +5,9 @@ module Wavefront
   # View and manage source metadata.
   #
   class Source < Base
+    def update_keys
+      %i(sourceName tags description)
+    end
 
     # GET /api/v2/source
     # Get all sources for a customer
@@ -58,15 +61,23 @@ module Wavefront
     # PUT /api/v2/source/id
     # Update metadata (description or tags) for a specific source.
     #
-    # Refer to the Swagger API docs for valid keys.
-    #
-    # @param body [Hash] description of source
+    # @param id [String] a Wavefront alert ID
+    # @param body [Hash] key-value hash of the parameters you wish
+    #   to change
+    # @param modify [true, false] if true, use {#describe()} to get
+    #   a hash describing the existing object, and modify that with
+    #   the new body. If false, pass the new body straight through.
     # @return [Wavefront::Response]
-    #
-    def update(id, body)
+
+    def update(id, body, modify = true)
       wf_source_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body)
+
+      return api_put(id, body, 'application/json') unless modify
+
+      p body
+      api_put(id, hash_for_update(describe(id).response, body),
+              'application/json')
     end
 
     # GET /api/v2/source/id/tag
