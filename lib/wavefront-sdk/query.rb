@@ -75,5 +75,16 @@ module Wavefront
 
       api_get('raw', options)
     end
+
+    # Fake a response which looks like we get from all the other
+    # paths. The default response is a single array.
+    #
+    def response_shim(body, status)
+      { response: JSON.parse(body),
+        status:   { result:  status == 200 ? 'OK' : 'ERROR',
+                    message: '',
+                    code:    status },
+      }.to_json
+    end
   end
 end
