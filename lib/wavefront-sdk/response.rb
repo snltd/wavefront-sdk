@@ -32,7 +32,7 @@ module Wavefront
     #
     def initialize(json, status, debug = false)
       begin
-        raw = json.empty? {} || JSON.parse(json, symbolize_names: true)
+        raw = json.empty? ? {} : JSON.parse(json, symbolize_names: true)
       rescue
         raw = { message: json, code: status }
       end
@@ -51,7 +51,15 @@ module Wavefront
     end
 
     def build_response(raw)
-      Map(raw.is_a?(Hash) && raw.key?(:response) ? raw[:response] : {})
+      if raw.is_a?(Hash)
+        if raw.key?(:response)
+          Map(raw[:response])
+        else
+          Map.new
+        end
+      else
+        Map.new
+      end
     end
   end
 
@@ -79,9 +87,16 @@ module Wavefront
       def initialize(raw, status)
         obj = raw.key?(:status) ? raw[:status] : raw
 
-        @result = obj[:result] || nil
         @message = obj[:message] || nil
         @code = obj[:code] || status
+
+        @result = if obj[:result]
+                    obj[:result]
+                  elsif status == 200
+                    'OK'
+                  else
+                    'ERROR'
+                  end
       end
     end
   end
