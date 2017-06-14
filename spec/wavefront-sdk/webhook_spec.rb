@@ -42,7 +42,7 @@ class WavefrontWebhookTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [WEBHOOK, WEBHOOK_BODY], WEBHOOK, :put,
+    should_work(:update, [WEBHOOK, WEBHOOK_BODY, false], WEBHOOK, :put,
                 JSON_POST_HEADERS, WEBHOOK_BODY.to_json)
     should_be_invalid(:update, ['abcde', WEBHOOK_BODY])
     assert_raises(ArgumentError) { wf.update }

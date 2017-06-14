@@ -56,8 +56,9 @@ class WavefrontDashboardTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [DASHBOARD, DASHBOARD_BODY], DASHBOARD, :put,
-                JSON_POST_HEADERS, DASHBOARD_BODY.to_json)
+    should_work(:update, [DASHBOARD, DASHBOARD_BODY, false],
+                DASHBOARD, :put, JSON_POST_HEADERS,
+                DASHBOARD_BODY.to_json)
     should_be_invalid(:update, ['!invalid dash!', DASHBOARD_BODY])
     assert_raises(ArgumentError) { wf.update }
   end

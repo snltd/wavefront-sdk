@@ -50,11 +50,11 @@ class WavefrontExternalLinkTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [EXTERNAL_LINK, EXTERNAL_LINK_BODY],
+    should_work(:update, [EXTERNAL_LINK, EXTERNAL_LINK_BODY, false],
                 EXTERNAL_LINK, :put, JSON_POST_HEADERS,
                 EXTERNAL_LINK_BODY.to_json)
 
-    should_work(:update, [EXTERNAL_LINK, EXTERNAL_LINK_BODY_2],
+    should_work(:update, [EXTERNAL_LINK, EXTERNAL_LINK_BODY_2, false],
                 EXTERNAL_LINK, :put, JSON_POST_HEADERS,
                 EXTERNAL_LINK_BODY_2.to_json)
 

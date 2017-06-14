@@ -40,7 +40,7 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [WINDOW, WINDOW_BODY], WINDOW, :put,
+    should_work(:update, [WINDOW, WINDOW_BODY, false], WINDOW, :put,
                 JSON_POST_HEADERS, WINDOW_BODY.to_json)
     should_be_invalid(:update, ['abcde', WINDOW_BODY])
     assert_raises(ArgumentError) { wf.update }

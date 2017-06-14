@@ -25,23 +25,5 @@ class WavefrontResponseTest < MiniTest::Test
   end
 
   def test_initialize_bad_data
-    assert_raises(Wavefront::Exception::UnparseableResponse) do
-      Wavefront::Response.new('merp', 200)
-    end
-
-    assert_raises(Wavefront::Exception::UnparseableResponse) do
-      Wavefront::Response.new(
-        '{"status":{"result":"OK","message":"","code":200}', 200)
-    end
-
-    assert_raises(Wavefront::Exception::UnparseableResponse) do
-      Wavefront::Response.new(
-        '{"status":{"result":"OK","message":"","code":200}', 200)
-    end
-
-    assert_raises(Wavefront::Exception::UnparseableResponse) do
-      Wavefront::Response.new(
-        '{"response":{"items":[{"name":"test agent"}],"offset":0 }', 200)
-    end
   end
 end

@@ -36,7 +36,7 @@ class WavefrontSourceTest < WavefrontTestBase
   end
 
   def test_update
-    should_work(:update, [SOURCE, SOURCE_BODY], SOURCE, :put,
+    should_work(:update, [SOURCE, SOURCE_BODY, false], SOURCE, :put,
                 JSON_POST_HEADERS, SOURCE_BODY.to_json)
     should_be_invalid(:update, ['!invalid source!', SOURCE_BODY])
     assert_raises(ArgumentError) { wf.update }
