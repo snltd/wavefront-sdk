@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files`.split($/)
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = %w(lib)
+  gem.bindir        = 'bin'
 
   gem.add_runtime_dependency 'faraday', '>= 0.12.1', '< 0.13'
   gem.add_runtime_dependency 'inifile', '>= 3.0.0'

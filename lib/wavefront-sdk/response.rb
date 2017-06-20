@@ -53,7 +53,11 @@ module Wavefront
     def build_response(raw)
       if raw.is_a?(Hash)
         if raw.key?(:response)
-          Map(raw[:response])
+          if raw[:response].is_a?(Hash)
+            Map(raw[:response])
+          else
+            raw[:response]
+          end
         else
           Map.new
         end
