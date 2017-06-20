@@ -75,7 +75,6 @@ module Wavefront
 
       return api_put(id, body, 'application/json') unless modify
 
-      p body
       api_put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
