@@ -19,7 +19,7 @@ module Wavefront
     # @param to [Time, Integer] end ot time range. Can be epoch
     #   millisecods or a Ruby time. If not supplied, defaults to the
     #   current time.
-    # @param cursor [String] I think this must start with a timestamp.
+    # @param cursor [String] event from which to start listing
     # @param limit [Integer] the number of events to return
     # @return [Wavefront::Response]
     #

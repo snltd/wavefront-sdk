@@ -12,12 +12,16 @@ module Wavefront
     # GET /api/v2/source
     # Get all sources for a customer
     #
-    # @param offset [Int] source at which the list begins
-    # @param limit [Int] the number of sources to return
+    # @param limit [Integer] the number of sources to return
+    # @param cursor [String] source at which the list begins
     # @return [Wavefront::Response]
     #
-    def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+    def list(limit = nil, cursor = nil)
+      qs = {}
+      qs[:limit] = limit if limit
+      qs[:cursor] = cursor if cursor
+
+      api_get('', qs)
     end
 
     # POST /api/v2/source

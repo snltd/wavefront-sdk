@@ -15,7 +15,10 @@ SOURCE_BODY = {
 #
 class WavefrontSourceTest < WavefrontTestBase
   def test_list
-    should_work(:list, 10, '?offset=10&limit=100')
+    should_work(:list, [], '')
+    should_work(:list, 10, '?limit=10')
+    should_work(:list, [10, 'mysource'], '?limit=10&cursor=mysource')
+    should_work(:list, [nil, 'mysource'], '?cursor=mysource')
   end
 
   def test_create

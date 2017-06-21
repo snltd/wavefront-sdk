@@ -154,4 +154,3 @@ class Hash
     Marshal.load(Marshal.dump(self))
   end
 end
-
