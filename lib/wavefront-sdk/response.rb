@@ -39,6 +39,7 @@ module Wavefront
 
       @status = build_status(raw, status)
       @response = build_response(raw)
+
       p self if debug
     rescue => e
       puts "could not parse:\n#{json}" if debug
@@ -59,7 +60,7 @@ module Wavefront
             raw[:response]
           end
         else
-          Map.new
+          Map.new(raw)
         end
       else
         Map.new

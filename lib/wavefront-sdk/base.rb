@@ -202,7 +202,7 @@ module Wavefront
                                                          resp.status) :
                                            resp.body
 
-      Wavefront::Response.new(body, resp.status)
+      Wavefront::Response.new(body, resp.status, debug)
     end
 
     private
