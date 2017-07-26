@@ -4,10 +4,6 @@
 This is a Ruby SDK for v2 of
 [Wavefront](https://www.wavefront.com/)'s public API. It supports Ruby >= 2.2.
 
-Note that it currently has major version number `0`. This means *it
-is not finished*. Until version `1` comes out, I reserve the right
-to change, break, and befoul the code and the gem.
-
 ## Installation
 
 ```
