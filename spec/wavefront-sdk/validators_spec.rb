@@ -151,6 +151,12 @@ class WavefrontValidatorsTest < MiniTest::Test
                  good, bad)
   end
 
+  def test_wf_message_id?
+    good = %w(CLUSTER::IHjNaHM9)
+    bad = %w(4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw)
+    good_and_bad('wf_message_id?', 'InvalidMessageId', good, bad)
+  end
+
   def test_wf_alert_severity?
     good = %w(INFO SMOKE WARN SEVERE)
     bad = %w(any THING else)
