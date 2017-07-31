@@ -2,7 +2,7 @@
 
 require_relative '../spec_helper'
 
-MESSAGE = 'message_id'.freeze # don't know what these look like yet
+MESSAGE = 'CLUSTER::IHjNaHM9'.freeze
 
 # Unit tests for Message class
 #

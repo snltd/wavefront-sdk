@@ -296,7 +296,7 @@ module Wavefront
     #   valid
     #
     def wf_message_id?(v)
-      return true if v.is_a?(String) && v =~ /^\w+$/
+      return true if v.is_a?(String) && v =~ /^\w+::\w+$/
       raise Wavefront::Exception::InvalidMessageId
     end
 
