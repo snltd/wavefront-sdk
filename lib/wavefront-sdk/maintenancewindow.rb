@@ -7,7 +7,7 @@ module Wavefront
   class MaintenanceWindow < Base
     def update_keys
       %i(reason title startTimeInSeconds endTimeInSeconds
-         relevantCustomerTags relevantHostTags)
+         relevantCustomerTags relevantHostTags relevantHostNames)
     end
 
     # GET /api/v2/maintenancewindow
