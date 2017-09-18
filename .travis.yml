@@ -1,9 +1,9 @@
 language: ruby
 cache: bundler
 rvm:
-- 2.2.7
-- 2.3.4
-- 2.4.1
+- 2.2.8
+- 2.3.5
+- 2.4.2
 before_install: gem install bundler --no-rdoc --no-ri
 deploy:
   provider: rubygems
@@ -13,4 +13,4 @@ deploy:
   on:
     tags: true
     repo: snltd/wavefront-sdk
-    ruby: 2.3.4
+    ruby: 2.3.5
