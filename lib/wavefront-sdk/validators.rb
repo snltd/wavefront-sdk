@@ -164,7 +164,7 @@ module Wavefront
       raise Wavefront::Exception::InvalidTag unless tags.is_a?(Hash)
 
       tags.each do |k, v|
-        unless (k.size + v.size < 254) && k.match(/^[\w\-\.:]+$/)
+        unless k && v && (k.size + v.size < 254) && k.match(/^[\w\-\.:]+$/)
           raise Wavefront::Exception::InvalidTag
         end
       end
