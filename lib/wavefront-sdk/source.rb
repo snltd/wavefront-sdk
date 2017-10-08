@@ -48,6 +48,23 @@ module Wavefront
       api_delete(id)
     end
 
+    # POST /api/v2/source/id/description
+    # Set description associated with a specific source
+
+    def description_set(id, description)
+      wf_source_id?(id)
+      api_post([id, 'description'].uri_concat, description,
+               'application/json')
+    end
+
+    # DELETE /api/v2/source/id/description
+    # Remove description from a specific source
+
+    def description_delete(id)
+      wf_source_id?(id)
+      api_delete([id, 'description'].uri_concat)
+    end
+
     # GET /api/v2/source/id
     # Get a specific source for a customer.
     #
