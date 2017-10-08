@@ -243,4 +243,9 @@ class WavefrontValidatorsTest < MiniTest::Test
       wf_point?(bad)
     end
   end
+
+  def test_notificant_id
+    good = %w(CHTo47HvsPzSaGhh)
+    bad = %w(CTo47HvsPzSaGhh,  [], {}, nil, 'bad id')
+  end
 end

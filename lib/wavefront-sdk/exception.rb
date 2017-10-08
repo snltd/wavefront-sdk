@@ -17,6 +17,7 @@ module Wavefront
     class InvalidMessageId < ::Exception; end
     class InvalidMetricName < ::Exception; end
     class InvalidMetricValue < ::Exception; end
+    class InvalidNotificantId < ::Exception; end
     class InvalidName < ::Exception; end
     class InvalidPoint < ::Exception; end
     class InvalidPrefixLength < ::Exception; end

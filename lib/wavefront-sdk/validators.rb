@@ -391,5 +391,10 @@ module Wavefront
       wf_point_tags?(v[:tags]) if v[:tags]
       true
     end
+
+    def wf_notificant_id?(v)
+      return true if v.is_a?(String) && v =~ /^\w{16}$/
+      raise Wavefront::Exception::InvalidNotificantId
+    end
   end
 end
