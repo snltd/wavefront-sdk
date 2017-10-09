@@ -246,6 +246,11 @@ class WavefrontValidatorsTest < MiniTest::Test
 
   def test_notificant_id
     good = %w(CHTo47HvsPzSaGhh)
-    bad = %w(CTo47HvsPzSaGhh,  [], {}, nil, 'bad id')
+    bad = ['CTo47HvsPzSaGhh',  [], {}, nil, 'bad id']
+  end
+
+  def test_integration_id
+    good = %w(aws tutorial elasticsearch cassandra go)
+    bad = ['CTo47HvsPzSaGhh',  [], {}, nil, 'bad id']
   end
 end

@@ -392,9 +392,30 @@ module Wavefront
       true
     end
 
+    # Ensure the given argument is a valid Wavefront
+    # notificant ID.
+    #
+    # @param v [String] the notificant name to validate
+    # @return True if the notificant name is valid
+    # @raise Wavefront::Exception::InvalidNotificantId if the
+    #   notificant ID is not valid
+    #
     def wf_notificant_id?(v)
       return true if v.is_a?(String) && v =~ /^\w{16}$/
       raise Wavefront::Exception::InvalidNotificantId
+    end
+
+    # Ensure the given argument is a valid Wavefront
+    # integration ID. These appear to be lower-case strings.
+    #
+    # @param v [String] the integration name to validate
+    # @return True if the integration name is valid
+    # @raise Wavefront::Exception::InvalidIntegrationId if the
+    #   integration ID is not valid
+    #
+    def wf_integration_id?(v)
+      return true if v.is_a?(String) && v =~ /^[a-z0-9]+$/
+      raise Wavefront::Exception::InvalidIntegrationId
     end
   end
 end
