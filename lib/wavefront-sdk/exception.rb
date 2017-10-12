@@ -14,6 +14,8 @@ module Wavefront
     class InvalidGranularity < ::Exception; end
     class InvalidHostname < ::Exception; end
     class InvalidIntegrationId < ::Exception; end
+    class InvalidRelativeTime < ::Exception; end
+    class InvalidTimeUnit < ::Exception; end
     class InvalidMaintenanceWindowId < ::Exception; end
     class InvalidMessageId < ::Exception; end
     class InvalidMetricName < ::Exception; end
