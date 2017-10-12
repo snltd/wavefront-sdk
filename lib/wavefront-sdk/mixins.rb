@@ -50,7 +50,7 @@ module Wavefront
     # @raise [InvalidRelativeTime] if t does not meet requirements
     #
     def relative_time(t, ms = false, ref = DateTime.now)
-      ref = ms ? ref.to_date.strftime('%Q') : ref.to_time
+      ref = ms ? ref.to_datetime.strftime('%Q') : ref.to_time
       ref.to_i + parse_relative_time(t, ms)
     end
 
