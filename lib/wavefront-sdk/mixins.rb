@@ -63,7 +63,7 @@ module Wavefront
 
       t = t[1..-1] if t.start_with?('+')
       match = t.match(/^(-?\d*\.?\d*)([smhdwy])$/)
-      match[1].to_f * time_multiplier(match[2]) * m
+      (match[1].to_f * time_multiplier(match[2]) * m).to_i
     rescue NoMethodError
       raise Wavefront::Exception::InvalidRelativeTime
     end
