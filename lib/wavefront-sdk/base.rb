@@ -21,8 +21,8 @@ module Wavefront
   class Base
     include Wavefront::Validators
     include Wavefront::Mixins
-    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn,
-                :update_keys, :logger
+    attr_reader :opts, :debug, :noop, :verbose, :net, :conn, :update_keys,
+                :logger
 
     # Create a new API object. This will always be called from a
     # class which inherits this one. If the inheriting class defines
