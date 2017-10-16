@@ -80,5 +80,5 @@ module Wavefront
       wf_notificant_id?(id)
       api_post(['test', id].uri_concat, nil)
     end
-   end
+  end
 end
