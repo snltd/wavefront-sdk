@@ -13,6 +13,10 @@ module Wavefront
       t
     end
 
+    def parse_time_Integer
+      t
+    end
+
     def parse_time_String
       return t.to_i if t =~ /^\d+$/
       @t = DateTime.parse("#{t} #{Time.now.getlocal.zone}")
