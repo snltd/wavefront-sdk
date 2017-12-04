@@ -1,5 +1,6 @@
 require 'date'
 require_relative './exception'
+require_relative './parse_time'
 
 module Wavefront
   module Mixins
@@ -13,28 +14,8 @@ module Wavefront
     # @raise Wavefront::InvalidTimestamp
     #
     def parse_time(t, ms = false)
-      #
-      # Numbers, or things that look like numbers, pass straight
-      # through. No validation, because maybe the user means one
-      # second past the epoch, or the year 2525.
-      #
-      return t if t.is_a?(Numeric)
-
-      if t.is_a?(String)
-        return t.to_i if t.match(/^\d+$/)
-
-        if t.start_with?('-') || t.start_with?('+')
-          return relative_time(t, ms)
-        end
-
-        begin
-          t = DateTime.parse("#{t} #{Time.now.getlocal.zone}")
-        rescue
-          raise Wavefront::Exception::InvalidTimestamp
-        end
-      end
-
-      ms ? t.to_datetime.strftime('%Q').to_i : t.strftime('%s').to_i
+      return relative_time(t, ms) if t =~ /^[\-+]/
+      ParseTime.new(t, ms).parse!
     end
 
     # Return a timetamp described by the given string. That is,

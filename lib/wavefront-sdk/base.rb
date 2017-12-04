@@ -181,16 +181,19 @@ module Wavefront
     #   :debug to DEBUG.
     #
     def log(msg, level = nil)
-
       if logger
         logger.send(level || :info, msg)
       else
-        # print it unless it's a debug and we're not in debug
-        #
-        return if level == :debug && ! opts[:debug]
-        return if level == :info && ! opts[:verbose]
-        puts msg
+        print_message(msg, level)
       end
+    end
+
+    # Print it unless it's a debug and we're not in debug
+    #
+    def print_message(msg, level)
+      return if level == :debug && ! opts[:debug]
+      return if level == :info && ! opts[:verbose]
+      puts msg
     end
 
     # If we need to massage a raw response to fit what the
