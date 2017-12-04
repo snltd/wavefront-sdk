@@ -2,7 +2,7 @@
 
 require_relative '../spec_helper'
 
-SOURCE = '74a247a9-f67c-43ad-911f-fabafa9dc2f3joyent'
+SOURCE = '74a247a9-f67c-43ad-911f-fabafa9dc2f3joyent'.freeze
 SOURCE_BODY = {
   sourceName: 'source.name',
   tags: {

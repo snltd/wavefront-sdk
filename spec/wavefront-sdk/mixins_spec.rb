@@ -57,7 +57,7 @@ class WavefrontMixinsTest < MiniTest::Test
   def test_parse_relative_time
     assert_equal parse_relative_time('-5s'), -5
     assert_equal parse_relative_time('-5s', true), -5000
-    assert_equal parse_relative_time('+10000s'), 10000
+    assert_equal parse_relative_time('+10000s'), 10_000
     assert_equal parse_relative_time('-5m'), -300
     assert_equal parse_relative_time('-.5m'), -30
     assert_equal parse_relative_time('-0.5m'), -30

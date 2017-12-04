@@ -8,7 +8,7 @@ WEBHOOK_BODY = {
   description:       'WebHook Description',
   template:          'POST Body -- Mustache syntax',
   title:             'WebHook Title',
-  triggers:          %w(ALERT_OPENED),
+  triggers:          %w[ALERT_OPENED],
   recipient:         'http://example.com',
   customHttpHeaders: {},
   contentType:       'text/plain'
