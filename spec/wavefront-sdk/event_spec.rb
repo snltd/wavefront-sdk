@@ -10,10 +10,10 @@ EVENT_BODY = {
     type:     'SDK test event',
     details:  'an imaginary event to test the SDK'
   },
-  hosts:       %w(host1 host2),
-  startTime:   1493385089000,
-  endTime:     1493385345678,
-  tags:        %w(tag1 tag2),
+  hosts:       %w[host1 host2],
+  startTime:   1_493_385_089_000,
+  endTime:     1_493_385_345_678,
+  tags:        %w[tag1 tag2],
   isEphemeral: false
 }.freeze
 
@@ -21,7 +21,6 @@ EVENT_BODY = {
 #
 class WavefrontEventTest < WavefrontTestBase
   def test_list
-
     t1 = Time.now - 600
     t2 = Time.now
     tms1 = t1.to_datetime.strftime('%Q')

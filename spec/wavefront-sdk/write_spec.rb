@@ -107,7 +107,7 @@ class WavefrontWriteTest < MiniTest::Test
     assert_equal(wf.hash_to_wf(p2),
                  'test.metric 123456 1469987572 source=testhost')
 
-    [:value, :path].each do |k|
+    %i[value path].each do |k|
       p3 = POINT.dup
       p3.delete(k)
 

@@ -10,17 +10,18 @@ CREDS = {
 }
 
 POST_HEADERS = {
-  :'Content-Type' => 'text/plain', :Accept => 'application/json'
+  'Content-Type': 'text/plain', Accept: 'application/json'
 }.freeze
 
 JSON_POST_HEADERS = {
-  :'Content-Type' => 'application/json', :Accept => 'application/json'
+  'Content-Type': 'application/json', Accept: 'application/json'
 }.freeze
 
 DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
                  '"response":{"items":[{"name":"test data"}],"offset":0,' \
-                 '"limit":100,"totalItems":3,"moreItems":false}}'
+                 '"limit":100,"totalItems":3,"moreItems":false}}'.freeze
 
+# Common testing code
 class WavefrontTestBase < MiniTest::Test
   attr_reader :wf, :wf_noop, :uri_base, :headers
 
@@ -60,21 +61,22 @@ class WavefrontTestBase < MiniTest::Test
   # @body [String] a JSON object you expect to be sent as part of
   #   the request
   #
-  #
+  # rubocop:disable Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/ParameterLists
   def should_work(method, args, path, call = :get, more_headers = {},
                   body = nil, id = nil)
     path = Array(path)
-    uri = target_uri(path.first).sub(/\/$/, '')
+    uri = target_uri(path.first).sub(%r{/$}, '')
 
     headers = { 'Accept':          /.*/,
                 'Accept-Encoding': /.*/,
                 'Authorization':  'Bearer 0123456789-ABCDEF',
-                'User-Agent':     "wavefront-sdk #{WF_SDK_VERSION}"
-                }.merge(more_headers)
+                'User-Agent':     "wavefront-sdk #{WF_SDK_VERSION}" }
+              .merge(more_headers)
 
     if body
-      stub_request(call, uri).with(body: body, headers:headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+      stub_request(call, uri).with(body: body, headers: headers)
+                             .to_return(body: DUMMY_RESPONSE, status: 200)
     else
       stub_request(call, uri).to_return(body: DUMMY_RESPONSE, status: 200)
     end
@@ -85,12 +87,10 @@ class WavefrontTestBase < MiniTest::Test
       else
         wf.send(method, args)
       end
+    elsif id
+      wf.send(method, id, *args)
     else
-      if id
-        wf.send(method, id, *args)
-      else
-        wf.send(method, *args)
-      end
+      wf.send(method, *args)
     end
 
     assert_requested(call, uri, headers: headers)
@@ -99,7 +99,7 @@ class WavefrontTestBase < MiniTest::Test
 
   def standard_exception
     Object.const_get('Wavefront::Exception')
-      .const_get("Invalid#{class_basename}Id")
+          .const_get("Invalid#{class_basename}Id")
   end
 
   def should_be_invalid(method, args = '!!invalid_val!!')
@@ -118,8 +118,8 @@ class WavefrontTestBase < MiniTest::Test
     #
     should_work('tag_set', [id, 'tag'],
                 ["#{id}/tag", ['tag'].to_json], :post, JSON_POST_HEADERS)
-    should_work('tag_set', [id, %w(tag1 tag2)],
-                ["#{id}/tag", %w(tag1 tag2).to_json], :post,
+    should_work('tag_set', [id, %w[tag1 tag2]],
+                ["#{id}/tag", %w[tag1 tag2].to_json], :post,
                 JSON_POST_HEADERS)
     should_fail_tags('tag_set', id)
 
@@ -146,8 +146,9 @@ class WavefrontTestBase < MiniTest::Test
   end
 end
 
+# Extensions to stdlib
+#
 class Hash
-
   # A quick way to deep-copy a hash.
   #
   def dup
