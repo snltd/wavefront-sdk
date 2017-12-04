@@ -72,8 +72,11 @@ module Wavefront
     #   active (false) entities
     #
     def raw_search(entity = nil, body = nil, deleted = false)
-      raise ArgumentError unless entity.is_a?(String) || entity.is_a?(Symbol)
-      raise ArgumentError unless body.is_a?(Hash)
+      unless (entity.is_a?(String) || entity.is_a?(Symbol)) &&
+        body.is_a?(Hash)
+        raise ArgumentError
+      end
+
       path = [entity]
       path.<< 'deleted' if deleted
       api_post(path, body.to_json, 'application/json')

@@ -162,13 +162,19 @@ module Wavefront
     #
     def wf_point_tags?(tags)
       raise Wavefront::Exception::InvalidTag unless tags.is_a?(Hash)
+      tags.each { |k, v| wf_point_tag?(k, v) }
+    end
 
-      tags.each do |k, v|
-        unless k && v && (k.size + v.size < 254) && k.match(/^[\w\-\.:]+$/)
-          raise Wavefront::Exception::InvalidTag
-        end
-      end
-      true
+    # Validate a single point tag, probably on behalf of
+    # #wf_point_tags?
+    # @param k [String] tag key
+    # @param v [String] tag value
+    # @raise Wavefront::Exception::InvalidTag if any tag is not valid
+    # @return nil
+    #
+    def wf_point_tag?(k, v)
+      return if  k && v && (k.size + v.size < 254) && k =~ /^[\w\-\.:]+$/
+      raise Wavefront::Exception::InvalidTag
     end
 
     # Ensure the given argument is a valid Wavefront proxy ID

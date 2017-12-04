@@ -133,6 +133,7 @@ module Wavefront
     # @param p [Hash] a hash describing a point. See #write() for
     #   the format.
     #
+    # rubocop:disable Metrics/CyclomaticComplexity
     def hash_to_wf(p)
       unless p.key?(:path) && p.key?(:value)
         raise Wavefront::Exception::InvalidPoint
