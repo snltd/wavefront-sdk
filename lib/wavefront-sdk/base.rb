@@ -205,6 +205,23 @@ module Wavefront
       Wavefront::Response.new(body, resp.status)
     end
 
+    # Return all objects using a lazy enumerator
+    # @return Enumerable
+    #
+    def list_all
+      Enumerator.new do |y|
+        offset = 0
+        limit = 100
+
+        loop do
+          resp = api_get('', { offset: offset, limit: limit }).response
+          resp.items.map { |i| y.<< i }
+          offset += limit
+          raise StopIteration unless resp.moreItems == true
+        end
+      end.lazy
+    end
+
     private
 
     # Try to describe the actual HTTP calls we make. There's a bit
