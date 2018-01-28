@@ -1,6 +1,11 @@
 #
 # Stuff needed by multiple tests
 #
+
+require 'simplecov'
+SimpleCov.start do
+  add_filter '/spec/'
+end
 require 'minitest/autorun'
 require 'webmock/minitest'
 
