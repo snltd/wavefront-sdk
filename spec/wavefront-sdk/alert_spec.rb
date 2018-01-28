@@ -20,6 +20,11 @@ class WavefrontAlertTest < WavefrontTestBase
     should_work(:list, 10, '?offset=10&limit=100')
   end
 
+  def test_update_keys
+    assert_instance_of(Array, wf.update_keys)
+    wf.update_keys.each { |k| assert_instance_of(Symbol, k) }
+  end
+
   def test_describe
     should_work(:describe, ALERT, ALERT)
     assert_raises(ArgumentError) { wf.describe }
