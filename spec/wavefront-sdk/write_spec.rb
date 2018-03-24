@@ -98,14 +98,12 @@ class WavefrontWriteTest < MiniTest::Test
 
   def test_paths_to_deltas
     x = wf.paths_to_deltas(POINTS.dup)
-
     assert_equal(x.size, 2)
 
     x.each do |p|
       assert_instance_of(Hash, p)
-      assert(p[:path].start_with?('Δ'))
+      assert(p[:path].start_with?(DELTA))
     end
-
   end
 
   def test_hash_to_wf
