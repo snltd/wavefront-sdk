@@ -23,6 +23,14 @@ POINT_A = [
   POINT, POINT.dup.update(ts: 1_469_987_588, value: 54_321)
 ].freeze
 
+POINTS = [POINT.dup,
+          { path:   'test.other_metric',
+           value:  89,
+           ts:     1_469_987_572,
+           source: 'otherhost'}]
+
+POINT_L = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'.freeze
+
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
 #
@@ -86,6 +94,18 @@ class WavefrontWriteTest < MiniTest::Test
     wf.open
     wf.write(POINT_A, false)
     assert mocket_spy.has_been_called?
+  end
+
+  def test_paths_to_deltas
+    x = wf.paths_to_deltas(POINTS.dup)
+
+    assert_equal(x.size, 2)
+
+    x.each do |p|
+      assert_instance_of(Hash, p)
+      assert(p[:path].start_with?('Δ'))
+    end
+
   end
 
   def test_hash_to_wf

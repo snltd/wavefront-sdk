@@ -17,8 +17,10 @@ class WavefrontValidatorsTest < MiniTest::Test
 
   def test_wf_metric_name?
     good = ['a.l33t.metric_path-passes', 'NO.NEED.TO.SHOUT',
-            '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"']
-    bad  = ['metric.is.(>_<)', { key: 'val' }, 'no/slash', 'no,comma', []]
+            '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"',
+            'Δdeltas.must.pass']
+    bad  = ['metric.is.(>_<)', { key: 'val' }, 'no/slash', 'no,comma',
+            [] , 'not.a.Δ']
     good_and_bad('wf_metric_name?', 'InvalidMetricName', good, bad)
   end
 

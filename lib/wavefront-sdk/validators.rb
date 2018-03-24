@@ -35,7 +35,7 @@ module Wavefront
     #
     def wf_metric_name?(v)
       if v.is_a?(String) && v.size < 1024 &&
-         (v.match(/^[\w\-\.]+$/) || v.match(%r{^\"[\w\-\.\/,]+\"$}))
+         (v.match(/^Δ?[\w\-\.]+$/) || v.match(%r{^\"[\w\-\.\/,]+\"$}))
         return true
       end
 
