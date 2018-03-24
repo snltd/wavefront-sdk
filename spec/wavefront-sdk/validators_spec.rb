@@ -3,6 +3,7 @@
 require 'date'
 require 'minitest/autorun'
 require_relative '../spec_helper'
+require_relative '../../lib/wavefront-sdk/constants'
 require_relative '../../lib/wavefront-sdk/validators'
 
 class WavefrontValidatorsTest < MiniTest::Test
@@ -18,9 +19,9 @@ class WavefrontValidatorsTest < MiniTest::Test
   def test_wf_metric_name?
     good = ['a.l33t.metric_path-passes', 'NO.NEED.TO.SHOUT',
             '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"',
-            'Δdeltas.must.pass']
+            "#{DELTA}deltas.must.pass", "\"#{DELTA}quoted.delta\""]
     bad  = ['metric.is.(>_<)', { key: 'val' }, 'no/slash', 'no,comma',
-            [] , 'not.a.Δ']
+            [] , "not.a.#{DELTA}"]
     good_and_bad('wf_metric_name?', 'InvalidMetricName', good, bad)
   end
 

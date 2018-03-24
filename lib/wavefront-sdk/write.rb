@@ -1,4 +1,5 @@
 require 'socket'
+require_relative './constants'
 require_relative './base'
 
 HOSTNAME = Socket.gethostname.freeze
@@ -116,7 +117,7 @@ module Wavefront
     # @param points [Array[Hash]] see #write()
     # @param openclose [Bool] see #write()
     #
-    def write_delta(points, openclose)
+    def write_delta(points, openclose = true)
       write(paths_to_deltas(points), openclose)
     end
 
@@ -127,7 +128,7 @@ module Wavefront
     # @return [Array[Hash]]
     #
     def paths_to_deltas(points)
-      points.map { |p| p.tap { p[:path] = 'Δ' + p[:path] } }
+      [points].flatten.map { |p| p.tap { p[:path] = DELTA + p[:path] } }
     end
 
     def valid_point?(p)
