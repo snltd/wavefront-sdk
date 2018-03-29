@@ -69,6 +69,16 @@ wf.list.response.items.each { |user| puts user[:identifier] }
 wf.delete('lolex@oldplace.com')
 ```
 
+All API classes expect `user` support pagination and will only
+return blocks of results. The `everything()` method returns a lazy
+enumerator to make dealing with pagination simpler.
+
+```ruby
+Wavefront::Alert.new(c.creds).everything.each_with_index do |m, i|
+  puts "#{i} #{m.id}"
+end
+```
+
 Retrieve a timeseries over the last 10 minutes, with one minute bucket
 granularity. We will describe the time as a Ruby object, but could also use
 an epoch timestamp. The SDK happily converts between the two.

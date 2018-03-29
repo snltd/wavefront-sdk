@@ -95,5 +95,12 @@ module Wavefront
                     code:    status },
       }.to_json
     end
+
+    # the user API class does not support pagination. Be up-front
+    # about that.
+    #
+    def everything
+      raise NoMethodError
+    end
   end
 end
