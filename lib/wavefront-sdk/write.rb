@@ -1,4 +1,5 @@
 require 'socket'
+require_relative './constants'
 require_relative './base'
 
 HOSTNAME = Socket.gethostname.freeze
@@ -108,6 +109,28 @@ module Wavefront
       Wavefront::Response.new(resp, nil)
     end
 
+    # A wrapper method around #write() which guarantees all points
+    # will be sent as deltas. You can still manually prefix any
+    # metric with a Δ and use #write(), but depending on your
+    # use-case, this method may be safer. It's easy to forget the Δ.
+    #
+    # @param points [Array[Hash]] see #write()
+    # @param openclose [Bool] see #write()
+    #
+    def write_delta(points, openclose = true)
+      write(paths_to_deltas(points), openclose)
+    end
+
+    # Prefix all paths in a points array (as passed to
+    # #write_delta() with a delta symbol
+    #
+    # @param points [Array[Hash]] see #write()
+    # @return [Array[Hash]]
+    #
+    def paths_to_deltas(points)
+      [points].flatten.map { |p| p.tap { p[:path] = DELTA + p[:path] } }
+    end
+
     def valid_point?(p)
       return true if opts[:novalidate]
 
@@ -126,7 +149,7 @@ module Wavefront
       end
     end
 
-    # Convert a validated point has to a string conforming to
+    # Convert a validated point to a string conforming to
     # https://community.wavefront.com/docs/DOC-1031.  No validation
     # is done here.
     #

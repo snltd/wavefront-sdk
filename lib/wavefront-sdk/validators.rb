@@ -1,3 +1,4 @@
+require_relative './constants'
 require_relative './exception'
 
 module Wavefront
@@ -35,7 +36,8 @@ module Wavefront
     #
     def wf_metric_name?(v)
       if v.is_a?(String) && v.size < 1024 &&
-         (v.match(/^[\w\-\.]+$/) || v.match(%r{^\"[\w\-\.\/,]+\"$}))
+         (v.match(/^#{DELTA}?[\w\-\.]+$/) ||
+          v.match(%r{^\"#{DELTA}?[\w\-\.\/,]+\"$}))
         return true
       end
 
