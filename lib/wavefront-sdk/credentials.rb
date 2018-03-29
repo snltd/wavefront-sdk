@@ -31,11 +31,17 @@ module Wavefront
     #   and/or 'profile' which select a profile section from 'file'
     #
     def initialize(options = {})
-      raw = load_from_file(options)
-      raw = env_override(raw)
-      populate(raw)
+      raw = load_from_file(cred_files(options), options[:profile] ||
+                           'default')
+      populate(env_override(raw))
     end
 
+    # If the user has set certain environment variables, their
+    # values will override values from the config file or
+    # command-line.
+    # @param raw [Hash] the existing credentials
+    # @return [Hash] the modified credentials
+    #
     def env_override(raw)
       { endpoint: 'WAVEFRONT_ENDPOINT',
         token:    'WAVEFRONT_TOKEN',
@@ -44,25 +50,39 @@ module Wavefront
       raw
     end
 
+    # Make the helper values. We use a Map so they're super-easy to
+    # access
+    #
+    # @param raw [Hash] the combined options from config file,
+    #   command-line and env vars.
+    # @return void
+    #
     def populate(raw)
       @config = Map(raw)
       @creds = Map(raw.select { |k, _v| [:endpoint, :token].include?(k) })
       @proxy = Map(raw.select { |k, _v| [:proxy, :port].include?(k) })
     end
 
-    def load_from_file(opts)
+    # @return [Array] a list of possible credential files
+    #
+    def cred_files(opts = {})
+      if opts.key?(:file)
+        Array(Pathname.new(opts[:file]))
+      else
+        [Pathname.new('/etc/wavefront/credentials'),
+          Pathname.new(ENV['HOME']) + '.wavefront']
+      end
+    end
+
+    # @param files [Array][Pathname] a list of ini-style config files
+    # @param profile [String] a profile name
+    # @return [Hash] the given profile from the given list of files.
+    #   If multiple files match, the last one will be used
+    #
+    def load_from_file(files, profile = 'default')
       ret = {}
 
-      profile = opts[:profile] || 'default'
-
-      c_file = if opts.key?(:file)
-                 Array(Pathname.new(opts[:file]))
-               else
-                 [Pathname.new('/etc/wavefront/credentials'),
-                  Pathname.new(ENV['HOME']) + '.wavefront']
-               end
-
-      c_file.each do |f|
+      files.each do |f|
         next unless f.exist?
         ret = load_profile(f, profile)
         ret[:file] = f
@@ -71,9 +91,8 @@ module Wavefront
       ret
     end
 
-    # Load in configuration (optionally) given section of an
-    # ini-style configuration file not there, we don't consider that
-    # an error.
+    # Load in an (optionally) given section of an ini-style
+    # configuration file not there, we don't consider that an error.
     #
     # @param file [Pathname] the file to read
     # @param profile [String] the section in the config to read
