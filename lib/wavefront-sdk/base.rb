@@ -211,7 +211,7 @@ module Wavefront
     # Return all objects using a lazy enumerator
     # @return Enumerable
     #
-    def list_all
+    def everything
       Enumerator.new do |y|
         offset = 0
         limit = 100
