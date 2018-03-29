@@ -9,23 +9,77 @@ module Wavefront
   #
   class Search < Base
 
-    # POST /api/v2/search/agent
-    # POST /api/v2/search/agent/deleted
+    # POST /api/v2/search/entity
+    # POST /api/v2/search/entity/deleted
+    # Run a search query. This single method maps to many API paths.
+    # It is a wrapper around #raw_search() for common, single
+    # key-value searches. If you need to do more complicated things,
+    # use #raw_search().
+    #
+    # @param entity [String, Symbol] the type of Wavefront object
+    #   you wish to search. e.g. :alert, :dashboard
+    # @param query [Array, Hash] A single hash, or array of hashes,
+    # containing the following keys:
+    #   key [String] the field on which to search
+    #   value [String] what to search for
+    #   matchingMethod [String] the method to match values. Defaults
+    #     to 'CONTAINS'. Must be one of CONTAINS, STARTSWITH, EXACT,
+    #     TAGPATH
+    #   If an array of hashes is supplied, Wavefront will apply a
+    #   logical AND to the given key-value pairs.
+    # @param value [String] the value to search for
+    # @param options [Hash] tune the query: keys are:
+    #   deleted [Boolean] whether to search deleted (true) or active
+    #     (false) entities
+    #   limit [Integer] how many results to return. Defaults to 0
+    #     (all of them)
+    #   offset [Integer] return results after this offset
+    #   desc: [Boolean] return results in descending order. Defaults
+    #     to false. Sorting is done on the 'key' of the first query
+    #     hash.
+    #
+    def search(entity, query, options = {})
+      raise ArgumentError unless options.is_a?(Hash)
+      raw_search(entity, body(query, options), options[:deleted] || false)
+    end
+
+    # Build a query body
+    #
+    def body(query, options)
+      ret = {
+        limit:  options[:limit] || 10,
+        offset: options[:offset] || 0,
+        query:  [query].flatten,
+        sort:   { field:     [query].flatten.first[:key],
+                  ascending: !options[:desc] || true }
+      }
+
+      ret[:query].map { |q| q[:matchingMethod] ||= 'CONTAINS' }
+      ret
+    end
+
+    # POST /api/v2/search/entity
+    # POST /api/v2/search/entity/deleted
     # Run a search query. This single method maps to many API paths.
     #
     # @param entity [String] the type of Wavefront object you wish
     #   to search
     # @param body [Hash] the query to use for searching. Refer to
     #   the Wavefront Swagger docs for the correct format.
+    #   Specifying multiple key - value pairs performs a logical AND
+    #   on the constraints.
     # @param deleted [Boolean] whether to search deleted (true) or
     #   active (false) entities
     #
-    def search(entity = nil, body = nil, deleted = false)
-      raise ArgumentError unless entity.is_a?(String)
-      raise ArgumentError unless body.is_a?(Hash)
-      path = ['agent']
+    def raw_search(entity = nil, body = nil, deleted = false)
+      unless (entity.is_a?(String) || entity.is_a?(Symbol)) &&
+        body.is_a?(Hash)
+        raise ArgumentError
+      end
+
+      path = [entity]
       path.<< 'deleted' if deleted
-      api_post(path, body, 'application/json')
+      api_post(path, body.to_json, 'application/json')
     end
 
     # @param entity [String] the type of Wavefront object you wish
@@ -39,11 +93,11 @@ module Wavefront
     #   specified in the body. See the Swagger docs for more
     #   information.
     #
-    def facet_search(entity = nil, body = nil, deleted = false,
+    def raw_facet_search(entity = nil, body = nil, deleted = false,
                      facet = false)
       raise ArgumentError unless entity.is_a?(String)
       raise ArgumentError unless body.is_a?(Hash)
-      path = ['agent']
+      path = [entity]
       path.<< 'deleted' if deleted
       path.<< facet ? facet : 'facets'
       api_post(path, body, 'application/json')

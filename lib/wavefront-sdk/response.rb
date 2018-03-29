@@ -31,19 +31,21 @@ module Wavefront
     #   has changed underneath us.
     #
     def initialize(json, status, debug = false)
-      begin
-        raw = json.empty? ? {} : JSON.parse(json, symbolize_names: true)
-      rescue
-        raw = { message: json, code: status }
-      end
-
+      raw = raw_response(json, status)
       @status = build_status(raw, status)
       @response = build_response(raw)
+
       p self if debug
     rescue => e
       puts "could not parse:\n#{json}" if debug
       puts e.message if debug
       raise Wavefront::Exception::UnparseableResponse
+    end
+
+    def raw_response(json, status)
+      json.empty? ? {} : JSON.parse(json, symbolize_names: true)
+    rescue
+      { message: json, code: status }
     end
 
     def build_status(raw, status)
@@ -59,7 +61,7 @@ module Wavefront
             raw[:response]
           end
         else
-          Map.new
+          Map.new(raw)
         end
       else
         Map.new

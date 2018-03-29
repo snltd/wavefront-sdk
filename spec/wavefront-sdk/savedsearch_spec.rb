@@ -45,7 +45,7 @@ class WavefrontSavedSearchTest < WavefrontTestBase
   end
 
   def test_entity
-    %w(ALERT EVENT MAINTENANCE_WINDOW DASHBOARD SOURCE AGENT).each do |e|
+    %w[ALERT EVENT MAINTENANCE_WINDOW DASHBOARD SOURCE AGENT].each do |e|
       should_work(:entity, e, "type/#{e}?offset=0&limit=100")
       should_work(:entity, [e, 20], "type/#{e}?offset=20&limit=100")
       should_work(:entity, [e, 20, 50], "type/#{e}?offset=20&limit=50")

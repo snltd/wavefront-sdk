@@ -133,6 +133,7 @@ module Wavefront
     # @param p [Hash] a hash describing a point. See #write() for
     #   the format.
     #
+    # rubocop:disable Metrics/CyclomaticComplexity
     def hash_to_wf(p)
       unless p.key?(:path) && p.key?(:value)
         raise Wavefront::Exception::InvalidPoint
@@ -183,10 +184,12 @@ module Wavefront
         return true
       end
 
-      log("Connecting to #{net[:proxy]}:#{net[:port]}.", :info)
+      port = net[:port] || 2878
+
+      log("Connecting to #{net[:proxy]}:#{port}.", :info)
 
       begin
-        @sock = TCPSocket.new(net[:proxy], net[:port])
+        @sock = TCPSocket.new(net[:proxy], port)
       rescue => e
         log(e, :error)
         raise Wavefront::Exception::InvalidEndpoint

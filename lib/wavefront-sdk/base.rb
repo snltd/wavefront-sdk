@@ -21,8 +21,8 @@ module Wavefront
   class Base
     include Wavefront::Validators
     include Wavefront::Mixins
-    attr_reader :opts, :debug, :noop, :verbose, :net, :api_base, :conn,
-                :update_keys, :logger
+    attr_reader :opts, :debug, :noop, :verbose, :net, :conn, :update_keys,
+                :logger
 
     # Create a new API object. This will always be called from a
     # class which inherits this one. If the inheriting class defines
@@ -181,16 +181,19 @@ module Wavefront
     #   :debug to DEBUG.
     #
     def log(msg, level = nil)
-
       if logger
         logger.send(level || :info, msg)
       else
-        # print it unless it's a debug and we're not in debug
-        #
-        return if level == :debug && ! opts[:debug]
-        return if level == :info && ! opts[:verbose]
-        puts msg
+        print_message(msg, level)
       end
+    end
+
+    # Print it unless it's a debug and we're not in debug
+    #
+    def print_message(msg, level)
+      return if level == :debug && ! opts[:debug]
+      return if level == :info && ! opts[:verbose]
+      puts msg
     end
 
     # If we need to massage a raw response to fit what the
@@ -202,7 +205,7 @@ module Wavefront
                                                          resp.status) :
                                            resp.body
 
-      Wavefront::Response.new(body, resp.status)
+      Wavefront::Response.new(body, resp.status, debug)
     end
 
     # Return all objects using a lazy enumerator

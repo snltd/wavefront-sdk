@@ -8,8 +8,8 @@ WINDOW_BODY = {
   title:    'test window',
   start:    Time.now.to_i,
   end:      Time.now.to_i + 600,
-  tags:     %w(testtag1 testtag2),
-  hostTags: %w(hosttag1 hosttag2)
+  tags:     %w[testtag1 testtag2],
+  hostTags: %w[hosttag1 hosttag2]
 }.freeze
 
 # Unit tests for MaintenanceWindow class

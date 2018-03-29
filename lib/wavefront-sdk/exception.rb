@@ -13,10 +13,14 @@ module Wavefront
     class InvalidExternalLinkId < ::Exception; end
     class InvalidGranularity < ::Exception; end
     class InvalidHostname < ::Exception; end
+    class InvalidIntegrationId < ::Exception; end
+    class InvalidRelativeTime < ::Exception; end
+    class InvalidTimeUnit < ::Exception; end
     class InvalidMaintenanceWindowId < ::Exception; end
     class InvalidMessageId < ::Exception; end
     class InvalidMetricName < ::Exception; end
     class InvalidMetricValue < ::Exception; end
+    class InvalidNotificantId < ::Exception; end
     class InvalidName < ::Exception; end
     class InvalidPoint < ::Exception; end
     class InvalidPrefixLength < ::Exception; end

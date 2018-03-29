@@ -162,13 +162,19 @@ module Wavefront
     #
     def wf_point_tags?(tags)
       raise Wavefront::Exception::InvalidTag unless tags.is_a?(Hash)
+      tags.each { |k, v| wf_point_tag?(k, v) }
+    end
 
-      tags.each do |k, v|
-        unless (k.size + v.size < 254) && k.match(/^[\w\-\.:]+$/)
-          raise Wavefront::Exception::InvalidTag
-        end
-      end
-      true
+    # Validate a single point tag, probably on behalf of
+    # #wf_point_tags?
+    # @param k [String] tag key
+    # @param v [String] tag value
+    # @raise Wavefront::Exception::InvalidTag if any tag is not valid
+    # @return nil
+    #
+    def wf_point_tag?(k, v)
+      return if  k && v && (k.size + v.size < 254) && k =~ /^[\w\-\.:]+$/
+      raise Wavefront::Exception::InvalidTag
     end
 
     # Ensure the given argument is a valid Wavefront proxy ID
@@ -296,7 +302,7 @@ module Wavefront
     #   valid
     #
     def wf_message_id?(v)
-      return true if v.is_a?(String) && v =~ /^\w+$/
+      return true if v.is_a?(String) && v =~ /^\w+::\w+$/
       raise Wavefront::Exception::InvalidMessageId
     end
 
@@ -390,6 +396,32 @@ module Wavefront
       wf_source_id?(v[:source]) if v[:source]
       wf_point_tags?(v[:tags]) if v[:tags]
       true
+    end
+
+    # Ensure the given argument is a valid Wavefront
+    # notificant ID.
+    #
+    # @param v [String] the notificant name to validate
+    # @return True if the notificant name is valid
+    # @raise Wavefront::Exception::InvalidNotificantId if the
+    #   notificant ID is not valid
+    #
+    def wf_notificant_id?(v)
+      return true if v.is_a?(String) && v =~ /^\w{16}$/
+      raise Wavefront::Exception::InvalidNotificantId
+    end
+
+    # Ensure the given argument is a valid Wavefront
+    # integration ID. These appear to be lower-case strings.
+    #
+    # @param v [String] the integration name to validate
+    # @return True if the integration name is valid
+    # @raise Wavefront::Exception::InvalidIntegrationId if the
+    #   integration ID is not valid
+    #
+    def wf_integration_id?(v)
+      return true if v.is_a?(String) && v =~ /^[a-z0-9]+$/
+      raise Wavefront::Exception::InvalidIntegrationId
     end
   end
 end

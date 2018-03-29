@@ -17,28 +17,28 @@ class WavefrontValidatorsTest < MiniTest::Test
 
   def test_wf_metric_name?
     good = ['a.l33t.metric_path-passes', 'NO.NEED.TO.SHOUT',
-             '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"']
+            '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"']
     bad  = ['metric.is.(>_<)', { key: 'val' }, 'no/slash', 'no,comma', []]
     good_and_bad('wf_metric_name?', 'InvalidMetricName', good, bad)
   end
 
   def test_wf_string?
     good = ['string', 'valid string', 'valid, valid string.',
-             'valid-string', ' VALID_string']
-    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123456]
+            'valid-string', ' VALID_string']
+    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123_456]
     good_and_bad('wf_string?', 'InvalidString', good, bad)
   end
 
   def test_wf_name?
-    good = %w(name name123)
-    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123456, '']
+    good = %w[name name123]
+    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123_456, '']
     good_and_bad('wf_name?', 'InvalidName', good, bad)
   end
 
   def test_wf_source_id?
     good = ['validsource1', 'valid-source', 'valid_source',
-             'valid.source', 'Valid_Source', 'a' * 1023, '123456']
-    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123456]
+            'valid.source', 'Valid_Source', 'a' * 1023, '123456']
+    bad  = ['a' * 1024, '(>_<)', { key: 'val' }, [], 123_456]
     good_and_bad('wf_source_id?', 'InvalidSourceId', good, bad)
   end
 
@@ -50,7 +50,7 @@ class WavefrontValidatorsTest < MiniTest::Test
 
   def test_wf_ts?
     good = [Time.now, Date.today, DateTime.now]
-    bad  = ['2017-03-25 23:52:22 +0000', 1490485946,
+    bad  = ['2017-03-25 23:52:22 +0000', 1_490_485_946,
             '#<Date: 2017-03-25 ((2457838j,0s,0n),+0s,2299161j)>']
     good_and_bad('wf_ts?', 'InvalidTimestamp', good, bad)
   end
@@ -68,61 +68,63 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_tag?
-    good = ['abc', 'abc123', '__tag__', 'my:tag', ['abc', 'abc123']]
+    good = ['abc', 'abc123', '__tag__', 'my:tag', %w[abc abc123]]
     bad = ['^^^', Time.now, 'bad tag', ['abc', '!BAD!']]
     good_and_bad('wf_tag?', 'InvalidTag', good, bad)
   end
 
   def test_wf_point_tags?
     good = [{},
-            {tag1: 'val1', tag2: 'val2'},
-            {tag1: 'val 1', tag2: 'val 2'},
-            {TAG1: 'val 1', tag2: 'val 2'},
-            {'TAG-1': 'val 1', tag2: 'val 2'},
-            {'TAG_1': 'val 1', tag_2: 'val 2'},
-            {'TAG.1': 'val 1', tag_2: 'val 2'},
-            {'TAG-1': 'val 1', tag2: 'val 2'},
-            {tag1: '(>_<)', tag2: '^_^'}]
+            { tag1: 'val1', tag2: 'val2' },
+            { tag1: 'val 1', tag2: 'val 2' },
+            { TAG1: 'val 1', tag2: 'val 2' },
+            { 'TAG-1': 'val 1', tag2: 'val 2' },
+            { 'TAG_1': 'val 1', tag_2: 'val 2' },
+            { 'TAG.1': 'val 1', tag_2: 'val 2' },
+            { 'TAG-1': 'val 1', tag2: 'val 2' },
+            { tag1: '(>_<)', tag2: '^_^' }]
     bad  = ['key=value',
-            {'tag 1': 'val1', 'tag 2': 'val2'},
-            {'TAG*1': 'val 1', tag_2: 'val 2'},
-            {'(>_<)': 'val1', '^_^': 'val2'},
-            {tag1: 'v' * 255},
-            {'k' * 255 => 'val1'},
-            {'k' * 130 => 'v' * 130}]
+            { 'tag 1': 'val1', 'tag 2': 'val2' },
+            { 'TAG*1': 'val 1', tag_2: 'val 2' },
+            { '(>_<)': 'val1', '^_^': 'val2' },
+            { tag: nil },
+            { tag: false },
+            { tag1: 'v' * 255 },
+            { 'k' * 255 => 'val1' },
+            { 'k' * 130 => 'v' * 130 }]
     good_and_bad('wf_point_tags?', 'InvalidTag', good, bad)
   end
 
   def test_wf_proxy_id?
-    good = %w(fd248f53-378e-4fbe-bbd3-efabace8d724
-              917102d1-a10e-497b-ba63-95058f98d4fb)
-    bad = %w(proxy 17102d1-a10e-497b-ba63-95058f98d4fb)
+    good = %w[fd248f53-378e-4fbe-bbd3-efabace8d724
+              917102d1-a10e-497b-ba63-95058f98d4fb]
+    bad = %w[proxy 17102d1-a10e-497b-ba63-95058f98d4fb]
     good_and_bad('wf_proxy_id?', 'InvalidProxyId', good, bad)
   end
 
   def test_wf_cloudintegration_id?
-    good = %w(3b56f61d-ba79-47f6-905c-d75a0f613d10
-              71e435ca-3d8c-43ab-bc1e-d072a335cbe6)
-    bad = %w(proxy 71e43dca-3d8c-41ab-bc1e-d072a335Xbe6)
+    good = %w[3b56f61d-ba79-47f6-905c-d75a0f613d10
+              71e435ca-3d8c-43ab-bc1e-d072a335cbe6]
+    bad = %w[proxy 71e43dca-3d8c-41ab-bc1e-d072a335Xbe6]
     good_and_bad('wf_cloudintegration_id?', 'InvalidCloudIntegrationId',
                  good, bad)
   end
 
   def test_wf_alert_id?
-    good = [1481553823153, '1481553823153']
-    bad = [481553823153, '481553823153', [], {}, 'alert']
+    good = [1_481_553_823_153, '1481553823153']
+    bad = [481_553_823_153, '481553823153', [], {}, 'alert']
     good_and_bad('wf_alert_id?', 'InvalidAlertId', good, bad)
   end
 
   def test_wf_dashboard_id?
-    good = %w(my_dash my-dashboard S3 123)
+    good = %w[my_dash my-dashboard S3 123]
     bad = ['a' * 260, 'A Dashboard Name', 'and_1_more!', {}, [], 1234]
     good_and_bad('wf_dashboard_id?', 'InvalidDashboardId', good, bad)
   end
 
   def test_wf_event_id?
-    good = %w(1493370839062:test1)
-    bad = %w(1493370839062 1493370839062test!)
+    good = %w[1493370839062:test1]
+    bad = %w[1493370839062 1493370839062test!]
     good_and_bad('wf_event_id?', 'InvalidEventId', good, bad)
   end
 
@@ -133,27 +135,33 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_link_id?
-    good = %w(lq6rPlSg2CFMSrg6)
-    bad = %w(lq%rPlSg2CFMSrg6, lq6rPlSg2CFMSrg)
+    good = %w[lq6rPlSg2CFMSrg6]
+    bad = %w[lq%rPlSg2CFMSrg6 lq6rPlSg2CFMSrg]
     good_and_bad('wf_link_id?', 'InvalidExternalLinkId', good, bad)
   end
 
   def test_wf_link_template?
-    good = %w(http://link.xyz https://link.xyz/{{holder}})
-    bad = %w(link.xyz https:/link.xyz/{{holder}})
+    good = %w[http://link.xyz https://link.xyz/{{holder}}]
+    bad = %w[link.xyz https:/link.xyz/{{holder}}]
     good_and_bad('wf_link_template?', 'InvalidLinkTemplate', good, bad)
   end
 
   def test_wf_maintenance_window_id?
-    good = ['1493324005091', 1493324005091, Time.now.to_i * 1000]
-    bad = [149332400509, '14933240050', Time.now, [], 'abcdef']
+    good = ['1493324005091', 1_493_324_005_091, Time.now.to_i * 1000]
+    bad = [149_332_400_509, '14933240050', Time.now, [], 'abcdef']
     good_and_bad('wf_maintenance_window_id?', 'InvalidMaintenanceWindowId',
                  good, bad)
   end
 
+  def test_wf_message_id?
+    good = %w[CLUSTER::IHjNaHM9]
+    bad = %w[4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw]
+    good_and_bad('wf_message_id?', 'InvalidMessageId', good, bad)
+  end
+
   def test_wf_alert_severity?
-    good = %w(INFO SMOKE WARN SEVERE)
-    bad = %w(any THING else)
+    good = %w[INFO SMOKE WARN SEVERE]
+    bad = %w[any THING else]
     good_and_bad('wf_alert_severity?', 'InvalidAlertSeverity', good, bad)
   end
 
@@ -164,37 +172,37 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_savedsearch_id?
-    good = %w(e2hLH2FR)
-    bad = %w(e2hLH2F e2hLH2FRz)
+    good = %w[e2hLH2FR]
+    bad = %w[e2hLH2F e2hLH2FRz]
     good_and_bad('wf_savedsearch_id?', 'InvalidSavedSearchId', good, bad)
   end
 
   def test_wf_savedsearch_entity?
-    good = %w(EVENT MAINTENANCE_WINDOW DASHBOARD ALERT)
-    bad = %w(1 a day hour)
+    good = %w[EVENT MAINTENANCE_WINDOW DASHBOARD ALERT]
+    bad = %w[1 a day hour]
     good_and_bad('wf_savedsearch_entity?',
                  'InvalidSavedSearchEntity', good, bad)
   end
 
   def test_wf_user_id?
-    good = %w(Some.User@example.com general99+specific@somewhere.net someone@somewhere.com)
-    bad = %w(word Name)
+    good = %w[Some.User@example.com general99+specific@somewhere.net someone@somewhere.com]
+    bad = %w[word Name]
     good_and_bad('wf_user_id?', 'InvalidUserId', good, bad)
   end
 
   def test_wf_webhook_id?
-    good = %w(4OfsEM8RcvkM7nwG)
-    bad = %w(4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw)
+    good = %w[4OfsEM8RcvkM7nwG]
+    bad = %w[4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw]
     good_and_bad('wf_webhook_id?', 'InvalidWebhookId', good, bad)
   end
 
   def test_wf_point?
-    good = { path: 'test.metric', value: 123456, ts: Time.now.to_i,
+    good = { path: 'test.metric', value: 123_456, ts: Time.now.to_i,
              source: 'testhost', tags: { t1: 'v 1', t2: 'v2' } }
 
     assert(wf_point?(good))
 
-    %w(tags source ts).each do |t|
+    %w[tags source ts].each do |t|
       p = good.dup
       p.delete(t)
       assert(wf_point?(p))
@@ -229,10 +237,20 @@ class WavefrontValidatorsTest < MiniTest::Test
     end
 
     bad = good.dup
-    bad[:tags] = {'<------>': 45}
+    bad[:tags] = { '<------>': 45 }
 
     assert_raises(Wavefront::Exception::InvalidTag) do
       wf_point?(bad)
     end
+  end
+
+  def test_notificant_id
+    good = %w[CHTo47HvsPzSaGhh]
+    bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
+  end
+
+  def test_integration_id
+    good = %w[aws tutorial elasticsearch cassandra go]
+    bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
   end
 end

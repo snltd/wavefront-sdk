@@ -1,12 +1,10 @@
 # wavefront-sdk
-[![Build Status](https://travis-ci.org/snltd/wavefront-sdk.svg?branch=master)](https://travis-ci.org/snltd/wavefront-sdk) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-sdk/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-sdk/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Known Vulnerabilities](https://snyk.io/test/github/snltd/wavefront-sdk/badge.svg)](https://snyk.io/test/github/snltd/wavefront-sdk) [![Gem Version](https://badge.fury.io/rb/wavefront-sdk.svg)](https://badge.fury.io/rb/wavefront-sdk) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-sdk?type=total)
+[![Build Status](https://travis-ci.org/snltd/wavefront-sdk.svg?branch=master)](https://travis-ci.org/snltd/wavefront-sdk) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-sdk/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-sdk/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Dependency Status](https://gemnasium.com/badges/github.com/snltd/wavefront-sdk.svg)](https://gemnasium.com/github.com/snltd/wavefront-sdk) [![Gem Version](https://badge.fury.io/rb/wavefront-sdk.svg)](https://badge.fury.io/rb/wavefront-sdk) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-sdk?type=total)
 
 This is a Ruby SDK for v2 of
-[Wavefront](https://www.wavefront.com/)'s public API. It supports Ruby >= 2.2.
-
-Note that it currently has major version number `0`. This means *it
-is not finished*. Until version `1` comes out, I reserve the right
-to change, break, and befoul the code and the gem.
+[Wavefront](https://www.wavefront.com/)'s public API. It supports
+Ruby >= 2.2. It aims to be more lightweight, consistent, simple, and
+convenient than an auto-generated SDK.
 
 ## Installation
 
@@ -124,3 +122,9 @@ p Wavefront::Proxy.new(c.creds).list
 
 wf = Wavefront::Write.new(c.proxy)
 ```
+
+## Contributing
+
+Fork it, fix it, send me a PR. Please supply tests, and try to keep
+[Rubocop](https://github.com/bbatsov/rubocop)
+happy.
