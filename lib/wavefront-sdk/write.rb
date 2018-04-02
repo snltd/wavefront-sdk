@@ -84,15 +84,18 @@ module Wavefront
     # @param openclose [Bool] if this is false, you must have
     #   already opened a socket to the proxy. If it is true, a
     #   connection will be opened for you, used, and closed.
+    # @param prefix [String] prefix all metrics with this string. No
+    #   trailing dot is required.
     # @raise any unhandled point validation error is passed through
     # @return true if no points are rejected, otherwise false
     #
-    def write(points = [], openclose = true)
+    def write(points = [], openclose = true, prefix = nil)
       open if openclose
 
       begin
-        [points].flatten.each do |p|
+        prepped_points(points, prefix).each do |p|
           p[:ts] = p[:ts].to_i if p[:ts].is_a?(Time)
+          p = prefix + '.' + p if prefix
           valid_point?(p)
           send_point(hash_to_wf(p))
         end
@@ -107,6 +110,18 @@ module Wavefront
                response: summary }.to_json
 
       Wavefront::Response.new(resp, nil)
+    end
+
+    # @return [Array] of points
+    #
+    def prepped_points(points, prefix = nil)
+      ret = [points].flatten
+
+      if prefix
+        ret.map! { |pt| pt.tap { |p| p[:path] = prefix + '.' + p[:path] } }
+      end
+
+      ret
     end
 
     # A wrapper method around #write() which guarantees all points

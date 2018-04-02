@@ -87,6 +87,18 @@ class WavefrontWriteTest < MiniTest::Test
     assert mocket_spy.has_been_called?
   end
 
+  def test_prepped_points
+    assert_equal wf.prepped_points(%w[p1 p2 p3 p4]), %w[p1  p2 p3 p4]
+    assert_equal wf.prepped_points([%w[p1 p2 p3 p4]]), %w[p1  p2 p3 p4]
+    assert_equal wf.prepped_points('p1'), %w[p1]
+    assert_equal wf.prepped_points(
+      [{ path: 'p1' }, { path: 'p2'}, { path: 'p3'}], 'prefix'),
+      [{ path: 'prefix.p1' }, { path: 'prefix.p2'}, { path: 'prefix.p3'} ]
+
+    assert_equal wf.prepped_points({ path: 'p1' }, 'prefix'),
+      [{ path: 'prefix.p1' }]
+  end
+
   def test_write_array
     mocket = Mocket.new
     Spy.on(TCPSocket, :new).and_return(mocket)
