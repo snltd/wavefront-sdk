@@ -179,7 +179,7 @@ module Wavefront
         raise Wavefront::Exception::InvalidPoint
       end
 
-      p[:source] = HOSTNAME unless point.key?(:source)
+      point[:source] = HOSTNAME unless point.key?(:source)
 
       m = [point[:path], point[:value]]
       m.<< point[:ts] if point[:ts]
