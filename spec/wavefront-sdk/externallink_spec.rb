@@ -9,10 +9,12 @@ EXTERNAL_LINK_BODY = {
   description: 'an imaginary link for unit testing purposes'
 }.freeze
 
+# rubocop:disable Style/MutableConstant
 EXTERNAL_LINK_BODY_2 = {
   name:        'test link',
   template:    'https://example.com/link/{{value}}'
 }
+# rubocop:enable Style/MutableConstant
 
 # Unit tests for ExternalLink class
 #

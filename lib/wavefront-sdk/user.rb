@@ -5,7 +5,6 @@ module Wavefront
   # Manage and query Wavefront users
   #
   class User < Base
-
     # GET /api/v2/user
     # Get all users.
     #
@@ -92,8 +91,7 @@ module Wavefront
       { response: JSON.parse(body),
         status:   { result:  status == 200 ? 'OK' : 'ERROR',
                     message: '',
-                    code:    status },
-      }.to_json
+                    code:    status } }.to_json
     end
 
     # the user API class does not support pagination. Be up-front

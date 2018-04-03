@@ -1,3 +1,4 @@
+# rubocop:disable Naming/UncommunicativeMethodParamName
 require_relative './constants'
 require_relative './exception'
 
@@ -10,18 +11,15 @@ module Wavefront
   # Some comes from the Swagger API documentation, some has come
   # directly from Wavefront engineers.
   #
+  # rubocop:disable Metrics/ModuleLength
   module Validators
-
     # Ensure the given argument is a valid external link template
     #
     # @return true if it is valid
     # @raise Wavefront::Exception::InvalidTemplate if not
     #
     def wf_link_template?(v)
-      if v.is_a?(String) && (v.start_with?('http://') ||
-                             v.start_with?('https://'))
-        return true
-      end
+      return true if v.is_a?(String) && v.start_with?('http://', 'https://')
 
       raise Wavefront::Exception::InvalidLinkTemplate
     end
@@ -148,11 +146,13 @@ module Wavefront
     # @raise Wavefront::Exception::InvalidVersion if the alert ID is
     #   not valid
     #
+    # rubocop:disable Style/NumericPredicate
     def wf_version?(v)
       v = v.to_i if v.is_a?(String) && v =~ /^\d+$/
       return true if v.is_a?(Integer) && v > 0
       raise Wavefront::Exception::InvalidVersion
     end
+    # rubocop:enable Style/NumericPredicate
 
     # Ensure a hash of key:value point tags are value. Not to be
     # confused with source tags.
@@ -175,7 +175,7 @@ module Wavefront
     # @return nil
     #
     def wf_point_tag?(k, v)
-      return if  k && v && (k.size + v.size < 254) && k =~ /^[\w\-\.:]+$/
+      return if k && v && (k.size + v.size < 254) && k =~ /^[\w\-\.:]+$/
       raise Wavefront::Exception::InvalidTag
     end
 
@@ -292,7 +292,7 @@ module Wavefront
     #   valid
     #
     def wf_alert_severity?(v)
-      return true if %w(INFO SMOKE WARN SEVERE).include?(v)
+      return true if %w[INFO SMOKE WARN SEVERE].include?(v)
       raise Wavefront::Exception::InvalidAlertSeverity
     end
 
@@ -316,7 +316,7 @@ module Wavefront
     #   valid
     #
     def wf_granularity?(v)
-      return true if %w(d h m s).include?(v.to_s)
+      return true if %w[d h m s].include?(v.to_s)
       raise Wavefront::Exception::InvalidGranularity
     end
 
@@ -339,9 +339,9 @@ module Wavefront
     #   valid
     #
     def wf_savedsearch_entity?(v)
-      return true if %w(DASHBOARD ALERT MAINTENANCE_WINDOW
+      return true if %w[DASHBOARD ALERT MAINTENANCE_WINDOW
                         NOTIFICANT EVENT SOURCE EXTERNAL_LINK AGENT
-                        CLOUD_INTEGRATION).include?(v)
+                        CLOUD_INTEGRATION].include?(v)
       raise Wavefront::Exception::InvalidSavedSearchEntity
     end
 
@@ -353,9 +353,7 @@ module Wavefront
     #   is not valid
     #
     def wf_source_id?(v)
-      if v.is_a?(String) && v.match(/^[\w\.\-]+$/) && v.size < 1024
-        return true
-      end
+      return true if v.is_a?(String) && v.match(/^[\w\.\-]+$/) && v.size < 1024
 
       raise Wavefront::Exception::InvalidSourceId
     end
@@ -368,7 +366,7 @@ module Wavefront
     #
     def wf_user_id?(v)
       return true if v.is_a?(String) &&
-         v =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+                     v =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
       raise Wavefront::Exception::InvalidUserId
     end
 

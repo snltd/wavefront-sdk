@@ -7,7 +7,7 @@ module Wavefront
   #
   class Event < Base
     def update_keys
-      %i(startTime endTime name annotations)
+      %i[startTime endTime name annotations]
     end
 
     # GET /api/v2/event
@@ -34,8 +34,7 @@ module Wavefront
 
       api_get('', { earliestStartTimeEpochMillis: from,
                     latestStartTimeEpochMillis: to,
-                    cursor: cursor,
-                    limit: limit }.select { |_k, v| v })
+                    cursor: cursor, limit: limit }.select { |_k, v| v })
     end
 
     # POST /api/v2/event

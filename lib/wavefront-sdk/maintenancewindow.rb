@@ -6,8 +6,8 @@ module Wavefront
   #
   class MaintenanceWindow < Base
     def update_keys
-      %i(reason title startTimeInSeconds endTimeInSeconds
-         relevantCustomerTags relevantHostTags relevantHostNames)
+      %i[reason title startTimeInSeconds endTimeInSeconds
+         relevantCustomerTags relevantHostTags relevantHostNames]
     end
 
     # GET /api/v2/maintenancewindow
@@ -17,7 +17,7 @@ module Wavefront
     # @param limit [Integer] the number of window to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/maintenancewindow

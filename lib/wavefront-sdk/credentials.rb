@@ -3,7 +3,6 @@ require 'inifile'
 require 'map'
 
 module Wavefront
-
   # Helper methods to get Wavefront credentials.
   #
   # @return [Wavefront::Credentials]
@@ -45,8 +44,7 @@ module Wavefront
     def env_override(raw)
       { endpoint: 'WAVEFRONT_ENDPOINT',
         token:    'WAVEFRONT_TOKEN',
-        proxy:    'WAVEFRONT_PROXY'
-      }.each { |k, v| raw[k] = ENV[v] if ENV[v] }
+        proxy:    'WAVEFRONT_PROXY' }.each { |k, v| raw[k] = ENV[v] if ENV[v] }
       raw
     end
 
@@ -59,8 +57,8 @@ module Wavefront
     #
     def populate(raw)
       @config = Map(raw)
-      @creds = Map(raw.select { |k, _v| [:endpoint, :token].include?(k) })
-      @proxy = Map(raw.select { |k, _v| [:proxy, :port].include?(k) })
+      @creds = Map(raw.select { |k, _v| %i[endpoint token].include?(k) })
+      @proxy = Map(raw.select { |k, _v| %i[proxy port].include?(k) })
     end
 
     # @return [Array] a list of possible credential files
@@ -70,7 +68,7 @@ module Wavefront
         Array(Pathname.new(opts[:file]))
       else
         [Pathname.new('/etc/wavefront/credentials'),
-          Pathname.new(ENV['HOME']) + '.wavefront']
+         Pathname.new(ENV['HOME']) + '.wavefront']
       end
     end
 

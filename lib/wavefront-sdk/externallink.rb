@@ -10,7 +10,7 @@ module Wavefront
     end
 
     def update_keys
-      %i(name template description)
+      %i[name template description]
     end
 
     # GET /api/v2/extlink
@@ -20,7 +20,7 @@ module Wavefront
     # @param limit [Int] the number of link to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/extlink

@@ -9,10 +9,10 @@ end
 require 'minitest/autorun'
 require 'webmock/minitest'
 
-CREDS = {
-  endpoint: 'test.example.com',
-  token:    '0123456789-ABCDEF'
-}
+# rubocop:disable Style/MutableConstant
+CREDS = { endpoint: 'test.example.com',
+          token:    '0123456789-ABCDEF' }
+# rubocop:enable Style/MutableConstant
 
 POST_HEADERS = {
   'Content-Type': 'text/plain', Accept: 'application/json'
@@ -101,6 +101,8 @@ class WavefrontTestBase < MiniTest::Test
     assert_requested(call, uri, headers: headers)
     WebMock.reset!
   end
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/ParameterLists
 
   def standard_exception
     Object.const_get('Wavefront::Exception')

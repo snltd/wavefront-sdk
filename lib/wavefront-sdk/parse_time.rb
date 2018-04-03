@@ -1,4 +1,5 @@
 module Wavefront
+  #
   # Parse various times into integers. This class is not for direct
   # consumption: it's used by the mixins parse_time method, which
   # does all the type sanity stuff.
@@ -9,34 +10,34 @@ module Wavefront
     # param t [Numeric] a timestamp
     # param ms [Bool] whether the timestamp is in milliseconds
     #
-    def initialize(t, ms = false)
-      @t = t
-      @ms = ms
+    def initialize(time, in_ms = false)
+      @t = time
+      @ms = in_ms
     end
 
     # @return [Fixnum] timestamp
     #
-    def parse_time_Fixnum
+    def parse_time_fixnum
       t
     end
 
     # @return [Integer] timestamp
     #
-    def parse_time_Integer
+    def parse_time_integer
       t
     end
 
     # @return [Fixnum] timestamp
     #
-    def parse_time_String
+    def parse_time_string
       return t.to_i if t =~ /^\d+$/
-      @t = DateTime.parse("#{t} #{Time.now.getlocal.zone}")
-      parse_time_Time
+      @t = Time.parse("#{t} #{Time.now.getlocal.zone}")
+      parse_time_time
     end
 
     # @return [Integer] timestamp
     #
-    def parse_time_Time
+    def parse_time_time
       if ms
         t.to_datetime.strftime('%Q').to_i
       else
@@ -44,14 +45,14 @@ module Wavefront
       end
     end
 
-    def parse_time_DateTime
-      parse_time_Time
+    def parse_time_datetime
+      parse_time_time
     end
 
     def parse!
-      method = ('parse_time_' + t.class.name).to_sym
+      method = ('parse_time_' + t.class.name.downcase).to_sym
       send(method)
-    rescue
+    rescue StandardError
       raise Wavefront::Exception::InvalidTimestamp
     end
   end

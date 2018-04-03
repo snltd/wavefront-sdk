@@ -6,7 +6,7 @@ module Wavefront
   #
   class Dashboard < Base
     def update_keys
-      %i(id name url description sections)
+      %i[id name url description sections]
     end
 
     # GET /api/v2/dashboard
@@ -17,7 +17,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/dashboard
@@ -82,7 +82,6 @@ module Wavefront
       api_put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
-
 
     # GET /api/v2/dashboard/id/history
     # Get the version history of an dashboard.
