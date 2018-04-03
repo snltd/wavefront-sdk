@@ -29,8 +29,6 @@ POINTS = [POINT.dup,
             ts:     1_469_987_572,
             source: 'otherhost' }].freeze
 
-POINT_L = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'.freeze
-
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
 #
