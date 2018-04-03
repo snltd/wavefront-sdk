@@ -5,7 +5,6 @@ module Wavefront
   # Manage and query Wavefront notification targets.
   #
   class Notificant < Base
-
     # GET /api/v2/notificant
     # Get all notification targets for a customer
     #
@@ -13,7 +12,7 @@ module Wavefront
     # @param limit [Int] the number of notification targets to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/notificant

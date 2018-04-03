@@ -53,7 +53,6 @@ class WavefrontCredentialsTest < MiniTest::Test
     assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')
     assert_equal(c.creds[:endpoint], 'endpoint.wavefront.com')
   end
-
 end
 
 # Test individual methods. We must override the constructor to do
@@ -63,6 +62,8 @@ class Giblets < Wavefront::Credentials
   def initialize; end
 end
 
+# And here are the tests
+#
 class GibletsTest < MiniTest::Test
   attr_reader :wf, :raw
 
@@ -86,7 +87,7 @@ class GibletsTest < MiniTest::Test
     ENV['WAVEFRONT_ENDPOINT'] = 'env_ep'
 
     assert_equal(wf.env_override(raw),
-      { endpoint: 'env_ep', token: 'raw_tok', proxy: 'raw_proxy' })
+                 endpoint: 'env_ep', token: 'raw_tok', proxy: 'raw_proxy')
   end
 
   def test_env_override_env_endpoint_and_token
@@ -94,7 +95,7 @@ class GibletsTest < MiniTest::Test
     ENV['WAVEFRONT_TOKEN'] = 'env_tok'
 
     assert_equal(wf.env_override(raw),
-      { endpoint: 'env_ep', token: 'env_tok', proxy: 'raw_proxy' })
+                 endpoint: 'env_ep', token: 'env_tok', proxy: 'raw_proxy')
   end
 
   def test_env_override_env_proxy
@@ -102,8 +103,8 @@ class GibletsTest < MiniTest::Test
     x = wf.env_override(raw)
 
     assert_instance_of(Hash, x)
-    assert_equal(x, { endpoint: 'raw_ep', token: 'raw_tok', proxy:
-                      'env_proxy' })
+    assert_equal(x, endpoint: 'raw_ep', token: 'raw_tok', proxy:
+                      'env_proxy')
   end
 
   def test_populate
@@ -144,10 +145,11 @@ class GibletsTest < MiniTest::Test
 
   def test_load_from_file
     assert_equal(wf.load_from_file(
-      [Pathname.new('/no/file/1'), Pathname.new('/no/file/2')]), {})
+                   [Pathname.new('/no/file/1'), Pathname.new('/no/file/2')]
+    ), {})
 
     assert_equal(wf.load_from_file([CONF], 'noprofile'),
-                 { file: CONF })
+                 file: CONF)
 
     x = wf.load_from_file([CONF2, CONF], 'default')
     assert_instance_of(Hash, x)

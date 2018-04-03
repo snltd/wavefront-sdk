@@ -5,7 +5,6 @@ module Wavefront
   # Manage and query Wavefront proxies.
   #
   class Proxy < Base
-
     # GET /api/v2/proxy
     # Get all proxies for a customer
     #
@@ -13,7 +12,7 @@ module Wavefront
     # @param limit [Int] the number of proxies to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # DELETE /api/v2/proxy/id
@@ -68,7 +67,7 @@ module Wavefront
     def rename(id, name)
       wf_proxy_id?(id)
       wf_string?(name)
-      update(id, {name: name})
+      update(id, name: name)
     end
 
     # A generic function to change properties of an proxy. So far as I

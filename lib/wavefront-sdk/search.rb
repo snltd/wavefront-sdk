@@ -8,7 +8,6 @@ module Wavefront
   # lot up to the user. It may grow, with convenience methods.
   #
   class Search < Base
-
     # POST /api/v2/search/entity
     # POST /api/v2/search/entity/deleted
     # Run a search query. This single method maps to many API paths.
@@ -73,7 +72,7 @@ module Wavefront
     #
     def raw_search(entity = nil, body = nil, deleted = false)
       unless (entity.is_a?(String) || entity.is_a?(Symbol)) &&
-        body.is_a?(Hash)
+             body.is_a?(Hash)
         raise ArgumentError
       end
 
@@ -94,7 +93,7 @@ module Wavefront
     #   information.
     #
     def raw_facet_search(entity = nil, body = nil, deleted = false,
-                     facet = false)
+                         facet = false)
       raise ArgumentError unless entity.is_a?(String)
       raise ArgumentError unless body.is_a?(Hash)
       path = [entity]

@@ -6,6 +6,8 @@ require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/constants'
 require_relative '../../lib/wavefront-sdk/validators'
 
+# Validator tests, obviously. Happy now Rubocop?
+#
 class WavefrontValidatorsTest < MiniTest::Test
   include Wavefront::Validators
 
@@ -21,7 +23,7 @@ class WavefrontValidatorsTest < MiniTest::Test
             '"slash/allowed_in_quotes"', '"comma,allowed_in_quotes"',
             "#{DELTA}deltas.must.pass", "\"#{DELTA}quoted.delta\""]
     bad  = ['metric.is.(>_<)', { key: 'val' }, 'no/slash', 'no,comma',
-            [] , "not.a.#{DELTA}"]
+            [], "not.a.#{DELTA}"]
     good_and_bad('wf_metric_name?', 'InvalidMetricName', good, bad)
   end
 
@@ -51,12 +53,14 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_value?', 'InvalidMetricValue', good, bad)
   end
 
+  # rubocop:disable Style/DateTime
   def test_wf_ts?
     good = [Time.now, Date.today, DateTime.now]
     bad  = ['2017-03-25 23:52:22 +0000', 1_490_485_946,
             '#<Date: 2017-03-25 ((2457838j,0s,0n),+0s,2299161j)>']
     good_and_bad('wf_ts?', 'InvalidTimestamp', good, bad)
   end
+  # rubocop:enable Style/DateTime
 
   def test_wf_ms_ts?
     good = [Time.now.to_i * 1000]
@@ -188,7 +192,8 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_user_id?
-    good = %w[Some.User@example.com general99+specific@somewhere.net someone@somewhere.com]
+    good = %w[Some.User@example.com general99+specific@somewhere.net
+              someone@somewhere.com]
     bad = %w[word Name]
     good_and_bad('wf_user_id?', 'InvalidUserId', good, bad)
   end
@@ -250,10 +255,12 @@ class WavefrontValidatorsTest < MiniTest::Test
   def test_notificant_id
     good = %w[CHTo47HvsPzSaGhh]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
+    good_and_bad('wf_notificant_id?', 'InvalidNotificantId', good, bad)
   end
 
   def test_integration_id
     good = %w[aws tutorial elasticsearch cassandra go]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
+    good_and_bad('wf_integration_id?', 'InvalidIntegrationId', good, bad)
   end
 end

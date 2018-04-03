@@ -6,7 +6,7 @@ module Wavefront
   #
   class Source < Base
     def update_keys
-      %i(sourceName tags description)
+      %i[sourceName tags description]
     end
 
     # GET /api/v2/source

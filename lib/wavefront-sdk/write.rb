@@ -9,6 +9,7 @@ module Wavefront
   # This class helps you send points to a Wavefront proxy in native
   # format. Usually this is done on port 2878.
   #
+  # rubocop:disable Metrics/ClassLength
   class Write < Base
     attr_reader :sock, :summary
 
@@ -62,7 +63,7 @@ module Wavefront
       open if openclose
 
       begin
-        [points].flatten.each{ |p| send_point(p) }
+        [points].flatten.each { |p| send_point(p) }
       ensure
         close if openclose
       end
@@ -93,23 +94,21 @@ module Wavefront
       open if openclose
 
       begin
-        prepped_points(points, prefix).each do |p|
-          p[:ts] = p[:ts].to_i if p[:ts].is_a?(Time)
-          p = prefix + '.' + p if prefix
-          valid_point?(p)
-          send_point(hash_to_wf(p))
-        end
+        _write_loop(prepped_points(points, prefix))
       ensure
         close if openclose
       end
 
-      s_str = summary[:unsent] == 0 && summary[:rejected] == 0 ? 'OK' :
-                                                                 'ERROR'
+      s_str = summary_string(summary)
 
       resp = { status:   { result: s_str, message: nil, code: nil },
                response: summary }.to_json
 
       Wavefront::Response.new(resp, nil)
+    end
+
+    def summary_string(summary)
+      summary[:unsent].zero? && summary[:rejected].zero? ? 'OK' : 'ERROR'
     end
 
     # @return [Array] of points
@@ -126,8 +125,9 @@ module Wavefront
 
     # A wrapper method around #write() which guarantees all points
     # will be sent as deltas. You can still manually prefix any
-    # metric with a Δ and use #write(), but depending on your
-    # use-case, this method may be safer. It's easy to forget the Δ.
+    # metric with a delta symbol and use #write(), but depending on
+    # your use-case, this method may be safer. It's easy to forget
+    # the delta.
     #
     # @param points [Array[Hash]] see #write()
     # @param openclose [Bool] see #write()
@@ -146,11 +146,12 @@ module Wavefront
       [points].flatten.map { |p| p.tap { p[:path] = DELTA + p[:path] } }
     end
 
-    def valid_point?(p)
+    # rubocop:disable Metrics/MethodLength
+    def valid_point?(point)
       return true if opts[:novalidate]
 
       begin
-        wf_point?(p)
+        wf_point?(point)
         return true
       rescue Wavefront::Exception::InvalidMetricName,
              Wavefront::Exception::InvalidMetricValue,
@@ -158,7 +159,7 @@ module Wavefront
              Wavefront::Exception::InvalidSourceId,
              Wavefront::Exception::InvalidTag => e
         log('Invalid point, skipping.', :info)
-        log("Invalid point: #{p}. (#{e})", :debug)
+        log("Invalid point: #{point}. (#{e})", :debug)
         summary[:rejected] += 1
         return false
       end
@@ -168,21 +169,22 @@ module Wavefront
     # https://community.wavefront.com/docs/DOC-1031.  No validation
     # is done here.
     #
-    # @param p [Hash] a hash describing a point. See #write() for
+    # @param point [Hash] a hash describing a point. See #write() for
     #   the format.
     #
+    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
-    def hash_to_wf(p)
-      unless p.key?(:path) && p.key?(:value)
+    def hash_to_wf(point)
+      unless point.key?(:path) && point.key?(:value)
         raise Wavefront::Exception::InvalidPoint
       end
 
-      p[:source] = HOSTNAME unless p.key?(:source)
+      p[:source] = HOSTNAME unless point.key?(:source)
 
-      m = [p[:path], p[:value]]
-      m.<< p[:ts] if p[:ts]
-      m.<< 'source=' + p[:source]
-      m.<< p[:tags].to_wf_tag if p[:tags]
+      m = [point[:path], point[:value]]
+      m.<< point[:ts] if point[:ts]
+      m.<< 'source=' + point[:source]
+      m.<< point[:tags].to_wf_tag if point[:tags]
       m.<< opts[:tags].to_wf_tag if opts[:tags]
       m.join(' ')
     end
@@ -202,7 +204,7 @@ module Wavefront
 
       begin
         sock.puts(point)
-      rescue => e
+      rescue StandardError => e
         summary[:unsent] += 1
         log('WARNING: failed to send point.')
         log(e.to_s, :debug)
@@ -228,7 +230,7 @@ module Wavefront
 
       begin
         @sock = TCPSocket.new(net[:proxy], port)
-      rescue => e
+      rescue StandardError => e
         log(e, :error)
         raise Wavefront::Exception::InvalidEndpoint
       end
@@ -243,6 +245,13 @@ module Wavefront
     end
 
     private
+
+    def _write_loop(points)
+      points.each do |p|
+        p[:ts] = p[:ts].to_i if p[:ts].is_a?(Time)
+        send_point(hash_to_wf(p))
+      end
+    end
 
     # Overload the method which sets an API endpoint. A proxy
     # endpoint has an address and a port, rather than an address and

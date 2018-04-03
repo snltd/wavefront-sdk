@@ -5,7 +5,6 @@ module Wavefront
   # Manage and query Wavefront messages.
   #
   class Message < Base
-
     # GET /api/v2/message
     # Gets messages applicable to the current user, i.e. within time
     # range and distribution scope
@@ -14,7 +13,7 @@ module Wavefront
     # @param limit [Int] the number of agents to return
     #
     def list(offset = 0, limit = 100, unread_only = true)
-      api_get('', { offset: offset, limit: limit, unreadOnly: unread_only })
+      api_get('', offset: offset, limit: limit, unreadOnly: unread_only)
     end
 
     # POST /api/v2/message/id/read

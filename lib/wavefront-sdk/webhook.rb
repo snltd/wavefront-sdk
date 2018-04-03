@@ -6,7 +6,7 @@ module Wavefront
   #
   class Webhook < Base
     def update_keys
-      %i(title description template title triggers recipient)
+      %i[title description template title triggers recipient]
     end
 
     # GET /api/v2/webhook
@@ -16,7 +16,7 @@ module Wavefront
     # @param limit [Integer] the number of webhooks to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/webhook

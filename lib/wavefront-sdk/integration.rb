@@ -5,7 +5,6 @@ module Wavefront
   # Manage and query Wavefront integrations.
   #
   class Integration < Base
-
     # GET /api/v2/integration
     # Gets a flat list of all Wavefront integrations available,
     # along with their status
@@ -14,7 +13,7 @@ module Wavefront
     # @param limit [Int] the number of proxies to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # GET /api/v2/integration/id

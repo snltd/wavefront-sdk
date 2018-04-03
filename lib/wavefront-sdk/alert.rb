@@ -7,8 +7,8 @@ module Wavefront
   #
   class Alert < Base
     def update_keys
-      %i(id name target condition displayExpression minutes
-         resolveAfterMinutes severity additionalInformation)
+      %i[id name target condition displayExpression minutes
+         resolveAfterMinutes severity additionalInformation]
     end
 
     # GET /api/v2/alert
@@ -19,7 +19,7 @@ module Wavefront
     # @return [Hash]
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/alert

@@ -6,7 +6,6 @@ module Wavefront
   # a UUID.
   #
   class CloudIntegration < Base
-
     # GET /api/v2/cloudintegration
     # Get all cloud integrations for a customer
     #
@@ -15,7 +14,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/cloudintegration

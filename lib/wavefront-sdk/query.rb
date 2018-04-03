@@ -29,7 +29,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def query(query, granularity = nil, t_start = nil, t_end = nil,
-               options = {})
+              options = {})
 
       raise ArgumentError unless query.is_a?(String)
       wf_granularity?(granularity)
@@ -40,10 +40,7 @@ module Wavefront
       options[:s] = parse_time(t_start, true)
       options[:e] = parse_time(t_end, true) if t_end
 
-      options.delete_if do |k, v|
-        v == false && k != :i
-      end
-
+      options.delete_if { |k, v| v == false && k != :i }
       api_get('api', options)
     end
 
@@ -63,7 +60,7 @@ module Wavefront
     def raw(metric, source = nil, t_start = nil, t_end = nil)
       raise ArgumentError unless metric.is_a?(String)
 
-      options = { metric: metric, }
+      options = { metric: metric }
 
       if source
         wf_source_id?(source)
@@ -83,8 +80,7 @@ module Wavefront
       { response: JSON.parse(body),
         status:   { result:  status == 200 ? 'OK' : 'ERROR',
                     message: '',
-                    code:    status },
-      }.to_json
+                    code:    status } }.to_json
     end
   end
 end

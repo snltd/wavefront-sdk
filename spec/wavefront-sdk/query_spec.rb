@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'cgi'
 require 'date'
 require_relative '../spec_helper'
 
@@ -9,7 +10,7 @@ T_MS = T.to_datetime.strftime('%Q').freeze
 TE = (T + 10).freeze
 TE_MS = TE.to_datetime.strftime('%Q')
 Q = "ts(\"#{SERIES}\")".freeze
-QE = URI.encode(Q).freeze
+QE = CGI.escape(Q).freeze
 
 # Unit tests for Query class
 #

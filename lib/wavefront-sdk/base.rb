@@ -18,6 +18,7 @@ module Wavefront
   #
   # @return a Wavefront::Response object
   #
+  # rubocop:disable Metrics/ClassLength
   class Base
     include Wavefront::Validators
     include Wavefront::Mixins
@@ -60,10 +61,10 @@ module Wavefront
     # @param t [Integer] epoch timestamp
     # @return [Ingeter] epoch millisecond timestamp
     #
-    def time_to_ms(t)
-      return false unless t.is_a?(Integer)
-      return t if t.to_s.size == 13
-      (t.to_f * 1000).round
+    def time_to_ms(time)
+      return false unless time.is_a?(Integer)
+      return time if time.to_s.size == 13
+      (time.to_f * 1000).round
     end
 
     # Derive the first part of the API path from the class name. You
@@ -119,8 +120,8 @@ module Wavefront
     #
     def api_post(path, body = nil, ctype = 'text/plain')
       body = body.to_json unless body.is_a?(String)
-      make_call(mk_conn(path, { 'Content-Type': ctype,
-                                       'Accept': 'application/json'}),
+      make_call(mk_conn(path,  'Content-Type': ctype,
+                               'Accept': 'application/json'),
                 :post, nil, body)
     end
 
@@ -136,8 +137,8 @@ module Wavefront
     # @return [Hash] API response
     #
     def api_put(path, body = nil, ctype = 'application/json')
-      make_call(mk_conn(path, { 'Content-Type': ctype,
-                                      'Accept': 'application/json' }),
+      make_call(mk_conn(path,  'Content-Type': ctype,
+                               'Accept': 'application/json'),
                 :put, nil, body.to_json)
     end
 
@@ -191,8 +192,8 @@ module Wavefront
     # Print it unless it's a debug and we're not in debug
     #
     def print_message(msg, level)
-      return if level == :debug && ! opts[:debug]
-      return if level == :info && ! opts[:verbose]
+      return if level == :debug && !opts[:debug]
+      return if level == :info && !opts[:verbose]
       puts msg
     end
 
@@ -201,9 +202,11 @@ module Wavefront
     # 'User'), a class can provide a {#response_shim} method.
     #
     def respond(resp)
-      body = respond_to?(:response_shim) ? response_shim(resp.body,
-                                                         resp.status) :
-                                           resp.body
+      body = if respond_to?(:response_shim)
+               response_shim(resp.body, resp.status)
+             else
+               resp.body
+             end
 
       Wavefront::Response.new(body, resp.status, debug)
     end
@@ -217,7 +220,7 @@ module Wavefront
         limit = 100
 
         loop do
-          resp = api_get('', { offset: offset, limit: limit }).response
+          resp = api_get('', offset: offset, limit: limit).response
           resp.items.map { |i| y.<< i }
           offset += limit
           raise StopIteration unless resp.moreItems == true
@@ -233,10 +236,9 @@ module Wavefront
     def verbosity(conn, method, *args)
       log "uri: #{method.upcase} #{conn.url_prefix}"
 
-      if args.last && ! args.last.empty?
-        puts log method == :get ? "params: #{args.last}" :
-                                  "body: #{args.last}"
-      end
+      return unless args.last && !args.last.empty?
+
+      puts log method == :get ? "params: #{args.last}" : "body: #{args.last}"
     end
 
     # Make the API call, or not, if noop is set.
@@ -256,7 +258,7 @@ module Wavefront
     end
 
     def setup_endpoint(creds)
-      %w(endpoint token).each do |k|
+      %w[endpoint token].each do |k|
         raise "creds must contain #{k}" unless creds.key?(k.to_sym)
       end
 
@@ -264,12 +266,10 @@ module Wavefront
         creds[:agent] = "wavefront-sdk #{WF_SDK_VERSION}"
       end
 
-      @net = {
-        headers:  { 'Authorization': "Bearer #{creds[:token]}",
-                    'user-agent':    creds[:agent] },
-        endpoint: creds[:endpoint],
-        api_base: ['', 'api', 'v2', api_base].uri_concat
-      }
+      @net = { headers:  { 'Authorization': "Bearer #{creds[:token]}",
+                           'user-agent':    creds[:agent] },
+               endpoint: creds[:endpoint],
+               api_base: ['', 'api', 'v2', api_base].uri_concat }
     end
   end
 end

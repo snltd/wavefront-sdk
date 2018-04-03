@@ -3,7 +3,6 @@ require 'map'
 require_relative './exception'
 
 module Wavefront
-
   # Every API path has its own response class, which allows us to
   # provide a stable interface. If the API changes underneath us,
   # the SDK will break in a predictable way, throwing a
@@ -36,7 +35,7 @@ module Wavefront
       @response = build_response(raw)
 
       p self if debug
-    rescue => e
+    rescue StandardError => e
       puts "could not parse:\n#{json}" if debug
       puts e.message if debug
       raise Wavefront::Exception::UnparseableResponse
@@ -44,7 +43,7 @@ module Wavefront
 
     def raw_response(json, status)
       json.empty? ? {} : JSON.parse(json, symbolize_names: true)
-    rescue
+    rescue StandardError
       { message: json, code: status }
     end
 
@@ -53,22 +52,15 @@ module Wavefront
     end
 
     def build_response(raw)
-      if raw.is_a?(Hash)
-        if raw.key?(:response)
-          if raw[:response].is_a?(Hash)
-            Map(raw[:response])
-          else
-            raw[:response]
-          end
-        else
-          Map.new(raw)
-        end
-      else
-        Map.new
-      end
+      return Map.new unless raw.is_a?(Hash)
+      return Map.new(raw) unless raw.key?(:response)
+      return raw[:response] unless raw[:response].is_a?(Hash)
+      Map(raw[:response])
     end
   end
 
+  # Status tests
+  #
   class Type
     #
     # An object which provides information about whether the request

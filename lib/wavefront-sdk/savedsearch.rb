@@ -6,7 +6,6 @@ module Wavefront
   # a UUID.
   #
   class SavedSearch < Base
-
     # GET /api/v2/savedsearch
     # Get all saved searches for a user.
     #
@@ -15,7 +14,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
-      api_get('', { offset: offset, limit: limit })
+      api_get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/savedsearch
@@ -74,9 +73,8 @@ module Wavefront
     #
     def entity(entitytype, offset = 0, limit = 100)
       wf_savedsearch_entity?(entitytype)
-      api_get(['type', entitytype].uri_concat, { offset: offset,
-                                                 limit: limit })
-
+      api_get(['type', entitytype].uri_concat, offset: offset,
+                                               limit: limit)
     end
   end
 end
