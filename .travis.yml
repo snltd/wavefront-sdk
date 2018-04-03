@@ -15,3 +15,5 @@ deploy:
     tags: true
     repo: snltd/wavefront-sdk
     ruby: 2.3.6
+notifications:
+  email: false
