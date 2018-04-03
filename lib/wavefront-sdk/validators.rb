@@ -146,11 +146,13 @@ module Wavefront
     # @raise Wavefront::Exception::InvalidVersion if the alert ID is
     #   not valid
     #
+    # rubocop:disable Style/NumericPredicate
     def wf_version?(v)
       v = v.to_i if v.is_a?(String) && v =~ /^\d+$/
-      return true if v.is_a?(Integer) && v.positive?
+      return true if v.is_a?(Integer) && v > 0
       raise Wavefront::Exception::InvalidVersion
     end
+    # rubocop:enable Style/NumericPredicate
 
     # Ensure a hash of key:value point tags are value. Not to be
     # confused with source tags.
