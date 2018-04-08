@@ -90,7 +90,7 @@ module Wavefront
 
         @result = if obj[:result]
                     obj[:result]
-                  elsif status == 200
+                  elsif status >= 200 && status <= 299
                     'OK'
                   else
                     'ERROR'
