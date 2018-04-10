@@ -29,6 +29,8 @@ module Wavefront
     #   response cannot be parsed. This may be because the API
     #   has changed underneath us.
     #
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def initialize(json, status, debug = false)
       raw = raw_response(json, status)
       @status = build_status(raw, status)

@@ -8,12 +8,11 @@ module Wavefront
   # extends. This class provides the transport mechanism.
   #
   class Report < BaseWrite
-
     def api_path
       '/report'
     end
 
-    def write(points = [], openclose = true, prefix = nil)
+    def write(points = [], _openclose = true, prefix = nil)
       _write_loop(prepped_points(points, prefix))
     end
 

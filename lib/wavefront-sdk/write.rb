@@ -9,7 +9,6 @@ module Wavefront
   # extends. This class provides the transport mechanism.
   #
   class Write < BaseWrite
-
     def really_send_point(point)
       begin
         sock.puts(point)
@@ -27,6 +26,7 @@ module Wavefront
     # Open a socket to a Wavefront proxy, putting the descriptor
     # in instance variable @sock.
     #
+    # rubocop:disable Metrics/MethodLength
     def open
       if opts[:noop]
         log('No-op requested. Not opening connection to proxy.')
@@ -34,7 +34,6 @@ module Wavefront
       end
 
       port = net[:port] || 2878
-
       log("Connecting to #{net[:proxy]}:#{port}.", :info)
 
       begin

@@ -10,8 +10,6 @@ module Wavefront
   # the Write and Report classes, which respectively handle point
   # ingestion by a proxy and directly to the API.
   #
-  # rubocop:disable Metrics/ClassLength
-  #
   class BaseWrite < Base
     attr_reader :sock, :summary
 
