@@ -228,6 +228,10 @@ module Wavefront
       end.lazy
     end
 
+    def api_path
+      ['', 'api', 'v2', api_base].uri_concat
+    end
+
     private
 
     # Try to describe the actual HTTP calls we make. There's a bit
@@ -269,7 +273,7 @@ module Wavefront
       @net = { headers:  { 'Authorization': "Bearer #{creds[:token]}",
                            'user-agent':    creds[:agent] },
                endpoint: creds[:endpoint],
-               api_base: ['', 'api', 'v2', api_base].uri_concat }
+               api_base: api_path }
     end
   end
 end

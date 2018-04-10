@@ -28,7 +28,7 @@ DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
 
 # Common testing code
 class WavefrontTestBase < MiniTest::Test
-  attr_reader :wf, :wf_noop, :uri_base, :headers
+  attr_reader :wf, :wf_noop, :headers
 
   def initialize(args)
     require_relative "../lib/wavefront-sdk/#{class_basename.downcase}"
@@ -46,8 +46,12 @@ class WavefrontTestBase < MiniTest::Test
   def setup
     klass = Object.const_get('Wavefront').const_get(class_basename)
     @wf = klass.new(CREDS)
-    @uri_base = "https://#{CREDS[:endpoint]}/api/v2/" + api_base
+    @uri_base = uri_base
     @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
+  end
+
+  def uri_base
+    "https://#{CREDS[:endpoint]}/api/v2/" + api_base
   end
 
   def target_uri(path)
