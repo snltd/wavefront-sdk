@@ -94,9 +94,12 @@ Wavefront::Query.new(CREDS).query(
 )
 ```
 
-We can write points too, assuming we have access to a proxy, because
-you can't write points directly via the API. Unlike all other classes, this
-one requires the proxy address and port as its credential hash.
+We can write points too. The `Write` class lets you send points to a
+proxy, and the `Report` class sends them directly via the API.
+Unlike all other classes, `Write` requires the proxy address and
+port as its credential hash. `Report` has the same methods and works
+in the same way, but uses the same credentials as all the other
+classes.
 
 ```ruby
 require 'wavefront-sdk/write'
@@ -112,6 +115,9 @@ p task.response
 puts task.status.result
 #OK
 ```
+
+You can send delta metrics either by manually prefixing your metric
+path with a delta symbol, or by using the `write_delta()` method
 
 The SDK also provides a helper class for extracting credentials from a
 configuration file. If you don't supply a file, defaults will be
