@@ -1,4 +1,4 @@
-require_relative './base_write'
+require_relative 'base_write'
 
 module Wavefront
   #

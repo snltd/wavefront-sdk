@@ -1,6 +1,6 @@
 require 'json'
 require 'map'
-require_relative './exception'
+require_relative 'exception'
 
 module Wavefront
   # Every API path has its own response class, which allows us to

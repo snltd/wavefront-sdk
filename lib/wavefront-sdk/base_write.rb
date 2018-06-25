@@ -1,6 +1,6 @@
 require 'socket'
-require_relative './constants'
-require_relative './base'
+require_relative 'constants'
+require_relative 'base'
 
 HOSTNAME = Socket.gethostname.freeze
 

@@ -4,11 +4,11 @@ require 'faraday'
 require 'pp'
 require 'ostruct'
 require 'addressable'
-require_relative './exception'
-require_relative './mixins'
-require_relative './response'
-require_relative './validators'
-require_relative './version'
+require_relative 'exception'
+require_relative 'mixins'
+require_relative 'response'
+require_relative 'validators'
+require_relative 'version'
 
 module Wavefront
   #

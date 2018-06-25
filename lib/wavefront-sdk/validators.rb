@@ -1,6 +1,6 @@
 # rubocop:disable Naming/UncommunicativeMethodParamName
-require_relative './constants'
-require_relative './exception'
+require_relative 'constants'
+require_relative 'exception'
 
 module Wavefront
   #
