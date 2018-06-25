@@ -13,7 +13,7 @@ module Wavefront
     # Get all dashboards for a customer.
     #
     # @param offset [Int] dashboard at which the list begins
-    # @param limit [Int] the number of dashboard to return
+    # @param limit [Int] the number of dashboards to return
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
@@ -34,9 +34,9 @@ module Wavefront
 
     # DELETE /api/v2/dashboard/id
     # Delete a specific dashboard.
-    # Deleting an active dashboard moves it to 'trash', from where it can
-    # be restored with an #undelete operation. Deleting an dashboard in
-    # 'trash' removes it for ever.
+    # Deleting an active dashboard moves it to 'trash', from where
+    # it can be restored with an #undelete operation. Deleting a
+    # dashboard in 'trash' removes it for ever.
     #
     # @param id [String] ID of the dashboard
     # @return [Wavefront::Response]
@@ -47,8 +47,8 @@ module Wavefront
     end
 
     # GET /api/v2/dashboard/id
-    # Get a specific dashboard / Get a specific historical version of a
-    # specific dashboard.
+    # Get a specific dashboard / Get a specific historical version
+    # of a specific dashboard.
     #
     # @param id [String] ID of the dashboard
     # @param version [Integer] version of dashboard
@@ -84,7 +84,7 @@ module Wavefront
     end
 
     # GET /api/v2/dashboard/id/history
-    # Get the version history of an dashboard.
+    # Get the version history of a dashboard.
     #
     # @param id [String] ID of the dashboard
     # @return [Wavefront::Response]
@@ -99,7 +99,6 @@ module Wavefront
     #
     # @param id [String] ID of the dashboard
     # @return [Wavefront::Response]
-    #   response keys
     #
     def tags(id)
       wf_dashboard_id?(id)
@@ -112,7 +111,6 @@ module Wavefront
     # @param id [String] ID of the dashboard
     # @param tags [Array] list of tags to set.
     # @return [Wavefront::Response]
-    #   response keys
     #
     def tag_set(id, tags)
       wf_dashboard_id?(id)
@@ -148,7 +146,7 @@ module Wavefront
     end
 
     # POST /api/v2/dashboard/id/undelete
-    # Move an dashboard from 'trash' back into active service.
+    # Move a dashboard from 'trash' back into active service.
     #
     # @param id [String] ID of the dashboard
     # @return [Wavefront::Response]
