@@ -1,4 +1,4 @@
-require_relative './base'
+require_relative 'base'
 
 module Wavefront
   #
@@ -19,7 +19,7 @@ module Wavefront
     # Delete a specific proxy
     #
     # Deleting an active proxy moves it to 'trash', from where it
-    # can be restored with an #undelete operation. Deleting an proxy
+    # can be restored with an #undelete operation. Deleting a proxy
     # in 'trash' removes it for ever.
     #
     # @param id [String] ID of the proxy
@@ -44,7 +44,7 @@ module Wavefront
     # POST /api/v2/proxy/id/undelete
     # Undelete a specific proxy
     #
-    # Move an proxy from 'trash' back into active service.
+    # Move a proxy from 'trash' back into active service.
     #
     # @param id [String] ID of the proxy
     # @return [Wavefront::Response]
@@ -57,7 +57,7 @@ module Wavefront
     # PUT /api/v2/proxy/id
     # Update the name of a specific proxy
     #
-    # Rename an proxy. This changes the human-readable name, not the
+    # Rename a proxy. This changes the human-readable name, not the
     # unique identifier.
     #
     # @param id [String] ID of the proxy
@@ -70,7 +70,7 @@ module Wavefront
       update(id, name: name)
     end
 
-    # A generic function to change properties of an proxy. So far as I
+    # A generic function to change properties of a proxy. So far as I
     # know, only the 'name' property can currently be changed, and we
     # supply a dedicated #rename method for that.
     #

@@ -1,6 +1,6 @@
 require 'date'
-require_relative './exception'
-require_relative './parse_time'
+require_relative 'exception'
+require_relative 'parse_time'
 
 module Wavefront
   #

@@ -1,6 +1,6 @@
 # rubocop:disable Naming/UncommunicativeMethodParamName
-require_relative './constants'
-require_relative './exception'
+require_relative 'constants'
+require_relative 'exception'
 
 module Wavefront
   #
@@ -241,6 +241,21 @@ module Wavefront
     def wf_dashboard_id?(v)
       return true if v.is_a?(String) && v.size < 256 && v.match(/^[\w\-]+$/)
       raise Wavefront::Exception::InvalidDashboardId
+    end
+
+    # Ensure the given argument is a valid derived metric ID.  IDs
+    # are the millisecond epoch timestamp at which the derived
+    # metric was created.
+    #
+    # @param v [String, Integer]
+    # @return True if the ID is valid
+    # @raise Wavefront::Exception::InvalidDerivedMetricId
+    #
+    def wf_derivedmetric_id?(v)
+      v = v.to_s if v.is_a?(Numeric)
+      return true if v.is_a?(String) && v =~ /^\d{13}$/
+
+      raise Wavefront::Exception::InvalidDerivedMetricId
     end
 
     # Ensure the given argument is a valid event ID. Event IDs are

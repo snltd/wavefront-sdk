@@ -141,6 +141,14 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_version?', 'InvalidVersion', good, bad)
   end
 
+  def test_wf_derivedmetric_id?
+    good = %w[1529926075038 1529936045036]
+    bad = %w[metricid 152992607503 15299260750384 lq%rPlSg2CFMSrg6
+             lq6rPlSg2CFMSrg]
+    good_and_bad('wf_derivedmetric_id?', 'InvalidDerivedMetricId',
+                 good, bad)
+  end
+
   def test_wf_link_id?
     good = %w[lq6rPlSg2CFMSrg6]
     bad = %w[lq%rPlSg2CFMSrg6 lq6rPlSg2CFMSrg]
