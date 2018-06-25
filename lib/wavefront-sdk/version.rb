@@ -1,1 +1,1 @@
-WF_SDK_VERSION = '1.4.0'.freeze
+WF_SDK_VERSION = '1.5.0'.freeze

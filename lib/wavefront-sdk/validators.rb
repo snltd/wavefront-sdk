@@ -243,6 +243,21 @@ module Wavefront
       raise Wavefront::Exception::InvalidDashboardId
     end
 
+    # Ensure the given argument is a valid derived metric ID.  IDs
+    # are the millisecond epoch timestamp at which the derived
+    # metric was created.
+    #
+    # @param v [String, Integer]
+    # @return True if the ID is valid
+    # @raise Wavefront::Exception::InvalidDerivedMetricId
+    #
+    def wf_derivedmetric_id?(v)
+      v = v.to_s if v.is_a?(Numeric)
+      return true if v.is_a?(String) && v =~ /^\d{13}$/
+
+      raise Wavefront::Exception::InvalidDerivedMetricId
+    end
+
     # Ensure the given argument is a valid event ID. Event IDs are
     # an epoch-millisecond timestamp followed by a : followed by the
     # name of the event.
