@@ -4,16 +4,12 @@ require_relative '../spec_helper'
 
 DERIVED_METRIC = '1529926075038'.freeze
 DERIVED_METRIC_BODY = {
-  "minutes": 5,
-  "name": "test_1",
-  "query": "aliasMetric(ts(\"test.metric\"), \"derived.test_1\")",
-  "tags": {
-    "customerTags": [
-      "test"
-    ]
-  },
-  "includeObsoleteMetrics": false,
-  "processRateMinutes": 1,
+  minutes: 5,
+  name: 'test_1',
+  query: 'aliasMetric(ts("test.metric"), "derived.test_1")',
+  tags: { customerTags: ['test'] },
+  includeObsoleteMetrics: false,
+  processRateMinutes: 1
 }.freeze
 
 # Unit tests for dashboard class
@@ -64,7 +60,7 @@ class WavefrontDerivedMetricTest < WavefrontTestBase
 
   def test_undelete
     should_work(:undelete, DERIVED_METRIC, ["#{DERIVED_METRIC}/undelete",
-                                       nil], :post, POST_HEADERS)
+                                            nil], :post, POST_HEADERS)
     should_be_invalid(:undelete)
   end
 end
