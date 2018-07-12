@@ -2,13 +2,14 @@
 [![Build Status](https://travis-ci.org/snltd/wavefront-sdk.svg?branch=master)](https://travis-ci.org/snltd/wavefront-sdk) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-sdk/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-sdk/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Gem Version](https://badge.fury.io/rb/wavefront-sdk.svg)](https://badge.fury.io/rb/wavefront-sdk) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-sdk?type=total)
 
 This is a Ruby SDK for v2 of
-[Wavefront](https://www.wavefront.com/)'s public API. It supports
-Ruby >= 2.2. It aims to be more lightweight, consistent, simple, and
-convenient than an auto-generated SDK.
+[Wavefront](https://www.wavefront.com/)'s public API. It aims to be
+more lightweight, consistent, simple, and convenient than an
+auto-generated SDK.
 
-As well as complete API coverage, it provides helper methods to
-facilitate various tasks, and covers non-API features, such as
-authentication, and writing points through a proxy.
+As well as complete API coverage, `wavefront-sdk` includes methods
+which facilitate various common tasks, and provides non-API
+features such as credential management, and writing points through a
+proxy.
 
 ## Installation
 
@@ -21,6 +22,10 @@ or to build locally,
 ```
 $ gem build wavefront-sdk.gemspec
 ```
+
+`wavefront-sdk` requires Ruby >= 2.2. All its dependencies are pure
+Ruby, right the way down, so a compiler should never be required to
+install it.
 
 ## Documentation
 
@@ -125,7 +130,7 @@ path with a delta symbol, or by using the `write_delta()` method
 
 The SDK also provides a helper class for extracting credentials from a
 configuration file. If you don't supply a file, defaults will be
-used.
+used. You can even override things with environment variables.
 
 ```ruby
 require 'wavefront-sdk/credentials'
@@ -146,5 +151,4 @@ wf = Wavefront::Write.new(c.proxy)
 ## Contributing
 
 Fork it, fix it, send me a PR. Please supply tests, and try to keep
-[Rubocop](https://github.com/bbatsov/rubocop)
-happy.
+[Rubocop](https://github.com/bbatsov/rubocop) happy.
