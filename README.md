@@ -6,6 +6,10 @@ This is a Ruby SDK for v2 of
 Ruby >= 2.2. It aims to be more lightweight, consistent, simple, and
 convenient than an auto-generated SDK.
 
+As well as complete API coverage, it provides helper methods to
+facilitate various tasks, and covers non-API features, such as
+authentication, and writing points through a proxy.
+
 ## Installation
 
 ```
