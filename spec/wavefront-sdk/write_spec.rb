@@ -151,11 +151,6 @@ class WavefrontWriteTest < MiniTest::Test
     end
   end
 
-  def test_to_wf_tag
-    assert_equal({}.to_wf_tag, '')
-    assert_equal(TAGS.to_wf_tag, 'gt1="gv1" gt2="gv2"')
-  end
-
   def test_send_point
     mocket = Mocket.new
     Spy.on(TCPSocket, :new).and_return(mocket)

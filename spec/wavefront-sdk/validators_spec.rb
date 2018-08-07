@@ -91,6 +91,7 @@ class WavefrontValidatorsTest < MiniTest::Test
             { 'TAG-1': 'val 1', tag2: 'val 2' },
             { tag1: '(>_<)', tag2: '^_^' }]
     bad  = ['key=value',
+            { tag: 'badval\\' },
             { 'tag 1': 'val1', 'tag 2': 'val2' },
             { 'TAG*1': 'val 1', tag_2: 'val 2' },
             { '(>_<)': 'val1', '^_^': 'val2' },

@@ -175,7 +175,8 @@ module Wavefront
     # @return nil
     #
     def wf_point_tag?(k, v)
-      return if k && v && (k.size + v.size < 254) && k =~ /^[\w\-\.:]+$/
+      return if k && v && (k.size + v.size < 254) && k =~ /^[\w\-\.:]+$/ &&
+                v !~ /\\$/
       raise Wavefront::Exception::InvalidTag
     end
 
