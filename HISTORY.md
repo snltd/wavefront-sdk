@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0 (07/08/2018)
+* Improve validation of point tags.
+* Break extensions to standard library out into their own files.
+* Improve README.
+
 ## 1.5.0 (25/06/2018)
 
 * Add [derived
