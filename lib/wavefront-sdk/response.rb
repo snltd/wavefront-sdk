@@ -1,8 +1,10 @@
 require 'json'
 require 'map'
 require_relative 'exception'
+require_relative 'mixins'
 
 module Wavefront
+  #
   # Every API path has its own response class, which allows us to
   # provide a stable interface. If the API changes underneath us,
   # the SDK will break in a predictable way, throwing a
@@ -18,29 +20,34 @@ module Wavefront
   #     which  allows
   #
   class Response
-    attr_reader :status, :response
+    include Wavefront::Mixins
+    attr_reader :status, :response, :opts, :logger
 
     # Create and return a Wavefront::Response object
     # @param json [String] a raw response body from the Wavefront API
     # @param status [Integer] HTTP return code from the API
-    # @param debug [Boolean] whether or not to print the exception
-    #   message if one is thrown
+    # @param opts [Hash] options passed through from calling class.
     # @raise [Wavefront::Exception::UnparseableResponse] if the
     #   response cannot be parsed. This may be because the API
     #   has changed underneath us.
     #
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
-    def initialize(json, status, debug = false)
-      raw = raw_response(json, status)
-      @status = build_status(raw, status)
+    def initialize(json, status, opts = {})
+      raw       = raw_response(json, status)
+      @status   = build_status(raw, status)
       @response = build_response(raw)
+      @opts     = opts
 
-      p self if debug
+      setup_opts
+
+      logger.log(self, :debug)
     rescue StandardError => e
-      puts "could not parse:\n#{json}" if debug
-      puts e.message if debug
+      logger.log(format("could not parse:\n%s", json), :debug)
+      logger.log(e.message.to_s, :debug)
       raise Wavefront::Exception::UnparseableResponse
+    end
+
+    def setup_opts
+      @logger = Wavefront::Logger.new(opts)
     end
 
     def raw_response(json, status)
@@ -61,7 +68,7 @@ module Wavefront
     end
   end
 
-  # Status tests
+  # Status types are used by the Wavefront::Response class
   #
   class Type
     #
@@ -79,24 +86,28 @@ module Wavefront
     #     request
     #
     class Status
-      attr_reader :result, :message, :code
+      attr_reader :obj, :status
 
-      # @param raw [Hash] the API response, turned into a hash
+      # @param response [Hash] the API response, turned into a hash
       # @param status [Integer] HTTP status code
       #
-      def initialize(raw, status)
-        obj = raw.key?(:status) ? raw[:status] : raw
+      def initialize(response, status)
+        @obj = response.fetch(:status, response)
+        @status = status
+      end
 
-        @message = obj[:message] || nil
-        @code = obj[:code] || status
+      def message
+        obj[:message] || nil
+      end
 
-        @result = if obj[:result]
-                    obj[:result]
-                  elsif status >= 200 && status <= 299
-                    'OK'
-                  else
-                    'ERROR'
-                  end
+      def code
+        obj[:code] || status
+      end
+
+      def result
+        return obj[:result] if obj[:result]
+        return 'OK' if status.between?(200, 299)
+        'ERROR'
       end
     end
   end
