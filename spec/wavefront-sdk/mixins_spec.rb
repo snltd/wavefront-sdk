@@ -55,6 +55,23 @@ class WavefrontMixinsTest < MiniTest::Test
     end
   end
 
+  def test_valid_relative_time?
+    assert valid_relative_time?('+1h')
+    assert valid_relative_time?('+1m')
+    assert valid_relative_time?('-1s')
+    assert valid_relative_time?('-10d')
+    assert valid_relative_time?('+1.3h')
+    assert valid_relative_time?('+1h')
+    assert valid_relative_time?('-1h')
+    assert valid_relative_time?('-1.142w')
+    assert valid_relative_time?('+0.002y')
+    refute valid_relative_time?('1h')
+    refute valid_relative_time?('1m')
+    refute valid_relative_time?('-1t')
+    refute valid_relative_time?('-dd')
+    refute valid_relative_time?('-1.1.1d')
+  end
+
   def test_parse_relative_time
     assert_equal parse_relative_time('-5s'), -5
     assert_equal parse_relative_time('-5s', true), -5000
