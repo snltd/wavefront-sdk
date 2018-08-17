@@ -1,8 +1,16 @@
+---
 AllCops:
   TargetRubyVersion: 2.3
 
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Lint/MissingCopEnableDirective:
+Style/FormatStringToken:
   Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 13
+

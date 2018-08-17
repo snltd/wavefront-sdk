@@ -37,3 +37,4 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = Gem::Requirement.new('>= 2.2.0')
 end
+# rubocop:enable Metrics/BlockLength:
