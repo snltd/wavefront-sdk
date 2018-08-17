@@ -83,7 +83,7 @@ module Wavefront
       resp = { status:   { result: s_str, message: nil, code: nil },
                response: summary }.to_json
 
-      Wavefront::Response.new(resp, nil)
+      Wavefront::Response.new(resp, nil, opts)
     end
 
     def summary_string(summary)
@@ -125,23 +125,18 @@ module Wavefront
       [points].flatten.map { |p| p.tap { p[:path] = DELTA + p[:path] } }
     end
 
-    # rubocop:disable Metrics/MethodLength
     def valid_point?(point)
       return true if opts[:novalidate]
-
-      begin
-        wf_point?(point)
-        return true
-      rescue Wavefront::Exception::InvalidMetricName,
-             Wavefront::Exception::InvalidMetricValue,
-             Wavefront::Exception::InvalidTimestamp,
-             Wavefront::Exception::InvalidSourceId,
-             Wavefront::Exception::InvalidTag => e
-        log('Invalid point, skipping.', :info)
-        log("Invalid point: #{point}. (#{e})", :debug)
-        summary[:rejected] += 1
-        return false
-      end
+      wf_point?(point)
+    rescue Wavefront::Exception::InvalidMetricName,
+           Wavefront::Exception::InvalidMetricValue,
+           Wavefront::Exception::InvalidTimestamp,
+           Wavefront::Exception::InvalidSourceId,
+           Wavefront::Exception::InvalidTag => e
+      log('Invalid point, skipping.', :info)
+      log(format('Invalid point: %s (%s)', point, e.to_s), :debug)
+      summary[:rejected] += 1
+      false
     end
 
     # Convert a validated point to a string conforming to
@@ -151,21 +146,25 @@ module Wavefront
     # @param point [Hash] a hash describing a point. See #write() for
     #   the format.
     #
-    # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/CyclomaticComplexity
     def hash_to_wf(point)
-      unless point.key?(:path) && point.key?(:value)
-        raise Wavefront::Exception::InvalidPoint
-      end
+      format('%s %s %s source=%s %s %s',
+             *point_array(point)).squeeze(' ').strip
+    rescue StandardError
+      raise Wavefront::Exception::InvalidPoint
+    end
 
-      point[:source] = HOSTNAME unless point.key?(:source)
-
-      m = [point[:path], point[:value]]
-      m.<< point[:ts] if point[:ts]
-      m.<< 'source=' + point[:source]
-      m.<< point[:tags].to_wf_tag if point[:tags]
-      m.<< opts[:tags].to_wf_tag if opts[:tags]
-      m.join(' ')
+    # Make an array which can be used by #hash_to_wf.
+    # @param point [Hash] a hash describing a point. See #write() for
+    #   the format.
+    # @raise
+    #
+    def point_array(point)
+      [point[:path] || raise,
+       point[:value] || raise,
+       point.fetch(:ts, nil),
+       point.fetch(:source, HOSTNAME),
+       point[:tags]&.to_wf_tag,
+       opts[:tags]&.to_wf_tag]
     end
 
     # Wrapper for #really_send_point(), which really sends points.

@@ -4,6 +4,7 @@ require 'faraday'
 require 'pp'
 require 'ostruct'
 require 'addressable'
+require_relative 'log'
 require_relative 'exception'
 require_relative 'mixins'
 require_relative 'response'
@@ -18,12 +19,11 @@ module Wavefront
   #
   # @return a Wavefront::Response object
   #
-  # rubocop:disable Metrics/ClassLength
   class Base
     include Wavefront::Validators
     include Wavefront::Mixins
-    attr_reader :opts, :debug, :noop, :verbose, :net, :conn, :update_keys,
-                :logger
+    attr_reader :opts, :debug, :noop, :verbose, :net, :conn,
+                :update_keys, :logger
 
     # Create a new API object. This will always be called from a
     # class which inherits this one. If the inheriting class defines
@@ -44,14 +44,17 @@ module Wavefront
     # @return [Nil]
     #
     def initialize(creds = {}, opts = {})
-      @opts  = opts
-      @debug = opts[:debug] || false
-      @noop = opts[:noop] || false
+      @opts    = opts
+      @debug   = opts[:debug] || false
+      @noop    = opts[:noop] || false
       @verbose = opts[:verbose] || false
-      @logger = opts[:logger] || nil
+      @logger  = Wavefront::Logger.new(opts)
       setup_endpoint(creds)
-
       post_initialize(creds, opts) if respond_to?(:post_initialize)
+    end
+
+    def log(message, severity = :info)
+      logger.log(message, severity)
     end
 
     # Convert an epoch timestamp into epoch milliseconds. If the
@@ -85,16 +88,15 @@ module Wavefront
     # @return [URI::HTTPS]
     #
     def mk_conn(path, headers = {})
-      Faraday.new(
-        url:     Addressable::URI.encode("https://#{net[:endpoint]}" +
-                 [net[:api_base], path].uri_concat),
-        headers: net[:headers].merge(headers)
-      )
+      url = format('https://%s%s', net[:endpoint], [net[:api_base],
+                                                    path].uri_concat)
+      Faraday.new(url:     Addressable::URI.encode(url),
+                  headers: net[:headers].merge(headers))
     end
 
     # Make a GET call to the Wavefront API and return the result as
     # a Ruby hash. Can optionally perform a verbose noop, if the
-    # #noop class variable is set. If #verbose is set, then prints
+    # @noop class variable is set. If @verbose is set, then prints
     # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
@@ -109,7 +111,7 @@ module Wavefront
 
     # Make a POST call to the Wavefront API and return the result as
     # a Ruby hash. Can optionally perform a verbose noop, if the
-    # #noop class variable is set. If #verbose is set, then prints
+    # @noop class variable is set. If @verbose is set, then prints
     # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
@@ -127,7 +129,7 @@ module Wavefront
 
     # Make a PUT call to the Wavefront API and return the result as
     # a Ruby hash. Can optionally perform a verbose noop, if the
-    # #noop class variable is set. If #verbose is set, then prints
+    # @noop class variable is set. If @verbose is set, then prints
     # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
@@ -144,7 +146,7 @@ module Wavefront
 
     # Make a DELETE call to the Wavefront API and return the result
     # as a Ruby hash. Can optionally perform a verbose noop, if the
-    # #noop class variable is set. If #verbose is set, then prints
+    # @noop class variable is set. If @verbose is set, then prints
     # the information used to build the URI.
     #
     # @param path [String] path to be appended to the
@@ -173,30 +175,6 @@ module Wavefront
       end
     end
 
-    # Send a message to a Ruby logger object if the user supplied
-    # one, or print to standard out if not.
-    #
-    # @param msg [String] the string to print
-    # @param level [Symbol] the level of the message.
-    #   :verbose messages equate to a standard INFO log level and
-    #   :debug to DEBUG.
-    #
-    def log(msg, level = nil)
-      if logger
-        logger.send(level || :info, msg)
-      else
-        print_message(msg, level)
-      end
-    end
-
-    # Print it unless it's a debug and we're not in debug
-    #
-    def print_message(msg, level)
-      return if level == :debug && !opts[:debug]
-      return if level == :info && !opts[:verbose]
-      puts msg
-    end
-
     # If we need to massage a raw response to fit what the
     # Wavefront::Response class expects (I'm looking at you,
     # 'User'), a class can provide a {#response_shim} method.
@@ -208,7 +186,7 @@ module Wavefront
                resp.body
              end
 
-      Wavefront::Response.new(body, resp.status, debug)
+      Wavefront::Response.new(body, resp.status, opts)
     end
 
     # Return all objects using a lazy enumerator
@@ -238,11 +216,11 @@ module Wavefront
     # of clumsy guesswork here
     #
     def verbosity(conn, method, *args)
-      log "uri: #{method.upcase} #{conn.url_prefix}"
+      log format('uri: %s %s', method.upcase, conn.url_prefix)
 
       return unless args.last && !args.last.empty?
 
-      puts log method == :get ? "params: #{args.last}" : "body: #{args.last}"
+      log method == :get ? "params: #{args.last}" : "body: #{args.last}"
     end
 
     # Make the API call, or not, if noop is set.
