@@ -6,7 +6,7 @@ require_relative '../../lib/wavefront-sdk/logger'
 
 # Test SDK logger class
 #
-class WavefrontBaseTest < MiniTest::Test
+class WavefrontLoggerTest < MiniTest::Test
   attr_reader :wfl
 
   def setup
@@ -28,7 +28,7 @@ class WavefrontBaseTest < MiniTest::Test
   end
 
   def test_log_no_logger_no_debug
-    l = Wavefront::Logger.new({debug: false, verbose: false})
+    l = Wavefront::Logger.new(debug: false, verbose: false)
     assert_silent { l.log('my message', :debug) }
     assert_output("SDK INFO: my message\n") { l.log('my message', :info) }
     out, err = capture_io { l.log('my message', :error) }
@@ -43,17 +43,20 @@ class WavefrontBaseTest < MiniTest::Test
     l = Wavefront::Logger.new(logger: Logger.new(STDOUT))
     out, err = capture_subprocess_io { l.log('my message', :debug) }
     assert_match(/DEBUG -- : my message$/, out)
+    assert_empty(err)
   end
 
   def test_log_logger_info
     l = Wavefront::Logger.new(logger: Logger.new(STDOUT))
     out, err = capture_subprocess_io { l.log('my message', :info) }
     assert_match(/INFO -- : my message$/, out)
+    assert_empty(err)
   end
 
   def test_log_logger_error
     l = Wavefront::Logger.new(logger: Logger.new(STDOUT))
     out, err = capture_subprocess_io { l.log('my message', :error) }
     assert_match(/ERROR -- : my message$/, out)
+    assert_empty(err)
   end
 end
