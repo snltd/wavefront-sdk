@@ -163,8 +163,8 @@ module Wavefront
        point[:value] || raise,
        point.fetch(:ts, nil),
        point.fetch(:source, HOSTNAME),
-       point[:tags]&.to_wf_tag,
-       opts[:tags]&.to_wf_tag]
+       point[:tags] && point[:tags].to_wf_tag,
+       opts[:tags] && opts[:tags].to_wf_tag]
     end
 
     # Wrapper for #really_send_point(), which really sends points.
