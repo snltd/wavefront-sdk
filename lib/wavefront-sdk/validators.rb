@@ -152,7 +152,7 @@ module Wavefront
     #
     def wf_version?(version)
       version = version.to_i if version.is_a?(String) && version =~ /^\d+$/
-      return true if version.is_a?(Integer) && version.positive?
+      return true if version.is_a?(Integer) && version > 0
       raise Wavefront::Exception::InvalidVersion
     end
 
