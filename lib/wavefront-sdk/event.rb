@@ -24,17 +24,21 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def list(from = nil, to = nil, limit = 100, cursor = nil)
-      raise ArgumentError unless from && to
+      raise ArgumentError unless from && to && limit.is_a?(Integer)
+      wf_event_id?(cursor) if cursor
+
       from = parse_time(from, true)
-      to = parse_time(to, true)
+      to   = parse_time(to, true)
+
       wf_ms_ts?(from)
       wf_ms_ts?(to)
-      wf_event_id?(cursor) if cursor
-      raise ArgumentError unless limit.is_a?(Integer)
 
-      api_get('', { earliestStartTimeEpochMillis: from,
-                    latestStartTimeEpochMillis: to,
-                    cursor: cursor, limit: limit }.select { |_k, v| v })
+      body = { earliestStartTimeEpochMillis: from,
+               latestStartTimeEpochMillis:   to,
+               cursor:                       cursor,
+               limit:                        limit }
+
+      api_get('', body.cleanse)
     end
 
     # POST /api/v2/event

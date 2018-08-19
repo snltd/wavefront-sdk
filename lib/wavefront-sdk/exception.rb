@@ -3,6 +3,7 @@ module Wavefront
   # Simple exception classes
   #
   class Exception
+    class CredentialError < RuntimeError; end
     class EmptyMetricName < RuntimeError; end
     class InvalidAlertId < RuntimeError; end
     class InvalidAlertSeverity < RuntimeError; end

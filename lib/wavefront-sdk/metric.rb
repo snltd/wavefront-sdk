@@ -18,19 +18,18 @@ module Wavefront
     # @param cursor [String] optionally begin from this result
     #
     def detail(metric, sources = [], cursor = nil)
-      raise ArgumentError unless metric.is_a?(String)
-      raise ArgumentError unless sources.is_a?(Array)
+      raise ArgumentError unless metric.is_a?(String) && sources.is_a?(Array)
 
-      q = [[:m, metric]]
+      query = [[:m, metric]]
 
       if cursor
         raise ArgumentError unless cursor.is_a?(String)
-        q.<< [:c, cursor]
+        query.<< [:c, cursor]
       end
 
-      sources.each { |s| q.<< [:h, s] }
+      sources.each { |source| query.<< [:h, source] }
 
-      api_get('detail', q)
+      api_get('detail', query)
     end
   end
 end
