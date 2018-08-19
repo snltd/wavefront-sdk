@@ -43,18 +43,29 @@ module Wavefront
       ref.to_i + parse_relative_time(time, in_ms)
     end
 
+    # Do the real work for #relative_time
+    # @param time [String] as +1h, -3d etc
+    # @param in_ms [Bool] whether to return time differential in ms
+    #   rather than s
+    # @return [Integer] time differential
+    #
     def parse_relative_time(time, in_ms = false)
-      unless time.start_with?('+', '-')
+      unless valid_relative_time?(time)
         raise Wavefront::Exception::InvalidRelativeTime
       end
 
       m = in_ms ? 1000 : 1
-
-      time = time[1..-1] if time.start_with?('+')
+      time.delete!('+')
       match = time.match(/^(-?\d*\.?\d*)([smhdwy])$/)
       (match[1].to_f * time_multiplier(match[2]) * m).to_i
-    rescue NoMethodError
-      raise Wavefront::Exception::InvalidRelativeTime
+    end
+
+    # Is a relative time valid?
+    # @param time [String] time as +1d, -1h etc
+    # @return [Bool]
+    #
+    def valid_relative_time?(time)
+      time =~ /^[+-](-?\d*\.?\d*)[smhdwy]$/
     end
 
     # naively return the number of seconds from the given

@@ -26,7 +26,6 @@ module Wavefront
     # Open a socket to a Wavefront proxy, putting the descriptor
     # in instance variable @sock.
     #
-    # rubocop:disable Metrics/MethodLength
     def open
       if opts[:noop]
         log('No-op requested. Not opening connection to proxy.')

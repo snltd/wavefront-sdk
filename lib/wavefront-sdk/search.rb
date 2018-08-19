@@ -94,8 +94,8 @@ module Wavefront
     #
     def raw_facet_search(entity = nil, body = nil, deleted = false,
                          facet = false)
-      raise ArgumentError unless entity.is_a?(String)
-      raise ArgumentError unless body.is_a?(Hash)
+      raise ArgumentError unless entity.is_a?(String) && body.is_a?(Hash)
+
       path = [entity]
       path.<< 'deleted' if deleted
       path.<< facet ? facet : 'facets'

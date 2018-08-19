@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../../lib/wavefront-sdk/write.rb'
+require_relative 'resources/dummy_points'
 require 'minitest/autorun'
 require 'webmock/minitest'
 require 'spy'
@@ -8,26 +9,6 @@ require 'spy/integration'
 require 'socket'
 
 W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
-
-TAGS = { gt1: 'gv1', gt2: 'gv2' }.freeze
-
-POINT =  { path:   'test.metric',
-           value:  123_456,
-           ts:     1_469_987_572,
-           source: 'testhost',
-           tags:   { t1: 'v1', t2: 'v2' } }.freeze
-
-POINT_L = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'.freeze
-
-POINT_A = [
-  POINT, POINT.dup.update(ts: 1_469_987_588, value: 54_321)
-].freeze
-
-POINTS = [POINT.dup,
-          { path:   'test.other_metric',
-            value:  89,
-            ts:     1_469_987_572,
-            source: 'otherhost' }].freeze
 
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
@@ -85,20 +66,6 @@ class WavefrontWriteTest < MiniTest::Test
     assert mocket_spy.has_been_called?
   end
 
-  def test_prepped_points
-    assert_equal wf.prepped_points(%w[p1 p2 p3 p4]), %w[p1 p2 p3 p4]
-    assert_equal wf.prepped_points([%w[p1 p2 p3 p4]]), %w[p1 p2 p3 p4]
-    assert_equal wf.prepped_points('p1'), %w[p1]
-    assert_equal wf.prepped_points(
-      [{ path: 'p1' }, { path: 'p2' }, { path: 'p3' }], 'prefix'
-    ),
-                 [{ path: 'prefix.p1' }, { path: 'prefix.p2' },
-                  { path: 'prefix.p3' }]
-
-    assert_equal wf.prepped_points({ path: 'p1' }, 'prefix'),
-                 [{ path: 'prefix.p1' }]
-  end
-
   def test_write_array
     mocket = Mocket.new
     Spy.on(TCPSocket, :new).and_return(mocket)
@@ -108,55 +75,12 @@ class WavefrontWriteTest < MiniTest::Test
     assert mocket_spy.has_been_called?
   end
 
-  def test_paths_to_deltas
-    x = wf.paths_to_deltas(POINTS.dup)
-    assert_equal(x.size, 2)
-
-    x.each do |p|
-      assert_instance_of(Hash, p)
-      assert(p[:path].start_with?(DELTA))
-    end
-  end
-
-  def test_hash_to_wf
-    assert_equal(wf.hash_to_wf(POINT),
-                 'test.metric 123456 1469987572 ' \
-                 'source=testhost t1="v1" t2="v2"')
-    assert_equal(wf_tags.hash_to_wf(POINT),
-                 'test.metric 123456 1469987572 ' \
-                 'source=testhost t1="v1" t2="v2" ' \
-                 'gt1="gv1" gt2="gv2"')
-
-    p1 = POINT.dup
-    p1.delete(:ts)
-    assert_equal(wf.hash_to_wf(p1),
-                 'test.metric 123456 source=testhost t1="v1" t2="v2"')
-
-    p2 = POINT.dup
-    p2.delete(:tags)
-    assert_equal(wf.hash_to_wf(p2),
-                 'test.metric 123456 1469987572 source=testhost')
-
-    %i[value path].each do |k|
-      p3 = POINT.dup
-      p3.delete(k)
-
-      assert_raises(Wavefront::Exception::InvalidPoint) do
-        wf.hash_to_wf(p3)
-      end
-
-      assert_raises(Wavefront::Exception::InvalidPoint) do
-        wf_tags.hash_to_wf(p3)
-      end
-    end
-  end
-
-  def test_send_point
+  def test_really_send_point
     mocket = Mocket.new
     Spy.on(TCPSocket, :new).and_return(mocket)
     mocket_spy = Spy.on(mocket, :puts)
     wf.open
-    wf.send_point(POINT_L)
+    wf.really_send_point(POINT_L)
     assert mocket_spy.has_been_called_with?(POINT_L)
   end
 
