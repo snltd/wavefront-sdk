@@ -9,4 +9,10 @@ class Hash
   def to_wf_tag
     map { |k, v| format('%s="%s"', k, v.tagescape) }.join(' ')
   end
+
+  # Drop any key-value pairs where the value is not truthy
+  #
+  def cleanse
+    select { |_k, v| v }
+  end
 end

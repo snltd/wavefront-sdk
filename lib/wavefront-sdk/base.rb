@@ -239,10 +239,17 @@ module Wavefront
       respond(resp)
     end
 
-    def setup_endpoint(creds)
+    def validate_credentials(creds)
       %w[endpoint token].each do |k|
-        raise "creds must contain #{k}" unless creds.key?(k.to_sym)
+        unless creds.key?(k.to_sym)
+          raise(Wavefront::Exception::CredentialError,
+                format('credentials must contain %s', k))
+        end
       end
+    end
+
+    def setup_endpoint(creds)
+      validate_credentials(creds)
 
       unless creds.key?(:agent) && creds[:agent]
         creds[:agent] = "wavefront-sdk #{WF_SDK_VERSION}"
