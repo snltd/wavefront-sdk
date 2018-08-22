@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1 (22/08/2018)
+
+* Fix Ruby 2.2 bugs
+* Improve unit test separation
+* Allow updating of all external link parameters
+
 ## 1.6.0 (07/08/2018)
 * Improve validation of point tags.
 * Break extensions to standard library out into their own files.
