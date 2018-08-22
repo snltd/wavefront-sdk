@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.6.2 (22/08/2018)
+* Drop log priority of write class messages.
+
 ## 1.6.1 (22/08/2018)
 
 * Fix Ruby 2.2 bugs

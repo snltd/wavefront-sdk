@@ -178,7 +178,7 @@ module Wavefront
         return
       end
 
-      log("Sending: #{point}", :info)
+      log("Sending: #{point}", :debug)
       really_send_point(point)
     end
   end

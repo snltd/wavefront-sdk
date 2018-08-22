@@ -33,7 +33,7 @@ module Wavefront
       end
 
       port = net[:port] || 2878
-      log("Connecting to #{net[:proxy]}:#{port}.", :info)
+      log("Connecting to #{net[:proxy]}:#{port}.", :debug)
 
       begin
         @sock = TCPSocket.new(net[:proxy], port)
@@ -47,7 +47,7 @@ module Wavefront
     #
     def close
       return if opts[:noop]
-      log('Closing connection to proxy.', :info)
+      log('Closing connection to proxy.', :debug)
       sock.close
     end
 
