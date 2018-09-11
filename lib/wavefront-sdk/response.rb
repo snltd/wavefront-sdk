@@ -2,6 +2,7 @@ require 'json'
 require 'map'
 require_relative 'exception'
 require_relative 'mixins'
+require_relative 'logger'
 
 module Wavefront
   #
@@ -65,6 +66,10 @@ module Wavefront
       return Map.new(raw) unless raw.key?(:response)
       return raw[:response] unless raw[:response].is_a?(Hash)
       Map(raw[:response])
+    end
+
+    def to_s
+      self.inspect.to_s
     end
   end
 
