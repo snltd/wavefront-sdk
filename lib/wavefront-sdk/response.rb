@@ -69,7 +69,7 @@ module Wavefront
     end
 
     def to_s
-      self.inspect.to_s
+      inspect.to_s
     end
   end
 
