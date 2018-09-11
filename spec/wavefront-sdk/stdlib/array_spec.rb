@@ -2,8 +2,9 @@
 
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/stdlib/array'
-require 'spy/integration'
 
+# Test extensions to stdlib's Array class
+#
 class ArrayTest < MiniTest::Test
   def test_uri_concat
     assert_equal %w[a b].uri_concat, 'a/b'

@@ -8,6 +8,8 @@ require_relative 'resources/dummy_points'
 WBWT_CREDS = { endpoint: 'stub.wavefront.com', token: 'tkn' }
 # rubocop:enable Style/MutableConstant
 
+# Test methods common to 'write' and 'report'
+#
 class WavefrontBaseWriteTest < MiniTest::Test
   attr_reader :wf, :wf_tags
 

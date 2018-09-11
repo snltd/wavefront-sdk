@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#
+
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/exception'
 require_relative '../../lib/wavefront-sdk/response'
