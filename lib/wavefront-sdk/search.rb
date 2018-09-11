@@ -45,15 +45,18 @@ module Wavefront
     # Build a query body
     #
     def body(query, options)
-      ret = {
-        limit:  options[:limit] || 10,
-        offset: options[:offset] || 0,
-        query:  [query].flatten,
-        sort:   { field:     [query].flatten.first[:key],
-                  ascending: !options[:desc] || true }
-      }
+      ret = { limit:  options[:limit]  || 10,
+              offset: options[:offset] || 0 }
 
-      ret[:query].map { |q| q[:matchingMethod] ||= 'CONTAINS' }
+      if query && !query.empty?
+        ret[:query] = [query].flatten.map do |q|
+          q.tap { |iq| iq[:matchingMethod] ||= 'CONTAINS' }
+        end
+
+        ret[:sort] = { field:     [query].flatten.first[:key],
+                       ascending: !options[:desc] || true }
+      end
+
       ret
     end
 
@@ -98,7 +101,7 @@ module Wavefront
 
       path = [entity]
       path.<< 'deleted' if deleted
-      path.<< facet ? facet : 'facets'
+      path.<< facet || 'facets'
       api_post(path, body, 'application/json')
     end
   end

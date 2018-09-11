@@ -44,4 +44,29 @@ class WavefrontSearchTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.raw_facet_search }
     assert_raises(ArgumentError) { wf.raw_facet_search('ALERT', 'junk') }
   end
+
+  def test_body
+    q = [{ key: 'k1', value: 'v1', matchingMethod: 'EXACT' },
+         { key: 'k2', value: 'v2', matchingMethod: 'CONTAINS' }]
+
+    r1 = wf.body(q, {})
+
+    assert_equal({ limit: 10,
+                   offset: 0,
+                   query:  [
+                     { key: 'k1', value: 'v1', matchingMethod: 'EXACT' },
+                     { key: 'k2', value: 'v2', matchingMethod: 'CONTAINS' }
+                   ],
+                   sort: { field: 'k1', ascending: true } },
+                 r1)
+
+    r2 = wf.body(q, limit: 50)
+    assert_equal(50, r2[:limit])
+    assert_equal(0, r2[:offset])
+
+    r3 = wf.body([], {})
+
+    assert_equal({ limit: 10, offset: 0 }, r3)
+    assert_equal(0, r3[:offset])
+  end
 end
