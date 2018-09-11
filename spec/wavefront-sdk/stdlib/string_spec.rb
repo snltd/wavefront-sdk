@@ -3,6 +3,8 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/stdlib/string'
 
+# Test extensions to stdlib's String class
+#
 class StringTest < MiniTest::Test
   def test_tagescape
     assert_equal('value', 'value'.tagescape)

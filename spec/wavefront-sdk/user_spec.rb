@@ -40,7 +40,7 @@ class WavefrontUserTest < WavefrontTestBase
     should_work(:grant, [USER, GROUP], 'user%40example.com/grant',
                 :post, JSON_POST_HEADERS.merge(
                          'Content-Type': 'application/x-www-form-urlencoded'
-                ),
+                       ),
                 "group=#{GROUP}")
     should_be_invalid(:grant, ['abcde', GROUP])
     assert_raises(ArgumentError) { wf.grant }
@@ -50,7 +50,7 @@ class WavefrontUserTest < WavefrontTestBase
     should_work(:revoke, [USER, GROUP], 'user%40example.com/revoke',
                 :post, JSON_POST_HEADERS.merge(
                          'Content-Type': 'application/x-www-form-urlencoded'
-                ),
+                       ),
                 "group=#{GROUP}")
     should_be_invalid(:revoke, ['abcde', GROUP])
     assert_raises(ArgumentError) { wf.revoke }
