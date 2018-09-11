@@ -146,7 +146,7 @@ class GibletsTest < MiniTest::Test
   def test_load_from_file
     assert_equal(wf.load_from_file(
                    [Pathname.new('/no/file/1'), Pathname.new('/no/file/2')]
-                 ), {})
+    ), {})
 
     assert_equal(wf.load_from_file([CONF], 'noprofile'),
                  file: CONF)
