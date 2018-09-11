@@ -11,8 +11,13 @@ WF_JSON = '{"status":{"result":"OK","message":"","code":200},' \
 # Unit tests for Response class
 #
 class WavefrontResponseTest < MiniTest::Test
+  attr_reader :wf
+
+  def setup
+    @wf = Wavefront::Response.new(WF_JSON, 200)
+  end
+
   def test_initialize_good_data
-    wf = Wavefront::Response.new(WF_JSON, 200)
     assert_instance_of(Wavefront::Response, wf)
     assert_respond_to(wf, :status)
     assert_respond_to(wf, :response)
@@ -26,7 +31,6 @@ class WavefrontResponseTest < MiniTest::Test
   def test_initialize_bad_data; end
 
   def test_build_response
-    wf = Wavefront::Response.new(WF_JSON, 200)
     assert_equal(Map.new, wf.build_response({}))
     assert_equal(Map.new, wf.build_response([]))
     assert_equal(Map.new, wf.build_response('string'))
@@ -35,5 +39,11 @@ class WavefrontResponseTest < MiniTest::Test
     assert_equal([1, 2], wf.build_response(response: [1, 2]))
     assert_equal(Map.new(key: 123),
                  wf.build_response(response: { key: 123 }))
+  end
+
+  def test_to_s
+    assert_instance_of(String, wf.to_s)
+    assert_match(/:code=>200/, wf.to_s)
+    assert_match(/"limit"=>100/, wf.to_s)
   end
 end
