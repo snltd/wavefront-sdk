@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -29,7 +29,7 @@ module Wavefront
 
       sources.each { |source| query.<< [:h, source] }
 
-      api_get('detail', query)
+      api.get('detail', query)
     end
   end
 end

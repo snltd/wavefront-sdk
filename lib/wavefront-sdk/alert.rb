@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -19,7 +19,7 @@ module Wavefront
     # @return [Hash]
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/alert
@@ -32,7 +32,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/alert/id
@@ -47,7 +47,7 @@ module Wavefront
     #
     def delete(id)
       wf_alert_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/alert/id
@@ -64,7 +64,7 @@ module Wavefront
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
-      api_get(fragments.uri_concat)
+      api.get(fragments.uri_concat)
     end
 
     # PUT /api/v2/alert/id
@@ -82,9 +82,9 @@ module Wavefront
       wf_alert_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id).response, body),
+      api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
 
@@ -100,7 +100,7 @@ module Wavefront
       qs[:offset] = offset if offset
       qs[:limit] = limit if limit
 
-      api_get([id, 'history'].uri_concat, qs)
+      api.get([id, 'history'].uri_concat, qs)
     end
 
     # POST /api/v2/alert/id/snooze
@@ -114,7 +114,7 @@ module Wavefront
     def snooze(id, seconds = nil)
       wf_alert_id?(id)
       qs = seconds ? "?seconds=#{seconds}" : ''
-      api_post([id, "snooze#{qs}"].uri_concat, nil)
+      api.post([id, "snooze#{qs}"].uri_concat, nil)
     end
 
     # GET /api/v2/alert/id/tag
@@ -125,7 +125,7 @@ module Wavefront
     #
     def tags(id)
       wf_alert_id?(id)
-      api_get([id, 'tag'].uri_concat)
+      api.get([id, 'tag'].uri_concat)
     end
 
     # POST /api/v2/alert/id/tag
@@ -139,7 +139,7 @@ module Wavefront
       wf_alert_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
-      api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
+      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
     # DELETE /api/v2/alert/id/tag/tagValue
@@ -152,7 +152,7 @@ module Wavefront
     def tag_delete(id, tag)
       wf_alert_id?(id)
       wf_string?(tag)
-      api_delete([id, 'tag', tag].uri_concat)
+      api.delete([id, 'tag', tag].uri_concat)
     end
 
     # PUT /api/v2/alert/id/tag/tagValue
@@ -165,7 +165,7 @@ module Wavefront
     def tag_add(id, tag)
       wf_alert_id?(id)
       wf_string?(tag)
-      api_put([id, 'tag', tag].uri_concat)
+      api.put([id, 'tag', tag].uri_concat)
     end
 
     # POST /api/v2/alert/id/undelete
@@ -176,7 +176,7 @@ module Wavefront
     #
     def undelete(id)
       wf_alert_id?(id)
-      api_post([id, 'undelete'].uri_concat)
+      api.post([id, 'undelete'].uri_concat)
     end
 
     # POST /api/v2/alert/id/unsnooze
@@ -187,7 +187,7 @@ module Wavefront
     #
     def unsnooze(id)
       wf_alert_id?(id)
-      api_post([id, 'unsnooze'].uri_concat)
+      api.post([id, 'unsnooze'].uri_concat)
     end
 
     # GET /api/v2/alert/summary
@@ -196,7 +196,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def summary
-      api_get('summary')
+      api.get('summary')
     end
   end
 end

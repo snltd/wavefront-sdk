@@ -1,7 +1,7 @@
 require 'date'
-require_relative 'exception'
 require_relative 'parse_time'
 require_relative 'stdlib'
+require_relative 'exception'
 
 module Wavefront
   #
@@ -84,6 +84,10 @@ module Wavefront
 
       return u[suffix.to_sym] if u.key?(suffix.to_sym)
       raise Wavefront::Exception::InvalidTimeUnit
+    end
+
+    def log(message, severity = :info)
+      logger.log(message, severity)
     end
   end
 end

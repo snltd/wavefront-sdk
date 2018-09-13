@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative '../../lib/wavefront-sdk/base_write.rb'
+require_relative '../../lib/support/base_write.rb'
 require_relative '../spec_helper'
-require_relative 'resources/dummy_points'
+require_relative '../resources/dummy_points'
 
 # rubocop:disable Style/MutableConstant
 WBWT_CREDS = { endpoint: 'stub.wavefront.com', token: 'tkn' }

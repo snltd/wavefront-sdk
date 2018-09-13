@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -14,7 +14,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/cloudintegration
@@ -26,7 +26,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/cloudintegration/id
@@ -41,7 +41,7 @@ module Wavefront
     #
     def delete(id)
       wf_cloudintegration_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/cloudintegration/id
@@ -52,7 +52,7 @@ module Wavefront
     #
     def describe(id)
       wf_cloudintegration_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # PUT /api/v2/cloudintegration/id
@@ -64,7 +64,7 @@ module Wavefront
     def update(id, body)
       wf_cloudintegration_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body)
+      api.put(id, body)
     end
 
     # POST /api/v2/cloudintegration/id/undelete
@@ -75,7 +75,7 @@ module Wavefront
     #
     def undelete(id)
       wf_cloudintegration_id?(id)
-      api_post([id, 'undelete'].uri_concat)
+      api.post([id, 'undelete'].uri_concat)
     end
   end
 end

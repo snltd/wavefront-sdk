@@ -1,4 +1,4 @@
-require_relative 'base_write'
+require_relative '../support/base_write'
 
 module Wavefront
   #
@@ -9,6 +9,8 @@ module Wavefront
   # extends. This class provides the transport mechanism.
   #
   class Write < BaseWrite
+    attr_reader :net
+
     def really_send_point(point)
       begin
         sock.puts(point)
@@ -55,7 +57,7 @@ module Wavefront
     # endpoint has an address and a port, rather than an address and
     # a token.
     #
-    def setup_endpoint(creds)
+    def setup_api(creds, _opts)
       @net = creds
     end
 
@@ -78,6 +80,12 @@ module Wavefront
       ensure
         close if openclose
       end
+    end
+
+    def validate_credentials(creds)
+      return true if creds.key?(:proxy)
+      raise(Wavefront::Exception::CredentialError,
+            'credentials must contain proxy')
     end
 
     private

@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -14,7 +14,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/savedsearch
@@ -26,7 +26,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/savedsearch/id
@@ -37,7 +37,7 @@ module Wavefront
     #
     def delete(id)
       wf_savedsearch_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/savedsearch/id
@@ -48,7 +48,7 @@ module Wavefront
     #
     def describe(id)
       wf_savedsearch_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # PUT /api/v2/savedsearch/id
@@ -60,7 +60,7 @@ module Wavefront
     def update(id, body)
       wf_savedsearch_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
-      api_put(id, body)
+      api.put(id, body)
     end
 
     # GET /api/v2/savedsearch/type/entitytype
@@ -73,7 +73,7 @@ module Wavefront
     #
     def entity(entitytype, offset = 0, limit = 100)
       wf_savedsearch_entity?(entitytype)
-      api_get(['type', entitytype].uri_concat, offset: offset,
+      api.get(['type', entitytype].uri_concat, offset: offset,
                                                limit: limit)
     end
   end

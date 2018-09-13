@@ -4,8 +4,8 @@ require 'pathname'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/credentials'
 
-CONF = Pathname.new(__FILE__).dirname.realpath + 'resources' + 'test.conf'
-CONF2 = Pathname.new(__FILE__).dirname.realpath + 'resources' + 'test2.conf'
+CONF1 = RESOURCE_DIR + 'test.conf'
+CONF2 = RESOURCE_DIR + 'test2.conf'
 
 # Test SDK base class end-to-end
 #
@@ -15,7 +15,7 @@ class WavefrontCredentialsTest < MiniTest::Test
   def test_initialize_1
     ENV.delete('WAVEFRONT_ENDPOINT')
     ENV.delete('WAVEFRONT_TOKEN')
-    c = Wavefront::Credentials.new(file: CONF)
+    c = Wavefront::Credentials.new(file: CONF1)
     assert_instance_of(Wavefront::Credentials, c)
     assert_instance_of(Map, c.creds)
     assert_instance_of(Map, c.proxy)
@@ -29,7 +29,7 @@ class WavefrontCredentialsTest < MiniTest::Test
   def test_initialize_env_token
     ENV.delete('WAVEFRONT_ENDPOINT')
     ENV['WAVEFRONT_TOKEN'] = 'abcdefgh'
-    c = Wavefront::Credentials.new(file: CONF)
+    c = Wavefront::Credentials.new(file: CONF1)
     assert_instance_of(Wavefront::Credentials, c)
     assert_instance_of(Map, c.creds)
     assert_instance_of(Map, c.proxy)
@@ -43,7 +43,7 @@ class WavefrontCredentialsTest < MiniTest::Test
   def test_initialize_env_endpoint
     ENV.delete('WAVEFRONT_TOKEN')
     ENV['WAVEFRONT_ENDPOINT'] = 'endpoint.wavefront.com'
-    c = Wavefront::Credentials.new(file: CONF)
+    c = Wavefront::Credentials.new(file: CONF1)
     assert_instance_of(Wavefront::Credentials, c)
     assert_instance_of(Map, c.creds)
     assert_instance_of(Map, c.proxy)
@@ -148,10 +148,10 @@ class GibletsTest < MiniTest::Test
                    [Pathname.new('/no/file/1'), Pathname.new('/no/file/2')]
     ), {})
 
-    assert_equal(wf.load_from_file([CONF], 'noprofile'),
-                 file: CONF)
+    assert_equal(wf.load_from_file([CONF1], 'noprofile'),
+                 file: CONF1)
 
-    x = wf.load_from_file([CONF2, CONF], 'default')
+    x = wf.load_from_file([CONF2, CONF1], 'default')
     assert_instance_of(Hash, x)
     assert_equal(x.keys.size, 5)
     assert_equal(x[:proxy], 'wavefront.localnet')
@@ -160,13 +160,13 @@ class GibletsTest < MiniTest::Test
       assert_includes(x.keys, k)
     end
 
-    y = wf.load_from_file([CONF2, CONF], 'other')
+    y = wf.load_from_file([CONF2, CONF1], 'other')
     assert_instance_of(Hash, y)
     %i[token endpoint proxy file].each { |k| assert_includes(y.keys, k) }
     assert_equal(y.keys.size, 4)
     assert_equal(y[:proxy], 'otherwf.localnet')
 
-    z = wf.load_from_file([CONF, CONF2], 'default')
+    z = wf.load_from_file([CONF1, CONF2], 'default')
     assert_instance_of(Hash, z)
     %i[token endpoint proxy file].each { |k| assert_includes(z.keys, k) }
     assert_equal(z.keys.size, 4)

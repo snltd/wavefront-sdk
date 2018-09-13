@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
+require_relative '../resources/dummy_points'
 
 HEADERS = POST_HEADERS.merge('Content-Type': 'application/octet-stream')
 # Unit tests for Report class

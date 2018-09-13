@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -12,7 +12,7 @@ module Wavefront
     # @param limit [Int] the number of proxies to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # DELETE /api/v2/proxy/id
@@ -27,7 +27,7 @@ module Wavefront
     #
     def delete(id)
       wf_proxy_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/proxy/id
@@ -38,7 +38,7 @@ module Wavefront
     #
     def describe(id)
       wf_proxy_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # POST /api/v2/proxy/id/undelete
@@ -51,7 +51,7 @@ module Wavefront
     #
     def undelete(id)
       wf_proxy_id?(id)
-      api_post([id, 'undelete'].uri_concat)
+      api.post([id, 'undelete'].uri_concat)
     end
 
     # PUT /api/v2/proxy/id
@@ -82,7 +82,7 @@ module Wavefront
     #
     def update(id, payload)
       wf_proxy_id?(id)
-      api_put(id, payload)
+      api.put(id, payload)
     end
   end
 end

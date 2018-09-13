@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-require_relative '../../lib/wavefront-sdk/exception'
-require_relative '../../lib/wavefront-sdk/response'
+require_relative '../../lib/support/exception'
+require_relative '../../lib/support/response'
 
 WF_JSON = '{"status":{"result":"OK","message":"","code":200},' \
           '"response":{"items":[{"name":"test agent"}],"offset":0,' \

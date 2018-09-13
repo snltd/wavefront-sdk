@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -81,7 +81,7 @@ module Wavefront
 
       path = [entity]
       path.<< 'deleted' if deleted
-      api_post(path, body.to_json, 'application/json')
+      api.post(path, body.to_json, 'application/json')
     end
 
     # @param entity [String] the type of Wavefront object you wish
@@ -102,7 +102,7 @@ module Wavefront
       path = [entity]
       path.<< 'deleted' if deleted
       path.<< facet || 'facets'
-      api_post(path, body, 'application/json')
+      api.post(path, body, 'application/json')
     end
   end
 end

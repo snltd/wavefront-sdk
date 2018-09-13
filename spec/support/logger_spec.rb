@@ -2,7 +2,7 @@
 
 require 'logger'
 require_relative '../spec_helper'
-require_relative '../../lib/wavefront-sdk/logger'
+require_relative '../../lib/support/logger'
 
 # Test SDK logger class
 #

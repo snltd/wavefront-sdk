@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -41,7 +41,7 @@ module Wavefront
       options[:e] = parse_time(t_end, true) if t_end
 
       options.delete_if { |k, v| v == false && k != :i }
-      api_get('api', options)
+      api.get('api', options)
     end
 
     # GET /api/v2/chart/raw
@@ -70,7 +70,7 @@ module Wavefront
       options[:startTime] = parse_time(t_start, true) if t_start
       options[:endTime] = parse_time(t_end, true) if t_end
 
-      api_get('raw', options)
+      api.get('raw', options)
     end
 
     # Fake a response which looks like we get from all the other

@@ -11,7 +11,7 @@ module Wavefront
   # ingestion by a proxy and directly to the API.
   #
   class BaseWrite < Base
-    attr_reader :sock, :summary
+    attr_reader :sock, :summary, :opts
 
     # Construct an object which allows us to write points to a
     # Wavefront proxy.

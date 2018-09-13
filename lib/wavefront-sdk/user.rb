@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative '../support/base'
 
 module Wavefront
   #
@@ -9,7 +9,7 @@ module Wavefront
     # Get all users.
     #
     def list
-      api_get('')
+      api.get('')
     end
 
     # POST /api/v2/user
@@ -22,7 +22,7 @@ module Wavefront
     #
     def create(body, send_email = false)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post("?sendEmail=#{send_email}", body, 'application/json')
+      api.post("?sendEmail=#{send_email}", body, 'application/json')
     end
 
     # DELETE /api/v2/user/id
@@ -33,7 +33,7 @@ module Wavefront
     #
     def delete(id)
       wf_user_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/user/id
@@ -44,7 +44,7 @@ module Wavefront
     #
     def describe(id)
       wf_user_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # PUT /api/v2/user/id/grant
@@ -63,7 +63,7 @@ module Wavefront
     def grant(id, group)
       wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
-      api_post([id, 'grant'].uri_concat, "group=#{group}",
+      api.post([id, 'grant'].uri_concat, "group=#{group}",
                'application/x-www-form-urlencoded')
     end
 
@@ -79,7 +79,7 @@ module Wavefront
     def revoke(id, group)
       wf_user_id?(id)
       raise ArgumentError unless group.is_a?(String)
-      api_post([id, 'revoke'].uri_concat, "group=#{group}",
+      api.post([id, 'revoke'].uri_concat, "group=#{group}",
                'application/x-www-form-urlencoded')
     end
 

@@ -1,8 +1,8 @@
 require 'json'
 require 'map'
-require_relative 'exception'
 require_relative 'mixins'
 require_relative 'logger'
+require_relative 'exception'
 
 module Wavefront
   #

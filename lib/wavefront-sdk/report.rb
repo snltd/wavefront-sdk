@@ -1,4 +1,4 @@
-require_relative 'base_write'
+require_relative '../support/base_write'
 
 module Wavefront
   #
@@ -17,7 +17,7 @@ module Wavefront
     end
 
     def really_send_point(point)
-      api_post('/?f=graphite_v2', point, 'application/octet-stream')
+      api.post('/?f=graphite_v2', point, 'application/octet-stream')
     end
 
     private
