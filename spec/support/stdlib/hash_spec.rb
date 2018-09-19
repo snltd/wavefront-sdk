@@ -19,8 +19,8 @@ class HashTest < MiniTest::Test
   end
 
   def test_cleanse
-    assert_equal({ k1: 1, k3: 3}, {k1: 1, k2: nil, k3: 3}.cleanse)
-    assert_equal({ k1: 1, k2: 2, k3: 3}, { k1: 1, k2: 2, k3: 3 }.cleanse)
-    assert_equal({}, {k1: nil, k2: false, k3: !true}.cleanse)
+    assert_equal({ k1: 1, k3: 3 }, { k1: 1, k2: nil, k3: 3 }.cleanse)
+    assert_equal({ k1: 1, k2: 2, k3: 3 }, { k1: 1, k2: 2, k3: 3 }.cleanse)
+    assert_equal({}, { k1: nil, k2: false, k3: false }.cleanse)
   end
 end

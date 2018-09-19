@@ -13,3 +13,6 @@ Metrics/ClassLength:
 
 Metrics/MethodLength:
   Max: 13
+
+Style/DoubleNegation:
+  Enabled: false
