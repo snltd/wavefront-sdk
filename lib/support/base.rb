@@ -95,22 +95,5 @@ module Wavefront
         update_keys.include?(k)
       end
     end
-
-    # Return all objects using a lazy enumerator
-    # @return Enumerable
-    #
-    def everything
-      Enumerator.new do |y|
-        offset = 0
-        limit = 100
-
-        loop do
-          resp = api_get('', offset: offset, limit: limit).response
-          resp.items.map { |i| y.<< i }
-          offset += limit
-          raise StopIteration unless resp.moreItems == true
-        end
-      end.lazy
-    end
   end
 end

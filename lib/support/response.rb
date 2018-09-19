@@ -47,6 +47,30 @@ module Wavefront
       raise Wavefront::Exception::UnparseableResponse
     end
 
+    # Are there more items in paginated output?
+    # @return [Bool]
+    #
+    def more_items?
+      return false unless response.key?(:moreItems)
+      !!response.moreItems
+    end
+
+    # On paginated output, the offset of the next item, or nil.
+    # @return [Integer, Nil]
+    #
+    def next_item
+      return nil unless more_items?
+      reponse.offset + response.limit
+    rescue
+      nil
+    end
+
+    def to_s
+      inspect.to_s
+    end
+
+    private
+
     def setup_opts
       @logger = Wavefront::Logger.new(opts)
     end
@@ -68,9 +92,6 @@ module Wavefront
       Map(raw[:response])
     end
 
-    def to_s
-      inspect.to_s
-    end
   end
 
   # Status types are used by the Wavefront::Response class

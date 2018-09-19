@@ -81,7 +81,7 @@ module Wavefront
 
       path = [entity]
       path.<< 'deleted' if deleted
-      api.post(path, body.to_json, 'application/json')
+      api.post(path, body, 'application/json')
     end
 
     # @param entity [String] the type of Wavefront object you wish
