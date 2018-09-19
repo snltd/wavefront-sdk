@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../../spec_helper'
-require_relative '../../../lib/wavefront-sdk/stdlib/array'
+require_relative '../../../lib/support/stdlib/array'
 
 # Test extensions to stdlib's Array class
 #
