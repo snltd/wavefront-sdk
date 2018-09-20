@@ -1,4 +1,4 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
@@ -7,7 +7,7 @@ module Wavefront
   # this class covers the whole API with two methods, but leaves a
   # lot up to the user. It may grow, with convenience methods.
   #
-  class Search < Base
+  class Search < CoreApi
     # POST /api/v2/search/entity
     # POST /api/v2/search/entity/deleted
     # Run a search query. This single method maps to many API paths.

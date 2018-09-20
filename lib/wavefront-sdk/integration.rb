@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront integrations.
   #
-  class Integration < Base
+  class Integration < CoreApi
     # GET /api/v2/integration
     # Gets a flat list of all Wavefront integrations available,
     # along with their status

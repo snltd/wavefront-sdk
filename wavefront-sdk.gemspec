@@ -1,6 +1,6 @@
 require 'pathname'
 require 'date'
-require_relative 'lib/wavefront-sdk/version'
+require_relative 'lib/wavefront-sdk/defs/version'
 
 # rubocop:disable Metrics/BlockLength:
 Gem::Specification.new do |gem|

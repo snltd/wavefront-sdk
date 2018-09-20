@@ -1,11 +1,11 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage Cloud Integrations. These are identified by
   # a UUID.
   #
-  class SavedSearch < Base
+  class SavedSearch < CoreApi
     # GET /api/v2/savedsearch
     # Get all saved searches for a user.
     #

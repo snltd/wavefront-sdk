@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
-require_relative '../../lib/support/parse_time'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/support/parse_time'
 
 # rubocop:disable Style/NumericLiterals
 TSS = 1517151869

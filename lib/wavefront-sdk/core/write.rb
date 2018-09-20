@@ -1,6 +1,6 @@
 require 'socket'
-require_relative 'constants'
-require_relative 'base'
+require_relative 'api'
+require_relative '../defs/constants'
 
 HOSTNAME = Socket.gethostname.freeze
 
@@ -10,7 +10,7 @@ module Wavefront
   # the Write and Report classes, which respectively handle point
   # ingestion by a proxy and directly to the API.
   #
-  class BaseWrite < Base
+  class CoreWrite < CoreApi
     attr_reader :sock, :summary, :opts
 
     # Construct an object which allows us to write points to a

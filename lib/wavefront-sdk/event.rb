@@ -1,11 +1,11 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage events. Events are identified by their millisecond
   # epoch timestamp.
   #
-  class Event < Base
+  class Event < CoreApi
     def update_keys
       %i[startTime endTime name annotations]
     end

@@ -1,11 +1,11 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage alerts. Alerts are identified by their millisecond
   # epoch timestamp. Returns a Wavefront::Response::Alert object.
   #
-  class Alert < Base
+  class Alert < CoreApi
     def update_keys
       %i[id name target condition displayExpression minutes
          resolveAfterMinutes severity additionalInformation]

@@ -1,11 +1,8 @@
-require 'json'
-require 'time'
-require 'pp'
 require_relative 'logger'
-require_relative 'mixins'
-require_relative 'validators'
 require_relative 'api_caller'
 require_relative 'exception'
+require_relative '../validators'
+require_relative '../support/mixins'
 
 module Wavefront
   #
@@ -15,7 +12,7 @@ module Wavefront
   #
   # @return a Wavefront::Response object
   #
-  class Base
+  class CoreApi
     include Wavefront::Validators
     include Wavefront::Mixins
     attr_reader :api, :update_keys, :logger

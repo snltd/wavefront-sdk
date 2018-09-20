@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Query Wavefront metrics.
   #
-  class Query < Base
+  class Query < CoreApi
     def api_base
       'chart'
     end

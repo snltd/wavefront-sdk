@@ -3,8 +3,8 @@
 require 'date'
 require 'minitest/autorun'
 require_relative '../spec_helper'
-require_relative '../../lib/support/constants'
-require_relative '../../lib/support/validators'
+require_relative '../../lib/wavefront-sdk/defs/constants'
+require_relative '../../lib/wavefront-sdk/validators'
 
 # Validator tests, obviously. Happy now Rubocop?
 #

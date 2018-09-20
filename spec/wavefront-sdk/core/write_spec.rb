@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../../lib/support/base_write.rb'
-require_relative '../spec_helper'
+require_relative '../../../lib/wavefront-sdk/core/write'
+require_relative '../../spec_helper'
 require_relative '../resources/dummy_points'
 
 # rubocop:disable Style/MutableConstant
@@ -10,13 +10,12 @@ WBWT_CREDS = { endpoint: 'stub.wavefront.com', token: 'tkn' }
 
 # Test methods common to 'write' and 'report'
 #
-class WavefrontBaseWriteTest < MiniTest::Test
+class WavefrontCoreWriteTest < MiniTest::Test
   attr_reader :wf, :wf_tags
 
   def setup
-    @wf = Wavefront::BaseWrite.new(WBWT_CREDS)
-    # @wf_noop = Wavefront::Write.new(W_CREDS, noop: true)
-    @wf_tags = Wavefront::BaseWrite.new(WBWT_CREDS, tags: TAGS)
+    @wf = Wavefront::CoreWrite.new(WBWT_CREDS)
+    @wf_tags = Wavefront::CoreWrite.new(WBWT_CREDS, tags: TAGS)
   end
 
   def test_summary_string

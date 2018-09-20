@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../../spec_helper'
-require_relative '../../../lib/support/stdlib/hash'
-require 'spy/integration'
+require_relative '../../../lib/wavefront-sdk/stdlib/hash'
 
 # Test extensions to stdlib hash class
 #

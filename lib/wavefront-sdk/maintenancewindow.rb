@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront maintenance windows
   #
-  class MaintenanceWindow < Base
+  class MaintenanceWindow < CoreApi
     def update_keys
       %i[reason title startTimeInSeconds endTimeInSeconds
          relevantCustomerTags relevantHostTags relevantHostNames]

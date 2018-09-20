@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront messages.
   #
-  class Message < Base
+  class Message < CoreApi
     # GET /api/v2/message
     # Gets messages applicable to the current user, i.e. within time
     # range and distribution scope

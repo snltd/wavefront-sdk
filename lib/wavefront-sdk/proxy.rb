@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront proxies.
   #
-  class Proxy < Base
+  class Proxy < CoreApi
     # GET /api/v2/proxy
     # Get all proxies for a customer
     #

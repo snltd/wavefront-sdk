@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
-require_relative '../../lib/support/base'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/core/api'
 
 #
-# Test SDK base class
+# Test SDK core API class
 #
-class WavefrontBaseTest < MiniTest::Test
+class WavefrontCoreApiTest < MiniTest::Test
   attr_reader :wf
 
   def setup
-    @wf = Wavefront::Base.new(CREDS)
+    @wf = Wavefront::CoreApi.new(CREDS)
   end
 
   def test_time_to_ms

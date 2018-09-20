@@ -1,11 +1,11 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage Cloud Integrations. These are identified by
   # a UUID.
   #
-  class CloudIntegration < Base
+  class CloudIntegration < CoreApi
     # GET /api/v2/cloudintegration
     # Get all cloud integrations for a customer
     #

@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'logger'
-require_relative '../spec_helper'
-require_relative '../../lib/support/logger'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/core/logger'
 
 # Test SDK logger class
 #

@@ -1,4 +1,4 @@
-require_relative '../support/base_write'
+require_relative 'core/write'
 
 module Wavefront
   #
@@ -8,7 +8,7 @@ module Wavefront
   # The points are prepped in the BaseWrite class, which this
   # extends. This class provides the transport mechanism.
   #
-  class Write < BaseWrite
+  class Write < CoreWrite
     attr_reader :net
 
     def really_send_point(point)

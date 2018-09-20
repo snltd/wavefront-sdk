@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage derived metrics
   #
-  class DerivedMetric < Base
+  class DerivedMetric < CoreApi
     def update_keys
       # %i[id name url description sections]
     end

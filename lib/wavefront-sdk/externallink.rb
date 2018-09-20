@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront external links.
   #
-  class ExternalLink < Base
+  class ExternalLink < CoreApi
     def api_base
       '/extlink'
     end

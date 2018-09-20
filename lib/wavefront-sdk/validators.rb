@@ -1,5 +1,5 @@
-require_relative 'constants'
-require_relative 'exception'
+require_relative 'defs/constants'
+require_relative 'core/exception'
 
 module Wavefront
   #

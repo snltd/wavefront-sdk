@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
-require_relative '../../lib/support/api_caller'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/core/api_caller'
 
 # Wavefront::ApiCaller needs a class which responds to #api_base as
 # its first argument

@@ -1,7 +1,9 @@
 require 'date'
 require_relative 'parse_time'
-require_relative 'stdlib'
-require_relative 'exception'
+require_relative '../core/exception'
+require_relative '../stdlib/string'
+require_relative '../stdlib/array'
+require_relative '../stdlib/hash'
 
 module Wavefront
   #

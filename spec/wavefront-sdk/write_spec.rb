@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
-require_relative '../../lib/wavefront-sdk/write.rb'
-require_relative '../resources/dummy_points'
 require 'minitest/autorun'
 require 'webmock/minitest'
 require 'spy'
 require 'spy/integration'
 require 'socket'
+require_relative '../../lib/wavefront-sdk/write.rb'
+require_relative 'resources/dummy_points'
 
 W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../spec_helper'
-require_relative '../../lib/support/mixins'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/support/mixins'
 require 'spy/integration'
 
 # Test SDK mixins

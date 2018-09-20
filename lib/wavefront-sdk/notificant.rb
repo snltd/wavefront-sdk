@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront notification targets.
   #
-  class Notificant < Base
+  class Notificant < CoreApi
     # GET /api/v2/notificant
     # Get all notification targets for a customer
     #

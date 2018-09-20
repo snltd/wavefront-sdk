@@ -1,9 +1,9 @@
 require 'json'
 require 'faraday'
 require 'addressable'
-require_relative 'mixins'
 require_relative 'response'
-require_relative '../wavefront-sdk/version'
+require_relative '../defs/version'
+require_relative '../support/mixins'
 
 module Wavefront
   #
@@ -132,7 +132,7 @@ module Wavefront
     end
 
     def paginator_class(method)
-      require_relative File.join('paginator', method.to_s)
+      require_relative File.join('..', 'paginator', method.to_s)
       Object.const_get(format('Wavefront::Paginator::%s',
                               method.to_s.capitalize))
     end

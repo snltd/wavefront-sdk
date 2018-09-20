@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../../spec_helper'
-require_relative '../../../lib/support/stdlib/string'
+require_relative '../../../lib/wavefront-sdk/stdlib/string'
 
 # Test extensions to stdlib's String class
 #

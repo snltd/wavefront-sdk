@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage dashboards.
   #
-  class Dashboard < Base
+  class Dashboard < CoreApi
     def update_keys
       %i[id name url description sections]
     end

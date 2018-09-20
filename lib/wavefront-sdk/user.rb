@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront users
   #
-  class User < Base
+  class User < CoreApi
     # GET /api/v2/user
     # Get all users.
     #

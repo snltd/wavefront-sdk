@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront webhooks
   #
-  class Webhook < Base
+  class Webhook < CoreApi
     def update_keys
       %i[title description template title triggers recipient]
     end

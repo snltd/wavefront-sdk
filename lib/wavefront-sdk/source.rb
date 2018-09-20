@@ -1,10 +1,10 @@
-require_relative '../support/base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage source metadata.
   #
-  class Source < Base
+  class Source < CoreApi
     def update_keys
       %i[sourceName tags description]
     end

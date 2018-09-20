@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'json'
-require_relative '../spec_helper'
-require_relative '../../lib/support/exception'
-require_relative '../../lib/support/response'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/core/exception'
+require_relative '../../../lib/wavefront-sdk/core/response'
 
 GOOD_RESP = '{"status":{"result":"OK","message":"","code":200},' \
              '"response":{"items":[{"name":"test agent"}],"offset":0,' \
