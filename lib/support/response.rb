@@ -3,7 +3,7 @@ require 'map'
 require_relative 'mixins'
 require_relative 'logger'
 require_relative 'exception'
-require_relative 'type'
+require_relative 'types/status'
 
 module Wavefront
   #
@@ -34,13 +34,10 @@ module Wavefront
     #   has changed underneath us.
     #
     def initialize(json, status, opts = {})
+      setup_vars(opts)
       raw       = raw_response(json, status)
       @status   = build_status(raw, status)
       @response = build_response(raw)
-      @opts     = opts
-
-      setup_opts
-
       logger.log(self, :debug)
     rescue StandardError => e
       logger.log(format("could not parse:\n%s", json), :debug)
@@ -73,16 +70,33 @@ module Wavefront
       nil
     end
 
+    # A printable version of a Wavefront::Response object
+    # @return [String]
+    #
     def to_s
       inspect.to_s
     end
 
     private
 
-    def setup_opts
+    def setup_vars(opts)
+      @opts   = opts
       @logger = Wavefront::Logger.new(opts)
     end
 
+    # @params raw [Hash] created by #raw_response
+    #
+    def build_response(raw)
+      return Map.new unless raw.is_a?(Hash)
+      return Map.new(raw) unless raw.key?(:response)
+      return raw[:response] unless raw[:response].is_a?(Hash)
+      Map(raw[:response])
+    end
+
+    # Turn the API's JSON response and HTTP status code into a Ruby
+    # object.
+    # @return [Hash]
+    #
     def raw_response(json, status)
       json.empty? ? {} : JSON.parse(json, symbolize_names: true)
     rescue StandardError
@@ -91,13 +105,6 @@ module Wavefront
 
     def build_status(raw, status)
       Wavefront::Type::Status.new(raw, status)
-    end
-
-    def build_response(raw)
-      return Map.new unless raw.is_a?(Hash)
-      return Map.new(raw) unless raw.key?(:response)
-      return raw[:response] unless raw[:response].is_a?(Hash)
-      Map(raw[:response])
     end
   end
 end

@@ -12,10 +12,10 @@ module Wavefront
       #
       def initialize(calling_class, conn, method, *args)
         @calling_class = calling_class
-        @conn      = conn
-        @method    = method
-        @args      = args
-        @page_size = user_page_size
+        @conn          = conn
+        @method        = method
+        @args          = args
+        @page_size     = user_page_size
       end
 
       # How many objects to get on each iteration? The user can pass
@@ -24,7 +24,7 @@ module Wavefront
       #
       def user_page_size
         arg_val = limit_and_offset(args)[:offset]
-        return arg_val if arg_val > 0
+        return arg_val if arg_val && arg_val > 0
         999
       end
 

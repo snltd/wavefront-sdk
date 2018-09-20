@@ -25,7 +25,12 @@ module Wavefront
       # offset inside.
       #
       def limit_and_offset(args)
-        super([JSON.parse(args[1], symbolize_names: true)])
+        s_arg = if args[1].is_a?(String)
+                  args[1]
+                else
+                  JSON.parse(args[1], symbolize_names: true)
+                end
+        super([s_arg])
       end
     end
   end

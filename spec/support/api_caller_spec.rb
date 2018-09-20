@@ -10,6 +10,10 @@ class Dummy
   def api_base
     '/base'
   end
+
+  def api_path
+    ['', 'api', 'v2', api_base].uri_concat
+  end
 end
 
 # Test Wavefront API caller

@@ -14,6 +14,11 @@ module Wavefront
 
     attr_reader :noop, :debug, :verbose, :net, :logger, :calling_class
 
+    # @param calling_class [
+    # @param creds [Hash] Wavefront credentials
+    # @param opts [Hash]
+    # @return [Nil]
+    #
     def initialize(calling_class, creds = {}, opts = {})
       @calling_class = calling_class
       @opts          = opts
@@ -44,9 +49,7 @@ module Wavefront
     end
 
     # Make a GET call to the Wavefront API and return the result as
-    # a Ruby hash. Can optionally perform a verbose noop, if the
-    # @noop class variable is set. If @verbose is set, then prints
-    # the information used to build the URI.
+    # a Ruby hash.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
@@ -59,9 +62,7 @@ module Wavefront
     end
 
     # Make a POST call to the Wavefront API and return the result as
-    # a Ruby hash. Can optionally perform a verbose noop, if the
-    # @noop class variable is set. If @verbose is set, then prints
-    # the information used to build the URI.
+    # a Ruby hash.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
@@ -78,9 +79,7 @@ module Wavefront
     end
 
     # Make a PUT call to the Wavefront API and return the result as
-    # a Ruby hash. Can optionally perform a verbose noop, if the
-    # @noop class variable is set. If @verbose is set, then prints
-    # the information used to build the URI.
+    # a Ruby hash.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
@@ -89,16 +88,13 @@ module Wavefront
     # @return [Hash] API response
     #
     def put(path, body = nil, ctype = 'application/json')
-      body = body.to_json unless body.is_a?(String)
       make_call(mk_conn(path,  'Content-Type': ctype,
                                'Accept': 'application/json'),
-                :put, nil, body)
+                :put, nil, body.to_json)
     end
 
     # Make a DELETE call to the Wavefront API and return the result
-    # as a Ruby hash. Can optionally perform a verbose noop, if the
-    # @noop class variable is set. If @verbose is set, then prints
-    # the information used to build the URI.
+    # as a Ruby hash.
     #
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
@@ -142,7 +138,8 @@ module Wavefront
     end
 
     # A dispatcher for making API calls. We now have three methods
-    # that do the real call.
+    # that do the real call, two of which live inside the requisite
+    # Wavefront::Paginator class
     #
     def make_call(conn, method, *args)
       verbosity(conn, method, *args) if noop || verbose

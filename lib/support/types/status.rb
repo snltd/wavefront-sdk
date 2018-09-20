@@ -1,7 +1,10 @@
 module Wavefront
-  # Status types are used by the Wavefront::Response class
   #
-  class Type
+  # Status types are used by the Wavefront::Response class. They
+  # represent the success or failure of an API call.
+  #
+  #
+  module Type
     #
     # An object which provides information about whether the request
     # was successful or not. Ordinarily this is easy to construct
@@ -27,6 +30,10 @@ module Wavefront
         @status = status
       end
 
+      def to_s
+        obj.inspect.to_s
+      end
+
       def message
         obj[:message] || nil
       end
@@ -39,10 +46,6 @@ module Wavefront
         return obj[:result] if obj[:result]
         return 'OK' if status.between?(200, 299)
         'ERROR'
-      end
-
-      def to_s
-        obj.inspect.to_s
       end
     end
   end
