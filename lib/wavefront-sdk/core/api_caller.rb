@@ -118,18 +118,19 @@ module Wavefront
       Wavefront::Response.new(body, resp.status, @opts)
     end
 
-    private
-
     # Try to describe the actual HTTP calls we make. There's a bit
     # of clumsy guesswork here
     #
     def verbosity(conn, method, *args)
+      return unless noop || verbose
       log format('uri: %s %s', method.upcase, conn.url_prefix)
 
       return unless args.last && !args.last.empty?
 
       log method == :get ? "params: #{args.last}" : "body: #{args.last}"
     end
+
+    private
 
     def paginator_class(method)
       require_relative File.join('..', 'paginator', method.to_s)
@@ -142,12 +143,12 @@ module Wavefront
     # Wavefront::Paginator class
     #
     def make_call(conn, method, *args)
-      verbosity(conn, method, *args) if noop || verbose
+      verbosity(conn, method, *args)
       return if noop
 
       paginator = paginator_class(method).new(self, conn, method, *args)
 
-      case paginator.limit_and_offset(args)[:limit]
+      case paginator.initial_limit
       when :all, 'all'
         paginator.make_recursive_call
       when :lazy, 'lazy'

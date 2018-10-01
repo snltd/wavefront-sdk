@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
+require 'spy/integration'
 
 ALERT = '1481553823153'.freeze
 ALERT_BODY = {
@@ -18,6 +19,22 @@ ALERT_BODY = {
 class WavefrontAlertTest < WavefrontTestBase
   def test_list
     should_work(:list, 10, '?offset=10&limit=100')
+  end
+
+  def test_list_all
+    should_work(:list, [0, :all], '?limit=999&offset=0')
+    should_work(:list, [20, :all], '?limit=20&offset=0')
+  end
+
+  def test_list_lazy
+    mock = MiniTest::Mock.new
+    mock.expect(:make_lazy_call, Enumerator.new)
+
+    Wavefront::Paginator::Base.stub(:new, mock) do
+      assert mock.setp_vars
+    end
+
+    assert_mock mock
   end
 
   def test_update_keys
