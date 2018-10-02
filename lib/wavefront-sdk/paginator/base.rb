@@ -91,6 +91,7 @@ module Wavefront
       # returned items until we have them all.
       # @return [Wavefront::Response]
       #
+      # rubocop:disable Metrics/MethodLength
       # rubocop:disable Metrics/AbcSize
       def make_recursive_call
         offset = 0
@@ -119,7 +120,6 @@ module Wavefront
       #   Wavefront::Type::Status object, which will include the HTTP
       #   status code and any error string passed back by the API.
       #
-      # rubocop:disable Metrics/MethodLength
       def make_lazy_call
         offset = 0
         p_args = set_pagination(offset, page_size, args)

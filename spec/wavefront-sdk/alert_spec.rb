@@ -26,17 +26,6 @@ class WavefrontAlertTest < WavefrontTestBase
     should_work(:list, [20, :all], '?limit=20&offset=0')
   end
 
-  def test_list_lazy
-    mock = MiniTest::Mock.new
-    mock.expect(:make_lazy_call, Enumerator.new)
-
-    Wavefront::Paginator::Base.stub(:new, mock) do
-      assert mock.setp_vars
-    end
-
-    assert_mock mock
-  end
-
   def test_update_keys
     assert_instance_of(Array, wf.update_keys)
     wf.update_keys.each { |k| assert_instance_of(Symbol, k) }

@@ -3,25 +3,27 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/paginator/base'
 
+# Stub for ApiCaller class
+#
 class FakeApiCaller
-  def respond(args)
-    puts "merp"
-  end
+  def respond(args); end
 end
 
+# Stub for connection object
+#
 class FakeConn
-  def get(*args)
-    puts args
-  end
+  def get(*args); end
 end
 
+# Paginator tests
+#
 class WavefrontPaginatorBaseTest < MiniTest::Test
   attr_reader :wf, :apicaller, :conn
 
   def setup
     @apicaller = FakeApiCaller.new
     @conn      = FakeConn.new
-    args      = [nil, { offset: 3, limit: :lazy }]
+    args = [nil, { offset: 3, limit: :lazy }]
 
     @wf = Wavefront::Paginator::Base.new(apicaller, conn, :get, args)
   end
@@ -46,7 +48,7 @@ class WavefrontPaginatorBaseTest < MiniTest::Test
     assert_equal(15, wf.user_page_size([nil, { offset: 15, limit: :lazy }]))
     assert_equal(25, wf.user_page_size([nil, { offset: 25 },
                                         { limit: :lazy }]))
-    assert_equal(999, wf.user_page_size([a: 3, b:2]))
+    assert_equal(999, wf.user_page_size([a: 3, b: 2]))
   end
 
   def test_set_pagination
@@ -60,6 +62,6 @@ class WavefrontPaginatorBaseTest < MiniTest::Test
     assert_equal(['str1', { offset: 5, limit: 10 }, [1, 2]],
                  wf.set_pagination(5, 10, ['str1',
                                            { offset: 0, limit: 100 },
-                                            [1, 2]]))
+                                           [1, 2]]))
   end
 end
