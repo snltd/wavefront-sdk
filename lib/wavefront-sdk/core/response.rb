@@ -49,7 +49,7 @@ module Wavefront
     #
     def empty?
       response.items.size.zero?
-    rescue
+    rescue StandardError
       false
     end
 
