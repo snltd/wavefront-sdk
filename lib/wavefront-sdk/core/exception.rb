@@ -11,6 +11,9 @@ module Wavefront
     class InvalidCloudIntegrationId < RuntimeError; end
     class InvalidDashboardId < RuntimeError; end
     class InvalidDerivedMetricId < RuntimeError; end
+    class InvalidDistribution < RuntimeError; end
+    class InvalidDistributionInterval < RuntimeError; end
+    class InvalidDistributionCount < RuntimeError; end
     class InvalidEndpoint < RuntimeError; end
     class InvalidEventId < RuntimeError; end
     class InvalidExternalLinkId < RuntimeError; end

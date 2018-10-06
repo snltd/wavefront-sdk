@@ -16,6 +16,8 @@
 * Added `MaintenanceWindow#summary` method, replicating the
   behaviour of the `summary` v1 API call.
 * Added `#ids`, `#names` and `#empty?` helper methods to `Response` class.
+* Add `Distribution` class to help you write [Histogram
+  distributions](https://docs.wavefront.com/proxies_histograms.html).
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.

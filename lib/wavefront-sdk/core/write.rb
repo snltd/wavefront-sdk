@@ -20,7 +20,7 @@ module Wavefront
     #   signature.
     # @param options [Hash] can contain the following keys:
     #   proxy [String] the address of the Wavefront proxy. ('wavefront')
-    #   port [Integer] the port of the Wavefront proxy (2878)
+    #   port [Integer] the port of the Wavefront proxy
     #   tags [Hash] point tags which will be applied to every point
     #   noop [Bool] if true, no proxy connection will be made, and
     #     instead of sending the points, they will be printed in

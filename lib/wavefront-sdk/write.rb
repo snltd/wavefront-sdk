@@ -34,7 +34,7 @@ module Wavefront
         return true
       end
 
-      port = net[:port] || 2878
+      port = net[:port] || default_port
       log("Connecting to #{net[:proxy]}:#{port}.", :debug)
 
       begin
@@ -43,6 +43,10 @@ module Wavefront
         log(e, :error)
         raise Wavefront::Exception::InvalidEndpoint
       end
+    end
+
+    def default_port
+      2878
     end
 
     # Close the socket described by the @sock instance variable.
