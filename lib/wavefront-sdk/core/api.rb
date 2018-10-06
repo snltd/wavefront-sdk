@@ -15,7 +15,7 @@ module Wavefront
   class CoreApi
     include Wavefront::Validators
     include Wavefront::Mixins
-    attr_reader :api, :update_keys, :logger
+    attr_reader :api, :update_keys, :logger, :creds, :opts
 
     # Create a new API object. This will always be called from a
     # class which inherits this one. If the inheriting class defines
@@ -36,7 +36,10 @@ module Wavefront
     # @return [Nil]
     #
     def initialize(creds = {}, opts = {})
+      @creds   = creds
+      @opts    = opts
       @api     = setup_api(creds, opts)
+      @s_api   = setup_api(creds, opts)
       @logger  = Wavefront::Logger.new(opts)
       post_initialize(creds, opts) if respond_to?(:post_initialize)
     end
