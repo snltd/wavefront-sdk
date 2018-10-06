@@ -1,3 +1,5 @@
+require_relative '../defs/constants'
+
 module Wavefront
   module Paginator
     #
@@ -15,8 +17,9 @@ module Wavefront
     # requested objects an a standard Wavefront::Response wrapper;
     # setting limit to :lazy returns a lazy Enumerable. The number
     # of objects fetched in each API call, whether eager or lazy
-    # defaults to 999, but the user can override that value by using
-    # the offset argument in conjunction with limit = :lazy | :all.
+    # defaults to PAGE_SIZE, but the user can override that value by
+    # using the offset argument in conjunction with limit = :lazy |
+    # :all.
     #
     class Base
       attr_reader :api_caller, :conn, :method, :args, :page_size,
@@ -68,7 +71,7 @@ module Wavefront
       def user_page_size(args)
         arg_val = limit_and_offset(args)[:offset]
         return arg_val if arg_val && arg_val > 0
-        999
+        PAGE_SIZE
       end
 
       # @param offset [Integer] where to start fetching from
