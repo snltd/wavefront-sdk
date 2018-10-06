@@ -16,3 +16,6 @@ Metrics/MethodLength:
 
 Style/DoubleNegation:
   Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
