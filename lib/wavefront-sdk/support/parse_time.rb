@@ -1,3 +1,5 @@
+require 'time'
+
 module Wavefront
   #
   # Parse various times into integers. This class is not for direct
