@@ -1,3 +1,4 @@
+require_relative 'defs/constants'
 require_relative 'core/api'
 
 module Wavefront
@@ -197,6 +198,101 @@ module Wavefront
     #
     def summary
       api.get('summary')
+    end
+
+    # The following methods replicate similarly named ones in the v1
+    # SDK. The v2 API does not provide the level of alert-querying
+    # convenience v1 did, but we can still give our users those
+    # lovely simple methods. Note that these are constructions of
+    # the SDK and do not actually correspond to the underlying API.
+
+    # @return [Wavefront::Response] all currently firing alerts
+    #
+    def active
+      firing
+    end
+
+    # @return [Wavefront::Response] all alerts currently in a
+    #   maintenance window.
+    #
+    def affected_by__maintenance
+      in_maintenance
+    end
+
+    # @return [Wavefront::Response] all alerts which have an invalid
+    #   query.
+    #
+    def invalid
+      alerts_in_state(:invalid)
+    end
+
+    # For completeness, one-word methods like those above for all
+    # possible alert states.
+
+    # @return [Wavefront::Response] all alerts currently snoozed
+    #
+    def snoozed
+      alerts_in_state(:snoozed)
+    end
+
+    # @return [Wavefront::Response] all currently firing alerts.
+    #
+    def firing
+      alerts_in_state(:firing)
+    end
+
+    # @return [Wavefront::Response] all alerts currently in a
+    #   maintenance window.
+    #
+    def in_maintenance
+      alerts_in_state(:in_maintenance)
+    end
+
+    # @return [Wavefront::Response] I honestly don't know what the
+    #   NONE state denotes, but this will fetch alerts which have
+    #   it.
+    #
+    def none
+      alerts_in_state(:none)
+    end
+
+    # @return [Wavefront::Response] all alerts being checked.
+    #
+    def checking
+      alerts_in_state(:checking)
+    end
+
+    # @return [Wavefront::Response] all alerts in the trash.
+    #
+    def trash
+      alerts_in_state(:trash)
+    end
+
+    # @return [Wavefront::Response] all alerts reporting NO_DATA.
+    #
+    def no_data
+      alerts_in_state(:no_data)
+    end
+
+    # @return [Wavefront::Response] all your alerts
+    #
+    def all
+      list(PAGE_SIZE, :all)
+    end
+
+    # Use a search to get all alerts in the given state. You would
+    # be better to use one of the wrapper methods like #firing,
+    # #snoozed etc, but I've left this method public in case new
+    # states are added before the SDK supports them.
+    # @param state [Symbol] state such as :firing, :snoozed etc. See
+    #   the Alert Swagger documentation for a full list
+    # @return [Wavfront::Response]
+    #
+    def alerts_in_state(state)
+      require_relative 'search'
+      wfs = Wavefront::Search.new(creds, opts)
+      query = { key: 'status', value: state, matchingMethod: 'EXACT' }
+      wfs.search(:alert, query, limit: :all, offset: PAGE_SIZE)
     end
   end
 end
