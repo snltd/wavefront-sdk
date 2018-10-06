@@ -45,6 +45,14 @@ module Wavefront
       raise Wavefront::Exception::UnparseableResponse
     end
 
+    # Were there items in the response?
+    #
+    def empty?
+      response.items.size.zero?
+    rescue
+      false
+    end
+
     # Was the API's response positive?
     # @return [Bool]
     #
@@ -75,6 +83,19 @@ module Wavefront
     #
     def to_s
       inspect.to_s
+    end
+
+    # We often want the IDs of all the objects we retrieved. This
+    # does it.
+
+    def ids
+      response.items.map(&:id)
+    end
+
+    # We often want the names of all the objects we retrieved.
+    #
+    def names
+      response.items.map(&:name)
     end
 
     private
