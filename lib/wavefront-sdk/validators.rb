@@ -492,7 +492,7 @@ module Wavefront
     #   count is not valid
     #
     def wf_distribution_count?(count)
-      return true if count.is_a?(Integer) && count.positive?
+      return true if count.is_a?(Integer) && count > 0
       raise Wavefront::Exception::InvalidDistributionCount
     end
   end
