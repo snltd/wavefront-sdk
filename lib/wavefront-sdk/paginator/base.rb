@@ -69,7 +69,7 @@ module Wavefront
       # positive integer, default to 999
       #
       def user_page_size(args)
-        arg_val = limit_and_offset(args)[:offset]
+        arg_val = limit_and_offset(args)[:offset].to_i
         return arg_val if arg_val && arg_val > 0
         PAGE_SIZE
       end
