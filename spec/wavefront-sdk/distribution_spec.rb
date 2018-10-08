@@ -24,6 +24,22 @@ class WavefrontDistributionTest < MiniTest::Test
     @wf = Wavefront::Distribution.new(W_CREDS)
   end
 
+  def test_mk_distribution
+    assert_equal([[4, 1], [2, 3], [1, 2], [2, 6]].sort,
+                 wf.mk_distribution([1, 6, 3, 1, 1, 3, 2, 6, 1]).sort)
+  end
+
+  def test_mk_wf_distribution
+    assert_equal('#4 1 #2 3 #1 2 #2 6',
+                 wf.mk_wf_distribution([1, 1, 1, 1, 3, 3, 2, 6, 6]))
+    assert_equal('#4 1 #2 3 #1 2 #2 6',
+                 wf.mk_wf_distribution('1 1 1 1 3 3 2 6 6'))
+    assert_equal('#4 1 #2 3 #1 2 #2 6',
+                 wf.mk_wf_distribution(1, 1, 1, 1, 3, 3, 2, 6, 6))
+    assert_equal('#4 1 #2 3 #1 2 #2 6',
+                 wf.mk_wf_distribution([1, 1, 1], [1, 3, 3, 2, 6, 6]))
+  end
+
   def test_hash_to_wf
     assert_equal(wf.hash_to_wf(DIST),
                  '!M 1538865613 #5 11 #15 2.533 #8 -15 #12 1000000.0 ' \
@@ -47,9 +63,9 @@ class WavefrontDistributionTest < MiniTest::Test
                  'tag1="val1" tag2="val2"')
   end
 
-  def test_dist_value_string
-    assert_equal(wf.dist_value_string([[1, 4], [6, 5]]), '#1 4 #6 5')
-    assert_equal(wf.dist_value_string([[12, 4.235]]), '#12 4.235')
+  def test_array2dist
+    assert_equal(wf.array2dist([[1, 4], [6, 5]]), '#1 4 #6 5')
+    assert_equal(wf.array2dist([[12, 4.235]]), '#12 4.235')
   end
 end
 
