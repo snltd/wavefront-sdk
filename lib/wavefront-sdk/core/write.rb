@@ -139,6 +139,18 @@ module Wavefront
       false
     end
 
+    # Wrapper around #_hash_to_wf to facilitate verbosity/debugging
+    #
+    # @param point [Hash] a hash describing a point. See #write() for
+    #   the format.
+    # @return [String]
+    #
+    def hash_to_wf(point)
+      p = _hash_to_wf(point)
+      log(p, :info)
+      p
+    end
+
     # Convert a validated point to a string conforming to
     # https://community.wavefront.com/docs/DOC-1031.  No validation
     # is done here.
@@ -146,7 +158,7 @@ module Wavefront
     # @param point [Hash] a hash describing a point. See #write() for
     #   the format.
     #
-    def hash_to_wf(point)
+    def _hash_to_wf(point)
       format('%s %s %s source=%s %s %s',
              *point_array(point)).squeeze(' ').strip
     rescue StandardError
