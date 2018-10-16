@@ -5,7 +5,7 @@ module Wavefront
   # Help a user write histogram distributions to a Wavefront proxy
   #
   class Distribution < Write
-    # Make a distribution from a lot numbers. The returned
+    # Make a distribution from a lot of numbers. The returned
     # distribution is an array of arrays ready for dropping into
     # #write. If you need a "real" Wavefront representation of the
     # distribution, use #mk_wf_distribution.
@@ -23,7 +23,7 @@ module Wavefront
         sum
       end
 
-      hash.to_a.map { |a, b| [b, a] }
+      hash.to_a.map { |a, b| [b, a.to_f] }
     end
 
     def mk_wf_distribution(*args)
@@ -46,7 +46,7 @@ module Wavefront
       format('!%s %i %s %s source=%s %s %s',
              dist[:interval].to_s.upcase || raise,
              parse_time(dist.fetch(:ts, Time.now)),
-             array2dist(dist[:values]),
+             array2dist(dist[:value]),
              dist[:path] || raise,
              dist.fetch(:source, HOSTNAME),
              dist[:tags] && dist[:tags].to_wf_tag,

@@ -18,6 +18,8 @@
 * Added `#ids`, `#names` and `#empty?` helper methods to `Response` class.
 * Add `Distribution` class to help you write [Histogram
   distributions](https://docs.wavefront.com/proxies_histograms.html).
+* Writing points or distributions (or reporting points) shows the
+  wire-format point being sent if in `debug` or `verbose` mode
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.
