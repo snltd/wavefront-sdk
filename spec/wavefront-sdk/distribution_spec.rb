@@ -8,7 +8,7 @@ W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 DIST = {
   interval: :m,
   path:     'test.distribution',
-  values:   [[5, 11], [15, 2.533], [8, -15], [12, 1e6]],
+  value:    [[5, 11], [15, 2.533], [8, -15], [12, 1e6]],
   ts:       1_538_865_613,
   source:   'minitest',
   tags:     { tag1: 'val1', tag2: 'val2' }
@@ -30,13 +30,13 @@ class WavefrontDistributionTest < MiniTest::Test
   end
 
   def test_mk_wf_distribution
-    assert_equal('#4 1 #2 3 #1 2 #2 6',
+    assert_equal('#4 1.0 #2 3.0 #1 2.0 #2 6.0',
                  wf.mk_wf_distribution([1, 1, 1, 1, 3, 3, 2, 6, 6]))
-    assert_equal('#4 1 #2 3 #1 2 #2 6',
+    assert_equal('#4 1.0 #2 3.0 #1 2.0 #2 6.0',
                  wf.mk_wf_distribution('1 1 1 1 3 3 2 6 6'))
-    assert_equal('#4 1 #2 3 #1 2 #2 6',
+    assert_equal('#4 1.0 #2 3.0 #1 2.0 #2 6.0',
                  wf.mk_wf_distribution(1, 1, 1, 1, 3, 3, 2, 6, 6))
-    assert_equal('#4 1 #2 3 #1 2 #2 6',
+    assert_equal('#4 1.0 #2 3.0 #1 2.0 #2 6.0',
                  wf.mk_wf_distribution([1, 1, 1], [1, 3, 3, 2, 6, 6]))
   end
 
