@@ -1,25 +1,28 @@
 # Changelog
 
 ## 2.0.0
-* Remove `#everything` method. (Breaking change.)
+* Remove `#everything` method from all classes. (Breaking change.)
 * Calling any method which takes the `limit` argument with  `limit`
   set to `:all` will automatically handle pagination, fetching all
   matching objects.
 * Calling with `limit` set to `:lazy` returns a lazy `Enumerable`
   over which you can iterate. Every element is an object,
 * Added one-word methods like `#snoozed`, `#active` and so-on to the
-  `Alert` class. These replicate the behaviour of similarly named
-  methods in the v1 SDK. (Though they use different underlying API
-  calls, as the alerts API has changed significantly.)
-* Added `#pending` and `#ongoing` methods to the `MaintenanceWindow`
-  class.
-* Added `MaintenanceWindow#summary` method, replicating the
-  behaviour of the `summary` v1 API call.
-* Added `#ids`, `#names` and `#empty?` helper methods to `Response` class.
+  `Wavefront::Alert` class. These replicate the behaviour of similarly
+  named methods in the v1 SDK. (Though they use different underlying
+  API calls, as the alerts API has changed significantly.)
+* Added `#pending` and `#ongoing` methods to
+  `Wavefront::MaintenanceWindow`.
+* Added `MaintenanceWindow#summary` method, replicating the behaviour
+  of the `summary` v1 API call.
+* Added `#ids`, `#names` and `#empty?` helper methods to
+  `Wavefront::Response`.
 * Add `Distribution` class to help you write [Histogram
   distributions](https://docs.wavefront.com/proxies_histograms.html).
 * Writing points or distributions (or reporting points) shows the
-  wire-format point being sent if in `debug` or `verbose` mode
+  wire-format point being sent if in `debug` or `verbose` mode.
+* New `Wavefront::WriteHttp` class lets you send points to a proxy
+  with an HTTP POST rather than writing to a socket.
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.

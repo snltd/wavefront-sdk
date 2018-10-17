@@ -12,7 +12,8 @@ module Wavefront
   class ApiCaller
     include Wavefront::Mixins
 
-    attr_reader :noop, :debug, :verbose, :net, :logger, :calling_class
+    attr_reader :opts, :noop, :debug, :verbose, :net, :logger,
+                :calling_class
 
     # @param calling_class [
     # @param creds [Hash] Wavefront credentials
@@ -42,8 +43,8 @@ module Wavefront
     # @return [URI::HTTPS]
     #
     def mk_conn(path, headers = {})
-      url = format('https://%s%s', net[:endpoint], [net[:api_base],
-                                                    path].uri_concat)
+      url = format('%s://%s%s', net[:scheme], net[:endpoint],
+                   [net[:api_base], path].uri_concat)
       Faraday.new(url:     Addressable::URI.encode(url),
                   headers: net[:headers].merge(headers))
     end
@@ -141,6 +142,8 @@ module Wavefront
     # A dispatcher for making API calls. We now have three methods
     # that do the real call, two of which live inside the requisite
     # Wavefront::Paginator class
+    # @raise [Faraday::ConnectionFailed] if cannot connect to
+    #   endpoint
     #
     def make_call(conn, method, *args)
       verbosity(conn, method, *args)
@@ -176,13 +179,27 @@ module Wavefront
         creds[:agent] = "wavefront-sdk #{WF_SDK_VERSION}"
       end
 
-      @net = { headers:  { 'Authorization': "Bearer #{creds[:token]}",
-                           'user-agent':    creds[:agent] },
+      @net = { headers:  headers(creds),
+               scheme:   opts[:scheme] || 'https',
                endpoint: creds[:endpoint],
                api_base: calling_class.api_path }
     end
 
+    def headers(creds)
+      ret = { 'user-agent': creds[:agent] }
+      ret[:Authorization] = "Bearer #{creds[:token]}" if creds[:token]
+      ret
+    end
+
     def validate_credentials(creds)
+      if calling_class.respond_to?(:validate_credentials)
+        calling_class.validate_credentials(creds)
+      else
+        _validate_credentials(creds)
+      end
+    end
+
+    def _validate_credentials(creds)
       %w[endpoint token].each do |k|
         unless creds.key?(k.to_sym)
           raise(Wavefront::Exception::CredentialError,

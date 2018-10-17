@@ -62,6 +62,7 @@ module Wavefront
     # a token.
     #
     def setup_api(creds, _opts)
+      validate_credentials(creds)
       @net = creds
     end
 
