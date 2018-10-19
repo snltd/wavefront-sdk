@@ -9,7 +9,8 @@ auto-generated SDK.
 As well as complete API coverage, `wavefront-sdk` includes methods
 which facilitate various common tasks, and provides non-API
 features such as credential management, and writing points through a
-proxy.
+proxy. It also has methods mimicking the behaviour of useful v1 API
+calls which did not make it into v2.
 
 ## Installation
 
