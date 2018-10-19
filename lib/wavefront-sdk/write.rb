@@ -15,6 +15,8 @@ module Wavefront
   class Write
     attr_reader :creds, :opts, :writer, :logger
 
+    include Wavefront::Validators
+
     # Construct an object which gives the user an interface for
     # writing points to Wavefront. The actual writing is handled by
     # a Wavefront::Writer:: subclass.
