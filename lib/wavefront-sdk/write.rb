@@ -3,6 +3,8 @@ require_relative 'core/exception'
 require_relative 'core/logger'
 require_relative 'defs/constants'
 require_relative 'validators'
+require 'spy'
+require 'spy/integration'
 
 HOSTNAME = Socket.gethostname.freeze
 

@@ -4,6 +4,7 @@ require_relative '../spec_helper'
 require_relative 'resources/dummy_points'
 
 HEADERS = POST_HEADERS.merge('Content-Type': 'application/octet-stream')
+
 # Unit tests for Report class
 #
 class WavefrontReportTest < WavefrontTestBase
@@ -12,7 +13,7 @@ class WavefrontReportTest < WavefrontTestBase
   end
 
   def test_write
-    should_work(:write, POINT, ['?f=graphite_v2', nil],
+    should_work(:write, POINT, ['?f=wavefront', nil],
                 :post, HEADERS, POINT_L)
   end
 end

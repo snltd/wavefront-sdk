@@ -8,7 +8,7 @@ module Wavefront
   # left in for backward-compatability.
   #
   class Report < Write
-    def initialize(creds, opts)
+    def initialize(creds = {}, opts = {})
       opts[:writer] = :api
       super(creds, opts)
     end
