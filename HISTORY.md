@@ -29,6 +29,7 @@
   proxy rather than being written to a socket.
 * The summary object returned when writing points is now a
   standalone class.
+* Use `wavefront` as the API path for the `report` class.
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.

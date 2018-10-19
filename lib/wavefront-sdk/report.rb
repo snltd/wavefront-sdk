@@ -17,7 +17,7 @@ module Wavefront
     end
 
     def really_send_point(point)
-      api.post('/?f=graphite_v2', point, 'application/octet-stream')
+      api.post('/?f=wavefront', point, 'application/octet-stream')
     end
 
     private
