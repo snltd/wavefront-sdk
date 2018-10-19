@@ -156,6 +156,8 @@ puts task.ok?
 
 You can send delta metrics either by manually prefixing your metric
 path with a delta symbol, or by using the `write_delta()` method.
+There is even a class to help you write Wavefront distributions.
+
 You can also send points to a local proxy over HTTP. Just specify
 `:http` as the `writer` option when you create your write object.
 
