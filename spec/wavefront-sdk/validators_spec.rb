@@ -262,8 +262,8 @@ class WavefrontValidatorsTest < MiniTest::Test
   end
 
   def test_wf_disitribution?
-    values = [[4, 10], [6, 11], [15, 1e5]]
-    good = { path: 'test.metric', values: values, ts: Time.now.to_i,
+    value = [[4, 10], [6, 11], [15, 1e5]]
+    good = { path: 'test.metric', value: value, ts: Time.now.to_i,
              source: 'testhost', tags: { t1: 'v 1', t2: 'v2' } }
 
     assert(wf_distribution?(good))
@@ -282,14 +282,14 @@ class WavefrontValidatorsTest < MiniTest::Test
     end
 
     bad = good.dup
-    bad[:values] = [[1.2, 5]]
+    bad[:value] = [[1.2, 5]]
 
     assert_raises(Wavefront::Exception::InvalidDistributionCount) do
       wf_distribution?(bad)
     end
 
     bad = good.dup
-    bad[:values] = [[2, 'abc']]
+    bad[:value] = [[2, 'abc']]
 
     assert_raises(Wavefront::Exception::InvalidMetricValue) do
       wf_distribution?(bad)
