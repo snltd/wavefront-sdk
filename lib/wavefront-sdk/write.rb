@@ -153,8 +153,7 @@ module Wavefront
     def hash_to_wf(point)
       format('%s %s %s source=%s %s %s',
              *point_array(point)).squeeze(' ').strip
-    rescue StandardErrorr=> e
-      p e
+    rescue StandardError
       raise Wavefront::Exception::InvalidPoint
     end
 

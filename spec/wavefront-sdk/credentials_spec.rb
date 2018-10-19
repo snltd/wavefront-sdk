@@ -22,6 +22,7 @@ class WavefrontCredentialsTest < MiniTest::Test
     assert_instance_of(Map, c.creds)
     assert_instance_of(Map, c.proxy)
     assert_instance_of(Map, c.config)
+    assert_instance_of(Map, c.all)
 
     assert_equal(c.creds.keys, %w[token endpoint])
     assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')
@@ -36,6 +37,7 @@ class WavefrontCredentialsTest < MiniTest::Test
     assert_instance_of(Map, c.creds)
     assert_instance_of(Map, c.proxy)
     assert_instance_of(Map, c.config)
+    assert_instance_of(Map, c.all)
 
     assert_equal(c.creds.keys, %w[token endpoint])
     assert_equal(c.creds[:token], 'abcdefgh')
@@ -50,6 +52,7 @@ class WavefrontCredentialsTest < MiniTest::Test
     assert_instance_of(Map, c.creds)
     assert_instance_of(Map, c.proxy)
     assert_instance_of(Map, c.config)
+    assert_instance_of(Map, c.all)
 
     assert_equal(c.creds.keys, %w[token endpoint])
     assert_equal(c.creds[:token], '12345678-abcd-1234-abcd-123456789012')

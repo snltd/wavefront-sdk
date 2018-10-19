@@ -34,6 +34,10 @@
 * `Wavefront::Report` is now a shim around `Wavefront::Write`, left
   in for backward-compatability. The "correct" way to send data via
   the API is using `Wavefront::Write`, specifying the `:api` writer.
+* `Wavefront::Credentials` object has new `all` method, which gives
+  a hash of proxy *and* API credentials. This is useful for passing
+  to `Wavefront::Write` as it means all writers will work without
+  modifying your code.
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.
