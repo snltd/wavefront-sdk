@@ -1,10 +1,13 @@
 require_relative 'write'
+require_relative 'support/mixins'
 
 module Wavefront
   #
   # Help a user write histogram distributions to a Wavefront proxy
   #
   class Distribution < Write
+    include Wavefront::Mixins
+
     # Make a distribution from a lot of numbers. The returned
     # distribution is an array of arrays ready for dropping into
     # #write. If you need a "real" Wavefront representation of the
@@ -30,6 +33,10 @@ module Wavefront
       array2dist(mk_distribution(args))
     end
 
+    def validation
+      :wf_distribution?
+    end
+
     def default_port
       40000
     end
@@ -42,7 +49,8 @@ module Wavefront
     #   #write() for the format.
     #
     # rubocop:disable Metrics/AbcSize
-    def _hash_to_wf(dist)
+    def hash_to_wf(dist)
+      logger.log("writer subclass #{writer}", :debug)
       format('!%s %i %s %s source=%s %s %s',
              dist[:interval].to_s.upcase || raise,
              parse_time(dist.fetch(:ts, Time.now)),
@@ -51,7 +59,8 @@ module Wavefront
              dist.fetch(:source, HOSTNAME),
              dist[:tags] && dist[:tags].to_wf_tag,
              opts[:tags] && opts[:tags].to_wf_tag).squeeze(' ').strip
-    rescue StandardError
+    rescue StandardError => e
+      puts e
       raise Wavefront::Exception::InvalidDistribution
     end
     # rubocop:enable Metrics/AbcSize

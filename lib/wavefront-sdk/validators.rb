@@ -430,7 +430,7 @@ module Wavefront
     #
     def wf_distribution?(dist)
       wf_metric_name?(dist[:path])
-      wf_distribution_values?(dist[:values])
+      wf_distribution_values?(dist[:value])
       wf_epoch?(dist[:ts]) if dist[:ts]
       wf_source_id?(dist[:source]) if dist[:source]
       wf_point_tags?(dist[:tags]) if dist[:tags]

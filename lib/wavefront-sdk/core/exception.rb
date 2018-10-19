@@ -44,6 +44,7 @@ module Wavefront
     class InvalidWebhookId < RuntimeError; end
     class NotImplemented < RuntimeError; end
     class UnparseableResponse < RuntimeError; end
+    class UnsupportedWriter < RuntimeError; end
     class ValueOutOfRange < RuntimeError; end
   end
 end

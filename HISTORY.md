@@ -21,8 +21,14 @@
   distributions](https://docs.wavefront.com/proxies_histograms.html).
 * Writing points or distributions (or reporting points) shows the
   wire-format point being sent if in `debug` or `verbose` mode.
-* New `Wavefront::WriteHttp` class lets you send points to a proxy
-  with an HTTP POST rather than writing to a socket.
+* Broke up old write classes, moving the transport mechanism
+  into a separate class. The interface is backward-compatible,
+  though a new `:writer` constructor option  lets you select the
+  transport mechanism.
+* New transport mechanism class allows points to be HTTP POSTed to a
+  proxy rather than being written to a socket.
+* The summary object returned when writing points is now a
+  standalone class.
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.
