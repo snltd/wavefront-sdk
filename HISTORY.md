@@ -29,7 +29,11 @@
   proxy rather than being written to a socket.
 * The summary object returned when writing points is now a
   standalone class.
-* Use `wavefront` as the API path for the `report` class.
+* Use `wavefront` rather than `graphite_v2` as the `report` data
+  type.
+* `Wavefront::Report` is now a shim around `Wavefront::Write`, left
+  in for backward-compatability. The "correct" way to send data via
+  the API is using `Wavefront::Write`, specifying the `:api` writer.
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.

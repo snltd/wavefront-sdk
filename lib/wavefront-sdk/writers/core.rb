@@ -52,7 +52,7 @@ module Wavefront
         points = screen_points(points) unless opts[:novalidate]
 
         begin
-          _write_loop(prepped_points(points, prefix))
+          write_loop(prepped_points(points, prefix))
         ensure
           close if openclose && respond_to?(:close)
         end
@@ -126,7 +126,7 @@ module Wavefront
 
       private
 
-      def _write_loop(points)
+      def write_loop(points)
         points.each do |p|
           p[:ts] = p[:ts].to_i if p[:ts].is_a?(Time)
           send_point(hash_to_wf(p))

@@ -10,13 +10,6 @@ module Wavefront
     # acquires these functions, a new writer will be made.
     #
     class Http < Core
-      def validate_credentials(creds)
-        return true if creds.key?(:proxy)
-
-        raise(Wavefront::Exception::CredentialError,
-              'credentials must contain proxy')
-      end
-
       def open
         creds[:endpoint] = format('%s:%s', creds[:proxy],
                                   creds[:port] || default_port)
@@ -30,6 +23,13 @@ module Wavefront
 
       def default_port
         2878
+      end
+
+      def validate_credentials(creds)
+        return true if creds.key?(:proxy)
+
+        raise(Wavefront::Exception::CredentialError,
+              'credentials must contain proxy')
       end
 
       private
