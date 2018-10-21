@@ -15,7 +15,7 @@ module Wavefront
   #   @return [Map] information for speaking to a Wavefront proxy
   #
   class Credentials
-    attr_reader :opts, :config, :creds, :proxy
+    attr_reader :opts, :config, :creds, :proxy, :all
 
     # Gives you an object of credentials and options for speaking to
     # Wavefront. It will look in the following places:
@@ -57,8 +57,11 @@ module Wavefront
     #
     def populate(raw)
       @config = Map(raw)
-      @creds = Map(raw.select { |k, _v| %i[endpoint token].include?(k) })
-      @proxy = Map(raw.select { |k, _v| %i[proxy port].include?(k) })
+      @creds  = Map(raw.select { |k, _v| %i[endpoint token].include?(k) })
+      @proxy  = Map(raw.select { |k, _v| %i[proxy port].include?(k) })
+      @all    = Map(raw.select do |k, _v|
+        %i[proxy port endpoint token].include?(k)
+      end)
     end
 
     # @return [Array] a list of possible credential files

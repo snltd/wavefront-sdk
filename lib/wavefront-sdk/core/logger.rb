@@ -46,12 +46,11 @@ module Wavefront
     end
 
     def print_debug_message(msg)
-      return unless debug
-      puts msg
+      puts msg if debug
     end
 
     def print_info_message(msg)
-      puts msg
+      puts msg if debug || verbose
     end
 
     def print_warn_message(msg)

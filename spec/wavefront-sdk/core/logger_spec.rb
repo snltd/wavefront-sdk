@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'logger'
-require_relative '../spec_helper'
-require_relative '../../lib/wavefront-sdk/logger'
+require_relative '../../spec_helper'
+require_relative '../../../lib/wavefront-sdk/core/logger'
 
 # Test SDK logger class
 #
@@ -30,7 +30,7 @@ class WavefrontLoggerTest < MiniTest::Test
   def test_log_no_logger_no_debug
     l = Wavefront::Logger.new(debug: false, verbose: false)
     assert_silent { l.log('my message', :debug) }
-    assert_output("SDK INFO: my message\n") { l.log('my message', :info) }
+    assert_output('') { l.log('my message', :info) }
     out, err = capture_io { l.log('my message', :error) }
     assert_equal("SDK ERROR: my message\n", err)
     assert_empty(out)

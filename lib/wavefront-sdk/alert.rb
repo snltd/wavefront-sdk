@@ -1,11 +1,12 @@
-require_relative 'base'
+require_relative 'defs/constants'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage alerts. Alerts are identified by their millisecond
   # epoch timestamp. Returns a Wavefront::Response::Alert object.
   #
-  class Alert < Base
+  class Alert < CoreApi
     def update_keys
       %i[id name target condition displayExpression minutes
          resolveAfterMinutes severity additionalInformation]
@@ -19,7 +20,7 @@ module Wavefront
     # @return [Hash]
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/alert
@@ -32,7 +33,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/alert/id
@@ -47,7 +48,7 @@ module Wavefront
     #
     def delete(id)
       wf_alert_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/alert/id
@@ -64,7 +65,7 @@ module Wavefront
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
-      api_get(fragments.uri_concat)
+      api.get(fragments.uri_concat)
     end
 
     # PUT /api/v2/alert/id
@@ -82,9 +83,9 @@ module Wavefront
       wf_alert_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id).response, body),
+      api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
 
@@ -100,7 +101,7 @@ module Wavefront
       qs[:offset] = offset if offset
       qs[:limit] = limit if limit
 
-      api_get([id, 'history'].uri_concat, qs)
+      api.get([id, 'history'].uri_concat, qs)
     end
 
     # POST /api/v2/alert/id/snooze
@@ -114,7 +115,7 @@ module Wavefront
     def snooze(id, seconds = nil)
       wf_alert_id?(id)
       qs = seconds ? "?seconds=#{seconds}" : ''
-      api_post([id, "snooze#{qs}"].uri_concat, nil)
+      api.post([id, "snooze#{qs}"].uri_concat, nil)
     end
 
     # GET /api/v2/alert/id/tag
@@ -125,7 +126,7 @@ module Wavefront
     #
     def tags(id)
       wf_alert_id?(id)
-      api_get([id, 'tag'].uri_concat)
+      api.get([id, 'tag'].uri_concat)
     end
 
     # POST /api/v2/alert/id/tag
@@ -139,7 +140,7 @@ module Wavefront
       wf_alert_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
-      api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
+      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
     # DELETE /api/v2/alert/id/tag/tagValue
@@ -152,7 +153,7 @@ module Wavefront
     def tag_delete(id, tag)
       wf_alert_id?(id)
       wf_string?(tag)
-      api_delete([id, 'tag', tag].uri_concat)
+      api.delete([id, 'tag', tag].uri_concat)
     end
 
     # PUT /api/v2/alert/id/tag/tagValue
@@ -165,7 +166,7 @@ module Wavefront
     def tag_add(id, tag)
       wf_alert_id?(id)
       wf_string?(tag)
-      api_put([id, 'tag', tag].uri_concat)
+      api.put([id, 'tag', tag].uri_concat)
     end
 
     # POST /api/v2/alert/id/undelete
@@ -176,7 +177,7 @@ module Wavefront
     #
     def undelete(id)
       wf_alert_id?(id)
-      api_post([id, 'undelete'].uri_concat)
+      api.post([id, 'undelete'].uri_concat)
     end
 
     # POST /api/v2/alert/id/unsnooze
@@ -187,7 +188,7 @@ module Wavefront
     #
     def unsnooze(id)
       wf_alert_id?(id)
-      api_post([id, 'unsnooze'].uri_concat)
+      api.post([id, 'unsnooze'].uri_concat)
     end
 
     # GET /api/v2/alert/summary
@@ -196,7 +197,102 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def summary
-      api_get('summary')
+      api.get('summary')
+    end
+
+    # The following methods replicate similarly named ones in the v1
+    # SDK. The v2 API does not provide the level of alert-querying
+    # convenience v1 did, but we can still give our users those
+    # lovely simple methods. Note that these are constructions of
+    # the SDK and do not actually correspond to the underlying API.
+
+    # @return [Wavefront::Response] all currently firing alerts
+    #
+    def active
+      firing
+    end
+
+    # @return [Wavefront::Response] all alerts currently in a
+    #   maintenance window.
+    #
+    def affected_by__maintenance
+      in_maintenance
+    end
+
+    # @return [Wavefront::Response] all alerts which have an invalid
+    #   query.
+    #
+    def invalid
+      alerts_in_state(:invalid)
+    end
+
+    # For completeness, one-word methods like those above for all
+    # possible alert states.
+
+    # @return [Wavefront::Response] all alerts currently snoozed
+    #
+    def snoozed
+      alerts_in_state(:snoozed)
+    end
+
+    # @return [Wavefront::Response] all currently firing alerts.
+    #
+    def firing
+      alerts_in_state(:firing)
+    end
+
+    # @return [Wavefront::Response] all alerts currently in a
+    #   maintenance window.
+    #
+    def in_maintenance
+      alerts_in_state(:in_maintenance)
+    end
+
+    # @return [Wavefront::Response] I honestly don't know what the
+    #   NONE state denotes, but this will fetch alerts which have
+    #   it.
+    #
+    def none
+      alerts_in_state(:none)
+    end
+
+    # @return [Wavefront::Response] all alerts being checked.
+    #
+    def checking
+      alerts_in_state(:checking)
+    end
+
+    # @return [Wavefront::Response] all alerts in the trash.
+    #
+    def trash
+      alerts_in_state(:trash)
+    end
+
+    # @return [Wavefront::Response] all alerts reporting NO_DATA.
+    #
+    def no_data
+      alerts_in_state(:no_data)
+    end
+
+    # @return [Wavefront::Response] all your alerts
+    #
+    def all
+      list(PAGE_SIZE, :all)
+    end
+
+    # Use a search to get all alerts in the given state. You would
+    # be better to use one of the wrapper methods like #firing,
+    # #snoozed etc, but I've left this method public in case new
+    # states are added before the SDK supports them.
+    # @param state [Symbol] state such as :firing, :snoozed etc. See
+    #   the Alert Swagger documentation for a full list
+    # @return [Wavfront::Response]
+    #
+    def alerts_in_state(state)
+      require_relative 'search'
+      wfs = Wavefront::Search.new(creds, opts)
+      query = { key: 'status', value: state, matchingMethod: 'EXACT' }
+      wfs.search(:alert, query, limit: :all, offset: PAGE_SIZE)
     end
   end
 end

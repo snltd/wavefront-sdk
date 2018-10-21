@@ -1,8 +1,9 @@
 require 'json'
 require 'map'
-require_relative 'exception'
-require_relative 'mixins'
 require_relative 'logger'
+require_relative 'exception'
+require_relative '../types/status'
+require_relative '../support/mixins'
 
 module Wavefront
   #
@@ -33,13 +34,10 @@ module Wavefront
     #   has changed underneath us.
     #
     def initialize(json, status, opts = {})
+      setup_vars(opts)
       raw       = raw_response(json, status)
       @status   = build_status(raw, status)
       @response = build_response(raw)
-      @opts     = opts
-
-      setup_opts
-
       logger.log(self, :debug)
     rescue StandardError => e
       logger.log(format("could not parse:\n%s", json), :debug)
@@ -47,10 +45,79 @@ module Wavefront
       raise Wavefront::Exception::UnparseableResponse
     end
 
-    def setup_opts
+    # Were there items in the response?
+    #
+    def empty?
+      response.items.size.zero?
+    rescue StandardError
+      false
+    end
+
+    # Was the API's response positive?
+    # @return [Bool]
+    #
+    def ok?
+      respond_to?(:status) && status.result == 'OK'
+    end
+
+    # Are there more items in paginated output?
+    # @return [Bool]
+    #
+    def more_items?
+      return false unless response.key?(:moreItems)
+      !!response.moreItems
+    end
+
+    # On paginated output, the offset of the next item, or nil.
+    # @return [Integer, Nil]
+    #
+    def next_item
+      return nil unless more_items?
+      reponse.offset + response.limit
+    rescue StandardError
+      nil
+    end
+
+    # A printable version of a Wavefront::Response object
+    # @return [String]
+    #
+    def to_s
+      inspect.to_s
+    end
+
+    # We often want the IDs of all the objects we retrieved. This
+    # does it.
+
+    def ids
+      response.items.map(&:id)
+    end
+
+    # We often want the names of all the objects we retrieved.
+    #
+    def names
+      response.items.map(&:name)
+    end
+
+    private
+
+    def setup_vars(opts)
+      @opts   = opts
       @logger = Wavefront::Logger.new(opts)
     end
 
+    # @params raw [Hash] created by #raw_response
+    #
+    def build_response(raw)
+      return Map.new unless raw.is_a?(Hash)
+      return Map.new(raw) unless raw.key?(:response)
+      return raw[:response] unless raw[:response].is_a?(Hash)
+      Map(raw[:response])
+    end
+
+    # Turn the API's JSON response and HTTP status code into a Ruby
+    # object.
+    # @return [Hash]
+    #
     def raw_response(json, status)
       json.empty? ? {} : JSON.parse(json, symbolize_names: true)
     rescue StandardError
@@ -59,61 +126,6 @@ module Wavefront
 
     def build_status(raw, status)
       Wavefront::Type::Status.new(raw, status)
-    end
-
-    def build_response(raw)
-      return Map.new unless raw.is_a?(Hash)
-      return Map.new(raw) unless raw.key?(:response)
-      return raw[:response] unless raw[:response].is_a?(Hash)
-      Map(raw[:response])
-    end
-
-    def to_s
-      inspect.to_s
-    end
-  end
-
-  # Status types are used by the Wavefront::Response class
-  #
-  class Type
-    #
-    # An object which provides information about whether the request
-    # was successful or not. Ordinarily this is easy to construct
-    # from the API's JSON response, but some classes, for instance
-    # Wavefront::Write fake it by constructing their own.
-    #
-    # @!attribute [r] result
-    #   @return [OK, ERROR] a string telling us how the request went
-    # @!attribute [r] message
-    #   @return [String] Any informational message from the API
-    # @!attribute [r] code
-    #   @return [Integer] the HTTP response code from the API
-    #     request
-    #
-    class Status
-      attr_reader :obj, :status
-
-      # @param response [Hash] the API response, turned into a hash
-      # @param status [Integer] HTTP status code
-      #
-      def initialize(response, status)
-        @obj = response.fetch(:status, response)
-        @status = status
-      end
-
-      def message
-        obj[:message] || nil
-      end
-
-      def code
-        obj[:code] || status
-      end
-
-      def result
-        return obj[:result] if obj[:result]
-        return 'OK' if status.between?(200, 299)
-        'ERROR'
-      end
     end
   end
 end

@@ -1,11 +1,11 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage events. Events are identified by their millisecond
   # epoch timestamp.
   #
-  class Event < Base
+  class Event < CoreApi
     def update_keys
       %i[startTime endTime name annotations]
     end
@@ -38,7 +38,7 @@ module Wavefront
                cursor:                       cursor,
                limit:                        limit }
 
-      api_get('', body.cleanse)
+      api.get('', body.cleanse)
     end
 
     # POST /api/v2/event
@@ -53,7 +53,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/event/id
@@ -64,7 +64,7 @@ module Wavefront
     #
     def delete(id)
       wf_event_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/event/id
@@ -80,7 +80,7 @@ module Wavefront
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
-      api_get(fragments.uri_concat)
+      api.get(fragments.uri_concat)
     end
 
     # PUT /api/v2/event/id
@@ -100,9 +100,9 @@ module Wavefront
       wf_event_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id), body), 'application/json')
+      api.put(id, hash_for_update(describe(id), body), 'application/json')
     end
 
     # POST /api/v2/event/id/close
@@ -112,7 +112,7 @@ module Wavefront
     #
     def close(id)
       wf_event_id?(id)
-      api_post([id, 'close'].uri_concat)
+      api.post([id, 'close'].uri_concat)
     end
 
     # GET /api/v2/event/id/tag
@@ -124,7 +124,7 @@ module Wavefront
     #
     def tags(id)
       wf_event_id?(id)
-      api_get([id, 'tag'].uri_concat)
+      api.get([id, 'tag'].uri_concat)
     end
 
     # POST /api/v2/event/id/tag
@@ -139,7 +139,7 @@ module Wavefront
       wf_event_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
-      api_post([id, 'tag'].uri_concat, tags, 'application/json')
+      api.post([id, 'tag'].uri_concat, tags, 'application/json')
     end
 
     # DELETE /api/v2/event/id/tag/tagValue
@@ -152,7 +152,7 @@ module Wavefront
     def tag_delete(id, tag)
       wf_event_id?(id)
       wf_string?(tag)
-      api_delete([id, 'tag', tag].uri_concat)
+      api.delete([id, 'tag', tag].uri_concat)
     end
 
     # PUT /api/v2/event/id/tag/tagValue
@@ -165,7 +165,7 @@ module Wavefront
     def tag_add(id, tag)
       wf_event_id?(id)
       wf_string?(tag)
-      api_put([id, 'tag', tag].uri_concat)
+      api.put([id, 'tag', tag].uri_concat)
     end
   end
 end

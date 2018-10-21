@@ -9,7 +9,8 @@ auto-generated SDK.
 As well as complete API coverage, `wavefront-sdk` includes methods
 which facilitate various common tasks, and provides non-API
 features such as credential management, and writing points through a
-proxy.
+proxy. It also has methods mimicking the behaviour of useful v1 API
+calls which did not make it into v2.
 
 ## Installation
 
@@ -35,7 +36,7 @@ rubydoc.info](http://www.rubydoc.info/gems/wavefront-sdk/).
 
 ## Examples
 
-First, let's list the IDs of the users in our account. The `list()`
+First, let's list the Wavefront proxies in our account. The `list()`
 method will return a `Wavefront::Response` object. This object has
 `status` and `response` methods. `status` always yields a structure
 containing `result`, `message` and `code` fields which can be
@@ -53,7 +54,7 @@ you to the same place.
 CREDS = { endpoint: 'metrics.wavefront.com',
           token: 'c7a1ff30-0dd8-fa60-e14d-f58f91bafc0e' }
 
-require 'wavefront-sdk/user'
+require 'wavefront-sdk/proxy'
 
 # You can pass in a Ruby logger object, and tell the SDK to be
 # verbose.
@@ -62,35 +63,62 @@ require 'logger'
 log = Logger.new(STDOUT)
 
 wf = Wavefront::User.new(CREDS, verbose: true, logger: log)
+proxies = wf.list
 
-# See how things went:
+puts proxies.class
+# Wavefront::Response
 
-p wf.status
-#<Wavefront::Type::Status:0x007feb99185538 @result="OK", @message="", @code=200>
+# See how things went. How specific do you want to be?
 
-# And print each user's ID
+puts proxies.ok?
+# true
+puts proxies.empty?
+# false
+puts proxies.status
+# {:result=>"OK", :message=>"", :code=>200}
+puts proxies.status.code
+# 200
 
-wf.list.response.items.each { |user| puts user[:identifier] }
+# Now print the proxy IDs
 
-# Now delete the user 'lolex@oldplace.com', disregarding the
-# response.
+puts proxies.names
+# 1439acb2-ab07-4cf9-8397-2f2d758e52a0
+# 87eca9df-fc47-4a24-88cf-6dd0bae245a9
+# df77bd37-8f32-4e0c-b578-51eb42f22b6f
 
-wf.delete('lolex@oldplace.com')
+# Delete the first one.
+
+result = wf.delete('1439acb2-ab07-4cf9-8397-2f2d758e52a0')
+puts result.ok?
+# true
 ```
 
-All API classes expect `user` support pagination and will only
-return blocks of results. The `everything()` method returns a lazy
-enumerator to make dealing with pagination simpler.
+By default (because it's the default behaviour of the API),
+all API classes (except `user`) will only return blocks of results
+when you ask for a list of objects.
+
+You can set an offset and a limit when you list, but setting the
+limit to the magic value `:all` will return all items, without you
+having to deal with pagination.
+
+Calling a method with the limit set to `:lazy` returns a lazy
+enumerable.
 
 ```ruby
-Wavefront::Alert.new(c.creds).everything.each_with_index do |m, i|
-  puts "#{i} #{m.id}"
-end
+wf = Wavefront::Alert.new(creds.all)
+
+# The first argument is how many object to get with each API call,
+# the second gets us a lazy #Enumerable
+wf.list(99, :lazy).each { |alert| puts alert.name }
+# Point Rate
+# Disk Error
+# ...
 ```
 
-Retrieve a timeseries over the last 10 minutes, with one minute bucket
-granularity. We will describe the time as a Ruby object, but could also use
-an epoch timestamp. The SDK happily converts between the two.
+We can easily write queries. Let's retrieve a timeseries over the
+last 10 minutes, with one minute bucket granularity. We will
+describe the time as a Ruby object, but could also use an epoch
+timestamp. The SDK happily converts between the two.
 
 
 ```ruby
@@ -115,20 +143,39 @@ require 'wavefront-sdk/write'
 
 W_CREDS = { proxy: 'wavefront.localnet', port: 2878 }
 
-wf = Wavefront::Write.new(W_CREDS, debug: true)
+wf = Wavefront::Write.new(W_CREDS, verbose:true)
 
 task = wf.write( [{ path: 'dev.test.sdk', value: 10 }])
-
-p task.response
-#{"sent"=>1, "rejected"=>0, "unsent"=>0}
-puts task.status.result
-#OK
+# SDK DEBUG: Connecting to wavefront.localnet:2878.
+# SDK INFO: dev.test.sdk 10 source=box
+# SDK DEBUG: Closing connection to proxy.
+puts task.response
+# {"sent"=>1, "rejected"=>0, "unsent"=>0}
+puts task.ok?
+# true
 ```
 
 You can send delta metrics either by manually prefixing your metric
-path with a delta symbol, or by using the `write_delta()` method
+path with a delta symbol, or by using the `write_delta()` method.
+There is even a class to help you write Wavefront distributions.
 
-The SDK also provides a helper class for extracting credentials from a
+You can also send points to a local proxy over HTTP. Just specify
+`:http` as the `writer` option when you create your write object.
+
+```ruby
+wf = Wavefront::Write.new(W_CREDS, writer: :http, verbose: true)
+
+task = wf.write( [{ path: 'dev.test.sdk', value: 10 }])
+# SDK INFO: dev.test.sdk 10 source=box
+# SDK INFO: uri: POST http://wavefront.localnet:2878/
+# SDK INFO: body: dev.test.sdk 10 source=box
+p task.response
+# {"sent"=>1, "rejected"=>0, "unsent"=>0}
+puts task.ok?
+# true
+```
+
+The SDK provides a helper class for extracting credentials from a
 configuration file. If you don't supply a file, defaults will be
 used. You can even override things with environment variables.
 

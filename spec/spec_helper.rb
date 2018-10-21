@@ -26,6 +26,9 @@ DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
                  '"response":{"items":[{"name":"test data"}],"offset":0,' \
                  '"limit":100,"totalItems":3,"moreItems":false}}'.freeze
 
+RESOURCE_DIR = (Pathname.new(__FILE__).dirname +
+                'wavefront-sdk' + 'resources').freeze
+
 # Common testing code
 class WavefrontTestBase < MiniTest::Test
   attr_reader :wf, :wf_noop, :headers

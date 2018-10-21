@@ -1,10 +1,10 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront external links.
   #
-  class ExternalLink < Base
+  class ExternalLink < CoreApi
     def api_base
       '/extlink'
     end
@@ -21,7 +21,7 @@ module Wavefront
     # @param limit [Int] the number of link to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/extlink
@@ -32,7 +32,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/extlink/id
@@ -43,7 +43,7 @@ module Wavefront
     #
     def delete(id)
       wf_link_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/extlink/id
@@ -54,7 +54,7 @@ module Wavefront
     #
     def describe(id)
       wf_link_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # PUT /api/v2/extlink/id
@@ -72,9 +72,9 @@ module Wavefront
       wf_link_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id).response, body),
+      api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
   end

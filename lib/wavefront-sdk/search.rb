@@ -1,4 +1,4 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
@@ -7,7 +7,7 @@ module Wavefront
   # this class covers the whole API with two methods, but leaves a
   # lot up to the user. It may grow, with convenience methods.
   #
-  class Search < Base
+  class Search < CoreApi
     # POST /api/v2/search/entity
     # POST /api/v2/search/entity/deleted
     # Run a search query. This single method maps to many API paths.
@@ -81,7 +81,7 @@ module Wavefront
 
       path = [entity]
       path.<< 'deleted' if deleted
-      api_post(path, body.to_json, 'application/json')
+      api.post(path, body, 'application/json')
     end
 
     # @param entity [String] the type of Wavefront object you wish
@@ -102,7 +102,7 @@ module Wavefront
       path = [entity]
       path.<< 'deleted' if deleted
       path.<< facet || 'facets'
-      api_post(path, body, 'application/json')
+      api.post(path, body, 'application/json')
     end
   end
 end

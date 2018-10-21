@@ -1,10 +1,10 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront notification targets.
   #
-  class Notificant < Base
+  class Notificant < CoreApi
     # GET /api/v2/notificant
     # Get all notification targets for a customer
     #
@@ -12,7 +12,7 @@ module Wavefront
     # @param limit [Int] the number of notification targets to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/notificant
@@ -23,7 +23,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/notificant/id
@@ -34,7 +34,7 @@ module Wavefront
     #
     def delete(id)
       wf_notificant_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/notificant/id
@@ -45,7 +45,7 @@ module Wavefront
     #
     def describe(id)
       wf_notificant_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # PUT /api/v2/notificant/id
@@ -63,9 +63,9 @@ module Wavefront
       wf_notificant_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id).response, body),
+      api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
 
@@ -77,7 +77,7 @@ module Wavefront
     #
     def test(id)
       wf_notificant_id?(id)
-      api_post(['test', id].uri_concat, nil)
+      api.post(['test', id].uri_concat, nil)
     end
   end
 end

@@ -3,7 +3,7 @@
 require 'date'
 require 'minitest/autorun'
 require_relative '../spec_helper'
-require_relative '../../lib/wavefront-sdk/constants'
+require_relative '../../lib/wavefront-sdk/defs/constants'
 require_relative '../../lib/wavefront-sdk/validators'
 
 # Validator tests, obviously. Happy now Rubocop?
@@ -261,6 +261,62 @@ class WavefrontValidatorsTest < MiniTest::Test
     end
   end
 
+  def test_wf_disitribution?
+    value = [[4, 10], [6, 11], [15, 1e5]]
+    good = { path: 'test.metric', value: value, ts: Time.now.to_i,
+             source: 'testhost', tags: { t1: 'v 1', t2: 'v2' } }
+
+    assert(wf_distribution?(good))
+
+    %w[tags source ts].each do |t|
+      p = good.dup
+      p.delete(t)
+      assert(wf_distribution?(p))
+    end
+
+    bad = good.dup
+    bad[:path] = '!n\/@1!d_metric'
+
+    assert_raises(Wavefront::Exception::InvalidMetricName) do
+      wf_distribution?(bad)
+    end
+
+    bad = good.dup
+    bad[:value] = [[1.2, 5]]
+
+    assert_raises(Wavefront::Exception::InvalidDistributionCount) do
+      wf_distribution?(bad)
+    end
+
+    bad = good.dup
+    bad[:value] = [[2, 'abc']]
+
+    assert_raises(Wavefront::Exception::InvalidMetricValue) do
+      wf_distribution?(bad)
+    end
+
+    bad = good.dup
+    bad[:ts] = 'abc'
+
+    assert_raises(Wavefront::Exception::InvalidTimestamp) do
+      wf_distribution?(bad)
+    end
+
+    bad = good.dup
+    bad[:source] = '<------>'
+
+    assert_raises(Wavefront::Exception::InvalidSourceId) do
+      wf_distribution?(bad)
+    end
+
+    bad = good.dup
+    bad[:tags] = { '<------>': 45 }
+
+    assert_raises(Wavefront::Exception::InvalidTag) do
+      wf_distribution?(bad)
+    end
+  end
+
   def test_notificant_id
     good = %w[CHTo47HvsPzSaGhh]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
@@ -271,5 +327,12 @@ class WavefrontValidatorsTest < MiniTest::Test
     good = %w[aws tutorial elasticsearch cassandra go]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
     good_and_bad('wf_integration_id?', 'InvalidIntegrationId', good, bad)
+  end
+
+  def test_distribution_interval
+    good = %i[m h d]
+    bad = ['m', [], {}, nil, 'bad id', :x, 'p']
+    good_and_bad('wf_distribution_interval?',
+                 'InvalidDistributionInterval', good, bad)
   end
 end

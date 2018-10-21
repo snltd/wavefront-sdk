@@ -1,10 +1,10 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront integrations.
   #
-  class Integration < Base
+  class Integration < CoreApi
     # GET /api/v2/integration
     # Gets a flat list of all Wavefront integrations available,
     # along with their status
@@ -13,7 +13,7 @@ module Wavefront
     # @param limit [Int] the number of proxies to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # GET /api/v2/integration/id
@@ -25,7 +25,7 @@ module Wavefront
     #
     def describe(id)
       wf_integration_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # POST /api/v2/integration/id/install
@@ -36,7 +36,7 @@ module Wavefront
     #
     def install(id)
       wf_integration_id?(id)
-      api_post([id, 'install'].uri_concat, nil)
+      api.post([id, 'install'].uri_concat, nil)
     end
 
     # POST /api/v2/integration/id/uninstall
@@ -47,7 +47,7 @@ module Wavefront
     #
     def uninstall(id)
       wf_integration_id?(id)
-      api_post([id, 'uninstall'].uri_concat, nil)
+      api.post([id, 'uninstall'].uri_concat, nil)
     end
 
     # GET /api/v2/integration/id/status
@@ -58,7 +58,7 @@ module Wavefront
     #
     def status(id)
       wf_integration_id?(id)
-      api_get([id, 'status'].uri_concat)
+      api.get([id, 'status'].uri_concat)
     end
 
     # GET /api/v2/integration/status
@@ -67,7 +67,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def statuses
-      api_get('status')
+      api.get('status')
     end
 
     # GET /api/v2/integration/manifests
@@ -75,7 +75,7 @@ module Wavefront
     # integration manifests, along with their status
     #
     def manifests
-      api_get('manifests')
+      api.get('manifests')
     end
   end
 end

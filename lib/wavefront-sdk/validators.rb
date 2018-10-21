@@ -1,5 +1,5 @@
-require_relative 'constants'
-require_relative 'exception'
+require_relative 'defs/constants'
+require_relative 'core/exception'
 
 module Wavefront
   #
@@ -409,7 +409,7 @@ module Wavefront
     # https://community.wavefront.com/docs/DOC-1031
     #
     # @param point [Hash] description of point
-    # @return true if valie
+    # @return true if valid
     # @raise whichever exception is thrown first when validating
     #   each component of the point.
     #
@@ -419,6 +419,35 @@ module Wavefront
       wf_epoch?(point[:ts]) if point[:ts]
       wf_source_id?(point[:source]) if point[:source]
       wf_point_tags?(point[:tags]) if point[:tags]
+      true
+    end
+
+    # Validate a distribution description
+    # @param dist [Hash] description of distribution
+    # @return true if valid
+    # @raise whichever exception is thrown first when validating
+    #   each component of the distribution.
+    #
+    def wf_distribution?(dist)
+      wf_metric_name?(dist[:path])
+      wf_distribution_values?(dist[:value])
+      wf_epoch?(dist[:ts]) if dist[:ts]
+      wf_source_id?(dist[:source]) if dist[:source]
+      wf_point_tags?(dist[:tags]) if dist[:tags]
+      true
+    end
+
+    # Validate an array of distribution values
+    # @param vals [Array[Array]] [count, value]
+    # @return true if valid
+    # @raise whichever exception is thrown first when validating
+    #   each component of the distribution.
+    #
+    def wf_distribution_values?(vals)
+      vals.each do |times, val|
+        wf_distribution_count?(times)
+        wf_value?(val)
+      end
       true
     end
 
@@ -445,6 +474,26 @@ module Wavefront
     def wf_integration_id?(id)
       return true if id.is_a?(String) && id =~ /^[a-z0-9]+$/
       raise Wavefront::Exception::InvalidIntegrationId
+    end
+
+    # Ensure the given argument is a valid distribution interval.
+    # @param interval [Symbol]
+    # @raise Wavefront::Exception::InvalidDistributionInterval if the
+    #   interval is not valid
+    #
+    def wf_distribution_interval?(interval)
+      return true if %i[m h d].include?(interval)
+      raise Wavefront::Exception::InvalidDistributionInterval
+    end
+
+    # Ensure the given argument is a valid distribution count.
+    # @param count [Numeric]
+    # @raise Wavefront::Exception::InvalidDistributionCount if the
+    #   count is not valid
+    #
+    def wf_distribution_count?(count)
+      return true if count.is_a?(Integer) && count > 0
+      raise Wavefront::Exception::InvalidDistributionCount
     end
   end
   # rubocop:enable Metrics/ModuleLength

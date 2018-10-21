@@ -1,10 +1,10 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # View and manage source metadata.
   #
-  class Source < Base
+  class Source < CoreApi
     def update_keys
       %i[sourceName tags description]
     end
@@ -21,7 +21,7 @@ module Wavefront
       qs[:limit] = limit if limit
       qs[:cursor] = cursor if cursor
 
-      api_get('', qs)
+      api.get('', qs)
     end
 
     # POST /api/v2/source
@@ -34,7 +34,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/source/id
@@ -45,7 +45,7 @@ module Wavefront
     #
     def delete(id)
       wf_source_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # POST /api/v2/source/id/description
@@ -53,7 +53,7 @@ module Wavefront
 
     def description_set(id, description)
       wf_source_id?(id)
-      api_post([id, 'description'].uri_concat, description,
+      api.post([id, 'description'].uri_concat, description,
                'application/json')
     end
 
@@ -62,7 +62,7 @@ module Wavefront
 
     def description_delete(id)
       wf_source_id?(id)
-      api_delete([id, 'description'].uri_concat)
+      api.delete([id, 'description'].uri_concat)
     end
 
     # GET /api/v2/source/id
@@ -76,7 +76,7 @@ module Wavefront
       wf_version?(version) if version
       fragments = [id]
       fragments += ['history', version] if version
-      api_get(fragments.uri_concat)
+      api.get(fragments.uri_concat)
     end
 
     # PUT /api/v2/source/id
@@ -94,9 +94,9 @@ module Wavefront
       wf_source_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id).response, body),
+      api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
 
@@ -108,7 +108,7 @@ module Wavefront
     #
     def tags(id)
       wf_source_id?(id)
-      api_get([id, 'tag'].uri_concat)
+      api.get([id, 'tag'].uri_concat)
     end
 
     # POST /api/v2/source/id/tag
@@ -122,7 +122,7 @@ module Wavefront
       wf_source_id?(id)
       tags = Array(tags)
       tags.each { |t| wf_string?(t) }
-      api_post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
+      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
     end
 
     # DELETE /api/v2/source/id/tag/tagValue
@@ -135,7 +135,7 @@ module Wavefront
     def tag_delete(id, tag)
       wf_source_id?(id)
       wf_string?(tag)
-      api_delete([id, 'tag', tag].uri_concat)
+      api.delete([id, 'tag', tag].uri_concat)
     end
 
     # PUT /api/v2/source/id/tag/tagValue
@@ -148,7 +148,7 @@ module Wavefront
     def tag_add(id, tag)
       wf_source_id?(id)
       wf_string?(tag)
-      api_put([id, 'tag', tag].uri_concat)
+      api.put([id, 'tag', tag].uri_concat)
     end
   end
 end

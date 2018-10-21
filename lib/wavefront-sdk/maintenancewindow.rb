@@ -1,10 +1,10 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Manage and query Wavefront maintenance windows
   #
-  class MaintenanceWindow < Base
+  class MaintenanceWindow < CoreApi
     def update_keys
       %i[reason title startTimeInSeconds endTimeInSeconds
          relevantCustomerTags relevantHostTags relevantHostNames]
@@ -17,7 +17,7 @@ module Wavefront
     # @param limit [Integer] the number of window to return
     #
     def list(offset = 0, limit = 100)
-      api_get('', offset: offset, limit: limit)
+      api.get('', offset: offset, limit: limit)
     end
 
     # POST /api/v2/maintenancewindow
@@ -32,7 +32,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
-      api_post('', body, 'application/json')
+      api.post('', body, 'application/json')
     end
 
     # DELETE /api/v2/maintenancewindow/id
@@ -43,7 +43,7 @@ module Wavefront
     #
     def delete(id)
       wf_maintenance_window_id?(id)
-      api_delete(id)
+      api.delete(id)
     end
 
     # GET /api/v2/maintenancewindow/id
@@ -54,7 +54,7 @@ module Wavefront
     #
     def describe(id)
       wf_maintenance_window_id?(id)
-      api_get(id)
+      api.get(id)
     end
 
     # PUT /api/v2/maintenancewindow/id
@@ -72,10 +72,56 @@ module Wavefront
       wf_maintenance_window_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
-      return api_put(id, body, 'application/json') unless modify
+      return api.put(id, body, 'application/json') unless modify
 
-      api_put(id, hash_for_update(describe(id).response, body),
+      api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
+    end
+
+    # Windows currently open.
+    # @return [Wavefront::Response]
+    #
+    def ongoing
+      windows_in_state(:ongoing)
+    end
+
+    # Get the windows which will be open in the next so-many hours
+    # @param hours [Numeric] how many hours to look ahead
+    # @return [Wavefront::Response]
+    #
+    def pending(hours = 24)
+      cutoff = Time.now.to_i + hours * 3600
+
+      windows_in_state(:pending).tap do |r|
+        r.response.items.delete_if { |w| w.startTimeInSeconds > cutoff }
+      end
+    end
+
+    # This method mimics the similarly named method from the v1 SDK,
+    # which called the 'GET /api/alert/maintenancewindow/summary'
+    # path.
+    # @return [Wavefront::Response]
+    #
+    def summary
+      ret = pending
+
+      items = { UPCOMING: ret.response.items,
+                CURRENT:  ongoing.response.items }
+
+      ret.response.items = items
+      ret
+    end
+
+    # Return all maintenance windows in the given state. At the time
+    # of writing valid states are ONGOING, PENDING, and ENDED.
+    # @param state [Symbol]
+    # @return [Wavefront::Response]
+    #
+    def windows_in_state(state)
+      require_relative 'search'
+      wfs = Wavefront::Search.new(creds, opts)
+      query = { key: 'runningState', value: state, matchingMethod: 'EXACT' }
+      wfs.search(:maintenancewindow, query, limit: :all, offset: PAGE_SIZE)
     end
   end
 end

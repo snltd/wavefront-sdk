@@ -1,10 +1,10 @@
-require_relative 'base'
+require_relative 'core/api'
 
 module Wavefront
   #
   # Query Wavefront metrics.
   #
-  class Metric < Base
+  class Metric < CoreApi
     def api_base
       'chart/metric'
     end
@@ -29,7 +29,7 @@ module Wavefront
 
       sources.each { |source| query.<< [:h, source] }
 
-      api_get('detail', query)
+      api.get('detail', query)
     end
   end
 end
