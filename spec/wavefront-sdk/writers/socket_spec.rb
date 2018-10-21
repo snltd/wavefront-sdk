@@ -25,6 +25,10 @@ class WavefrontWriterSocketTest < MiniTest::Test
     @wf_noop = Wavefront::Write.new(WS_CREDS, writer: :socket, noop: true)
   end
 
+  def test_writer_class
+    assert_instance_of(Wavefront::Writer::Socket, wf.writer)
+  end
+
   def test_write_openclose
     mocket = Mocket.new
     Spy.on(TCPSocket, :new).and_return(mocket)
