@@ -81,7 +81,7 @@ puts proxies.status.code
 
 # Now print the proxy IDs
 
-puts proxies.names
+puts proxies.ids
 # 1439acb2-ab07-4cf9-8397-2f2d758e52a0
 # 87eca9df-fc47-4a24-88cf-6dd0bae245a9
 # df77bd37-8f32-4e0c-b578-51eb42f22b6f
