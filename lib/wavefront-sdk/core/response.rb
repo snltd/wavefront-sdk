@@ -66,6 +66,8 @@ module Wavefront
     def more_items?
       return false unless response.key?(:moreItems)
       !!response.moreItems
+    rescue StandardError
+      false
     end
 
     # On paginated output, the offset of the next item, or nil. For

@@ -1,6 +1,12 @@
 # Changelog
 
-## 2.0.0
+## 2.0.1 (22/10/2018)
+* Make `Wavefront::Response#next_item` work with sources. (Or any
+  future class which uses a cursor rather than an offset.)
+* Make `Wavefront::User` return a response object containing an
+  `items` element, like every other class.
+
+## 2.0.0 (20/10/2018)
 * Remove `#everything` method from all classes. (Breaking change.)
 * Calling any method which takes the `limit` argument with  `limit`
   set to `:all` will automatically handle pagination, fetching all

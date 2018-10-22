@@ -88,7 +88,13 @@ module Wavefront
     # consistent with others in the future.
     #
     def response_shim(body, status)
-      { response: JSON.parse(body),
+      items = JSON.parse(body)
+
+      { response: { items:      items,
+                    offset:     0,
+                    limit:      items.size,
+                    totalItems: items.size,
+                    modeItems:  false },
         status:   { result:  status == 200 ? 'OK' : 'ERROR',
                     message: '',
                     code:    status } }.to_json
