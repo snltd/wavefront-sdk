@@ -66,14 +66,19 @@ module Wavefront
     def more_items?
       return false unless response.key?(:moreItems)
       !!response.moreItems
+    rescue StandardError
+      false
     end
 
-    # On paginated output, the offset of the next item, or nil.
-    # @return [Integer, Nil]
+    # On paginated output, the offset of the next item, or nil. For
+    # classes which use a cursor rather than an offset (Source),
+    # that.
+    # @return [Integer,String,Nil]
     #
     def next_item
       return nil unless more_items?
-      reponse.offset + response.limit
+      return response.cursor if response.respond_to?(:cursor)
+      response.offset + response.limit
     rescue StandardError
       nil
     end
