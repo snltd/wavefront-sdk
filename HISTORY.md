@@ -1,10 +1,7 @@
 # Changelog
 
 ## 2.0.1 (22/10/2018)
-* Make `Wavefront::Response#next_item` work with sources. (Or any
-  future class which uses a cursor rather than an offset.)
-* Make `Wavefront::User` return a response object containing an
-  `items` element, like every other class.
+* Bugfix on response types.
 
 ## 2.0.0 (20/10/2018)
 * Remove `#everything` method from all classes. (Breaking change.)
@@ -44,6 +41,10 @@
   a hash of proxy *and* API credentials. This is useful for passing
   to `Wavefront::Write` as it means all writers will work without
   modifying your code.
+* Make `Wavefront::Response#next_item` work with sources. (Or any
+  future class which uses a cursor rather than an offset.)
+* Make `Wavefront::User` return a response object containing an
+  `items` element, like every other class.
 
 ## 1.6.2 (22/08/2018)
 * Drop log priority of write class messages.
