@@ -58,9 +58,9 @@ module Wavefront
       def limit_and_offset(args)
         ret = { offset: nil, limit: nil }
 
-        args.select { |a| a.is_a?(Hash) }.each_with_object(ret) do |arg|
-          ret[:limit] = arg[:limit] if arg.key?(:limit)
-          ret[:offset] = arg[:offset] if arg.key?(:offset)
+        args.select { |a| a.is_a?(Hash) }.each_with_object(ret) do |arg, a|
+          a[:limit] = arg[:limit] if arg.key?(:limit)
+          a[:offset] = arg[:offset] if arg.key?(:offset)
         end
       end
 
