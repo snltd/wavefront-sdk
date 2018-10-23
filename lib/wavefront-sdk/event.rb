@@ -23,8 +23,8 @@ module Wavefront
     # @param limit [Integer] the number of events to return
     # @return [Wavefront::Response]
     #
-    def list(from = nil, to = nil, limit = 100, cursor = nil)
-      raise ArgumentError unless from && to && limit.is_a?(Integer)
+    def list(from = nil, to = Time.now, limit = 100, cursor = nil)
+      raise ArgumentError unless from && to
       wf_event_id?(cursor) if cursor
 
       from = parse_time(from, true)
