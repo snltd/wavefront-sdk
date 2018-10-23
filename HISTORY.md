@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.3 (23/10/2018)
+* Remove unnecessarily strict argument check on `event#list`.
+
 ## 2.0.2 (22/10/2018)
 * Bugfix
 

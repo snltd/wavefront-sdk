@@ -26,8 +26,7 @@ class WavefrontEventTest < WavefrontTestBase
     tms1 = t1.to_datetime.strftime('%Q')
     tms2 = t2.to_datetime.strftime('%Q')
 
-    assert_raises(ArgumentError) {  wf.list }
-    assert_raises(ArgumentError) {  wf.list(tms1) }
+    assert_raises(ArgumentError) { wf.list }
 
     should_work(:list, [t1, t2],
                 "?earliestStartTimeEpochMillis=#{tms1}" \
