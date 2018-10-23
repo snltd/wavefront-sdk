@@ -7,17 +7,13 @@ require_relative '../../../lib/wavefront-sdk/paginator/post'
 # Stub for ApiCaller class
 #
 class FakeApiCaller
-  def respond(_args)
-    puts 'merp'
-  end
+  def respond(_args); end
 end
 
 # Stub for connection object
 #
 class FakeConn
-  def get(*args)
-    puts args
-  end
+  def get(*args); end
 end
 
 # Test POST pagination

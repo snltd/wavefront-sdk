@@ -59,8 +59,7 @@ module Wavefront
              dist.fetch(:source, HOSTNAME),
              dist[:tags] && dist[:tags].to_wf_tag,
              opts[:tags] && opts[:tags].to_wf_tag).squeeze(' ').strip
-    rescue StandardError => e
-      puts e
+    rescue StandardError
       raise Wavefront::Exception::InvalidDistribution
     end
     # rubocop:enable Metrics/AbcSize

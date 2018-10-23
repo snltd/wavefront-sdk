@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.2 (22/10/2018)
+* Bugfix
+
 ## 2.0.1 (22/10/2018)
 * Bugfix on response types.
 
