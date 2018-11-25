@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 (25/11/2018)
+* New `unix` writer lets you write points to a local Unix datagram
+  socket.
+
 ## 2.0.3 (23/10/2018)
 * Remove unnecessarily strict argument check on `event#list`.
 
