@@ -10,7 +10,7 @@ module Wavefront
     class Unix < Core
       # Make a connection to a Unix datagram socket, putting the
       # descriptor in instance variable @conn.
-      # This requires the name of the socket file in creds[:file]
+      # This requires the name of the socket file in creds[:socket]
       # @return [UnixSocket]
       #
       def open
@@ -19,10 +19,10 @@ module Wavefront
           return true
         end
 
-        logger.log("Connecting to #{creds[:file]}.", :debug)
+        logger.log("Connecting to #{creds[:socket]}.", :debug)
 
         begin
-          @conn = UNIXSocket.new(creds[:file])
+          @conn = UNIXSocket.new(creds[:socket])
         rescue StandardError => e
           logger.log(e, :error)
           raise Wavefront::Exception::InvalidEndpoint
@@ -37,7 +37,7 @@ module Wavefront
       end
 
       def validate_credentials(creds)
-        return true if creds.key?(:file)
+        return true if creds.key?(:socket)
 
         raise(Wavefront::Exception::CredentialError,
               'creds must contain socket file path')
