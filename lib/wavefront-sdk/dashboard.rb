@@ -83,6 +83,17 @@ module Wavefront
               'application/json')
     end
 
+    # POST /api/v2/dashboard/{id}/favorite
+    # Mark a dashboard as favorite
+    #
+    # @param id [String] ID of the dashboard
+    # @return [Wavefront::Response]
+    #
+    def favorite(id)
+      wf_dashboard_id?(id)
+      api.post([id, 'favorite'].uri_concat)
+    end
+
     # GET /api/v2/dashboard/id/history
     # Get the version history of a dashboard.
     #
@@ -154,6 +165,17 @@ module Wavefront
     def undelete(id)
       wf_dashboard_id?(id)
       api.post([id, 'undelete'].uri_concat)
+    end
+
+    # POST /api/v2/dashboard/{id}/unfavorite
+    # Unmark a dashboard as favorite
+    #
+    # @param id [String] ID of the dashboard
+    # @return [Wavefront::Response]
+    #
+    def unfavorite(id)
+      wf_dashboard_id?(id)
+      api.post([id, 'unfavorite'].uri_concat)
     end
   end
 end

@@ -50,17 +50,23 @@ class WavefrontDashboardTest < WavefrontTestBase
     should_be_invalid(:delete)
   end
 
-  def test_history
-    should_work(:history, DASHBOARD, "#{DASHBOARD}/history")
-    should_be_invalid(:history)
-  end
-
   def test_update
     should_work(:update, [DASHBOARD, DASHBOARD_BODY, false],
                 DASHBOARD, :put, JSON_POST_HEADERS,
                 DASHBOARD_BODY.to_json)
     should_be_invalid(:update, ['!invalid dash!', DASHBOARD_BODY])
     assert_raises(ArgumentError) { wf.update }
+  end
+
+  def test_favorite
+    should_work(:favorite, DASHBOARD, ["#{DASHBOARD}/favorite",
+                                       nil], :post, POST_HEADERS)
+    should_be_invalid(:favorite)
+  end
+
+  def test_history
+    should_work(:history, DASHBOARD, "#{DASHBOARD}/history")
+    should_be_invalid(:history)
   end
 
   def test_tags
@@ -71,5 +77,11 @@ class WavefrontDashboardTest < WavefrontTestBase
     should_work(:undelete, DASHBOARD, ["#{DASHBOARD}/undelete",
                                        nil], :post, POST_HEADERS)
     should_be_invalid(:undelete)
+  end
+
+  def test_unfavorite
+    should_work(:unfavorite, DASHBOARD, ["#{DASHBOARD}/unfavorite",
+                                         nil], :post, POST_HEADERS)
+    should_be_invalid(:unfavorite)
   end
 end
