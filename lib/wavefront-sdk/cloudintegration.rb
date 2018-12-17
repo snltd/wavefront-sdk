@@ -67,6 +67,26 @@ module Wavefront
       api.put(id, body)
     end
 
+    # POST /api/v2/cloudintegration/{id}/disable
+    # Disable a specific cloud integration
+    # @param id [String] ID of the integration
+    # @return [Wavefront::Response]
+    #
+    def disable(id)
+      wf_cloudintegration_id?(id)
+      api.post([id, 'disable'].uri_concat)
+    end
+
+    # POST /api/v2/cloudintegration/{id}/enable
+    # Enable a specific cloud integration
+    # @param id [String] ID of the integration
+    # @return [Wavefront::Response]
+    #
+    def enable(id)
+      wf_cloudintegration_id?(id)
+      api.post([id, 'enable'].uri_concat)
+    end
+
     # POST /api/v2/cloudintegration/id/undelete
     # Undelete a specific cloud integration
     #

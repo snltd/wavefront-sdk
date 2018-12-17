@@ -18,11 +18,27 @@ class WavefrontIntegrationTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.install }
   end
 
+  def test_install_all_alerts
+    should_work(:install_all_alerts, INTEGRATION,
+                ["#{INTEGRATION}/install-all-alerts", nil],
+                :post, POST_HEADERS)
+    should_be_invalid(:install_all_alerts)
+    assert_raises(ArgumentError) { wf.install_all_alerts }
+  end
+
   def test_uninstall
     should_work(:uninstall, INTEGRATION, ["#{INTEGRATION}/uninstall", nil],
                 :post, POST_HEADERS)
     should_be_invalid(:uninstall)
     assert_raises(ArgumentError) { wf.uninstall }
+  end
+
+  def test_uninstall_all_alerts
+    should_work(:uninstall_all_alerts, INTEGRATION,
+                ["#{INTEGRATION}/uninstall-all-alerts", nil],
+                :post, POST_HEADERS)
+    should_be_invalid(:uninstall_all_alerts)
+    assert_raises(ArgumentError) { wf.uninstall_all_alerts }
   end
 
   def test_describe
@@ -35,6 +51,10 @@ class WavefrontIntegrationTest < WavefrontTestBase
     should_work(:status, INTEGRATION, "#{INTEGRATION}/status")
     should_be_invalid(:status)
     assert_raises(ArgumentError) { wf.status }
+  end
+
+  def test_installed
+    should_work(:installed, nil, 'installed')
   end
 
   def test_manifests

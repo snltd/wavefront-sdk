@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0 (15/12/2018)
+
+* New methods to cover new API paths.
+ * `Wavefront::Alert#install`,
+ * `Wavefront::Alert#uninstall`,
+ * `Wavefront::CloudIntegration#disable`
+ * `Wavefront::CloudIntegration#enable`
+ * `Wavefront::Dashboard#favorite`
+ * `Wavefront::Dashboard#unfavorite`
+ * `Wavefront::Integration#install_all_alerts`
+ * `Wavefront::Integration#uninstall_all_alerts`
+ * `Wavefront::Integration#installed`
+
 ## 2.1.0 (25/11/2018)
 * New `unix` writer lets you write points to a local Unix datagram
   socket.
