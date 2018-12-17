@@ -38,8 +38,8 @@ class WavefrontAnomalyTest < WavefrontTestBase
 
     assert_equal(x[:offset], 0)
     assert_equal(x[:limit], 100)
-    assert_instance_of(Integer, x[:startMs])
-    assert_instance_of(Integer, x[:endMs])
+    assert_kind_of(Numeric, x[:startMs])
+    assert_kind_of(Numeric, x[:endMs])
     assert(x[:startMs] > 1_544_891_884_000)
     assert(x[:endMs] > 1_544_891_884_000)
   end
