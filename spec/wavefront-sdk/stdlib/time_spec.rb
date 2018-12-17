@@ -7,7 +7,7 @@ require_relative '../../../lib/wavefront-sdk/stdlib/time'
 #
 class TimeTest < MiniTest::Test
   def test_to_ms
-    assert_instance_of(Integer, Time.now.to_ms)
+    assert_kind_of(Numeric, Time.now.to_ms)
     assert_equal(154_489_352_000, Time.at(154_489_352).to_ms)
   end
 end
