@@ -58,6 +58,11 @@ class WavefrontAlertTest < WavefrontTestBase
     should_be_invalid(:history)
   end
 
+  def test_install
+    should_work(:install, ALERT, "#{ALERT}/install", :post)
+    should_be_invalid(:install)
+  end
+
   def test_snooze
     should_work(:snooze, ALERT, "#{ALERT}/snooze", :post, POST_HEADERS)
     should_work(:snooze, [ALERT, 3600], "#{ALERT}/snooze?seconds=3600",
@@ -80,6 +85,11 @@ class WavefrontAlertTest < WavefrontTestBase
     should_work(:undelete, ALERT, ["#{ALERT}/undelete", nil], :post,
                 POST_HEADERS)
     should_be_invalid(:undelete)
+  end
+
+  def test_uninstall
+    should_work(:uninstall, ALERT, "#{ALERT}/uninstall", :post)
+    should_be_invalid(:uninstall)
   end
 
   def test_unsnooze

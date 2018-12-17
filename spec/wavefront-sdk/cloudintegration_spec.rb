@@ -51,4 +51,16 @@ class WavefrontCloudIntegrationTest < WavefrontTestBase
                 POST_HEADERS)
     should_be_invalid(:undelete)
   end
+
+  def test_disable
+    should_work(:disable, CLOUD, ["#{CLOUD}/disable", nil], :post,
+                POST_HEADERS)
+    should_be_invalid(:disable)
+  end
+
+  def test_enable
+    should_work(:enable, CLOUD, ["#{CLOUD}/enable", nil], :post,
+                POST_HEADERS)
+    should_be_invalid(:enable)
+  end
 end

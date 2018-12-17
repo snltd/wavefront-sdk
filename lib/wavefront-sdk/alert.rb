@@ -104,6 +104,14 @@ module Wavefront
       api.get([id, 'history'].uri_concat, qs)
     end
 
+    # POST /api/v2/alert/{id}/install
+    # Unhide a specific integration alert
+    #
+    def install(id)
+      wf_alert_id?(id)
+      api.post([id, 'install'].uri_concat, nil)
+    end
+
     # POST /api/v2/alert/id/snooze
     # Snooze a specific alert for some number of seconds.
     #
@@ -178,6 +186,14 @@ module Wavefront
     def undelete(id)
       wf_alert_id?(id)
       api.post([id, 'undelete'].uri_concat)
+    end
+
+    # POST /api/v2/alert/{id}/uninstall
+    # Hide a specific integration alert
+    #
+    def uninstall(id)
+      wf_alert_id?(id)
+      api.post([id, 'uninstall'].uri_concat, nil)
     end
 
     # POST /api/v2/alert/id/unsnooze
