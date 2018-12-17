@@ -55,7 +55,7 @@ module Wavefront
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
     # @param query [Hash] optional key-value pairs with will be made
-    #   into aquery string
+    #   into a query string
     # @return [Hash] API response
     #
     def get(path, query = {})
