@@ -58,6 +58,8 @@ class WavefrontTestBase < MiniTest::Test
   end
 
   def target_uri(path)
+    return "https://#{CREDS[:endpoint]}#{path}" if path.start_with?('/')
+
     [uri_base, path].join(path.start_with?('?') ? '' : '/')
   end
 
