@@ -231,7 +231,7 @@ module Wavefront
     # @return [Wavefront::Response] all alerts currently in a
     #   maintenance window.
     #
-    def affected_by__maintenance
+    def affected_by_maintenance
       in_maintenance
     end
 

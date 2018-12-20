@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.1 (20/12/2018)
+* Fix typo in `Wavefront::Alert#affected_by_maintenance` method
+  name.
+* Full `Wavfront::Alert` test coverage.
+
 ## 2.2.0 (15/12/2018)
 
 * New methods to cover new API paths.
