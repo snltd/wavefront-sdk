@@ -222,19 +222,6 @@ module Wavefront
     # lovely simple methods. Note that these are constructions of
     # the SDK and do not actually correspond to the underlying API.
 
-    # @return [Wavefront::Response] all currently firing alerts
-    #
-    def active
-      firing
-    end
-
-    # @return [Wavefront::Response] all alerts currently in a
-    #   maintenance window.
-    #
-    def affected_by_maintenance
-      in_maintenance
-    end
-
     # @return [Wavefront::Response] all alerts which have an invalid
     #   query.
     #
@@ -256,6 +243,7 @@ module Wavefront
     def firing
       alerts_in_state(:firing)
     end
+    alias active firing
 
     # @return [Wavefront::Response] all alerts currently in a
     #   maintenance window.
@@ -263,6 +251,7 @@ module Wavefront
     def in_maintenance
       alerts_in_state(:in_maintenance)
     end
+    alias affected_by_maintenance in_maintenance
 
     # @return [Wavefront::Response] I honestly don't know what the
     #   NONE state denotes, but this will fetch alerts which have
