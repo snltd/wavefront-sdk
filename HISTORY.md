@@ -1,9 +1,13 @@
 # Changelog
 
+## 2.3.0 (06/01/2019)
+* When sending points via the API, send bundles of up to 100 points
+  with each `POST`, rather than a call per point.
+
 ## 2.2.1 (20/12/2018)
 * Fix typo in `Wavefront::Alert#affected_by_maintenance` method
   name.
-* Full `Wavfront::Alert` test coverage.
+* Full `Wavefront::Alert` test coverage.
 
 ## 2.2.0 (15/12/2018)
 
