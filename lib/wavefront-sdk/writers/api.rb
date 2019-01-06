@@ -42,7 +42,7 @@ module Wavefront
       private
 
       def write_loop(points)
-        body = points.map do |p, a|
+        body = points.map do |p|
           p[:ts] = p[:ts].to_i if p[:ts].is_a?(Time)
           hash_to_wf(p)
         end
