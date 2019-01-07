@@ -28,10 +28,36 @@ module Wavefront
               'credentials must contain API token')
       end
 
+      def send_point(body)
+        _send_point(body)
+        summary.sent += body.size
+        true
+      rescue StandardError => e
+        summary.unsent += body.size
+        logger.log('WARNING: failed to send point(s).')
+        logger.log(e.to_s, :debug)
+        false
+      end
+
       private
 
-      def _send_point(point)
-        conn.post('/?f=wavefront', point, 'application/octet-stream')
+      def write_loop(points)
+        body = points.map do |p|
+          p[:ts] = p[:ts].to_i if p[:ts].is_a?(Time)
+          hash_to_wf(p)
+        end
+
+        send_point(body)
+      end
+
+      # Send points in batches of a hundred. I'm not sure exactly
+      # how much the API can cope with in a single call, so this
+      # might change.
+      #
+      def _send_point(body)
+        body.each_slice(100) do |p|
+          conn.post('/?f=wavefront', p.join("\n"), 'application/octet-stream')
+        end
       end
     end
   end

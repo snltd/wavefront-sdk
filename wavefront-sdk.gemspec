@@ -26,7 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'inifile', '~> 3.0'
   gem.add_dependency 'map', '~> 6.6'
 
-  gem.add_development_dependency 'bundler', '~> 1.3'
+  gem.add_development_dependency 'bundler', '~> 1.17'
   gem.add_development_dependency 'minitest', '~> 5.11'
   gem.add_development_dependency 'rake', '~> 12.0'
   gem.add_development_dependency 'rubocop', '~> 0.54.0'
