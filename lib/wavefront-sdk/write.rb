@@ -38,12 +38,15 @@ module Wavefront
     #   debug [Bool]
     #   writer [Symbol, String] the name of the writer class to use.
     #     Defaults to :socket
+    #   buffer [Bool] if this is true, metrics will be collected in an
+    #     in-memory object, and must be flushed manually.
     #
     def initialize(creds = {}, opts = {})
       defaults = { tags:       nil,
                    writer:     :socket,
                    noop:       false,
                    novalidate: false,
+                   buffer:     false,
                    verbose:    false,
                    debug:      false }
 
@@ -71,6 +74,33 @@ module Wavefront
       writer.close
     end
 
+    # a short-hand wrapper to write, when  you just want to send a path,
+    # value, and tags. Timestamp is automatically set to the current
+    # moment. For more control, use the #write method.
+    # @param path [String] metric path
+    # @param value [Numeric] metric value
+    # @param tags [Hash] hash of point tags
+    #
+    def gauge(path, value, tags = nil)
+      point = { path: path, ts: Time.now.to_i, value: value }
+      point[:tags] = tags if tags
+      write([point])
+    end
+
+    def counter(path, value, tags = nil)
+      point = { path: path, ts: Time.now.to_i, value: value }
+      point[:tags] = tags if tags
+      write_delta([point])
+    end
+
+    def bcounter(path, value = 1)
+      writer.bcounter(path, value)
+    end
+
+    def bhist(path, value)
+      writer.bhist(path, value)
+    end
+
     # A wrapper to the writer class's #write method.
     # Writers implement this method differently, Check the
     # appropriate class documentation for @return information etc.
@@ -78,6 +108,12 @@ module Wavefront
     #
     def write(points = [], openclose = true, prefix = nil)
       writer.write(points, openclose, prefix)
+    end
+
+    # Wrapper around writer class's #flush method
+    #
+    def flush
+      writer.flush
     end
 
     # A wrapper method around #write() which guarantees all points

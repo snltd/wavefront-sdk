@@ -21,7 +21,8 @@ module Wavefront
     #               method.
     #
     class Core
-      attr_reader :creds, :opts, :logger, :summary, :conn, :calling_class
+      attr_reader :creds, :opts, :logger, :summary, :conn, :calling_class,
+        :buffer
 
       include Wavefront::Validators
 
@@ -31,6 +32,12 @@ module Wavefront
         @opts          = calling_class.opts
         @logger        = calling_class.logger
         @summary       = Wavefront::Writer::Summary.new
+
+        if opts[:buffer]
+          @buffer      = { points:     [],
+                           histograms: {},
+                           counters:   {} }
+        end
 
         validate_credentials(creds) if respond_to?(:validate_credentials)
         post_initialize(creds, opts) if respond_to?(:post_initialize)
@@ -48,10 +55,15 @@ module Wavefront
       # @return [Wavefront::Response]
       #
       def write(points = [], openclose = true, prefix = nil)
-        open if openclose && respond_to?(:open)
-
         points = screen_points(points)
         points = prefix_points(points, prefix)
+
+        return buffer_points(buffer[:points]) if buffer
+        do_write(points, openclose, prefix)
+      end
+
+      def do_write(points, openclose, prefix)
+        open if openclose && respond_to?(:open)
 
         begin
           write_loop(points)
@@ -62,7 +74,57 @@ module Wavefront
         respond
       end
 
+      def bcounter(path, value)
+        if buffer[:counters].key?(path)
+          buffer[:counters][path] += value
+        else
+          buffer[:counters][path] = value
+        end
+      end
+
+      def bhist(path, value)
+        if buffer[:histograms].key?(path)
+          buffer[:histograms][path].<< value
+        else
+          buffer[:histograms][path] = [value]
+        end
+      end
+
+      def buffer_points(points)
+        @buffer += points
+      end
+
+      # Flush the in-memory metric bundle. Same options as #write
+      #
+      def flush(openclose = true, prefix = nil)
+        return unless buffer
+        flush_buffer_counters(buffer[:counters])
+        flush_buffer_histograms(buffer[:histograms])
+        logger.log("flushing buffer of #{buffer[:points].size} point(s)", :debug)
+        do_write(buffer[:points], openclose, prefix)
+      end
+
+      def flush_buffer_counters(counters)
+        logger.log("flushing counter buffer of #{buffer[:counters].size} counter(s)", :debug)
+        p(buffer[:counters].map do |p, v|
+          { path: p, value: v, ts: Time.now.to_i }
+        end)
+      end
+
+      def flush_buffer_histograms(histograms)
+        logger.log("flushing histogram buffer of #{buffer[:histograms].size} path(s)", :debug)
+        buffer[:histograms].map do |p, v|
+          puts "#{p} --> #{v}"
+        end
+      end
+
+
+      # Send a response object, flushing the buffer (if we have one) if
+      # we believe the points were sent successfully.
+      #
       def respond
+        @buffer[:points] = [] if buffer && summary.ok?
+
         Wavefront::Response.new(
           { status:   { result: summary.result, message: nil, code: nil },
             response: summary.to_h }.to_json, nil, opts
