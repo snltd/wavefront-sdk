@@ -43,6 +43,7 @@ module Wavefront
     class InvalidVersion < RuntimeError; end
     class InvalidWebhookId < RuntimeError; end
     class NotImplemented < RuntimeError; end
+    class SocketError < RuntimeError; end
     class UnparseableResponse < RuntimeError; end
     class UnsupportedWriter < RuntimeError; end
     class ValueOutOfRange < RuntimeError; end
