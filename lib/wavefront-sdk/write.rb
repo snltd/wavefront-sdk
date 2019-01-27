@@ -40,6 +40,7 @@ module Wavefront
     #     Defaults to :socket
     #   buffer [Bool] if this is true, metrics will be collected in an
     #     in-memory object, and must be flushed manually.
+    #   openclose [Bool] if this is false, you have
     #
     def initialize(creds = {}, opts = {})
       defaults = { tags:       nil,
@@ -47,6 +48,7 @@ module Wavefront
                    noop:       false,
                    novalidate: false,
                    buffer:     false,
+                   noauto:     false,
                    verbose:    false,
                    debug:      false }
 
@@ -106,7 +108,7 @@ module Wavefront
     # appropriate class documentation for @return information etc.
     # The signature is always the same.
     #
-    def write(points = [], openclose = true, prefix = nil)
+    def write(points = [], openclose = manage_conn, prefix = nil)
       writer.write(points, openclose, prefix)
     end
 
@@ -114,6 +116,10 @@ module Wavefront
     #
     def flush
       writer.flush
+    end
+
+    def manage_conn
+      opts[:noauto] ? false : true
     end
 
     # A wrapper method around #write() which guarantees all points
@@ -125,7 +131,7 @@ module Wavefront
     # @param points [Array[Hash]] see #write()
     # @param openclose [Bool] see #write()
     #
-    def write_delta(points, openclose = true)
+    def write_delta(points, openclose = manage_conn)
       write(paths_to_deltas(points), openclose)
     end
 
@@ -165,7 +171,7 @@ module Wavefront
     #   open a socket to the proxy before sending points, and
     #   afterwards, close it.
     #
-    def raw(points, openclose = true)
+    def raw(points, openclose = manage_conn)
       writer.open if openclose && writer.respond_to?(:open)
 
       begin
