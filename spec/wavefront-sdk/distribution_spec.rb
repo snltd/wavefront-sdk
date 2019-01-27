@@ -61,6 +61,13 @@ class WavefrontDistributionTest < MiniTest::Test
                  '!M 1538865613 #5 11 #15 2.533 #8 -15 #12 1000000.0 ' \
                  "test.distribution source=#{Socket.gethostname} " \
                  'tag1="val1" tag2="val2"')
+
+    bad_dist_1 = DIST.dup
+    bad_dist_1.delete(:interval)
+
+    assert_raises(Wavefront::Exception::InvalidDistribution) do
+      wf.hash_to_wf(bad_dist_1)
+    end
   end
 
   def test_array2dist
