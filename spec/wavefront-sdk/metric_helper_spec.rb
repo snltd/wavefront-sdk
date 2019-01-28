@@ -117,8 +117,8 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert_instance_of(Mocket, out)
     assert spy.has_been_called?
     assert_equal(input, args)
-    assert(args.any?{ |a| a.key?(:tags) && a[:tags] == WH_TAGS })
-    refute(args.all?{ |a| a.key?(:tags) })
+    assert(args.any? { |a| a.key?(:tags) && a[:tags] == WH_TAGS })
+    refute(args.all? { |a| a.key?(:tags) })
     assert_empty(wf.buf[:gauges])
   end
 
@@ -137,7 +137,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert_equal(input, spy.calls.first.args.first)
     assert_equal(3, wf.buf[:gauges].size)
     assert_includes(wf.buf[:gauges],
-                    { path: 'm1.p', ts: 1548636080, value: 0 })
+                    path: 'm1.p', ts: 1548636080, value: 0)
   end
 
   def test_flush_counters
@@ -165,8 +165,8 @@ class WavefrontMetricHelperTest < MiniTest::Test
       assert(a[:path].start_with?(DELTA))
     end
 
-    assert(args.any?{ |a| a.key?(:tags) && a[:tags] == WH_TAGS })
-    refute(args.all?{ |a| a.key?(:tags) })
+    assert(args.any? { |a| a.key?(:tags) && a[:tags] == WH_TAGS })
+    refute(args.all? { |a| a.key?(:tags) })
     assert_empty(wf.buf[:counters])
   end
 
