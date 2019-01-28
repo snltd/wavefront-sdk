@@ -75,11 +75,3 @@ class WavefrontDistributionTest < MiniTest::Test
     assert_equal(wf.array2dist([[12, 4.235]]), '#12 4.235')
   end
 end
-
-# A mock socket
-#
-class Mocket
-  def puts(socket); end
-
-  def close; end
-end

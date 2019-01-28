@@ -94,11 +94,3 @@ class WavefrontWriterSocketTest < MiniTest::Test
     refute tcp_spy.has_been_called?
   end
 end
-
-# A mock socket
-#
-class Mocket
-  def puts(socket); end
-
-  def close; end
-end

@@ -171,3 +171,15 @@ class Hash
     Marshal.load(Marshal.dump(self))
   end
 end
+
+# A mock socket
+#
+class Mocket
+  def puts(socket); end
+
+  def close; end
+
+  def ok?
+    true
+  end
+end
