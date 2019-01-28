@@ -62,11 +62,11 @@ class WavefrontDistributionTest < MiniTest::Test
                  "test.distribution source=#{Socket.gethostname} " \
                  'tag1="val1" tag2="val2"')
 
-    bad_dist_1 = DIST.dup
-    bad_dist_1.delete(:interval)
+    bad_dist = DIST.dup
+    bad_dist.delete(:interval)
 
     assert_raises(Wavefront::Exception::InvalidDistribution) do
-      wf.hash_to_wf(bad_dist_1)
+      wf.hash_to_wf(bad_dist)
     end
   end
 
