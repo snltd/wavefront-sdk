@@ -72,27 +72,41 @@ module Wavefront
       flush_dists(buf[:dists]) if opts.key?(:dist_port)
     end
 
+    # When we are asked to flush the buffers, duplicate the current
+    # one, hand it off to the writer class, and clear. If writer
+    # tells us there was an error, dump the old buffer into the
+    # the new one for the next flush.
+    #
     def flush_gauges(gauges)
       return if gauges.empty?
 
+      to_flush = gauges.dup
+      @buf[:gauges] = empty_gauges
+
       writer.write(gauges_to_wf(gauges)).tap do |resp|
-        @buf[:gauges] = empty_gauges if resp.ok?
+        @buf[:gauges] += to_flush unless resp.ok?
       end
     end
 
     def flush_counters(counters)
       return if counters.empty?
 
+      to_flush = counters.dup
+      @buf[:counters] = empty_gauges
+
       writer.write_delta(counters_to_wf(counters)).tap do |resp|
-        @buf[:counters] = [] if resp.ok?
+        @buf[:counters].merge!(to_flush) unless resp.ok?
       end
     end
 
     def flush_dists(dists)
       return if dists.empty?
 
+      to_flush = dists.dup
+      @buf[:dists] = empty_dists
+
       dist_writer.write(dists_to_wf(dists)).tap do |resp|
-        @buf[:dists] = empty_dists if resp.ok?
+        @buf[:dists].merge!(to_flush) unless resp.ok?
       end
     end
 
