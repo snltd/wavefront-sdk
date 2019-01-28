@@ -51,8 +51,10 @@ module Wavefront
     # rubocop:disable Metrics/AbcSize
     def hash_to_wf(dist)
       logger.log("writer subclass #{writer}", :debug)
+      raise unless dist.key?(:interval)
+
       format('!%s %i %s %s source=%s %s %s',
-             dist[:interval].to_s.upcase || raise,
+             dist[:interval].to_s.upcase,
              parse_time(dist.fetch(:ts, Time.now)),
              array2dist(dist[:value]),
              dist[:path] || raise,

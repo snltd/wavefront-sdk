@@ -61,18 +61,17 @@ class WavefrontDistributionTest < MiniTest::Test
                  '!M 1538865613 #5 11 #15 2.533 #8 -15 #12 1000000.0 ' \
                  "test.distribution source=#{Socket.gethostname} " \
                  'tag1="val1" tag2="val2"')
+
+    bad_dist = DIST.dup
+    bad_dist.delete(:interval)
+
+    assert_raises(Wavefront::Exception::InvalidDistribution) do
+      wf.hash_to_wf(bad_dist)
+    end
   end
 
   def test_array2dist
     assert_equal(wf.array2dist([[1, 4], [6, 5]]), '#1 4 #6 5')
     assert_equal(wf.array2dist([[12, 4.235]]), '#12 4.235')
   end
-end
-
-# A mock socket
-#
-class Mocket
-  def puts(socket); end
-
-  def close; end
 end

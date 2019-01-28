@@ -30,6 +30,7 @@ module Wavefront
         @creds         = calling_class.creds
         @opts          = calling_class.opts
         @logger        = calling_class.logger
+        @manage_conn   = calling_class.manage_conn
         @summary       = Wavefront::Writer::Summary.new
 
         validate_credentials(creds) if respond_to?(:validate_credentials)
@@ -47,11 +48,14 @@ module Wavefront
       # @raise any unhandled point validation error is passed through
       # @return [Wavefront::Response]
       #
-      def write(points = [], openclose = true, prefix = nil)
-        open if openclose && respond_to?(:open)
-
+      def write(points = [], openclose = manage_conn, prefix = nil)
         points = screen_points(points)
         points = prefix_points(points, prefix)
+        do_write(points, openclose, prefix)
+      end
+
+      def do_write(points, openclose, _prefix)
+        open if openclose && respond_to?(:open)
 
         begin
           write_loop(points)
@@ -78,7 +82,7 @@ module Wavefront
         true
       rescue StandardError => e
         summary.unsent += 1
-        logger.log('WARNING: failed to send point.')
+        logger.log('Failed to send point.', :warn)
         logger.log(e.to_s, :debug)
         false
       end

@@ -21,11 +21,10 @@ module Wavefront
     # writing points to Wavefront. The actual writing is handled by
     # a Wavefront::Writer:: subclass.
     #
-    # @param creds [Hash] credentials
-    #   signature.
-    # @param options [Hash] can contain the following keys:
+    # @param creds [Hash] credentials: can contain keys:
     #   proxy [String] the address of the Wavefront proxy. ('wavefront')
     #   port [Integer] the port of the Wavefront proxy
+    # @param options [Hash] can contain the following keys:
     #   tags [Hash] point tags which will be applied to every point
     #   noop [Bool] if true, no proxy connection will be made, and
     #     instead of sending the points, they will be printed in
@@ -38,12 +37,16 @@ module Wavefront
     #   debug [Bool]
     #   writer [Symbol, String] the name of the writer class to use.
     #     Defaults to :socket
+    #   noauto [Bool] if this is false, #write will automatically
+    #     open a connection to Wavefront on each invocation. Set
+    #     this to true to manually manage the connection.
     #
     def initialize(creds = {}, opts = {})
       defaults = { tags:       nil,
                    writer:     :socket,
                    noop:       false,
                    novalidate: false,
+                   noauto:     false,
                    verbose:    false,
                    debug:      false }
 
@@ -76,8 +79,18 @@ module Wavefront
     # appropriate class documentation for @return information etc.
     # The signature is always the same.
     #
-    def write(points = [], openclose = true, prefix = nil)
+    def write(points = [], openclose = manage_conn, prefix = nil)
       writer.write(points, openclose, prefix)
+    end
+
+    # Wrapper around writer class's #flush method
+    #
+    def flush
+      writer.flush
+    end
+
+    def manage_conn
+      opts[:noauto] ? false : true
     end
 
     # A wrapper method around #write() which guarantees all points
@@ -89,7 +102,7 @@ module Wavefront
     # @param points [Array[Hash]] see #write()
     # @param openclose [Bool] see #write()
     #
-    def write_delta(points, openclose = true)
+    def write_delta(points, openclose = manage_conn)
       write(paths_to_deltas(points), openclose)
     end
 
@@ -129,7 +142,7 @@ module Wavefront
     #   open a socket to the proxy before sending points, and
     #   afterwards, close it.
     #
-    def raw(points, openclose = true)
+    def raw(points, openclose = manage_conn)
       writer.open if openclose && writer.respond_to?(:open)
 
       begin

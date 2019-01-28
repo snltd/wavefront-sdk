@@ -21,6 +21,10 @@ class TestClassNoTags
   def logger
     Logger.new(STDOUT)
   end
+
+  def manage_conn
+    true
+  end
 end
 
 # Test methods common to 'write' and 'report'

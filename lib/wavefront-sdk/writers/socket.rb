@@ -51,9 +51,12 @@ module Wavefront
 
       # @param point [String] point or points in native Wavefront
       # format.
+      # @raise [SocketError] if point cannot be written
       #
       def _send_point(point)
         conn.puts(point)
+      rescue StandardError
+        raise Wavefront::Exception::SocketError
       end
 
       # return [Integer] the port to connect to, if none is supplied
