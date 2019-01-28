@@ -268,9 +268,11 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert_equal(input, wfd.buf[:dists])
   end
 
-  def test_dist_opts
-    o = wfd.dist_opts(ND_CREDS, dist_port: 40000)
+  def test_dist_creds
+    opts = { verbose: true, dist_port: 40000 }
+    o = wfd.dist_creds(ND_CREDS, opts)
     assert_equal(40000, o[:port])
+    assert_equal({ verbose: true, dist_port: 40000 }, opts)
     assert_equal('wavefront', o[:proxy])
   end
 end

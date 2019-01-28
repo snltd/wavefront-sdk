@@ -149,7 +149,7 @@ module Wavefront
 
     # @return [Hash] options hash, with :port replaced by :dist_port
     #
-    def dist_opts(creds, opts)
+    def dist_creds(creds, opts)
       creds.dup.tap { |o| o[:port] = opts[:dist_port] }
     end
 
@@ -174,8 +174,7 @@ module Wavefront
     def setup_dist_writer(creds, opts)
       require_relative 'distribution'
       @buf[:dists] = empty_dists
-
-      Wavefront::Distribution.new(creds, dist_opts(creds, opts))
+      Wavefront::Distribution.new(dist_creds(creds, opts), opts)
     end
   end
 end
