@@ -17,7 +17,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
 
   def setup
     @wf  = Wavefront::MetricHelper.new(ND_CREDS, {})
-    @wfd = Wavefront::MetricHelper.new(ND_CREDS, { dist_port: 40000})
+    @wfd = Wavefront::MetricHelper.new(ND_CREDS, dist_port: 40000)
   end
 
   def test_gauge_1
@@ -109,15 +109,17 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_dists_to_wf
-    input = {['test.dist1', :m, nil]     => [10, 10, 11, 12],
-             ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
-             ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+    input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
+              ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+              ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
 
     out = wfd.dists_to_wf(input)
     assert_instance_of(Array, out)
     assert_equal(3, out.size)
-    assert_equal(1, out.select { |o| o[:value] == [[2, 10.0], [1, 11.0],
-                                                   [1, 12.0]] }.size)
+    assert_equal(1, out.select do |o|
+                      o[:value] == [[2, 10.0], [1, 11.0],
+                                    [1, 12.0]]
+                    end .size)
     assert_equal(1, out.select { |o| o[:tags] == WH_TAGS }.size)
     assert_equal(3, out.select { |o| o[:path] == 'test.dist1' }.size)
   end
@@ -220,9 +222,9 @@ class WavefrontMetricHelperTest < MiniTest::Test
   def test_flush_dists
     assert_nil(wfd.flush_dists([]))
 
-    input = {['test.dist1', :m, nil]     => [10, 10, 11, 12],
-             ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
-             ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+    input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
+              ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+              ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
 
     mocket = Mocket.new
     spy = Spy.on(wfd.dist_writer.writer, :write).and_return(mocket)
@@ -249,9 +251,9 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_flush_dists_fail
-    input = {['test.dist1', :m, nil]     => [10, 10, 11, 12],
-             ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
-             ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+    input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
+              ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+              ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
 
     mocket = BadMocket.new
     spy = Spy.on(wfd.dist_writer.writer, :write).and_return(mocket)
@@ -267,7 +269,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_dist_opts
-    o = wfd.dist_opts(ND_CREDS, { dist_port: 40000 })
+    o = wfd.dist_opts(ND_CREDS, dist_port: 40000)
     assert_equal(40000, o[:port])
     assert_equal('wavefront', o[:proxy])
   end
