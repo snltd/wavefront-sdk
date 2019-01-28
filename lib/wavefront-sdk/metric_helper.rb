@@ -6,7 +6,8 @@ module Wavefront
   # This class creates an in-memory buffer to which you can write
   # information using a number of methods. When the buffer is
   # flushed, the points are send to Wavefront using any Writer
-  # class.
+  # class. You can currently write gauges, counters, and
+  # distributions. This list may grow in the future.
   #
   class MetricHelper
     attr_reader :opts, :buf, :writer, :dist_writer
