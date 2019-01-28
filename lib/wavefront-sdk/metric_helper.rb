@@ -92,10 +92,10 @@ module Wavefront
       return if counters.empty?
 
       to_flush = counters.dup
-      @buf[:counters] = empty_gauges
+      @buf[:counters] = empty_counters
 
       writer.write_delta(counters_to_wf(counters)).tap do |resp|
-        @buf[:counters].merge!(to_flush) unless resp.ok?
+        replay_counters(to_flush) unless resp.ok?
       end
     end
 
@@ -106,8 +106,18 @@ module Wavefront
       @buf[:dists] = empty_dists
 
       dist_writer.write(dists_to_wf(dists)).tap do |resp|
-        @buf[:dists].merge!(to_flush) unless resp.ok?
+        replay_dists(to_flush) unless resp.ok?
       end
+    end
+
+    # Play a failed flush full of counters back into the system
+    #
+    def replay_counters(buffer)
+      buffer.each { |k, v| counter(k[0], v, k[1]) }
+    end
+
+    def replay_dists(buffer)
+      buffer.each { |k, v| dist(k[0], k[1], v, k[2]) }
     end
 
     # These are already Wavefront-format points
@@ -130,6 +140,7 @@ module Wavefront
         path, interval, tags = k
         dist = { path:     path,
                  value:    dist_writer.mk_distribution(v),
+                 ts:       Time.now.utc.to_i,
                  interval: interval }
         dist[:tags] = tags unless tags.nil?
         dist
@@ -138,8 +149,8 @@ module Wavefront
 
     # @return [Hash] options hash, with :port replaced by :dist_port
     #
-    def dist_opts(opts)
-      opts.dup.tap { |o| o[:port] = o[:dist_port] }
+    def dist_opts(creds, opts)
+      creds.dup.tap { |o| o[:port] = opts[:dist_port] }
     end
 
     private
@@ -164,7 +175,7 @@ module Wavefront
       require_relative 'distribution'
       @buf[:dists] = empty_dists
 
-      Wavefront::Distribution.new(creds, dist_opts(opts))
+      Wavefront::Distribution.new(creds, dist_opts(creds, opts))
     end
   end
 end
