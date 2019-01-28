@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.4.0
+
+* New `Wavefront::MetricHelper` class creates and in-memory buffer
+  to which you can instantaneously add metrics, flushing it to
+  Wavefront when appropriate. All `Writer` types are supported.
+* Add `noauto` option to `Write` class. This lets you manage the
+  connection yourself without having to pass `false` as the second
+  argument to every single `Write#write` call. (Though this still
+  works.)
+* Improve error handling when proxy socket is not available.
+* Raise an exception if an interval is not given when writing a
+  histogram.
+* Improve `README` instructions on writing metrics.
+* Support Ruby 2.6.
+
 ## 2.3.0 (06/01/2019)
 * When sending points via the API, send bundles of up to 100 points
   with each `POST`, rather than a call per point.

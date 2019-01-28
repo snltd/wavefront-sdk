@@ -21,11 +21,10 @@ module Wavefront
     # writing points to Wavefront. The actual writing is handled by
     # a Wavefront::Writer:: subclass.
     #
-    # @param creds [Hash] credentials
-    #   signature.
-    # @param options [Hash] can contain the following keys:
+    # @param creds [Hash] credentials: can contain keys:
     #   proxy [String] the address of the Wavefront proxy. ('wavefront')
     #   port [Integer] the port of the Wavefront proxy
+    # @param options [Hash] can contain the following keys:
     #   tags [Hash] point tags which will be applied to every point
     #   noop [Bool] if true, no proxy connection will be made, and
     #     instead of sending the points, they will be printed in
@@ -38,16 +37,15 @@ module Wavefront
     #   debug [Bool]
     #   writer [Symbol, String] the name of the writer class to use.
     #     Defaults to :socket
-    #   buffer [Bool] if this is true, metrics will be collected in an
-    #     in-memory object, and must be flushed manually.
-    #   openclose [Bool] if this is false, you have
+    #   noauto [Bool] if this is false, #write will automatically
+    #     open a connection to Wavefront on each invocation. Set
+    #     this to true to manually manage the connection.
     #
     def initialize(creds = {}, opts = {})
       defaults = { tags:       nil,
                    writer:     :socket,
                    noop:       false,
                    novalidate: false,
-                   buffer:     false,
                    noauto:     false,
                    verbose:    false,
                    debug:      false }
@@ -74,33 +72,6 @@ module Wavefront
     #
     def close
       writer.close
-    end
-
-    # a short-hand wrapper to write, when  you just want to send a path,
-    # value, and tags. Timestamp is automatically set to the current
-    # moment. For more control, use the #write method.
-    # @param path [String] metric path
-    # @param value [Numeric] metric value
-    # @param tags [Hash] hash of point tags
-    #
-    def gauge(path, value, tags = nil)
-      point = { path: path, ts: Time.now.to_i, value: value }
-      point[:tags] = tags if tags
-      write([point])
-    end
-
-    def counter(path, value, tags = nil)
-      point = { path: path, ts: Time.now.to_i, value: value }
-      point[:tags] = tags if tags
-      write_delta([point])
-    end
-
-    def bcounter(path, value = 1)
-      writer.bcounter(path, value)
-    end
-
-    def bhist(path, value)
-      writer.bhist(path, value)
     end
 
     # A wrapper to the writer class's #write method.

@@ -55,7 +55,7 @@ module Wavefront
       #
       def _send_point(point)
         conn.puts(point)
-      rescue
+      rescue StandardError
         raise Wavefront::Exception::SocketError
       end
 
