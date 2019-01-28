@@ -7,7 +7,6 @@ require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/metric_helper'
 
 ND_CREDS = { proxy: 'wavefront' }.freeze
-D_CREDS  = { proxy: 'wavefront', dist_port: 40_000 }.freeze
 WH_TAGS  = { t1: 'v1', t2: 'v2' }.freeze
 
 # Tests for the MetricHelper class.
@@ -17,8 +16,8 @@ class WavefrontMetricHelperTest < MiniTest::Test
   attr_reader :wf, :wfd
 
   def setup
-    @wf  = Wavefront::MetricHelper.new(D_CREDS, {})
-    @wfd = Wavefront::MetricHelper.new(ND_CREDS, {})
+    @wf  = Wavefront::MetricHelper.new(ND_CREDS, {})
+    @wfd = Wavefront::MetricHelper.new(ND_CREDS, { dist_port: 40000})
   end
 
   def test_gauge_1
@@ -71,7 +70,18 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_dist
-    true
+    wfd.dist('test.dist', :m, 10)
+    wfd.dist('test.dist', :h, 456)
+    wfd.dist('test.dist', :h, 123, WH_TAGS)
+    wfd.dist('test.dist', :m, [10, 12, 13, 14])
+    b = wfd.buf
+    assert_empty(b[:gauges])
+    assert_empty(b[:counters])
+    refute_empty(b[:dists])
+    assert_equal(3, b[:dists].size)
+    assert_equal([10, 10, 12, 13, 14], b[:dists][['test.dist', :m, nil]])
+    assert_equal([456], b[:dists][['test.dist', :h, nil]])
+    assert_equal([123], b[:dists][['test.dist', :h, WH_TAGS]])
   end
 
   def test_gauges_to_wf
@@ -99,7 +109,17 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_dists_to_wf
-    true
+    input = {['test.dist1', :m, nil]     => [10, 10, 11, 12],
+             ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+             ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+
+    out = wfd.dists_to_wf(input)
+    assert_instance_of(Array, out)
+    assert_equal(3, out.size)
+    assert_equal(1, out.select { |o| o[:value] == [[2, 10.0], [1, 11.0],
+                                                   [1, 12.0]] }.size)
+    assert_equal(1, out.select { |o| o[:tags] == WH_TAGS }.size)
+    assert_equal(3, out.select { |o| o[:path] == 'test.dist1' }.size)
   end
 
   def test_flush_gauges
@@ -123,8 +143,6 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_flush_gauges_fail
-    assert_nil(wf.flush_gauges([]))
-
     input = [{ path: 'm1.p', ts: 1548636080, value: 0 }]
 
     mocket = BadMocket.new
@@ -170,12 +188,86 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert_empty(wf.buf[:counters])
   end
 
+  def test_flush_counters_fail
+    input = { ['test.counter1', nil]     => 7,
+              ['test.counter1', WH_TAGS] => 8,
+              ['test.counter2', nil]     => 9 }
+
+    mocket = BadMocket.new
+    spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
+
+    out = wf.flush_counters(input)
+    args = spy.calls.first.args.first
+
+    assert_instance_of(BadMocket, out)
+    assert spy.has_been_called?
+    assert_equal(3, args.size)
+
+    wf.counter('test.counter1', 10)
+    wf.counter('test.counter1', 10)
+    wf.counter('test.counter2', 100)
+
+    assert(args.any? { |a| a.key?(:tags) && a[:tags] == WH_TAGS })
+    refute(args.all? { |a| a.key?(:tags) })
+    buf = wf.buf[:counters]
+    refute_empty(buf)
+    assert_equal(3, buf.size)
+    assert_equal(8, buf[['test.counter1', WH_TAGS]])
+    assert_equal(27, buf[['test.counter1', nil]])
+    assert_equal(109, buf[['test.counter2', nil]])
+  end
+
   def test_flush_dists
-    assert_nil(wf.flush_dists([]))
+    assert_nil(wfd.flush_dists([]))
+
+    input = {['test.dist1', :m, nil]     => [10, 10, 11, 12],
+             ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+             ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+
+    mocket = Mocket.new
+    spy = Spy.on(wfd.dist_writer.writer, :write).and_return(mocket)
+
+    out = wfd.flush_dists(input)
+    args = spy.calls.first.args.first
+
+    assert_instance_of(Mocket, out)
+    assert spy.has_been_called?
+    assert_equal(3, args.size)
+
+    args.each do |a|
+      assert_instance_of(Hash, a)
+      assert_includes(a.keys, :path)
+      assert_includes(a.keys, :ts)
+      assert_includes(a.keys, :value)
+      assert_instance_of(Array, a[:value])
+      assert_kind_of(Numeric, a[:ts])
+    end
+
+    assert(args.any? { |a| a.key?(:tags) && a[:tags] == WH_TAGS })
+    refute(args.all? { |a| a.key?(:tags) })
+    assert_empty(wfd.buf[:dists])
+  end
+
+  def test_flush_dists_fail
+    input = {['test.dist1', :m, nil]     => [10, 10, 11, 12],
+             ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+             ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+
+    mocket = BadMocket.new
+    spy = Spy.on(wfd.dist_writer.writer, :write).and_return(mocket)
+
+    out = wfd.flush_dists(input)
+    args = spy.calls.first.args.first
+
+    assert_instance_of(BadMocket, out)
+    assert spy.has_been_called?
+    assert_equal(3, args.size)
+    refute_empty(wfd.buf[:dists])
+    assert_equal(input, wfd.buf[:dists])
   end
 
   def test_dist_opts
-    o = wfd.dist_opts(D_CREDS)
+    o = wfd.dist_opts(ND_CREDS, { dist_port: 40000 })
     assert_equal(40000, o[:port])
     assert_equal('wavefront', o[:proxy])
   end
