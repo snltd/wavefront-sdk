@@ -183,3 +183,11 @@ class Mocket
     true
   end
 end
+
+# A mock socket which says things went wrong.
+#
+class BadMocket < Mocket
+  def ok?
+    false
+  end
+end
