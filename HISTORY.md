@@ -1,7 +1,6 @@
 # Changelog
 
-## 2.4.0
-
+## 2.4.0 (28/01/2019)
 * New `Wavefront::MetricHelper` class creates and in-memory buffer
   to which you can instantaneously add metrics, flushing it to
   Wavefront when appropriate. All `Writer` types are supported.

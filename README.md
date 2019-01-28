@@ -286,6 +286,8 @@ instance, the source and timestamp are automatically sent. You can
 view the buffer at any time with the `buf` `attr_accessor`.
 
 ```ruby
+require 'wavefront-sdk/metric_helper'
+
 wf = Wavefront::MetricHelper.new(CREDS.proxy, verbose: true)
 
 wf.gauge('my.gauge', 1)
