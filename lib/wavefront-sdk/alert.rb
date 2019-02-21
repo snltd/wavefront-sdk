@@ -17,7 +17,7 @@ module Wavefront
     #
     # @param offset [Int] alert at which the list begins
     # @param limit [Int] the number of alerts to return
-    # @return [Hash]
+    # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
       api.get('', offset: offset, limit: limit)
