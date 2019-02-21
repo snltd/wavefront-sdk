@@ -40,6 +40,7 @@ module Wavefront
     class InvalidTimeUnit < RuntimeError; end
     class InvalidTimestamp < RuntimeError; end
     class InvalidUserId < RuntimeError; end
+    class InvalidUserGroupId < RuntimeError; end
     class InvalidVersion < RuntimeError; end
     class InvalidWebhookId < RuntimeError; end
     class NotImplemented < RuntimeError; end
