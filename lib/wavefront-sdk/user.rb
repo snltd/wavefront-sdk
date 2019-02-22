@@ -198,16 +198,16 @@ module Wavefront
     # consistent with others in the future.
     #
     def response_shim(body, status)
-      items = JSON.parse(body)
+      items = JSON.parse(body, symbolize_names: true)
 
       { response: { items:      items,
                     offset:     0,
                     limit:      items.size,
                     totalItems: items.size,
                     modeItems:  false },
-        status:   { result:  status == 200 ? 'OK' : 'ERROR',
-                    message: '',
-                    code:    status } }.to_json
+        status:   { result:     status == 200 ? 'OK' : 'ERROR',
+                    message:    extract_api_message(status, items),
+                    code:       status } }.to_json
     end
 
     # the user API class does not support pagination. Be up-front
@@ -215,6 +215,13 @@ module Wavefront
     #
     def everything
       raise NoMethodError
+    end
+
+    private
+
+    def extract_api_message(status, items)
+      return '' if status < 300
+      items.fetch(:message, 'no message from API')
     end
   end
 end
