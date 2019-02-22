@@ -188,7 +188,8 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def invite(body)
-      raise ArgumentError unless body.is_a?(Hash)
+      raise ArgumentError unless body.is_a?(Array)
+      raise ArgumentError unless body.first.is_a?(Hash)
       api.post('invite', body, 'application/json')
     end
 

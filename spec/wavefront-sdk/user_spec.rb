@@ -114,8 +114,8 @@ class WavefrontUserTest < WavefrontTestBase
   end
 
   def test_invite
-    should_work(:invite, USER_BODY, 'invite', :post,
-                JSON_POST_HEADERS, USER_BODY.to_json)
+    should_work(:invite, [[USER_BODY]], 'invite', :post,
+                JSON_POST_HEADERS, [USER_BODY].to_json)
     assert_raises(ArgumentError) { wf.invite }
     assert_raises(ArgumentError) { wf.invite('test') }
   end
