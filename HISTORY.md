@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0 (21/02/2019)
+* New `Wavefront::UserGroup` class, for new API `UserGroup` feature.
+* Extended `Wavefront::User` to cover new API methods.
+
 ## 2.4.0 (28/01/2019)
 * New `Wavefront::MetricHelper` class creates and in-memory buffer
   to which you can instantaneously add metrics, flushing it to

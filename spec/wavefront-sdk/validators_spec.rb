@@ -207,6 +207,14 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_user_id?', 'InvalidUserId', good, bad)
   end
 
+  def test_wf_usergroup_id?
+    good = %w[2f17beb4-51b1-4362-b19f-098e3e4ab44d
+              42622766-52c2-4a8b-8070-b6f4623028c1]
+    bad = %w[word Name 42622766-52c2-4a8b-8070-b6f4623028c
+             z2622766-52c2-4a8b-8070-b6f4623028c1]
+    good_and_bad('wf_usergroup_id?', 'InvalidUserGroupId', good, bad)
+  end
+
   def test_wf_webhook_id?
     good = %w[4OfsEM8RcvkM7nwG]
     bad = %w[4OfsEM8RcvkM7n 4OfsEM8Rcvk-7nw]

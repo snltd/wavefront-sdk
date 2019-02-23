@@ -12,6 +12,16 @@ module Wavefront
   #
   # rubocop:disable Metrics/ModuleLength
   module Validators
+    # Is the given string a UUID? These are used for various item
+    # IDs.
+    #
+    # @param id [String]
+    # @return [Bool]
+    #
+    def uuid?(str)
+      str.is_a?(String) && str =~ /([a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12})/
+    end
+
     # Ensure the given argument is a valid external link template
     #
     # @return true if it is valid
@@ -192,12 +202,7 @@ module Wavefront
     #   is not valid
     #
     def wf_proxy_id?(id)
-      if id.is_a?(String) && id.match(
-        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
-      )
-        return true
-      end
-
+      return true if uuid?(id)
       raise Wavefront::Exception::InvalidProxyId
     end
 
@@ -225,12 +230,7 @@ module Wavefront
     #   integration ID is not valid
     #
     def wf_cloudintegration_id?(id)
-      if id.is_a?(String) && id.match(
-        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
-      )
-        return true
-      end
-
+      return true if uuid?(id)
       raise Wavefront::Exception::InvalidCloudIntegrationId
     end
 
@@ -392,6 +392,17 @@ module Wavefront
       end
 
       raise Wavefront::Exception::InvalidUserId
+    end
+
+    # Ensure the given argument is a valid user group.
+    #
+    # @param gid [String] user group identiier
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidUserGroupId if not valid
+    #
+    def wf_usergroup_id?(gid)
+      return true if uuid?(gid)
+      raise Wavefront::Exception::InvalidUserGroupId
     end
 
     # Ensure the given argument is a valid webhook ID.
