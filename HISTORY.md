@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.5.1 (06/03/2019)
+* Fix messy handling of raw query errors.
+
 ## 2.5.0 (21/02/2019)
 * New `Wavefront::UserGroup` class, for new API `UserGroup` feature.
 * Extended `Wavefront::User` to cover new API methods.
@@ -28,7 +31,6 @@
 * Full `Wavefront::Alert` test coverage.
 
 ## 2.2.0 (15/12/2018)
-
 * New methods to cover new API paths.
  * `Wavefront::Alert#install`,
  * `Wavefront::Alert#uninstall`,
