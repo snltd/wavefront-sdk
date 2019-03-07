@@ -93,6 +93,7 @@ module Wavefront
       wf_dashboard_id?(id)
       api.post([id, 'favorite'].uri_concat)
     end
+    alias favourite favorite
 
     # GET /api/v2/dashboard/id/history
     # Get the version history of a dashboard.
@@ -177,5 +178,6 @@ module Wavefront
       wf_dashboard_id?(id)
       api.post([id, 'unfavorite'].uri_concat)
     end
+    alias unfavourite unfavorite
   end
 end

@@ -61,6 +61,8 @@ class WavefrontDashboardTest < WavefrontTestBase
   def test_favorite
     should_work(:favorite, DASHBOARD, ["#{DASHBOARD}/favorite",
                                        nil], :post, POST_HEADERS)
+    should_work(:favourite, DASHBOARD, ["#{DASHBOARD}/favorite",
+                                        nil], :post, POST_HEADERS)
     should_be_invalid(:favorite)
   end
 
@@ -82,6 +84,8 @@ class WavefrontDashboardTest < WavefrontTestBase
   def test_unfavorite
     should_work(:unfavorite, DASHBOARD, ["#{DASHBOARD}/unfavorite",
                                          nil], :post, POST_HEADERS)
+    should_work(:unfavourite, DASHBOARD, ["#{DASHBOARD}/unfavorite",
+                                          nil], :post, POST_HEADERS)
     should_be_invalid(:unfavorite)
   end
 end
