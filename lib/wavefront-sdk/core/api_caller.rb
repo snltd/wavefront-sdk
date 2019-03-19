@@ -39,14 +39,17 @@ module Wavefront
     # root of the URI is dynamically derived by the #setup_endpoint
     # method.
     #
+    # @param path [String] uri path
     # @param headers [Hash] additional headers
+    # @param request_opts [Hash] Faraday request parameters
     # @return [URI::HTTPS]
     #
-    def mk_conn(path, headers = {})
+    def mk_conn(path, headers = {}, opts = {})
       url = format('%s://%s%s', net[:scheme], net[:endpoint],
                    [net[:api_base], path].uri_concat)
-      Faraday.new(url:     Addressable::URI.encode(url),
-                  headers: net[:headers].merge(headers))
+      set_opts = { url:     Addressable::URI.encode(url),
+                   headers: net[:headers].merge(headers) }
+      Faraday.new(set_opts.merge(opts))
     end
 
     # Make a GET call to the Wavefront API and return the result as
@@ -55,11 +58,30 @@ module Wavefront
     # @param path [String] path to be appended to the
     #   #net[:api_base] path.
     # @param query [Hash] optional key-value pairs with will be made
-    #   into aquery string
+    #   into a query string
+    # @param request_opts [Hash] parameters to pass through to
+    #   Faraday
     # @return [Hash] API response
     #
     def get(path, query = {})
-      make_call(mk_conn(path), :get, nil, query)
+      make_call(mk_conn(path, {}), :get, nil, query)
+    end
+
+    # Had to introduce this for the Wavefront::Dashboard#acls
+    # method, which uses a query string of multiple id=s. By default
+    # Faraday only uses the last one. You must set the
+    # `params_encoder`. Rather than convolute the existing logic, it
+    # was cleaner to add this method. Parameters are same as #get.
+    #
+    def get_flat_params(path, query = {})
+      conn = mk_conn(path,
+                     {},
+                     { request: {
+                         params_encoder: Faraday::FlatParamsEncoder
+                       },
+                       params:  query })
+
+      make_call(conn, :get)
     end
 
     # Make a POST call to the Wavefront API and return the result as

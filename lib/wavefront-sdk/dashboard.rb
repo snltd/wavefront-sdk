@@ -179,5 +179,61 @@ module Wavefront
       api.post([id, 'unfavorite'].uri_concat)
     end
     alias unfavourite unfavorite
+
+    # GET /api/v2/dashboard/acl
+    # Get list of Access Control Lists for the specified dashboards
+    # @param id_list [Array[String]] array of dashboard IDs
+    # @return [Wavefront::Response]
+    #
+    def acls(id_list)
+      id_list.each { |id| wf_dashboard_id?(id) }
+      api.get_flat_params('acl', id: id_list)
+    end
+
+    # POST /api/v2/dashboard/acl/add
+    # Adds the specified ids to the given dashboards' ACL
+    # @param id [String] ID of dashboard
+    # @param view [Array[Hash]] array of entities allowed to view
+    #   the dashboard. Entities may be users or groups, and are
+    #   defined as a Hash with keys :id and :name. For users the two
+    #   will be the same, for groups, not.
+    # @param modify [Array[Hash]] array of entities allowed to
+    #   view and modify the dashboard. Same rules as @view.
+    # @return [Wavefront::Response]
+    #
+    def acl_add(id, view = [], modify = [])
+      api.post(['acl', 'add'].uri_concat, acl_body(id, view, modify))
+    end
+
+    # POST /api/v2/dashboard/acl/remove
+    # Removes the specified ids from the given dashboards' ACL
+    #
+    # Though the API method is 'remove', the acl method names have
+    # been chosen to correspond with the tag methods.
+    #
+    def acl_delete(id, view = [], modify = [])
+      api.post(['acl', 'remove'].uri_concat, acl_body(id, view, modify))
+    end
+
+    # PUT /api/v2/dashboard/acl/set
+    # Set ACL for the specified dashboards
+    #
+    def acl_set(id, view = [], modify = [])
+      api.put(['acl', 'set'].uri_concat, acl_body(id, view, modify))
+    end
+
+    private
+
+    def acl_body(id, view, modify)
+      wf_dashboard_id?(id)
+
+      raise ArgumentError unless view.is_a?(Array) && modify.is_a?(Array)
+      raise ArgumentError unless view.all? { |h| h.is_a?(Hash) }
+      raise ArgumentError unless modify.all? { |h| h.is_a?(Hash) }
+
+      { entityId:  id,
+        viewAcl:   view,
+        modifyAcl: modify }
+    end
   end
 end
