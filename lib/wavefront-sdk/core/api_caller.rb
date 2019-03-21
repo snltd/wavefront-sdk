@@ -76,10 +76,10 @@ module Wavefront
     def get_flat_params(path, query = {})
       conn = mk_conn(path,
                      {},
-                     { request: {
-                         params_encoder: Faraday::FlatParamsEncoder
-                       },
-                       params:  query })
+                     request: {
+                       params_encoder: Faraday::FlatParamsEncoder
+                     },
+                     params:  query)
 
       make_call(conn, :get)
     end
@@ -184,6 +184,8 @@ module Wavefront
     end
 
     def make_single_call(conn, method, *args)
+      pp args if debug
+
       resp = conn.public_send(method, *args)
 
       if debug

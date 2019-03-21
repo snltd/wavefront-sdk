@@ -202,7 +202,9 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def acl_add(id, view = [], modify = [])
-      api.post(['acl', 'add'].uri_concat, acl_body(id, view, modify))
+      api.post(%w[acl add].uri_concat,
+               acl_body(id, view, modify),
+               'application/json')
     end
 
     # POST /api/v2/dashboard/acl/remove
@@ -212,14 +214,16 @@ module Wavefront
     # been chosen to correspond with the tag methods.
     #
     def acl_delete(id, view = [], modify = [])
-      api.post(['acl', 'remove'].uri_concat, acl_body(id, view, modify))
+      api.post(%w[acl remove].uri_concat,
+               acl_body(id, view, modify),
+               'application/json')
     end
 
     # PUT /api/v2/dashboard/acl/set
     # Set ACL for the specified dashboards
     #
     def acl_set(id, view = [], modify = [])
-      api.put(['acl', 'set'].uri_concat, acl_body(id, view, modify))
+      api.put(%w[acl set].uri_concat, acl_body(id, view, modify))
     end
 
     private
@@ -231,9 +235,7 @@ module Wavefront
       raise ArgumentError unless view.all? { |h| h.is_a?(Hash) }
       raise ArgumentError unless modify.all? { |h| h.is_a?(Hash) }
 
-      { entityId:  id,
-        viewAcl:   view,
-        modifyAcl: modify }
+      [{ entityId: id, viewAcl: view, modifyAcl: modify }]
     end
   end
 end
