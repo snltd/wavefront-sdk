@@ -68,5 +68,8 @@ class WavefrontSearchTest < WavefrontTestBase
 
     assert_equal({ limit: 10, offset: 0 }, r3)
     assert_equal(0, r3[:offset])
+
+    r4 = wf.body(q, sort_field: :mykey)
+    assert_equal({ field: :mykey, ascending: true }, r4[:sort])
   end
 end

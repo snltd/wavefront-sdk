@@ -53,7 +53,9 @@ module Wavefront
           q.tap { |iq| iq[:matchingMethod] ||= 'CONTAINS' }
         end
 
-        ret[:sort] = { field:     [query].flatten.first[:key],
+        sort_field = options[:sort_field] || [query].flatten.first[:key]
+
+        ret[:sort] = { field:     sort_field,
                        ascending: !options[:desc] || true }
       end
 
