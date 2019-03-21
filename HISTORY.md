@@ -1,5 +1,10 @@
 # Changelog
 
+# 2.6.0
+* Add ACL methods to `Wavefront::Dashboard` class.
+* Add `Dashboard#favourite` and `Dashboard#unfavourite` methods, as
+  aliases to `favorite` and `unfavorite`.
+
 ## 2.5.1 (06/03/2019)
 * Fix messy handling of raw query errors.
 
