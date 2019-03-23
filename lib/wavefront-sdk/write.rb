@@ -182,8 +182,8 @@ module Wavefront
        point[:value] || raise,
        point.fetch(:ts, nil),
        point.fetch(:source, HOSTNAME),
-       point[:tags] && point[:tags].to_wf_tag,
-       opts[:tags] && opts[:tags].to_wf_tag]
+       point[:tags]&.to_wf_tag,
+       opts[:tags]&.to_wf_tag]
     end
 
     private
