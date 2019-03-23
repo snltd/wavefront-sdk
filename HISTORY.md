@@ -1,9 +1,14 @@
 # Changelog
 
-# 2.6.0
+# 3.0.0
+* Drop support for Ruby 2.2. (Potentially breaking change.)
+* Add `Wavefront::Settings` class to cover new `settings` API
+  endpoint.
 * Add ACL methods to `Wavefront::Dashboard` class.
 * Add `Dashboard#favourite` and `Dashboard#unfavourite` methods, as
   aliases to `favorite` and `unfavorite`.
+* Add `sort_field` to `Wavefront::Search` options. Lets user select
+  the field on which to sort results.
 
 ## 2.5.1 (06/03/2019)
 * Fix messy handling of raw query errors.

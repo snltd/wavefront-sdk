@@ -70,7 +70,7 @@ module Wavefront
       #
       def user_page_size(args)
         arg_val = limit_and_offset(args)[:offset].to_i
-        return arg_val if arg_val && arg_val > 0
+        return arg_val if arg_val&.positive?
         PAGE_SIZE
       end
 

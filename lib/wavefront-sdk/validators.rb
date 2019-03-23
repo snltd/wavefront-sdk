@@ -162,7 +162,7 @@ module Wavefront
     #
     def wf_version?(version)
       version = version.to_i if version.is_a?(String) && version =~ /^\d+$/
-      return true if version.is_a?(Integer) && version > 0
+      return true if version.is_a?(Integer) && version.positive?
       raise Wavefront::Exception::InvalidVersion
     end
 
@@ -503,7 +503,7 @@ module Wavefront
     #   count is not valid
     #
     def wf_distribution_count?(count)
-      return true if count.is_a?(Integer) && count > 0
+      return true if count.is_a?(Integer) && count.positive?
       raise Wavefront::Exception::InvalidDistributionCount
     end
   end
