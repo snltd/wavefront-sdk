@@ -59,8 +59,8 @@ module Wavefront
              array2dist(dist[:value]),
              dist[:path] || raise,
              dist.fetch(:source, HOSTNAME),
-             dist[:tags] && dist[:tags].to_wf_tag,
-             opts[:tags] && opts[:tags].to_wf_tag).squeeze(' ').strip
+             dist[:tags]&.to_wf_tag,
+             opts[:tags]&.to_wf_tag).squeeze(' ').strip
     rescue StandardError
       raise Wavefront::Exception::InvalidDistribution
     end
