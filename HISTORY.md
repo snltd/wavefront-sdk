@@ -1,6 +1,9 @@
 # Changelog
 
-# 3.0.0
+## 3.0.1
+* User IDs do not have to be e-mail addresses.
+
+## 3.0.0 (23/03/2019)
 * Drop support for Ruby 2.2. (Potentially breaking change.)
 * Add `Wavefront::Settings` class to cover new `settings` API
   endpoint.

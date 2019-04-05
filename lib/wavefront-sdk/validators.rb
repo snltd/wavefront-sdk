@@ -386,11 +386,7 @@ module Wavefront
     # @raise Wavefront::Exceptions::InvalidUserId if not valid
     #
     def wf_user_id?(user)
-      if user.is_a?(String) &&
-         user =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-        return true
-      end
-
+      return true if user.is_a?(String) && user.length < 256
       raise Wavefront::Exception::InvalidUserId
     end
 
