@@ -3,6 +3,7 @@
 require_relative '../spec_helper'
 
 USER = 'user@example.com'.freeze
+BAD_USER = ('user' * 500).freeze
 PERMISSION = 'agent_management'.freeze
 
 USER_BODY = { emailAddress: USER, groups: %w[browse] }.freeze
@@ -28,20 +29,20 @@ class WavefrontUserTest < WavefrontTestBase
 
   def test_delete
     should_work(:delete, USER, USER, :delete)
-    should_be_invalid(:delete, 'abcdefg')
+    should_be_invalid(:delete, BAD_USER)
     assert_raises(ArgumentError) { wf.delete }
   end
 
   def test_describe
     should_work(:describe, USER, USER)
-    should_be_invalid(:describe, 'abcdefg')
+    should_be_invalid(:describe, BAD_USER)
     assert_raises(ArgumentError) { wf.describe }
   end
 
   def test_update
     should_work(:update, [USER, USER_BODY, false], USER, :put,
                 JSON_POST_HEADERS, USER_BODY.to_json)
-    should_be_invalid(:update, ['!invalid uid!', USER_BODY])
+    should_be_invalid(:update, [BAD_USER, USER_BODY])
     assert_raises(ArgumentError) { wf.update }
   end
 
@@ -51,7 +52,7 @@ class WavefrontUserTest < WavefrontTestBase
                 JSON_POST_HEADERS, USERGROUP_LIST.to_json)
 
     assert_raises(Wavefront::Exception::InvalidUserId) do
-      wf.add_groups_to_user('invalid address', USERGROUP_LIST)
+      wf.add_groups_to_user(BAD_USER, USERGROUP_LIST)
     end
   end
 
@@ -61,7 +62,7 @@ class WavefrontUserTest < WavefrontTestBase
                 JSON_POST_HEADERS, USERGROUP_LIST.to_json)
 
     assert_raises(Wavefront::Exception::InvalidUserId) do
-      wf.remove_groups_from_user('invalid address', USERGROUP_LIST)
+      wf.remove_groups_from_user(BAD_USER, USERGROUP_LIST)
     end
   end
 
@@ -71,7 +72,7 @@ class WavefrontUserTest < WavefrontTestBase
                          'Content-Type': 'application/x-www-form-urlencoded'
                 ),
                 "group=#{PERMISSION}")
-    should_be_invalid(:grant, ['abcde', PERMISSION])
+    should_be_invalid(:grant, [BAD_USER, PERMISSION])
     assert_raises(ArgumentError) { wf.grant }
   end
 
@@ -81,7 +82,7 @@ class WavefrontUserTest < WavefrontTestBase
                          'Content-Type': 'application/x-www-form-urlencoded'
                 ),
                 "group=#{PERMISSION}")
-    should_be_invalid(:revoke, ['abcde', PERMISSION])
+    should_be_invalid(:revoke, [BAD_USER, PERMISSION])
     assert_raises(ArgumentError) { wf.revoke }
   end
 
@@ -91,7 +92,7 @@ class WavefrontUserTest < WavefrontTestBase
                 [USER, 'other@example.com'].to_json)
 
     assert_raises(Wavefront::Exception::InvalidUserId) do
-      wf.delete_users(['invalid address'])
+      wf.delete_users([BAD_USER])
     end
 
     assert_raises(ArgumentError) { wf.delete_users('a@b.com') }
@@ -101,7 +102,7 @@ class WavefrontUserTest < WavefrontTestBase
     should_work(:grant_permission, [PERMISSION, USER_LIST],
                 [:grant, PERMISSION].uri_concat, :post,
                 JSON_POST_HEADERS, USER_LIST.to_json)
-    should_be_invalid(:grant, ['abcde', PERMISSION])
+    should_be_invalid(:grant, [BAD_USER, PERMISSION])
     assert_raises(ArgumentError) { wf.grant }
   end
 
@@ -109,7 +110,7 @@ class WavefrontUserTest < WavefrontTestBase
     should_work(:revoke_permission, [PERMISSION, USER_LIST],
                 [:revoke, PERMISSION].uri_concat, :post,
                 JSON_POST_HEADERS, USER_LIST.to_json)
-    should_be_invalid(:revoke, ['abcde', PERMISSION])
+    should_be_invalid(:revoke, [BAD_USER, PERMISSION])
     assert_raises(ArgumentError) { wf.grant }
   end
 
