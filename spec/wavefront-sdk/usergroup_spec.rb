@@ -11,7 +11,7 @@ USERGROUP_BODY = { name:        'test group',
                                    events_management] }.freeze
 
 USER_LIST = %w[someone@somewhere.com other@elsewhere.net].freeze
-BAD_USER_LIST = %w[badusername very!bad!username].freeze
+BAD_USER_LIST = ['bad' * 500, ''].freeze
 
 PERMISSION = 'alerts_management'.freeze
 

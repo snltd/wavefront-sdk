@@ -386,7 +386,7 @@ module Wavefront
     # @raise Wavefront::Exceptions::InvalidUserId if not valid
     #
     def wf_user_id?(user)
-      return true if user.is_a?(String) && user.length < 256
+      return true if user.is_a?(String) && user.length < 256 && !user.empty?
       raise Wavefront::Exception::InvalidUserId
     end
 
