@@ -1,6 +1,12 @@
 # Changelog
 
-## 3.0.1
+## 3.0.2 (06/04/2019)
+* Better handling of non-existent or malformed config files.
+* Look for `~/.wavefront.conf` as well as `~/.wavefront`. Both these
+  fixes are related to findind out that other Wavefront tooling
+  creates `~/.wavefront` as a directory.
+
+## 3.0.1 (05/04/2019)
 * User IDs do not have to be e-mail addresses.
 
 ## 3.0.0 (23/03/2019)

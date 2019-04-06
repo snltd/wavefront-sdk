@@ -12,8 +12,6 @@ CONF2 = RESOURCE_DIR + 'test2.conf'
 # Test SDK base class end-to-end
 #
 class WavefrontCredentialsTest < MiniTest::Test
-  attr_reader :wf, :wf_noop, :uri_base, :headers
-
   def test_initialize_1
     ENV.delete('WAVEFRONT_ENDPOINT')
     ENV.delete('WAVEFRONT_TOKEN')
@@ -135,10 +133,11 @@ class GibletsTest < MiniTest::Test
   def test_cred_files_no_opts
     x = wf.cred_files
     assert_instance_of(Array, x)
-    assert_equal(x.length, 2)
+    assert_equal(x.length, 3)
     x.each { |p| assert_instance_of(Pathname, p) }
     assert_includes(x, Pathname.new('/etc/wavefront/credentials'))
     assert_includes(x, Pathname.new(ENV['HOME']) + '.wavefront')
+    assert_includes(x, Pathname.new(ENV['HOME']) + '.wavefront.conf')
   end
 
   def test_cred_files_opts
@@ -177,5 +176,22 @@ class GibletsTest < MiniTest::Test
     assert_equal(z.keys.size, 4)
     assert_equal(z[:proxy], 'wavefront.lab')
     assert_equal(z[:endpoint], 'somewhere.wavefront.com')
+  end
+
+  def test_load_profile
+    assert_equal({}, wf.load_profile(CONF1, 'nosuchprofile'))
+    assert_instance_of(Hash, wf.load_profile(CONF1, 'default'))
+
+    assert_raises Wavefront::Exception::InvalidConfigFile do
+      wf.load_profile('/no/such/file')
+    end
+
+    assert_raises Wavefront::Exception::InvalidConfigFile do
+      wf.load_profile(RESOURCE_DIR)
+    end
+
+    assert_raises Wavefront::Exception::InvalidConfigFile do
+      wf.load_profile(RESOURCE_DIR + 'malformed.conf')
+    end
   end
 end
