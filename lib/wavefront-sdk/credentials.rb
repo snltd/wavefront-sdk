@@ -1,6 +1,7 @@
 require 'pathname'
 require 'inifile'
 require 'map'
+require_relative 'core/exception'
 
 module Wavefront
   # Helper methods to get Wavefront credentials.
@@ -21,6 +22,7 @@ module Wavefront
     # Wavefront. It will look in the following places:
     #
     # ~/.wavefront
+    # ~/.wavefront.conf
     # /etc/wavefront/credentials
     # WAVEFRONT_ENDPOINT and WAVEFRONT_TOKEN environment variables
     #
@@ -71,6 +73,7 @@ module Wavefront
         Array(Pathname.new(opts[:file]))
       else
         [Pathname.new('/etc/wavefront/credentials'),
+         Pathname.new(ENV['HOME']) + '.wavefront.conf',
          Pathname.new(ENV['HOME']) + '.wavefront']
       end
     end
@@ -84,7 +87,7 @@ module Wavefront
       ret = {}
 
       files.each do |f|
-        next unless f.exist?
+        next unless f.exist? && f.file?
         ret = load_profile(f, profile)
         ret[:file] = f
       end
@@ -104,6 +107,8 @@ module Wavefront
       IniFile.load(file)[profile].each_with_object({}) do |(k, v), memo|
         memo[k.to_sym] = v
       end
+    rescue StandardError
+      raise Wavefront::Exception::InvalidConfigFile, file
     end
   end
 end

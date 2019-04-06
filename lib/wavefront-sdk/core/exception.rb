@@ -8,6 +8,7 @@ module Wavefront
     class EnumerableError < RuntimeError; end
     class InvalidAlertId < RuntimeError; end
     class InvalidAlertSeverity < RuntimeError; end
+    class InvalidConfigFile < RuntimeError; end
     class InvalidCloudIntegrationId < RuntimeError; end
     class InvalidDashboardId < RuntimeError; end
     class InvalidDerivedMetricId < RuntimeError; end
