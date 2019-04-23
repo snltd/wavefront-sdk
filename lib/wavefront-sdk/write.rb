@@ -1,6 +1,7 @@
 require 'socket'
 require_relative 'core/exception'
 require_relative 'core/logger'
+require_relative 'core/response'
 require_relative 'defs/constants'
 require_relative 'validators'
 
@@ -40,21 +41,31 @@ module Wavefront
     #   noauto [Bool] if this is false, #write will automatically
     #     open a connection to Wavefront on each invocation. Set
     #     this to true to manually manage the connection.
+    #   chunk_size [Integer] So as not to create unusable metric
+    #     payloads, large batches of points will be broken into
+    #     chunks. This property controls the number of metrics in a
+    #     chunk. Defaults to 1,000.
+    #   chunk_pause [Integer] pause this many seconds between
+    #     writing chunks. Defaults to zero.
     #
     def initialize(creds = {}, opts = {})
-      defaults = { tags:       nil,
-                   writer:     :socket,
-                   noop:       false,
-                   novalidate: false,
-                   noauto:     false,
-                   verbose:    false,
-                   debug:      false }
-
       @opts = setup_options(opts, defaults)
       @creds = creds
       wf_point_tags?(opts[:tags]) if opts[:tags]
       @logger = Wavefront::Logger.new(opts)
       @writer = setup_writer
+    end
+
+    def defaults
+      { tags:        nil,
+        writer:      :socket,
+        noop:        false,
+        novalidate:  false,
+        noauto:      false,
+        verbose:     false,
+        debug:       false,
+        chunk_size:  1000,
+        chunk_pause: 0 }
     end
 
     def setup_options(user, defaults)
@@ -78,15 +89,35 @@ module Wavefront
     # Writers implement this method differently, Check the
     # appropriate class documentation for @return information etc.
     # The signature is always the same.
+    # @return [Boolean] false should any chunk fail
+    # @raise any exceptions raised by the writer classes are passed
+    #   through
     #
     def write(points = [], openclose = manage_conn, prefix = nil)
-      writer.write(points, openclose, prefix)
+      resps = [points].flatten.each_slice(opts[:chunk_size]).map do |chunk|
+        resp = writer.write(chunk, openclose, prefix)
+        sleep(opts[:chunk_pause])
+        resp
+      end
+
+      composite_response(resps)
     end
 
-    # Wrapper around writer class's #flush method
+    # Compound the responses of all chunked writes into one. It will
+    # be 'ok' only if *everything* passed.
     #
-    def flush
-      writer.flush
+    def composite_response(responses)
+      result = responses.all?(&:ok?) ? 'OK' : 'ERROR'
+      summary = { sent: 0, rejected: 0, unsent: 0 }
+
+      %i[sent rejected unsent].each do |k|
+        summary[k] = responses.map { |r| r.response[k] }.inject(:+)
+      end
+
+      Wavefront::Response.new(
+        { status:   { result: result, message: nil, code: nil },
+          response: summary.to_h }.to_json, nil
+      )
     end
 
     def manage_conn

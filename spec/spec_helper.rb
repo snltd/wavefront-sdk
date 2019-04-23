@@ -7,6 +7,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 require 'minitest/autorun'
+require 'spy/integration'
 require 'webmock/minitest'
 
 # rubocop:disable Style/MutableConstant
@@ -182,6 +183,14 @@ class Mocket
   def ok?
     true
   end
+
+  def response
+    { sent: 1, rejected: 0, unsent: 0 }
+  end
+
+  def status
+    { result: 'OK', message: nil, code: nil }
+  end
 end
 
 # A mock socket which says things went wrong.
@@ -189,5 +198,13 @@ end
 class BadMocket < Mocket
   def ok?
     false
+  end
+
+  def status
+    { result: 'ERROR', message: nil, code: nil }
+  end
+
+  def response
+    { sent: 0, rejected: 1, unsent: 0 }
   end
 end
