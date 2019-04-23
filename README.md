@@ -254,6 +254,10 @@ symbol, or by using the `Write#write_delta()` method. This is called in
 exactly the same way as `Write#write`, and supports all the same
 options.
 
+If you try to send huge amounts of metrics in a single go,
+`Wavefront::Write` will break them up into smaller API-friendly
+chunks.
+
 #### Sending Distributions
 
 Use the `Wavefront::Distribution` class to send distributions via a

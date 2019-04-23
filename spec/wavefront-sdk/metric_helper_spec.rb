@@ -1,13 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'minitest/autorun'
-require 'spy/integration'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/metric_helper'
 
 ND_CREDS = { proxy: 'wavefront' }.freeze
 WH_TAGS  = { t1: 'v1', t2: 'v2' }.freeze
-
 
 # Tests for the MetricHelper class.
 #
@@ -40,8 +37,6 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert gauge_close.has_been_called?
     assert counter_close.has_been_called?
   end
-
-=begin
 
 =begin
   def test_gauge_1
@@ -160,7 +155,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
 
     out = wf.flush_gauges(input)
     args = spy.calls.first.args.first
-    assert_instance_of(Mocket, out)
+    assert_instance_of(Wavefront::Response, out)
     assert spy.has_been_called?
     assert_equal(input, args)
     assert(args.any? { |a| a.key?(:tags) && a[:tags] == WH_TAGS })
@@ -174,7 +169,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     mocket = BadMocket.new
     spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
     out = wf.flush_gauges(input)
-    assert_instance_of(BadMocket, out)
+    assert_instance_of(Wavefront::Response, out)
     wf.gauge('m2.p', 9)
     wf.gauge('m3.p', 9)
     assert spy.has_been_called?
@@ -197,7 +192,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     out = wf.flush_counters(input)
     args = spy.calls.first.args.first
 
-    assert_instance_of(Mocket, out)
+    assert_instance_of(Wavefront::Response, out)
     assert spy.has_been_called?
     assert_equal(3, args.size)
 
@@ -225,7 +220,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     out = wf.flush_counters(input)
     args = spy.calls.first.args.first
 
-    assert_instance_of(BadMocket, out)
+    assert_instance_of(Wavefront::Response, out)
     assert spy.has_been_called?
     assert_equal(3, args.size)
 
@@ -256,7 +251,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     out = wfd.flush_dists(input)
     args = spy.calls.first.args.first
 
-    assert_instance_of(Mocket, out)
+    assert_instance_of(Wavefront::Response, out)
     assert spy.has_been_called?
     assert_equal(3, args.size)
 
@@ -285,7 +280,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     out = wfd.flush_dists(input)
     args = spy.calls.first.args.first
 
-    assert_instance_of(BadMocket, out)
+    assert_instance_of(Wavefront::Response, out)
     assert spy.has_been_called?
     assert_equal(3, args.size)
     refute_empty(wfd.buf[:dists])
@@ -301,6 +296,3 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 =end
 end
-# rubocop:enable Style/NumericLiterals
-
-
