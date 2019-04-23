@@ -42,9 +42,6 @@ module Wavefront
     #   suppress_errors [Boolean] Set this to true to have any
     #     exceptions thrown when writing metrics sent up the stack.
     #     By default they are caught and logged inside the SDK.
-    #   chunk_size [Integer] when each metric queue is flushed and
-    #     points are sent to Wavefront, they go in batches of a
-    #     maximum size. This value controls that size.
     #
     class Base
       attr_reader :queue, :writer, :logger, :metric_opts, :loop,
@@ -178,7 +175,7 @@ module Wavefront
       # Broken out fo stubbing
       #
       def _send_to_wf(_data)
-        writer.write(chunk).ok?
+        writer.write(data).ok?
       end
 
       def log_name

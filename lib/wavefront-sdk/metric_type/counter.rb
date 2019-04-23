@@ -110,8 +110,8 @@ module Wavefront
           tags:   eg[:key][2] }
       end
 
-      def _send_chunk_to_wf(chunk)
-        writer.write_delta(chunk)
+      def _send_to_wf(data)
+        writer.write_delta(data)
       end
 
       def validate_user_options
