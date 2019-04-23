@@ -95,7 +95,9 @@ module Wavefront
     #
     def write(points = [], openclose = manage_conn, prefix = nil)
       resps = [points].flatten.each_slice(opts[:chunk_size]).map do |chunk|
-        writer.write(chunk, openclose, prefix)
+        resp = writer.write(chunk, openclose, prefix)
+        sleep(opts[:chunk_pause])
+        resp
       end
 
       composite_response(resps)
