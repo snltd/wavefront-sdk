@@ -21,6 +21,7 @@ module Wavefront
     class InvalidGranularity < RuntimeError; end
     class InvalidHostname < RuntimeError; end
     class InvalidIntegrationId < RuntimeError; end
+    class InvalidInterval < RuntimeError; end
     class InvalidLinkTemplate < RuntimeError; end
     class InvalidMaintenanceWindowId < RuntimeError; end
     class InvalidMessageId < RuntimeError; end

@@ -7,6 +7,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 require 'minitest/autorun'
+require 'spy/integration'
 require 'webmock/minitest'
 
 # rubocop:disable Style/MutableConstant

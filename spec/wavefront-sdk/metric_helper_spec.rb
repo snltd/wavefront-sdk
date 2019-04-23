@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'minitest/autorun'
-require 'spy'
 require 'spy/integration'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/metric_helper'
 
 ND_CREDS = { proxy: 'wavefront' }.freeze
 WH_TAGS  = { t1: 'v1', t2: 'v2' }.freeze
+
 
 # Tests for the MetricHelper class.
 #
@@ -17,9 +17,33 @@ class WavefrontMetricHelperTest < MiniTest::Test
 
   def setup
     @wf  = Wavefront::MetricHelper.new(ND_CREDS, {})
-    @wfd = Wavefront::MetricHelper.new(ND_CREDS, dist_port: 40000)
+    # @wfd = Wavefront::MetricHelper.new(ND_CREDS, dist_port: 40000)
   end
 
+  def test_initialize
+    assert_instance_of(Wavefront::MetricType::Counter, wf.counter)
+    assert_instance_of(Wavefront::MetricType::Gauge, wf.gauge)
+  end
+
+  def test_flush!
+    gauge_flush = Spy.on(wf.gauge, :flush!)
+    counter_flush = Spy.on(wf.counter, :flush!)
+    wf.flush!
+    assert gauge_flush.has_been_called?
+    assert counter_flush.has_been_called?
+  end
+
+  def test_close!
+    gauge_close = Spy.on(wf.gauge, :close!)
+    counter_close = Spy.on(wf.counter, :close!)
+    wf.close!
+    assert gauge_close.has_been_called?
+    assert counter_close.has_been_called?
+  end
+
+=begin
+
+=begin
   def test_gauge_1
     wf.gauge('test.gauge', 123)
     b = wf.buf
@@ -275,5 +299,8 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert_equal({ verbose: true, dist_port: 40000 }, opts)
     assert_equal('wavefront', o[:proxy])
   end
+=end
 end
 # rubocop:enable Style/NumericLiterals
+
+

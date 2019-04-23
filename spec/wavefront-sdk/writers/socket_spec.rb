@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'webmock/minitest'
-require 'spy'
 require 'spy/integration'
 require 'socket'
 require 'logger'
