@@ -111,7 +111,7 @@ module Wavefront
       summary = { sent: 0, rejected: 0, unsent: 0 }
 
       %i[sent rejected unsent].each do |k|
-        summary[k] = responses.map { |r| r.response[k] }.sum
+        summary[k] = responses.map { |r| r.response[k] }.inject(:+)
       end
 
       Wavefront::Response.new(
