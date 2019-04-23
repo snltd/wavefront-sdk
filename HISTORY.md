@@ -1,5 +1,9 @@
 # Changelog
 
+* When using `Wavefront::Write`, large numbers of points are written
+  in chunks, rather than all at once. The chunk size can be set by
+  the user when instantiating the class.
+
 ## 3.0.2 (06/04/2019)
 * Better handling of non-existent or malformed config files.
 * Look for `~/.wavefront.conf` as well as `~/.wavefront`. Both these
