@@ -114,12 +114,11 @@ module Wavefront
         writer.write_delta(chunk)
       end
 
-      def validate_user_options(opts)
-        return
-        ###
-        return true if (opts[:flush_interval] % opts[:delta_interval]).zero?
-
-        raise Wavefront::Exception::InvalidInterval
+      def validate_user_options
+        unless (metric_opts[:flush_interval] %
+            metric_opts[:delta_interval]).zero?
+          raise Wavefront::Exception::InvalidInterval
+        end
       end
     end
   end

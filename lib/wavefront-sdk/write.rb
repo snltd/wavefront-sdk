@@ -105,6 +105,8 @@ module Wavefront
 
     # Compound the responses of all chunked writes into one. It will
     # be 'ok' only if *everything* passed.
+    # @param responses [Array[Wavefront::Response]]
+    # @return Wavefront::Response
     #
     def composite_response(responses)
       result = responses.all?(&:ok?) ? 'OK' : 'ERROR'

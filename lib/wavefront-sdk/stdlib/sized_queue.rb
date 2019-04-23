@@ -3,6 +3,6 @@
 #
 class SizedQueue
   def to_a
-    size.times.with_object([]) { |_, a| a.<< self.shift }
+    size.times.with_object([]) { |_, a| a.<< shift }
   end
 end

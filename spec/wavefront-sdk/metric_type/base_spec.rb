@@ -6,6 +6,9 @@ require_relative '../../../lib/wavefront-sdk/metric_type/base'
 WRITER_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 QUEUE_START  = Time.now.to_i
 
+# Test the metric sending and queueing mechanisms shared by all
+# metric types
+#
 class WavefrontMetricTypeBaseTest < MiniTest::Test
   attr_reader :wf, :queue
 
@@ -21,35 +24,35 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
                     value:     i,
                     timestamp: QUEUE_START + i,
                     source:    'testhost',
-                    tags:      { tag1: 'val1' }})
+                    tags:      { tag1: 'val1' } })
       end
     end
   end
 
   def test_setup_metric_opts
     assert_equal(
-        { queue_size:      10_000,
-          flush_interval:  300,
-          delta_interval:  300,
-          nonblock:        true,
-          suppress_errors: true,
-          chunk_size:      100 }, wf.setup_metric_opts({}))
+      { queue_size:      10_000,
+        flush_interval:  300,
+        delta_interval:  300,
+        nonblock:        true,
+        suppress_errors: true }, wf.setup_metric_opts({})
+    )
 
     assert_equal(
-        { queue_size:      10_000,
-          flush_interval:  600,
-          delta_interval:  600,
-          nonblock:        true,
-          suppress_errors: true,
-          chunk_size:      100 }, wf.setup_metric_opts(flush_interval: 600))
+      { queue_size:      10_000,
+        flush_interval:  600,
+        delta_interval:  600,
+        nonblock:        true,
+        suppress_errors: true }, wf.setup_metric_opts(flush_interval: 600)
+    )
 
     assert_equal(
-        { queue_size:      10_000,
-          flush_interval:  300,
-          delta_interval:  60,
-          nonblock:        true,
-          suppress_errors: true,
-          chunk_size:      100 }, wf.setup_metric_opts(delta_interval: 60))
+      { queue_size:      10_000,
+        flush_interval:  300,
+        delta_interval:  60,
+        nonblock:        true,
+        suppress_errors: true }, wf.setup_metric_opts(delta_interval: 60)
+    )
   end
 
   def test_setup_writer
@@ -73,26 +76,18 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
   end
 
   def test_send_to_wf
-    send_method = Spy.on(wf, :send_chunk_to_wf)
+    send_method = Spy.on(wf, :send_to_wf)
     wf.send_to_wf(queue.to_a)
     assert(send_method.has_been_called?)
     assert_equal(1, send_method.calls.size)
   end
 
-  def test_send_to_wf_lots_of_data
-    send_method = Spy.on(wf, :send_chunk_to_wf)
-    wf.send_to_wf(1001.times.map { |p| { path: 'test.path', value: 1 } })
-    assert(send_method.has_been_called?)
-    assert_equal(11, send_method.calls.size)
-  end
-
-=begin
   # Make sure we put things back on the queue after a failure to
   # send
-  #
+
   def test_broken_send
     assert_equal(0, wf.queue.size)
-    send_method = Spy.on(wf, :_send_chunk_to_wf).and_return(BadResponse.new)
+    send_method = Spy.on(wf, :_send_to_wf).and_return(BadMocket.new)
     wf.send_to_wf(queue.to_a)
     assert(send_method.has_been_called?)
     assert_equal(1, send_method.calls.size)
@@ -100,13 +95,13 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
   end
 
   def test_fill_in
-    x = wf.fill_in({ path: 'test.metric', value: 1 })
+    x = wf.fill_in(path: 'test.metric', value: 1)
     assert_equal('test.metric', x[:path])
     assert_equal(1, x[:value])
     assert_equal(HOSTNAME, x[:source])
     assert_instance_of(Float, x[:ts])
 
-    x = wf.fill_in({ path: 'test.metric', value: 1, ts: QUEUE_START })
+    x = wf.fill_in(path: 'test.metric', value: 1, ts: QUEUE_START)
     assert_equal('test.metric', x[:path])
     assert_equal(1, x[:value])
     assert_equal(HOSTNAME, x[:source])
@@ -118,14 +113,5 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
               source: 'unit_test' }
 
     assert_equal(input, wf.fill_in(input))
-  end
-=end
-end
-
-# Simulate a bad write to a proxy or endpoint
-#
-class BadResponse
-  def ok?
-    false
   end
 end

@@ -1,5 +1,4 @@
 require_relative '../write'
-require_relative '../stdlib/time'
 require_relative '../stdlib/sized_queue'
 
 module Wavefront
@@ -49,24 +48,23 @@ module Wavefront
     #
     class Base
       attr_reader :queue, :writer, :logger, :metric_opts, :loop,
-        :stop_looping
+                  :stop_looping
 
       def initialize(creds, writer_opts = {}, user_opts = {})
-        validate_user_options(user_opts)
-        @metric_opts  = setup_metric_opts(user_opts)
+        @metric_opts = setup_metric_opts(user_opts)
+        validate_user_options
         @queue        = SizedQueue.new(metric_opts[:queue_size])
         @writer       = setup_writer(creds, writer_opts)
         @logger       = Wavefront::Logger.new(writer_opts)
 
-        unless metric_opts[:flush_interval].zero?
-          @loop = Thread.new { flush_loop(metric_opts[:flush_interval]) }
-        end
+        return if metric_opts[:flush_interval].zero?
+        @loop = Thread.new { flush_loop(metric_opts[:flush_interval]) }
       end
 
       # Most of the time you just want to send a metric with a value
       # and maybe a couple of tags. Use this. It will set the
       # timestamp to "now" and the source name to the host name of
-      # whatever is running your code. The #<< method does all the
+      # whatever is running your code. The #qq method does all the
       # work, and differs between metric types. This is a
       # wrapper.
       #
@@ -74,21 +72,21 @@ module Wavefront
       # @param value [Numeric] metric value
       # @param tags [Hash] hash of key-value tags
       #
-      def <(path, value, tags = {})
-        self.<<({ path:   path,
-                  ts:     Time.now.utc.to_i,
-                  value:  value,
-                  source: HOSTNAME,
-                  tags:   tags })
+      def q(path, value, tags = {})
+        qq(path:   path,
+           ts:     Time.now.utc.to_i,
+           value:  value,
+           source: HOSTNAME,
+           tags:   tags)
       end
 
       # If you wish to specify things like source and timestamp,
-      # which #< does not let you do, you can send a point hash with
-      # #<<. Some people may even prefer this to #<, as it's more
+      # which #q does not let you do, you can send a point hash with
+      # #qq. Some people may even prefer this to #q, as it's more
       # explicit. You can even send an array of points.
       # @param point [Hash, Array] point, or array of points.
       #
-      def <<(point)
+      def qq(point)
         [point].flatten.map { |p| fill_in(p) }.each do |p|
           @queue.push(ready_point(p), metric_opts[:nonblock])
         end
@@ -114,7 +112,7 @@ module Wavefront
         send_to_wf(wf_data)
       end
 
-      def validate_user_options(_opts); end
+      def validate_user_options; end
 
       # Close the queue and flush any points, waiting for the thread
       # to complete.
@@ -124,6 +122,10 @@ module Wavefront
         logger.log("closing #{log_name} queue", :info)
         @loop.join
         flush!
+      end
+
+      def ready_point(point)
+        point
       end
 
       # Fill in any essential fields which have been missed out.
@@ -143,8 +145,7 @@ module Wavefront
         { queue_size:      10_000,
           flush_interval:  300,
           nonblock:        true,
-          suppress_errors: true,
-          chunk_size:      100 }.merge(user_opts).tap do |opts|
+          suppress_errors: true }.merge(user_opts).tap do |opts|
             unless opts[:delta_interval]
               opts[:delta_interval] = opts[:flush_interval]
             end
@@ -166,37 +167,18 @@ module Wavefront
         data
       end
 
-      # Send metrics to Wavefront, in batches. The actual
-      # transmission is done by the @writer class.
+      # Send metrics to Wavefront, using the @writer class.
       # @param data [Array[Hash]] array of points
-      # @return [Boolean] false if any chunk fails to send
+      # @return [Wavefront::Response]
       #
       def send_to_wf(data)
-        exit_code = true
-
-        data.each_slice(metric_opts[:chunk_size]) do |chunk|
-          exit_code = false unless send_chunk_to_wf(chunk)
-        end
-
-        exit_code
+        _send_to_wf(data).ok? || requeue(data)
       end
 
-      # Send a chunk of data to Wavefront, via the writer class
-      # @param chunk [Array[Hash]] array of points
-      # @return [Boolean]
+      # Broken out fo stubbing
       #
-      def send_chunk_to_wf(chunk)
-        logger.log("sending chunk of #{chunk.size} elements", :debug)
-        resp = _send_chunk_to_wf(chunk)
-
-        raise unless resp.ok?
-      rescue RuntimeError => e
-        requeue(chunk)
-        logger.log("Unable to send points: #{e}", :warn)
-      end
-
-      def _send_chunk_to_wf(chunk)
-        writer.write(chunk)
+      def _send_to_wf(_data)
+        writer.write(chunk).ok?
       end
 
       def log_name
@@ -206,15 +188,15 @@ module Wavefront
       private
 
       def requeue(data)
-        logger.log("Error sending buffer chunk. Putting #{data.size} " \
+        logger.log("Error sending buffer. Putting #{data.size} " \
                    'points back on queue', :info)
-        data.each { |p| self.<< p }
+        data.each { |p| qq(p) }
       end
 
       def flush_loop(sleep_time)
         logger.log("started thread for #{log_name}", :info)
 
-        while true do
+        loop do
           logger.log("#{log_name} sleeping for #{sleep_time}", :info)
           sleep(sleep_time) unless stop_looping == true
           flush!

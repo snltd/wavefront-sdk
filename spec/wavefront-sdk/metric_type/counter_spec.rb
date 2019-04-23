@@ -8,6 +8,9 @@ T_QUEUE_START = 1_555_360_340
 T_QUEUE_END   = T_QUEUE_START + 10
 T_QUEUE_CALL  = T_QUEUE_END + 10
 
+# Test for counter specifics. The sending mechanism is tested by
+# base_spec
+#
 class WavefrontMetricTypeCounterTest < MiniTest::Test
   attr_reader :wf, :queue_a
 
@@ -20,16 +23,16 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
 
   def setup_queue
     1.upto(10) do |i|
-      wf.<< ({ path:      'test.path.a',
-               value:     i,
-               ts:        T_QUEUE_START + i,
-               source:    'testhost',
-               tags:      { tag1: 'val1' } })
-      wf.<< ({ path:      'test.path.b',
-               value:     10 * i,
-               ts:        T_QUEUE_START + i,
-               source:    'unit_test',
-               tags:      { tag1: 'val2' } })
+      wf.qq(path:      'test.path.a',
+            value:     i,
+            ts:        T_QUEUE_START + i,
+            source:    'testhost',
+            tags:      { tag1: 'val1' })
+      wf.qq(path:      'test.path.b',
+            value:     10 * i,
+            ts:        T_QUEUE_START + i,
+            source:    'unit_test',
+            tags:      { tag1: 'val2' })
     end
   end
 
@@ -37,9 +40,9 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
     assert_instance_of(Wavefront::Write, wf.setup_writer(WRITER_CREDS, {}))
   end
 
-  def test_add_point_quick # the < method
+  def test_add_point_quick
     wf.queue.clear
-    wf.<('test.metric', 10)
+    wf.q('test.metric', 10)
     assert_equal(1, wf.queue.length)
     x = wf.queue.pop
     assert_instance_of(Array, x[:key])
@@ -49,13 +52,13 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
     assert_equal(10, x[:value])
   end
 
-  def test_add_point_hash # the << method
+  def test_add_point_hash
     wf.queue.clear
-    wf.<<({ path:   'new.metric',
-            value:  1.5,
-            ts:     T_QUEUE_START,
-            source: 'unit_test',
-            tags:   { key1: 'val1' } })
+    wf.qq(path:   'new.metric',
+          value:  1.5,
+          ts:     T_QUEUE_START,
+          source: 'unit_test',
+          tags:   { key1: 'val1' })
     assert_equal(1, wf.queue.length)
     assert_equal({ key:   ['new.metric', 'unit_test', { key1: 'val1' }],
                    ts:    T_QUEUE_START,
@@ -64,19 +67,19 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
 
   def test_to_wf
     assert_equal([{ path:   'test.path.a',
-                     source: 'testhost',
-                     ts:     T_QUEUE_CALL,
-                     value:  55,
-                     tags:   { tag1: 'val1' } },
+                    source: 'testhost',
+                    ts:     T_QUEUE_CALL,
+                    value:  55,
+                    tags:   { tag1: 'val1' } },
                   { path:   'test.path.b',
-                     source: 'unit_test',
-                     ts:     T_QUEUE_CALL,
-                     value:  550,
-                     tags:   { tag1: 'val2' } }],
-                  wf.to_wf(wf.queue.to_a, T_QUEUE_CALL))
+                    source: 'unit_test',
+                    ts:     T_QUEUE_CALL,
+                    value:  550,
+                    tags:   { tag1: 'val2' } }],
+                 wf.to_wf(wf.queue.to_a, T_QUEUE_CALL))
 
     1.upto(12) do |i|
-      setup(delta_interval: i)
+      setup(flush_interval: i * 100, delta_interval: i)
       x = wf.to_wf(wf.queue.to_a, T_QUEUE_CALL)
       path_a = x.select { |p| p[:path] == 'test.path.a' }
       path_b = x.select { |p| p[:path] == 'test.path.b' }
@@ -89,7 +92,7 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
 
   def test_bucketed_data
     assert_equal([[queue_a, T_QUEUE_END]],
-    wf.bucketed_data(queue_a, T_QUEUE_END, 300))
+                 wf.bucketed_data(queue_a, T_QUEUE_END, 300))
     assert_equal(5, wf.bucketed_data(queue_a, T_QUEUE_END, 2).size)
   end
 

@@ -31,11 +31,13 @@ module Wavefront
     # @param metric_opts [Hash] flush interval etc
     #
     def initialize(creds, writer_opts = {}, metric_opts = {})
-      @gauge   = Wavefront::MetricType::Gauge.new(
-        creds, writer_opts, metric_opts)
+      @gauge = Wavefront::MetricType::Gauge.new(
+        creds, writer_opts, metric_opts
+      )
       @counter = Wavefront::MetricType::Counter.new(
-        creds, writer_opts, metric_opts)
-      #@dist    = Wavefront::MetricType::Distribution.new(creds, opts)
+        creds, writer_opts, metric_opts
+      )
+      # @dist    = Wavefront::MetricType::Distribution.new(creds, opts)
     end
 
     # Trigger a flush of all metrics.
@@ -43,7 +45,7 @@ module Wavefront
     def flush!
       gauge.flush!
       counter.flush!
-      #dist.flush!
+      # dist.flush!
     end
 
     def close!

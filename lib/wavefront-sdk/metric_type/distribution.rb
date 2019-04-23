@@ -2,6 +2,7 @@ require_relative 'base'
 
 module Wavefront
   module MetricType
+    # Dists
     class Distribution < Base
       # @return [Hash] options hash, with :port replaced by :dist_port
       #
@@ -35,9 +36,9 @@ module Wavefront
         dists.map do |k, v|
           path, interval, tags = k
           dist = { path:     path,
-                  value:    dist_writer.mk_distribution(v),
-                  ts:       Time.now.utc.to_i,
-                  interval: interval }
+                   value:    dist_writer.mk_distribution(v),
+                   ts:       Time.now.utc.to_i,
+                   interval: interval }
           dist[:tags] = tags unless tags.nil?
           dist
         end
