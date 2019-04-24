@@ -42,6 +42,8 @@ module Wavefront
     #   suppress_errors [Boolean] Set this to true to have any
     #     exceptions thrown when writing metrics sent up the stack.
     #     By default they are caught and logged inside the SDK.
+    #   dist_port [Integer] proxy port to write distribution
+    #     metrics. Defaults to 40000.
     #
     class Base
       attr_reader :queue, :writer, :logger, :metric_opts, :loop,
@@ -141,6 +143,7 @@ module Wavefront
       def setup_metric_opts(user_opts)
         { queue_size:      10_000,
           flush_interval:  300,
+          dist_port:       40000,
           nonblock:        true,
           suppress_errors: true }.merge(user_opts).tap do |opts|
             unless opts[:delta_interval]

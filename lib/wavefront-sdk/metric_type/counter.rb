@@ -36,9 +36,11 @@ module Wavefront
       # Divides up data according to its timestamp. A bucket is
       # reduced to a point whose timestamp is the last second of the
       # bucket. We are given the time that the flush started, so
-      # we'll count back from there. This means any points with a
-      # future timestamp will be lost. Tough luck, you shouldn't be
-      # sending points with a future timestamp.
+      # we'll count back from there to the earliest point we have.
+      # No point going beyond that, and we don't know how old it
+      # might be, since there could be requeued data. This means any
+      # points with a future timestamp will be lost. Tough luck, you
+      # shouldn't be sending points with a future timestamp.
       # @param data [Array[Hash]] intermediate points
       # @param flush_time [Integer] epoch time at which flush began
       # @param interval [Integer] width of bucket, in seconds
@@ -47,16 +49,21 @@ module Wavefront
       def bucketed_data(data, flush_time, interval = nil)
         interval ||= metric_opts[:delta_interval]
 
-        t_start = flush_time - metric_opts[:flush_interval]
+        t_start = earliest_point(data)
 
-        flush_time.step(t_start, -interval).with_object([]) do |t, a|
+        flush_time.step(, -interval).with_object([]) do |t, a|
           points = points_in_range(data, t, interval)
           a.<< [points, t] unless points.empty?
         end
       end
 
-      # Takes a range of points from an array of points. Those
-      # points must be at the latest
+      # @return [Integer] timestamp of earliest point
+      #
+      def earliest_point(data)
+        data.map { |p| p[:ts] }.min
+      end
+
+      # Takes a range of points from an array of points.
       # @param data [Array[Hash]] array of points
       # @param t_end [Integer] epoch timestamp of end of bucket
       # @param interval [Integer] size of bucket, in seconds

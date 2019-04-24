@@ -6,19 +6,25 @@ module Wavefront
     class Distribution < Base
       # @return [Hash] options hash, with :port replaced by :dist_port
       #
-      def mk_creds(creds, opts)
-        creds.dup.tap { |o| o[:port] = opts[:dist_port] }
+      def dist_creds(creds)
+        creds.dup.tap { |o| o[:port] = metric_opts[:dist_port] }
       end
 
-      def setup_writer(creds, opts)
+      def setup_writer(creds, writer_opts)
         require_relative 'distribution'
-        @buf[:dists] = empty_dists
-        Wavefront::Distribution.new(dist_creds(creds, opts), opts)
+        Wavefront::Distribution.new(dist_creds(creds), writer_opts)
       end
 
-      def write(path, interval, value, tags = nil)
+      def q(path, interval, value, tags = nil)
         key = [path, interval, tags]
-        @buf[:dists][key] += [value].flatten
+        qq(path:   path,
+           ts:     Time.now.utc.to_i,
+           value:  value,
+           source: HOSTNAME,
+           tags:   tags)
+      end
+
+      def qq()
       end
 
       def flush!(dists)
@@ -46,10 +52,6 @@ module Wavefront
 
       def replay(buffer)
         buffer.each { |k, v| dist(k[0], k[1], v, k[2]) }
-      end
-
-      def empty
-        Hash.new([])
       end
     end
   end
