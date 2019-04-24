@@ -113,7 +113,7 @@ module Wavefront
         { path:   eg[:key][0],
           source: eg[:key][1],
           ts:     t_end,
-          value:  kdata.map { |p| p[:value] }.sum,
+          value:  kdata.map { |p| p[:value] }.inject(:+),
           tags:   eg[:key][2] }
       end
 
