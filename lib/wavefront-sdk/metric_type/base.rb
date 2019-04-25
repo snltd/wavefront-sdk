@@ -157,13 +157,14 @@ module Wavefront
       end
 
       # Convert data on the queue into Wavefront format. For some
-      # data types this is quite involved.
+      # data types this is quite involved, for others it's a
+      # straight passthrough.
       # @param data [Array[Hash]]
       # @param _flush_time Unused here, but required by some
       #   inheriting classes.
       # @return [Array[Hash]] of processed data points
       #
-      def to_wf(data, _flush_time)
+      def to_wf(data, _flush_time = nil)
         data
       end
 
@@ -177,8 +178,8 @@ module Wavefront
 
       # Broken out fo stubbing
       #
-      def _send_to_wf(_data)
-        writer.write(data).ok?
+      def _send_to_wf(data)
+        writer.write(data)
       end
 
       def log_name

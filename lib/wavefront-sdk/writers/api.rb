@@ -56,7 +56,9 @@ module Wavefront
       #
       def _send_point(body)
         body.each_slice(100) do |p|
-          conn.post('/?f=wavefront', p.join("\n"), 'application/octet-stream')
+          conn.post("/?f=#{calling_class.data_format}",
+                    p.join("\n"),
+                    'application/octet-stream')
         end
       end
     end

@@ -1,4 +1,5 @@
 require_relative 'write'
+require_relative 'distribution'
 require_relative 'core/logger'
 require_relative 'metric_type/gauge'
 require_relative 'metric_type/counter'
@@ -37,7 +38,9 @@ module Wavefront
       @counter = Wavefront::MetricType::Counter.new(
         creds, writer_opts, metric_opts
       )
-      # @dist    = Wavefront::MetricType::Distribution.new(creds, opts)
+      @dist = Wavefront::MetricType::Distribution.new(
+        creds, writer_opts, metric_opts
+      )
     end
 
     # Trigger a flush of all metrics.
@@ -45,12 +48,13 @@ module Wavefront
     def flush!
       gauge.flush!
       counter.flush!
-      # dist.flush!
+      dist.flush!
     end
 
     def close!
       gauge.close!
       counter.close!
+      dist.close!
     end
   end
 end

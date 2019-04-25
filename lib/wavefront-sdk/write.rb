@@ -219,6 +219,10 @@ module Wavefront
        opts[:tags]&.to_wf_tag]
     end
 
+    def data_format
+      :wavefront
+    end
+
     private
 
     # @return [Object] appropriate subclass of Wavefront::Writer

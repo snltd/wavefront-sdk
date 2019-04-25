@@ -34,6 +34,7 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
       { queue_size:      10_000,
         flush_interval:  300,
         delta_interval:  300,
+        dist_port:       40_000,
         nonblock:        true,
         suppress_errors: true }, wf.setup_metric_opts({})
     )
@@ -42,6 +43,7 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
       { queue_size:      10_000,
         flush_interval:  600,
         delta_interval:  600,
+        dist_port:       40_000,
         nonblock:        true,
         suppress_errors: true }, wf.setup_metric_opts(flush_interval: 600)
     )
@@ -50,6 +52,7 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
       { queue_size:      10_000,
         flush_interval:  300,
         delta_interval:  60,
+        dist_port:       40_000,
         nonblock:        true,
         suppress_errors: true }, wf.setup_metric_opts(delta_interval: 60)
     )

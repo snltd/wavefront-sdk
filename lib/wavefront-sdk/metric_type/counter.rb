@@ -47,11 +47,13 @@ module Wavefront
       # @return [Array[Array]] [points, timestamp_for_end_of_bucket]
       #
       def bucketed_data(data, flush_time, interval = nil)
+        return [] if data.empty?
+
         interval ||= metric_opts[:delta_interval]
 
         t_start = earliest_point(data)
 
-        flush_time.step(, -interval).with_object([]) do |t, a|
+        flush_time.step(t_start, -interval).with_object([]) do |t, a|
           points = points_in_range(data, t, interval)
           a.<< [points, t] unless points.empty?
         end
