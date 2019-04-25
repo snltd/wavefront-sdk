@@ -56,6 +56,8 @@ module Wavefront
       @writer = setup_writer
     end
 
+    # Chunk size gets overriden
+    #
     def defaults
       { tags:        nil,
         writer:      :socket,
@@ -64,7 +66,6 @@ module Wavefront
         noauto:      false,
         verbose:     false,
         debug:       false,
-        chunk_size:  1000,
         chunk_pause: 0 }
     end
 
@@ -94,7 +95,7 @@ module Wavefront
     #   through
     #
     def write(points = [], openclose = manage_conn, prefix = nil)
-      resps = [points].flatten.each_slice(opts[:chunk_size]).map do |chunk|
+      resps = [points].flatten.each_slice(chunk_size).map do |chunk|
         resp = writer.write(chunk, openclose, prefix)
         sleep(opts[:chunk_pause])
         resp
@@ -189,6 +190,10 @@ module Wavefront
     #
     def validation
       :wf_point?
+    end
+
+    def chunk_size
+      opts[:chunk_size] || writer.chunk_size
     end
 
     # Convert a validated point to a string conforming to

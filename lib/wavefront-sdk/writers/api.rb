@@ -39,6 +39,10 @@ module Wavefront
         false
       end
 
+      def chunk_size
+        100
+      end
+
       private
 
       def write_loop(points)
@@ -50,16 +54,14 @@ module Wavefront
         send_point(body)
       end
 
-      # Send points in batches of a hundred. I'm not sure exactly
-      # how much the API can cope with in a single call, so this
-      # might change.
+      # Send points. We used to batch here but now it's done in the
+      # calling class.
+      # @param body [Array] array of formatted points
       #
       def _send_point(body)
-        body.each_slice(100) do |p|
-          conn.post("/?f=#{calling_class.data_format}",
-                    p.join("\n"),
-                    'application/octet-stream')
-        end
+        conn.post("/?f=#{calling_class.data_format}",
+                  body.join("\n"),
+                  'application/octet-stream')
       end
     end
   end

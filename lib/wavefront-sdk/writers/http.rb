@@ -32,6 +32,10 @@ module Wavefront
               'credentials must contain proxy')
       end
 
+      def chunk_size
+        100
+      end
+
       private
 
       def _send_point(point)

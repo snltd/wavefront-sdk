@@ -137,6 +137,15 @@ module Wavefront
         false
       end
 
+      # We divide metrics up into manageable chunks and send them in
+      # batches. This dictates how large those bundles are. You can
+      # override the value with the chunk_size option
+      # @return [Integer]
+      #
+      def chunk_size
+        1000
+      end
+
       private
 
       def write_loop(points)
