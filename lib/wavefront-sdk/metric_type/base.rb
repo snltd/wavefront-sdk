@@ -90,7 +90,7 @@ module Wavefront
       # @param point [Hash, Array] point, or array of points.
       #
       def qq(point)
-        flat_point_array.each do |p|
+        flat_point_array(point).each do |p|
           validate(point) unless metric_opts[:no_validation]
           @queue.push(ready_point(p), metric_opts[:nonblock])
         end

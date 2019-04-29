@@ -28,7 +28,7 @@ class WavefrontPaginatorBaseTest < MiniTest::Test
     @wf = Wavefront::Paginator::Base.new(apicaller, conn, :get, args)
   end
 
-  def _test_limit_and_offset
+  def test_limit_and_offset
     assert_equal({ limit: nil, offset: nil }, wf.limit_and_offset([]))
     assert_equal({ limit: nil, offset: 10 },
                  wf.limit_and_offset([nil, { offset: 10 }]))

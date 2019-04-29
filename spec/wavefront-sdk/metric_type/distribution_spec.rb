@@ -5,7 +5,7 @@ require_relative '../../../lib/wavefront-sdk/metric_type/distribution'
 
 DWRITER_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 
-QUEUE_DIST = { key:   ['test.metric', 'box', :m, { tag1: 'val 1' }],
+QUEUE_DIST = { key:   ['test.metric', 'unit_test', :m, { tag1: 'val 1' }],
                ts:    1_556_210_452,
                value: [1, 1, 2, 3, 4, 4] }.freeze
 
@@ -13,7 +13,7 @@ WF_DIST = { path:     'test.metric',
             interval: :m,
             ts:       1_556_210_452,
             value:    [[2, 1], [1, 2], [1, 3], [2, 4]],
-            source:   'box',
+            source:   'unit_test',
             tags:     { tag1: 'val 1' } }.freeze
 
 # Test for distribution specifics. The sending mechanism is tested
@@ -44,7 +44,7 @@ class WavefrontMetricTypeDistributionTest < MiniTest::Test
     wf.q('test.metric', :m, [1, 1, 2, 3, 4, 4], tag1: 'val 1')
     assert_equal(1, wf.queue.length)
     x = wf.queue.pop
-    assert_equal(['test.metric', 'box', :m, { tag1: 'val 1' }],
+    assert_equal(['test.metric', HOSTNAME, :m, { tag1: 'val 1' }],
                  x[:key])
     assert_equal([1, 1, 2, 3, 4, 4], x[:value])
   end

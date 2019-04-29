@@ -51,6 +51,9 @@ module Wavefront
       dist.flush!
     end
 
+    # Flush everything, and wait on that flush. The threads are killed by the
+    # various metric classes.
+    #
     def close!
       flush_threads = [gauge.flush_thr, counter.flush_thr, dist.flush_thr]
 
