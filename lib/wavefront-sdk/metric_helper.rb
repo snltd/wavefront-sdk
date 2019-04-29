@@ -52,9 +52,13 @@ module Wavefront
     end
 
     def close!
+      flush_threads = [gauge.flush_thr, counter.flush_thr, dist.flush_thr]
+
       gauge.close!
       counter.close!
       dist.close!
+
+      flush_threads.each(&:join)
     end
   end
 end

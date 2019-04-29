@@ -49,8 +49,7 @@ module Wavefront
     #     validation
     #
     class Base
-      attr_reader :queue, :writer, :logger, :metric_opts, :loop,
-                  :stop_looping
+      attr_reader :queue, :writer, :logger, :metric_opts, :flush_thr
 
       include Wavefront::Validators
 
@@ -62,7 +61,7 @@ module Wavefront
         @logger       = Wavefront::Logger.new(writer_opts)
 
         return if metric_opts[:flush_interval].zero?
-        @loop = Thread.new { flush_loop(metric_opts[:flush_interval]) }
+        @flush_thr = Thread.new { flush_loop(metric_opts[:flush_interval]) }
       end
 
       # Most of the time you just want to send a metric with a value
@@ -91,13 +90,17 @@ module Wavefront
       # @param point [Hash, Array] point, or array of points.
       #
       def qq(point)
-        [point].flatten.map { |p| fill_in(p) }.each do |p|
+        flat_point_array.each do |p|
           validate(point) unless metric_opts[:no_validation]
           @queue.push(ready_point(p), metric_opts[:nonblock])
         end
       rescue ThreadError => e
         logger.log("could not send metric: #{e}.", :warn)
         raise unless metric_opts[:suppress_errors]
+      end
+
+      def flat_point_array(point)
+        [point].flatten.map { |p| fill_in(p) }
       end
 
       # Trigger a flush of the queue. The queue is emptied into a
@@ -119,18 +122,12 @@ module Wavefront
 
       def validate_user_options; end
 
-      def validate(point)
-        wf_point?(point)
-      end
-
       # Close the queue and flush any points, waiting for the thread
       # to complete.
       #
       def close!
-        @stop_looping = true
-        logger.log("closing #{log_name} queue", :debug)
-        @loop.join
         flush!
+        flush_thr.exit
       end
 
       def ready_point(point)
@@ -216,9 +213,9 @@ module Wavefront
       def flush_loop(sleep_time)
         logger.log("started thread for #{log_name}", :debug)
 
-        until stop_looping
+        loop do
           logger.log("#{log_name} sleeping for #{sleep_time}", :debug)
-          sleep(sleep_time) unless stop_looping == true
+          sleep(sleep_time)
           flush!
         end
       end
