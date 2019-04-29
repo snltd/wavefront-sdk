@@ -10,6 +10,7 @@ module Wavefront
     class InvalidAlertSeverity < RuntimeError; end
     class InvalidConfigFile < RuntimeError; end
     class InvalidCloudIntegrationId < RuntimeError; end
+    class InvalidCounterValue < RuntimeError; end
     class InvalidDashboardId < RuntimeError; end
     class InvalidDerivedMetricId < RuntimeError; end
     class InvalidDistribution < RuntimeError; end

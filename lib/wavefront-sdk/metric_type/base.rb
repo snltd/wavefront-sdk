@@ -1,3 +1,4 @@
+require_relative '../validators'
 require_relative '../write'
 require_relative '../stdlib/sized_queue'
 
@@ -44,10 +45,14 @@ module Wavefront
     #     By default they are caught and logged inside the SDK.
     #   dist_port [Integer] proxy port to write distribution
     #     metrics. Defaults to 40000.
+    #   no_validation [Boolean] set this to true to disable point
+    #     validation
     #
     class Base
       attr_reader :queue, :writer, :logger, :metric_opts, :loop,
                   :stop_looping
+
+      include Wavefront::Validators
 
       def initialize(creds, writer_opts = {}, user_opts = {})
         @metric_opts = setup_metric_opts(user_opts)
@@ -87,6 +92,7 @@ module Wavefront
       #
       def qq(point)
         [point].flatten.map { |p| fill_in(p) }.each do |p|
+          validate(point) unless metric_opts[:no_validation]
           @queue.push(ready_point(p), metric_opts[:nonblock])
         end
       rescue ThreadError => e
@@ -104,7 +110,7 @@ module Wavefront
       #
       def flush!(queue_data = nil)
         data = queue_data || queue
-        logger.log("flushing #{data.length} points [#{log_name}]", :info)
+        logger.log("flushing #{data.length} points [#{log_name}]", :debug)
         wf_data = to_wf(data.to_a, Time.now.utc.to_i)
         return true if wf_data.empty?
 
@@ -113,18 +119,30 @@ module Wavefront
 
       def validate_user_options; end
 
+      def validate(point)
+        wf_point?(point)
+      end
+
       # Close the queue and flush any points, waiting for the thread
       # to complete.
       #
       def close!
         @stop_looping = true
-        logger.log("closing #{log_name} queue", :info)
+        logger.log("closing #{log_name} queue", :debug)
         @loop.join
         flush!
       end
 
       def ready_point(point)
         point
+      end
+
+      # Check what we've been given.
+      # @raise [Wavefront::Exception] whatever exception is
+      #   triggered inside the validation code
+      #
+      def validate(point)
+        wf_point?(point)
       end
 
       # Fill in any essential fields which have been missed out.
@@ -145,6 +163,7 @@ module Wavefront
           flush_interval:  300,
           dist_port:       40000,
           nonblock:        true,
+          no_validate:     false,
           suppress_errors: true }.merge(user_opts).tap do |opts|
             unless opts[:delta_interval]
               opts[:delta_interval] = opts[:flush_interval]
@@ -190,18 +209,17 @@ module Wavefront
 
       def requeue(data)
         logger.log("Error sending buffer. Putting #{data.size} " \
-                   'points back on queue', :info)
+                   'points back on queue', :warn)
         data.each { |p| qq(p) }
       end
 
       def flush_loop(sleep_time)
-        logger.log("started thread for #{log_name}", :info)
+        logger.log("started thread for #{log_name}", :debug)
 
-        loop do
-          logger.log("#{log_name} sleeping for #{sleep_time}", :info)
+        until stop_looping
+          logger.log("#{log_name} sleeping for #{sleep_time}", :debug)
           sleep(sleep_time) unless stop_looping == true
           flush!
-          break if stop_looping == true
         end
       end
     end

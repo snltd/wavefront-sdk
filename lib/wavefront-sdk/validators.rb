@@ -431,13 +431,15 @@ module Wavefront
 
     # Validate a distribution description
     # @param dist [Hash] description of distribution
+    # @param flat [Boolean] is the distribution described as a flat
+    #   array of numbers? This is the case in a MetricHelper queue.
     # @return true if valid
     # @raise whichever exception is thrown first when validating
     #   each component of the distribution.
     #
-    def wf_distribution?(dist)
+    def wf_distribution?(dist, flat = false)
       wf_metric_name?(dist[:path])
-      wf_distribution_values?(dist[:value])
+      wf_distribution_values?(dist[:value], flat)
       wf_epoch?(dist[:ts]) if dist[:ts]
       wf_source_id?(dist[:source]) if dist[:source]
       wf_point_tags?(dist[:tags]) if dist[:tags]
@@ -446,16 +448,28 @@ module Wavefront
 
     # Validate an array of distribution values
     # @param vals [Array[Array]] [count, value]
+    # @param flat [Boolean] is this a flat array of numbers?
     # @return true if valid
     # @raise whichever exception is thrown first when validating
     #   each component of the distribution.
     #
-    def wf_distribution_values?(vals)
+    def wf_distribution_values?(vals, flat = false)
+      return wf_distribution_flat_vals?(vals) if flat
       vals.each do |times, val|
         wf_distribution_count?(times)
         wf_value?(val)
       end
       true
+    end
+
+    # Make sure a flat array could be used to describe a
+    # distribution
+    # @param vals [Array] of numbers
+    #
+    def wf_distribution_flat_vals?(vals)
+      return true if vals.is_a?(Array) && vals.all? { |v| v.is_a?(Numeric) }
+
+      raise Wavefront::Exception::InvalidDistribution
     end
 
     # Ensure the given argument is a valid Wavefront notificant ID.

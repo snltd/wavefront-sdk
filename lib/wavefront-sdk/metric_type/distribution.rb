@@ -62,6 +62,10 @@ module Wavefront
         end
       end
 
+      def validate(point)
+        wf_distribution?(point, true)
+      end
+
       # @return [Hash] options hash, with :port replaced by :dist_port
       #
       def dist_creds(creds)

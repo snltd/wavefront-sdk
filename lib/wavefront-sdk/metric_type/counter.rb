@@ -119,6 +119,13 @@ module Wavefront
           tags:   eg[:key][2] }
       end
 
+      def validate(point)
+        wf_point?(point)
+        return true unless point[:value].negative?
+
+        raise Wavefront::Exception::InvalidCounterValue
+      end
+
       def _send_to_wf(data)
         writer.write_delta(data)
       end
