@@ -85,8 +85,8 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
       path_b = x.select { |p| p[:path] == 'test.path.b' }
       assert_instance_of(Array, path_a)
       assert_instance_of(Array, path_b)
-      assert_equal(55, path_a.map { |p| p[:value] }.sum)
-      assert_equal(550, path_b.map { |p| p[:value] }.sum)
+      assert_equal(55, path_a.map { |p| p[:value] }.inject(:+))
+      assert_equal(550, path_b.map { |p| p[:value] }.inject(:+))
     end
   end
 
