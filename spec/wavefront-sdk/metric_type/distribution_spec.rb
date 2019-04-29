@@ -73,7 +73,7 @@ class WavefrontMetricTypeDistributionTest < MiniTest::Test
     assert_equal([1, 1, 2, 3, 4, 4], y[:value])
     assert_equal(HOSTNAME, y[:source])
     assert_equal({ tag1: 'val 1' }, y[:tags])
-    assert_instance_of(Integer, y[:ts])
+    assert_kind_of(Numeric, y[:ts])
   end
 
   def test_ready_point
