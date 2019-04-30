@@ -34,6 +34,9 @@ class WavefrontMetricHelperTest < MiniTest::Test
 
   def test_flush!
     add_points
+    refute_empty wf.gauge.queue
+    refute_empty wf.counter.queue
+    refute_empty wf.dist.queue
     g_send = Spy.on(wf.gauge, :_send_to_wf).and_return(Mocket.new)
     c_send = Spy.on(wf.counter, :_send_to_wf).and_return(Mocket.new)
     d_send = Spy.on(wf.dist, :_send_to_wf).and_return(Mocket.new)
@@ -44,10 +47,16 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert g_send.has_been_called?
     assert d_send.has_been_called?
     assert c_send.has_been_called?
+    refute wf.gauge.flush_thr.stop?
+    refute wf.counter.flush_thr.stop?
+    refute wf.dist.flush_thr.stop?
   end
 
   def test_close!
     add_points
+    refute_empty wf.gauge.queue
+    refute_empty wf.counter.queue
+    refute_empty wf.dist.queue
     g_send = Spy.on(wf.gauge, :_send_to_wf).and_return(Mocket.new)
     c_send = Spy.on(wf.counter, :_send_to_wf).and_return(Mocket.new)
     d_send = Spy.on(wf.dist, :_send_to_wf).and_return(Mocket.new)
@@ -58,5 +67,8 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert g_send.has_been_called?
     assert d_send.has_been_called?
     assert c_send.has_been_called?
+    assert wf.gauge.flush_thr.stop?
+    assert wf.counter.flush_thr.stop?
+    assert wf.dist.flush_thr.stop?
   end
 end
