@@ -1,5 +1,8 @@
 # Changelog
 
+* Tag and ACL methods have been broken out into mixins which are automatically
+  included by classes which support them
+
 ## 3.1.0 (23/04/2019)
 * When using `Wavefront::Write`, large numbers of points are written
   in chunks, rather than all at once. The chunk size can be set by
