@@ -1,12 +1,12 @@
 require_relative 'core/api'
-require_relative 'support/user_mixins'
+require_relative 'api_mixins/user'
 
 module Wavefront
   #
   # Manage and query Wavefront users
   #
   class User < CoreApi
-    include Wavefront::UserMixins
+    include Wavefront::Mixin::User
 
     # GET /api/v2/user
     # Get all users.

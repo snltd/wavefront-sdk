@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'minitest/autorun'
+require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/distribution'
-
-W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 
 DIST = {
   interval: :m,

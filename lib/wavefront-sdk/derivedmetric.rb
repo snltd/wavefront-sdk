@@ -1,13 +1,12 @@
 require_relative 'core/api'
+require_relative 'api_mixins/tag'
 
 module Wavefront
   #
   # View and manage derived metrics
   #
   class DerivedMetric < CoreApi
-    def update_keys
-      # %i[id name url description sections]
-    end
+    include Wavefront::Mixin::Tag
 
     # GET /api/v2/derivedmetric
     # Get all derived metric definitions for a customer.
@@ -94,59 +93,6 @@ module Wavefront
       api.get([id, 'history'].uri_concat)
     end
 
-    # GET /api/v2/derivedmetric/id/tag
-    # Get all tags associated with a specific derived metric
-    # definition.
-    #
-    # @param id [String] ID of the derived metric
-    # @return [Wavefront::Response]
-    #
-    def tags(id)
-      wf_derivedmetric_id?(id)
-      api.get([id, 'tag'].uri_concat)
-    end
-
-    # POST /api/v2/derivedmetric/id/tag
-    # Set all tags associated with a specific derived metric
-    # definition.
-    #
-    # @param id [String] ID of the derived metric
-    # @param tags [Array] list of tags to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_set(id, tags)
-      wf_derivedmetric_id?(id)
-      tags = Array(tags)
-      tags.each { |t| wf_string?(t) }
-      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
-    end
-
-    # DELETE /api/v2/derivedmetric/id/tag/tagValue
-    # Remove a tag from a specific derived metric definition.
-    #
-    # @param id [String] ID of the derived metric
-    # @param tag [String] tag to delete
-    # @return [Wavefront::Response]
-    #
-    def tag_delete(id, tag)
-      wf_derivedmetric_id?(id)
-      wf_string?(tag)
-      api.delete([id, 'tag', tag].uri_concat)
-    end
-
-    # PUT /api/v2/derivedmetric/id/tag/tagValue
-    # Add a tag to a specific derived metric definition.
-    #
-    # @param id [String] ID of the derived metric
-    # @param tag [String] tag to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_add(id, tag)
-      wf_derivedmetric_id?(id)
-      wf_string?(tag)
-      api.put([id, 'tag', tag].uri_concat)
-    end
-
     # POST /api/v2/derivedmetric/id/undelete
     # Move a derived metric definition from 'trash' back into active
     # service.
@@ -157,6 +103,10 @@ module Wavefront
     def undelete(id)
       wf_derivedmetric_id?(id)
       api.post([id, 'undelete'].uri_concat)
+    end
+
+    def valid_id?(id)
+      wf_derivedmetric_id?(id)
     end
   end
 end

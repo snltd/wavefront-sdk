@@ -1,12 +1,12 @@
 require_relative 'core/api'
-require_relative 'support/user_mixins'
+require_relative 'api_mixins/user'
 
 module Wavefront
   #
   # Manage and query Wavefront user groups
   #
   class UserGroup < CoreApi
-    include Wavefront::UserMixins
+    include Wavefront::Mixin::User
 
     def update_keys
       %i[id name]

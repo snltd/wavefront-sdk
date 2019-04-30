@@ -1,4 +1,5 @@
 require_relative 'core/api'
+require_relative 'api_mixins/tag'
 
 module Wavefront
   #
@@ -6,6 +7,8 @@ module Wavefront
   # epoch timestamp.
   #
   class Event < CoreApi
+    include Wavefront::Mixin::Tag
+
     def update_keys
       %i[startTime endTime name annotations]
     end
@@ -115,57 +118,8 @@ module Wavefront
       api.post([id, 'close'].uri_concat)
     end
 
-    # GET /api/v2/event/id/tag
-    # Get all tags associated with a specific event
-    #
-    # @param id [String] ID of the event
-    # @return [Wavefront::Response]
-    #   response keys
-    #
-    def tags(id)
+    def valid_id?(id)
       wf_event_id?(id)
-      api.get([id, 'tag'].uri_concat)
-    end
-
-    # POST /api/v2/event/id/tag
-    # Set all tags associated with a specific event.
-    #
-    # @param id [String] ID of the event
-    # @param tags [Array] list of tags to set.
-    # @return [Wavefront::Response]
-    #   response keys
-    #
-    def tag_set(id, tags)
-      wf_event_id?(id)
-      tags = Array(tags)
-      tags.each { |t| wf_string?(t) }
-      api.post([id, 'tag'].uri_concat, tags, 'application/json')
-    end
-
-    # DELETE /api/v2/event/id/tag/tagValue
-    # Remove a tag from a specific event.
-    #
-    # @param id [String] ID of the event
-    # @param tag [String] tag to delete
-    # @return [Wavefront::Response]
-    #
-    def tag_delete(id, tag)
-      wf_event_id?(id)
-      wf_string?(tag)
-      api.delete([id, 'tag', tag].uri_concat)
-    end
-
-    # PUT /api/v2/event/id/tag/tagValue
-    # Add a tag to a specific event.
-    #
-    # @param id [String] ID of the event
-    # @param tag [String] tag to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_add(id, tag)
-      wf_event_id?(id)
-      wf_string?(tag)
-      api.put([id, 'tag', tag].uri_concat)
     end
   end
 end

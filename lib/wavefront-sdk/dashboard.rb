@@ -1,10 +1,15 @@
 require_relative 'core/api'
+require_relative 'api_mixins/acl'
+require_relative 'api_mixins/tag'
 
 module Wavefront
   #
   # View and manage dashboards.
   #
   class Dashboard < CoreApi
+    include Wavefront::Mixin::Acl
+    include Wavefront::Mixin::Tag
+
     def update_keys
       %i[id name url description sections]
     end
@@ -106,57 +111,6 @@ module Wavefront
       api.get([id, 'history'].uri_concat)
     end
 
-    # GET /api/v2/dashboard/id/tag
-    # Get all tags associated with a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @return [Wavefront::Response]
-    #
-    def tags(id)
-      wf_dashboard_id?(id)
-      api.get([id, 'tag'].uri_concat)
-    end
-
-    # POST /api/v2/dashboard/id/tag
-    # Set all tags associated with a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tags [Array] list of tags to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_set(id, tags)
-      wf_dashboard_id?(id)
-      tags = Array(tags)
-      tags.each { |t| wf_string?(t) }
-      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
-    end
-
-    # DELETE /api/v2/dashboard/id/tag/tagValue
-    # Remove a tag from a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tag [String] tag to delete
-    # @return [Wavefront::Response]
-    #
-    def tag_delete(id, tag)
-      wf_dashboard_id?(id)
-      wf_string?(tag)
-      api.delete([id, 'tag', tag].uri_concat)
-    end
-
-    # PUT /api/v2/dashboard/id/tag/tagValue
-    # Add a tag to a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tag [String] tag to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_add(id, tag)
-      wf_dashboard_id?(id)
-      wf_string?(tag)
-      api.put([id, 'tag', tag].uri_concat)
-    end
-
     # POST /api/v2/dashboard/id/undelete
     # Move a dashboard from 'trash' back into active service.
     #
@@ -180,62 +134,8 @@ module Wavefront
     end
     alias unfavourite unfavorite
 
-    # GET /api/v2/dashboard/acl
-    # Get list of Access Control Lists for the specified dashboards
-    # @param id_list [Array[String]] array of dashboard IDs
-    # @return [Wavefront::Response]
-    #
-    def acls(id_list)
-      id_list.each { |id| wf_dashboard_id?(id) }
-      api.get_flat_params('acl', id: id_list)
-    end
-
-    # POST /api/v2/dashboard/acl/add
-    # Adds the specified ids to the given dashboards' ACL
-    # @param id [String] ID of dashboard
-    # @param view [Array[Hash]] array of entities allowed to view
-    #   the dashboard. Entities may be users or groups, and are
-    #   defined as a Hash with keys :id and :name. For users the two
-    #   will be the same, for groups, not.
-    # @param modify [Array[Hash]] array of entities allowed to
-    #   view and modify the dashboard. Same rules as @view.
-    # @return [Wavefront::Response]
-    #
-    def acl_add(id, view = [], modify = [])
-      api.post(%w[acl add].uri_concat,
-               acl_body(id, view, modify),
-               'application/json')
-    end
-
-    # POST /api/v2/dashboard/acl/remove
-    # Removes the specified ids from the given dashboards' ACL
-    #
-    # Though the API method is 'remove', the acl method names have
-    # been chosen to correspond with the tag methods.
-    #
-    def acl_delete(id, view = [], modify = [])
-      api.post(%w[acl remove].uri_concat,
-               acl_body(id, view, modify),
-               'application/json')
-    end
-
-    # PUT /api/v2/dashboard/acl/set
-    # Set ACL for the specified dashboards
-    #
-    def acl_set(id, view = [], modify = [])
-      api.put(%w[acl set].uri_concat, acl_body(id, view, modify))
-    end
-
-    private
-
-    def acl_body(id, view, modify)
+    def valid_id?(id)
       wf_dashboard_id?(id)
-
-      raise ArgumentError unless view.is_a?(Array) && modify.is_a?(Array)
-      raise ArgumentError unless view.all? { |h| h.is_a?(Hash) }
-      raise ArgumentError unless modify.all? { |h| h.is_a?(Hash) }
-
-      [{ entityId: id, viewAcl: view, modifyAcl: modify }]
     end
   end
 end

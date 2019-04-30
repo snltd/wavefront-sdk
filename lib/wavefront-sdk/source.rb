@@ -1,10 +1,13 @@
 require_relative 'core/api'
+require_relative 'api_mixins/tag'
 
 module Wavefront
   #
   # View and manage source metadata.
   #
   class Source < CoreApi
+    include Wavefront::Mixin::Tag
+
     def update_keys
       %i[sourceName tags description]
     end
@@ -100,55 +103,8 @@ module Wavefront
               'application/json')
     end
 
-    # GET /api/v2/source/id/tag
-    # Get all tags associated with a specific source.
-    #
-    # @param id [String] ID of the source
-    # @return [Wavefront::Response]
-    #
-    def tags(id)
+    def valid_id?(id)
       wf_source_id?(id)
-      api.get([id, 'tag'].uri_concat)
-    end
-
-    # POST /api/v2/source/id/tag
-    # Set all tags associated with a specific source.
-    #
-    # @param id [String] ID of the source
-    # @param tags [Array] list of tags to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_set(id, tags)
-      wf_source_id?(id)
-      tags = Array(tags)
-      tags.each { |t| wf_string?(t) }
-      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
-    end
-
-    # DELETE /api/v2/source/id/tag/tagValue
-    # Remove a tag from a specific source.
-    #
-    # @param id [String] ID of the source
-    # @param tag [String] tag to delete
-    # @return [Wavefront::Response]
-    #
-    def tag_delete(id, tag)
-      wf_source_id?(id)
-      wf_string?(tag)
-      api.delete([id, 'tag', tag].uri_concat)
-    end
-
-    # PUT /api/v2/source/id/tag/tagValue
-    # Add a tag to a specific source
-    #
-    # @param id [String] ID of the source
-    # @param tag [String] tag to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_add(id, tag)
-      wf_source_id?(id)
-      wf_string?(tag)
-      api.put([id, 'tag', tag].uri_concat)
     end
   end
 end
