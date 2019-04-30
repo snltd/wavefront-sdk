@@ -4,8 +4,6 @@ require 'pathname'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/credentials'
 
-p RESOURCE_DIR
-
 CONF1 = RESOURCE_DIR + 'test.conf'
 CONF2 = RESOURCE_DIR + 'test2.conf'
 
