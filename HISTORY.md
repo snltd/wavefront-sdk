@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.2.0 (30/04/2019)
+* Add support for new `apitoken` path.
+
 ## 3.1.0 (23/04/2019)
 * When using `Wavefront::Write`, large numbers of points are written
   in chunks, rather than all at once. The chunk size can be set by
