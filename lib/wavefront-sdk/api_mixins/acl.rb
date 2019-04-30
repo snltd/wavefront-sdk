@@ -61,15 +61,15 @@ module Wavefront
 
       def acl_body(id, view, modify)
         valid_id?(id)
-        valid_acl_body?(view, modify)
+        valid_acl_body?(view)
+        valid_acl_body?(modify)
 
         [{ entityId: id, viewAcl: view, modifyAcl: modify }]
       end
 
-      def valid_acl_body?(view, modify)
-        raise ArgumentError unless view.is_a?(Array) && modify.is_a?(Array)
-        raise ArgumentError unless view.all? { |h| h.is_a?(Hash) }
-        raise ArgumentError unless modify.all? { |h| h.is_a?(Hash) }
+      def valid_acl_body?(list)
+        return true if list.is_a?(Array) && list.all? { |h| h.is_a?(Hash) }
+        raise ArgumentError
       end
     end
   end
