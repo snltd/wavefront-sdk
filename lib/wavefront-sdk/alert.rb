@@ -1,5 +1,7 @@
 require_relative 'defs/constants'
 require_relative 'core/api'
+require_relative 'api_mixins/acl'
+require_relative 'api_mixins/tag'
 
 module Wavefront
   #
@@ -7,6 +9,9 @@ module Wavefront
   # epoch timestamp. Returns a Wavefront::Response::Alert object.
   #
   class Alert < CoreApi
+    include Wavefront::Mixin::Acl
+    include Wavefront::Mixin::Tag
+
     def update_keys
       %i[id name target condition displayExpression minutes
          resolveAfterMinutes severity additionalInformation]
@@ -126,55 +131,8 @@ module Wavefront
       api.post([id, "snooze#{qs}"].uri_concat, nil)
     end
 
-    # GET /api/v2/alert/id/tag
-    # Get all tags associated with a specific alert.
-    #
-    # @param id [String] ID of the alert
-    # @return [Wavefront::Response]
-    #
-    def tags(id)
+    def valid_id?(id)
       wf_alert_id?(id)
-      api.get([id, 'tag'].uri_concat)
-    end
-
-    # POST /api/v2/alert/id/tag
-    # Set all tags associated with a specific alert.
-    #
-    # @param id [String] ID of the alert
-    # @param tags [Array] list of tags to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_set(id, tags)
-      wf_alert_id?(id)
-      tags = Array(tags)
-      tags.each { |t| wf_string?(t) }
-      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
-    end
-
-    # DELETE /api/v2/alert/id/tag/tagValue
-    # Remove a tag from a specific alert.
-    #
-    # @param id [String] ID of the alert
-    # @param tag [String] tag to delete
-    # @return [Wavefront::Response]
-    #
-    def tag_delete(id, tag)
-      wf_alert_id?(id)
-      wf_string?(tag)
-      api.delete([id, 'tag', tag].uri_concat)
-    end
-
-    # PUT /api/v2/alert/id/tag/tagValue
-    # Add a tag to a specific alert.
-    #
-    # @param id [String] ID of the alert
-    # @param tag [String] tag to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_add(id, tag)
-      wf_alert_id?(id)
-      wf_string?(tag)
-      api.put([id, 'tag', tag].uri_concat)
     end
 
     # POST /api/v2/alert/id/undelete

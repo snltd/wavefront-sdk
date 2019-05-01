@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 
 require_relative '../../spec_helper'
-require_relative '../../../lib/wavefront-sdk/support/user_mixins'
+require_relative '../../../lib/wavefront-sdk/api_mixins/user'
 require_relative '../../../lib/wavefront-sdk/validators'
 require_relative '../../../lib/wavefront-sdk/core/exception'
 
 # Test user mixins
 #
 class WavefrontUserMixinsTest < MiniTest::Test
-  include Wavefront::UserMixins
+  include Wavefront::Mixin::User
   include Wavefront::Validators
 
   def test_validate_user_list

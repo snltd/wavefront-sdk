@@ -15,6 +15,8 @@ CREDS = { endpoint: 'test.example.com',
           token:    '0123456789-ABCDEF' }
 # rubocop:enable Style/MutableConstant
 
+W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
+
 POST_HEADERS = {
   'Content-Type': 'text/plain', Accept: 'application/json'
 }.freeze

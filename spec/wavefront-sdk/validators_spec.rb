@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'date'
-require 'minitest/autorun'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/defs/constants'
 require_relative '../../lib/wavefront-sdk/validators'

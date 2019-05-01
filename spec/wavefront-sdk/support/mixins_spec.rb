@@ -9,18 +9,17 @@ require 'spy/integration'
 class WavefrontMixinsTest < MiniTest::Test
   include Wavefront::Mixins
 
-  # rubocop:disable Lint/UnifiedInteger
   def test_parse_time
     base_t = Time.now.to_i
-    assert_equal parse_time(1_469_711_187), 1_469_711_187
-    assert_equal parse_time('2016-07-28 14:25:36 +0100'), 1_469_712_336
-    assert_instance_of Fixnum, parse_time(Time.now)
-    assert_instance_of Fixnum, parse_time(Time.now, true)
+    assert_equal(1_469_711_187, parse_time(1_469_711_187))
+    assert_equal(1_469_712_336, parse_time('2016-07-28 14:25:36 +0100'))
+    assert_kind_of(Numeric, parse_time(Time.now))
+    assert_kind_of(Numeric, parse_time(Time.now, true))
     assert parse_time(Time.now) >= base_t
     assert parse_time(Time.now, true) >= base_t * 1000
     assert parse_time(Time.now, true) < base_t * 1001
-    assert_instance_of Fixnum, parse_time(Time.now)
-    assert_instance_of Fixnum, parse_time(Time.now, true)
+    assert_kind_of(Numeric, parse_time(Time.now))
+    assert_kind_of(Numeric, parse_time(Time.now, true))
     assert_raises(Wavefront::Exception::InvalidTimestamp) do
       parse_time('nonsense')
     end
@@ -32,7 +31,6 @@ class WavefrontMixinsTest < MiniTest::Test
 
     assert_equal trt_spy.calls.length, 2
   end
-  # rubocop:enable Lint/UnifiedInteger
 
   def test_relative_time
     base = Time.now
@@ -40,15 +38,15 @@ class WavefrontMixinsTest < MiniTest::Test
     ms_base = base.to_date
     mbi = ms_base.strftime('%Q').to_i
 
-    assert_equal relative_time('+60s', false, base), bi + 60
-    assert_equal relative_time('-60s', false, base), bi - 60
-    assert_equal relative_time('+.5m', false, base), bi + 30
-    assert_equal relative_time('-000.50m', false, base), bi - 30
+    assert_equal(bi + 60, relative_time('+60s', false, base))
+    assert_equal(bi - 60, relative_time('-60s', false, base))
+    assert_equal(bi + 30, relative_time('+.5m', false, base))
+    assert_equal(bi - 30, relative_time('-000.50m', false, base))
 
-    assert_equal relative_time('+60s', true, ms_base), mbi + 60 * 1000
-    assert_equal relative_time('-60s', true, ms_base), mbi - 60 * 1000
-    assert_equal relative_time('+.5m', true, ms_base), mbi + 30 * 1000
-    assert_equal relative_time('-000.50m', true, ms_base), mbi - 30 * 1000
+    assert_equal(mbi + 60_000, relative_time('+60s', true, ms_base))
+    assert_equal(mbi - 60_000, relative_time('-60s', true, ms_base))
+    assert_equal(mbi + 30_000, relative_time('+.5m', true, ms_base))
+    assert_equal(mbi - 30_000, relative_time('-000.50m', true, ms_base))
 
     assert_raises(Wavefront::Exception::InvalidRelativeTime) do
       relative_time('5m')
@@ -73,19 +71,19 @@ class WavefrontMixinsTest < MiniTest::Test
   end
 
   def test_parse_relative_time
-    assert_equal parse_relative_time('-5s'), -5
-    assert_equal parse_relative_time('-5s', true), -5000
-    assert_equal parse_relative_time('+10000s'), 10_000
-    assert_equal parse_relative_time('-5m'), -300
-    assert_equal parse_relative_time('-.5m'), -30
-    assert_equal parse_relative_time('-0.5m'), -30
-    assert_equal parse_relative_time('+5m'), 300
-    assert_equal parse_relative_time('+.5m'), 30
-    assert_equal parse_relative_time('+.50m'), 30
-    assert_equal parse_relative_time('+.50m', true), 30 * 1000
-    assert_equal parse_relative_time('+.50m'), 30
-    assert_equal parse_relative_time('+1.5d'), 60 * 60 * 24 * 1.5
-    assert_equal parse_relative_time('-1.5d'), 60 * 60 * 24 * -1.5
+    assert_equal(-5, parse_relative_time('-5s'))
+    assert_equal(-5000, parse_relative_time('-5s', true))
+    assert_equal(10_000, parse_relative_time('+10000s'))
+    assert_equal(-300, parse_relative_time('-5m'))
+    assert_equal(-30, parse_relative_time('-.5m'))
+    assert_equal(-30, parse_relative_time('-0.5m'))
+    assert_equal(300, parse_relative_time('+5m'))
+    assert_equal(30, parse_relative_time('+.5m'))
+    assert_equal(30, parse_relative_time('+.50m'))
+    assert_equal(30_000, parse_relative_time('+.50m', true))
+    assert_equal(30, parse_relative_time('+.50m'))
+    assert_equal(129_600, parse_relative_time('+1.5d'))
+    assert_equal(-129_600, parse_relative_time('-1.5d'))
 
     ['-1.5p', '1.5m', '+1.3.5s'].each do
       assert_raises Wavefront::Exception::InvalidRelativeTime do |t|
@@ -95,13 +93,13 @@ class WavefrontMixinsTest < MiniTest::Test
   end
 
   def test_time_multiplier
-    assert_equal time_multiplier(:s), 1
-    assert_equal time_multiplier('s'), 1
-    assert_equal time_multiplier(:m), 60
-    assert_equal time_multiplier(:h), 60 * 60
-    assert_equal time_multiplier(:d), 60 * 60 * 24
-    assert_equal time_multiplier(:w), 60 * 60 * 24 * 7
-    assert_equal time_multiplier(:y), 60 * 60 * 24 * 365
+    assert_equal(1, time_multiplier(:s))
+    assert_equal(1, time_multiplier('s'))
+    assert_equal(60, time_multiplier(:m))
+    assert_equal(3600, time_multiplier(:h))
+    assert_equal(86_400, time_multiplier(:d))
+    assert_equal(604_800, time_multiplier(:w))
+    assert_equal(31_536_000, time_multiplier(:y))
 
     assert_raises(Wavefront::Exception::InvalidTimeUnit) do
       time_multiplier(:p)

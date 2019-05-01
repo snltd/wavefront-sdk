@@ -50,14 +50,16 @@ module Wavefront
 
         return args if body.class == desired
 
-        args[index] = if body.is_a?(String)
-                        JSON.parse(body, symbolize_names: true)
-                      else
-                        body.to_json
-                      end
+        args[index] = body_as_json(body)
         args
       rescue JSON::ParserError
         []
+      end
+
+      def body_as_json(body)
+        return body.to_json unless body.is_a?(String)
+
+        JSON.parse(body, symbolize_names: true)
       end
     end
   end
