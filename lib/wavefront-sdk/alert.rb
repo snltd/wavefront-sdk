@@ -13,7 +13,7 @@ module Wavefront
     include Wavefront::Mixin::Tag
 
     def update_keys
-      %i[id name target condition displayExpression minutes
+      %i[id name target condition displayExpression minutes tag
          resolveAfterMinutes severity additionalInformation]
     end
 
