@@ -47,7 +47,7 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
     x = wf.queue.pop
     assert_instance_of(Array, x[:key])
     assert_equal('test.metric', x[:key][0])
-    assert_instance_of(Integer, x[:ts])
+    assert_kind_of(Numeric, x[:ts])
     assert_equal({}, x[:key][2])
     assert_equal(10, x[:value])
   end
@@ -85,8 +85,8 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
       path_b = x.select { |p| p[:path] == 'test.path.b' }
       assert_instance_of(Array, path_a)
       assert_instance_of(Array, path_b)
-      assert_equal(55, path_a.map { |p| p[:value] }.sum)
-      assert_equal(550, path_b.map { |p| p[:value] }.sum)
+      assert_equal(55, path_a.map { |p| p[:value] }.inject(:+))
+      assert_equal(550, path_b.map { |p| p[:value] }.inject(:+))
     end
   end
 
