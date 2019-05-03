@@ -33,28 +33,31 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
     assert_equal(
       { queue_size:      10_000,
         flush_interval:  300,
-        delta_interval:  300,
         dist_port:       40_000,
         nonblock:        true,
-        suppress_errors: true }, wf.setup_metric_opts({})
+        no_validate:     false,
+        suppress_errors: true,
+        delta_interval:  300 }, wf.setup_metric_opts({})
     )
 
     assert_equal(
       { queue_size:      10_000,
         flush_interval:  600,
-        delta_interval:  600,
         dist_port:       40_000,
+        delta_interval:  600,
         nonblock:        true,
+        no_validate:     false,
         suppress_errors: true }, wf.setup_metric_opts(flush_interval: 600)
     )
 
     assert_equal(
       { queue_size:      10_000,
         flush_interval:  300,
-        delta_interval:  60,
         dist_port:       40_000,
         nonblock:        true,
-        suppress_errors: true }, wf.setup_metric_opts(delta_interval: 60)
+        no_validate:     false,
+        suppress_errors: true,
+        delta_interval:  60 }, wf.setup_metric_opts(delta_interval: 60)
     )
   end
 

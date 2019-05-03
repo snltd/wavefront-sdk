@@ -90,17 +90,10 @@ module Wavefront
       # @param point [Hash, Array] point, or array of points.
       #
       def qq(point)
-        flat_point_array.each do |p|
-          validate(point) unless metric_opts[:no_validation]
-          @queue.push(ready_point(p), metric_opts[:nonblock])
-        end
+        push_points_to_queue(point)
       rescue ThreadError => e
         logger.log("could not send metric: #{e}.", :warn)
         raise unless metric_opts[:suppress_errors]
-      end
-
-      def flat_point_array(point)
-        [point].flatten.map { |p| fill_in(p) }
       end
 
       # Trigger a flush of the queue. The queue is emptied into a
@@ -120,18 +113,12 @@ module Wavefront
         send_to_wf(wf_data)
       end
 
-      def validate_user_options; end
-
       # Close the queue and flush any points, waiting for the thread
       # to complete.
       #
       def close!
         flush!
         flush_thr.exit
-      end
-
-      def ready_point(point)
-        point
       end
 
       # Check what we've been given.
@@ -203,6 +190,26 @@ module Wavefront
       end
 
       private
+
+      def validate_user_options; end
+
+      def push_points_to_queue(points)
+        flat_point_array(points).each do |p|
+          validate(p) unless metric_opts[:no_validation]
+          @queue.push(ready_point(p), metric_opts[:nonblock])
+        end
+      end
+
+      # Whether given one point or more, return an array of points.
+      # All those points will be made "complete" by #fill_in
+      #
+      def flat_point_array(point)
+        [point].flatten.map { |p| fill_in(p) }
+      end
+
+      def ready_point(point)
+        point
+      end
 
       def requeue(data)
         logger.log("Error sending buffer. Putting #{data.size} " \
