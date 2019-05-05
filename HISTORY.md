@@ -2,6 +2,7 @@
 
 ## 3.2.0 (01/05/2019)
 * Add support for new `apitoken` path.
+* Add support for alert ACLs
 * Tag and ACL methods have been broken out into mixins which are
   automatically included by classes which support them
 
