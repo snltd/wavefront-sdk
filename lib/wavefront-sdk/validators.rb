@@ -516,6 +516,16 @@ module Wavefront
       return true if count.is_a?(Integer) && count.positive?
       raise Wavefront::Exception::InvalidDistributionCount
     end
+
+    # Ensure the given argument is a valid API token ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidApiTokenId if the
+    #   count is not valid
+    #
+    def wf_apitoken_id?(id)
+      return true if uuid?(id)
+      raise Wavefront::Exception::InvalidApiTokenId
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

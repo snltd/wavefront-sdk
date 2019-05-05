@@ -1,6 +1,7 @@
 require 'bundler/gem_tasks'
 require 'yard'
 require 'rake/testtask'
+require 'bundler/gem_tasks'
 require 'rubocop/rake_task'
 
 task default: %i[rubocop test]

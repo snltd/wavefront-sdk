@@ -1,12 +1,9 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-require 'minitest/autorun'
 require_relative '../../lib/wavefront-sdk/write'
-require_relative 'resources/dummy_points'
 require_relative '../../lib/wavefront-sdk/core/response'
-
-W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
+require_relative 'resources/dummy_points'
 
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
