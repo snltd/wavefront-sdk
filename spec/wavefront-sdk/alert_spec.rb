@@ -55,6 +55,16 @@ class WavefrontAlertTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.create('test') }
   end
 
+  def test_clone
+    should_work(:clone, [ALERT], [ALERT, :clone].uri_concat,
+                :post, JSON_POST_HEADERS,
+                { id: ALERT, name: nil, v: nil }.to_json)
+    should_work(:clone, [ALERT, 4], [ALERT, :clone].uri_concat,
+                :post, JSON_POST_HEADERS,
+                { id: ALERT, name: nil, v: 4 }.to_json)
+    assert_raises(ArgumentError) { wf.clone }
+  end
+
   def test_describe_v
     should_work(:describe, [ALERT, 4], "#{ALERT}/history/4")
   end
@@ -90,6 +100,10 @@ class WavefrontAlertTest < WavefrontTestBase
 
   def test_tags
     tag_tester(ALERT)
+  end
+
+  def test_acls
+    acl_tester(ALERT)
   end
 
   def test_undelete

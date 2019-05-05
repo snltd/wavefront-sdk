@@ -13,7 +13,7 @@ module Wavefront
     include Wavefront::Mixin::Tag
 
     def update_keys
-      %i[id name target condition displayExpression minutes
+      %i[id name target condition displayExpression minutes tag
          resolveAfterMinutes severity additionalInformation]
     end
 
@@ -73,6 +73,19 @@ module Wavefront
       api.get(fragments.uri_concat)
     end
 
+    # Gets all the versions of the given alert
+    # @param id [String] ID of the alert
+    # @reutrn [Wavefront::Resonse] where items is an array of integers
+    #
+    def versions(id)
+      wf_alert_id?(id)
+      resp = api.get([id, 'history'].uri_concat)
+
+      versions = resp.response.items.map(&:version)
+      resp.response[:items] = versions
+      resp
+    end
+
     # PUT /api/v2/alert/id
     # Update a specific alert.
     #
@@ -92,6 +105,22 @@ module Wavefront
 
       api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
+    end
+
+    # POST /api/v2/alert/{id}/clone
+    # Clones the specified alert
+    # @param id [String] ID of the alert
+    # @param version [Integer] version of alert
+    # @return [Wavefront::Response]
+    #
+    def clone(id, version = nil)
+      wf_alert_id?(id)
+      wf_version?(version) if version
+
+      api.post([id, 'clone'].uri_concat,
+               { id:   id,
+                 name: nil,
+                 v:    version }, 'application/json')
     end
 
     # GET /api/v2/alert/id/history
