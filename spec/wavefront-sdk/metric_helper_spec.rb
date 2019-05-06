@@ -47,8 +47,8 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert g_send.has_been_called?
     assert d_send.has_been_called?
     assert c_send.has_been_called?
-    refute wf.gauge.flush_thr.stop?
     refute wf.counter.flush_thr.stop?
+    refute wf.gauge.flush_thr.stop?
     refute wf.dist.flush_thr.stop?
   end
 

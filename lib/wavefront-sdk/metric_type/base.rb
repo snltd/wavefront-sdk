@@ -217,23 +217,15 @@ module Wavefront
         data.each { |p| qq(p) }
       end
 
-      # Using a loop do construct here causes a very occasional test
-      # failure, and I can't work out why. while true doesn't but it
-      # makes Rubocop grumble
-      #
-      # rubocop:disable Style/InfiniteLoop
-      # rubocop:disable Lint/LiteralAsCondition
       def flush_loop(sleep_time)
         logger.log("started thread for #{log_name}", :debug)
 
-        while true
+        loop do
           logger.log("#{log_name} sleeping for #{sleep_time}", :debug)
           sleep(sleep_time)
           flush!
         end
       end
-      # rubocop:enable Lint/LiteralAsCondition
-      # rubocop:enable Style/InfiniteLoop
     end
   end
 end
