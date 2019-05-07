@@ -94,7 +94,7 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
   def test_broken_send
     assert_equal(0, wf.queue.size)
     send_method = Spy.on(wf, :_send_to_wf).and_return(BadMocket.new)
-    wf.send_to_wf(queue.to_a)
+    capture_io { wf.send_to_wf(queue.to_a) }
     assert(send_method.has_been_called?)
     assert_equal(1, send_method.calls.size)
     assert_equal(10, wf.queue.size)
