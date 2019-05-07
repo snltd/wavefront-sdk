@@ -173,7 +173,7 @@ module Wavefront
 
       # Send metrics to Wavefront, using the @writer class.
       # @param data [Array[Hash]] array of points
-      # @return [Wavefront::Response]
+      # @return [Boolean]
       #
       def send_to_wf(data)
         _send_to_wf(data).ok? || requeue(data)
