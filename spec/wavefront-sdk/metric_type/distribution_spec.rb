@@ -3,8 +3,6 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/metric_type/distribution'
 
-DWRITER_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
-
 QUEUE_DIST = { key:   ['test.metric', 'unit_test', :m, { tag1: 'val 1' }],
                ts:    1_556_210_452,
                value: [1, 1, 2, 3, 4, 4] }.freeze
@@ -23,18 +21,18 @@ class WavefrontMetricTypeDistributionTest < MiniTest::Test
   attr_reader :wf
 
   def setup(opts = {})
-    @wf = Wavefront::MetricType::Distribution.new(DWRITER_CREDS, {}, opts)
+    @wf = Wavefront::MetricType::Distribution.new(W_CREDS, {}, opts)
   end
 
   def test_setup_writer
     assert_instance_of(Wavefront::Distribution,
-                       wf.setup_writer(DWRITER_CREDS, {}))
+                       wf.setup_writer(W_CREDS, {}))
   end
 
   def test_proxy_port
     assert_equal(40_000, wf.writer.creds[:port])
 
-    wf2 = Wavefront::MetricType::Distribution.new(DWRITER_CREDS, {},
+    wf2 = Wavefront::MetricType::Distribution.new(W_CREDS, {},
                                                   dist_port: 40_001)
     assert_equal(40_001, wf2.writer.creds[:port])
   end

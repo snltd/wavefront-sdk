@@ -3,8 +3,7 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/metric_type/base'
 
-WRITER_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
-QUEUE_START  = Time.now.to_i
+QUEUE_START = Time.now.to_i
 
 # Test the metric sending and queueing mechanisms shared by all
 # metric types
@@ -13,7 +12,7 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
   attr_reader :wf, :queue
 
   def setup
-    @wf = Wavefront::MetricType::Base.new(WRITER_CREDS, {}, {})
+    @wf = Wavefront::MetricType::Base.new(W_CREDS, {}, {})
     @queue = setup_queue
   end
 
@@ -62,7 +61,7 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
   end
 
   def test_setup_writer
-    assert_instance_of(Wavefront::Write, wf.setup_writer(WRITER_CREDS, {}))
+    assert_instance_of(Wavefront::Write, wf.setup_writer(W_CREDS, {}))
   end
 
   # We stub out the send methods at some point, so points are never

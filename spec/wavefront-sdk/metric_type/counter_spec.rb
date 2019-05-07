@@ -3,7 +3,6 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/metric_type/counter'
 
-WRITER_CREDS  = { proxy: 'wavefront', port: 2878 }.freeze
 T_QUEUE_START = 1_555_360_340
 T_QUEUE_END   = T_QUEUE_START + 10
 T_QUEUE_CALL  = T_QUEUE_END + 10
@@ -15,7 +14,7 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
   attr_reader :wf, :queue_a
 
   def setup(opts = {})
-    @wf = Wavefront::MetricType::Counter.new(WRITER_CREDS, {}, opts)
+    @wf = Wavefront::MetricType::Counter.new(W_CREDS, {}, opts)
     setup_queue
     @queue_a = wf.queue.to_a
     setup_queue
@@ -37,7 +36,7 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
   end
 
   def test_setup_writer
-    assert_instance_of(Wavefront::Write, wf.setup_writer(WRITER_CREDS, {}))
+    assert_instance_of(Wavefront::Write, wf.setup_writer(W_CREDS, {}))
   end
 
   def test_add_point_quick
