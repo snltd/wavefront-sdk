@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.3.0
+* Reflect the way the API ACL format has changed.
+
 ## 3.2.0 (01/05/2019)
 * Add support for new `apitoken` path.
 * Add support for alert ACLs
