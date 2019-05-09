@@ -32,10 +32,9 @@ DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
 RESOURCE_DIR = (Pathname.new(__FILE__).dirname +
                 'wavefront-sdk' + 'resources').freeze
 
-U_ACL_1 = { name: 'someone@example.com', id: 'someone@example.com' }.freeze
-U_ACL_2 = { name: 'other@elsewhere.com', id: 'other@elsewhere.com' }.freeze
-GRP_ACL = { name: 'example group',
-            id:   'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672' }.freeze
+U_ACL_1 = 'someone@example.com'.freeze
+U_ACL_2 = 'other@elsewhere.com'.freeze
+GRP_ACL = 'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'.freeze
 
 # Common testing code
 class WavefrontTestBase < MiniTest::Test

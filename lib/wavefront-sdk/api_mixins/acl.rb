@@ -20,11 +20,9 @@ module Wavefront
       # POST /api/v2/{entity}/acl/add
       # Adds the specified ids to the given object's ACL
       # @param id [String] ID of object
-      # @param view [Array[Hash]] array of entities allowed to view
-      #   the object. Entities may be users or groups, and are
-      #   defined as a Hash with keys :id and :name. For users the two
-      #   will be the same, for groups, not.
-      # @param modify [Array[Hash]] array of entities allowed to
+      # @param view [Array[String]] array of entities allowed to view
+      #   the object. Entities may be users or groups
+      # @param modify [Array[String]] array of entities allowed to
       #   view and modify the object. Same rules as @view.
       # @return [Wavefront::Response]
       #
@@ -41,6 +39,12 @@ module Wavefront
       #
       # Though the API method is 'remove', the acl method names have
       # been chosen to correspond with the tag methods.
+      # @param id [String] ID of object
+      # @param view [Array[String]] array of entities allowed to view
+      #   the object. Entities may be users or groups
+      # @param modify [Array[String]] array of entities allowed to
+      #   view and modify the object. Same rules as @view.
+      # @return [Wavefront::Response]
       #
       def acl_delete(id, view = [], modify = [])
         valid_id?(id)
@@ -52,6 +56,12 @@ module Wavefront
 
       # PUT /api/v2/{entity}/acl/set
       # Set ACL for the specified object
+      # @param id [String] ID of object
+      # @param view [Array[String]] array of entities allowed to view
+      #   the object. Entities may be users or groups
+      # @param modify [Array[String]] array of entities allowed to
+      #   view and modify the object. Same rules as @view.
+      # @return [Wavefront::Response]
       #
       def acl_set(id, view = [], modify = [])
         api.put(%w[acl set].uri_concat, acl_body(id, view, modify))
@@ -68,7 +78,7 @@ module Wavefront
       end
 
       def valid_acl_body?(list)
-        return true if list.is_a?(Array) && list.all? { |h| h.is_a?(Hash) }
+        return true if list.is_a?(Array) && list.all? { |h| h.is_a?(String) }
         raise ArgumentError
       end
     end
