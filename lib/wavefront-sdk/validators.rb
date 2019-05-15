@@ -12,6 +12,16 @@ module Wavefront
   #
   # rubocop:disable Metrics/ModuleLength
   module Validators
+    # Is the given string a UUID? These are used for various item
+    # IDs.
+    #
+    # @param id [String]
+    # @return [Bool]
+    #
+    def uuid?(str)
+      str.is_a?(String) && str =~ /([a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12})/
+    end
+
     # Ensure the given argument is a valid external link template
     #
     # @return true if it is valid
@@ -152,7 +162,7 @@ module Wavefront
     #
     def wf_version?(version)
       version = version.to_i if version.is_a?(String) && version =~ /^\d+$/
-      return true if version.is_a?(Integer) && version > 0
+      return true if version.is_a?(Integer) && version.positive?
       raise Wavefront::Exception::InvalidVersion
     end
 
@@ -192,12 +202,7 @@ module Wavefront
     #   is not valid
     #
     def wf_proxy_id?(id)
-      if id.is_a?(String) && id.match(
-        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
-      )
-        return true
-      end
-
+      return true if uuid?(id)
       raise Wavefront::Exception::InvalidProxyId
     end
 
@@ -225,12 +230,7 @@ module Wavefront
     #   integration ID is not valid
     #
     def wf_cloudintegration_id?(id)
-      if id.is_a?(String) && id.match(
-        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
-      )
-        return true
-      end
-
+      return true if uuid?(id)
       raise Wavefront::Exception::InvalidCloudIntegrationId
     end
 
@@ -386,12 +386,19 @@ module Wavefront
     # @raise Wavefront::Exceptions::InvalidUserId if not valid
     #
     def wf_user_id?(user)
-      if user.is_a?(String) &&
-         user =~ /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-        return true
-      end
-
+      return true if user.is_a?(String) && user.length < 256 && !user.empty?
       raise Wavefront::Exception::InvalidUserId
+    end
+
+    # Ensure the given argument is a valid user group.
+    #
+    # @param gid [String] user group identiier
+    # @return true if valid
+    # @raise Wavefront::Exceptions::InvalidUserGroupId if not valid
+    #
+    def wf_usergroup_id?(gid)
+      return true if uuid?(gid)
+      raise Wavefront::Exception::InvalidUserGroupId
     end
 
     # Ensure the given argument is a valid webhook ID.
@@ -492,8 +499,18 @@ module Wavefront
     #   count is not valid
     #
     def wf_distribution_count?(count)
-      return true if count.is_a?(Integer) && count > 0
+      return true if count.is_a?(Integer) && count.positive?
       raise Wavefront::Exception::InvalidDistributionCount
+    end
+
+    # Ensure the given argument is a valid API token ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidApiTokenId if the
+    #   count is not valid
+    #
+    def wf_apitoken_id?(id)
+      return true if uuid?(id)
+      raise Wavefront::Exception::InvalidApiTokenId
     end
   end
   # rubocop:enable Metrics/ModuleLength

@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'date'
-require 'minitest/autorun'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/defs/constants'
 require_relative '../../lib/wavefront-sdk/validators'
@@ -202,9 +201,17 @@ class WavefrontValidatorsTest < MiniTest::Test
 
   def test_wf_user_id?
     good = %w[Some.User@example.com general99+specific@somewhere.net
-              someone@somewhere.com]
-    bad = %w[word Name]
+              someone@somewhere.com a user user-name]
+    bad = ['', [], {}, 'a' * 1000]
     good_and_bad('wf_user_id?', 'InvalidUserId', good, bad)
+  end
+
+  def test_wf_usergroup_id?
+    good = %w[2f17beb4-51b1-4362-b19f-098e3e4ab44d
+              42622766-52c2-4a8b-8070-b6f4623028c1]
+    bad = %w[word Name 42622766-52c2-4a8b-8070-b6f4623028c
+             z2622766-52c2-4a8b-8070-b6f4623028c1]
+    good_and_bad('wf_usergroup_id?', 'InvalidUserGroupId', good, bad)
   end
 
   def test_wf_webhook_id?
@@ -327,6 +334,16 @@ class WavefrontValidatorsTest < MiniTest::Test
     good = %w[aws tutorial elasticsearch cassandra go]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
     good_and_bad('wf_integration_id?', 'InvalidIntegrationId', good, bad)
+  end
+
+  def test_apitoken_id
+    good = %w[2bfdcac7-1c9c-4c4b-9b56-c41c22c586dc
+              17db4cc1-65f6-40a8-a1fa-6fcae460c4bd
+              fca312fb-5ff4-420d-862d-5d6d99ed6bcf
+              3a1957e0-459e-49e5-9209-3888a4e8ac5b]
+
+    bad = %w[fa312fb-5ff4-420d-862d-5d6d99ed6bcf thing 123]
+    good_and_bad('wf_apitoken_id?', 'InvalidApiTokenId', good, bad)
   end
 
   def test_distribution_interval

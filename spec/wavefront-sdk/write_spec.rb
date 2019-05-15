@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-require 'minitest/autorun'
-require_relative '../../lib/wavefront-sdk/write.rb'
+require_relative '../../lib/wavefront-sdk/write'
+require_relative '../../lib/wavefront-sdk/core/response'
 require_relative 'resources/dummy_points'
-
-W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
@@ -27,6 +25,75 @@ class WavefrontWriteTest < MiniTest::Test
     assert(wf_noop.opts[:noop])
     assert_equal(wf_tags.opts[:tags], TAGS)
     assert_instance_of(Wavefront::Writer::Socket, wf.writer)
+  end
+
+  def test_composite_response
+    bad_status = { result: 'ERROR', message: nil, code: nil }
+    bad_response = { sent: 0, rejected: 1, unsent: 0 }
+    good_status = { result: 'OK', message: nil, code: nil }
+    good_response = { sent: 1, rejected: 0, unsent: 0 }
+
+    bad_resp = Wavefront::Response.new(
+      { status: bad_status, response: bad_response }.to_json, nil
+    )
+
+    good_resp = Wavefront::Response.new(
+      { status: good_status, response: good_response }.to_json, nil
+    )
+
+    x = wf.composite_response(Array.new(5).map { good_resp })
+    assert x.ok?
+    assert_equal('OK', x.status.result)
+    assert_equal(5, x.response.sent)
+    assert_equal(0, x.response.rejected)
+    assert_equal(0, x.response.unsent)
+
+    y = wf.composite_response(Array.new(4).map { good_resp } + [bad_resp])
+    refute y.ok?
+    assert_equal('ERROR', y.status.result)
+    assert_equal(4, y.response.sent)
+    assert_equal(1, y.response.rejected)
+    assert_equal(0, y.response.unsent)
+
+    z = wf.composite_response(Array.new(5).map { bad_resp })
+    refute z.ok?
+    assert_equal('ERROR', z.status.result)
+    assert_equal(0, z.response.sent)
+    assert_equal(5, z.response.rejected)
+    assert_equal(0, z.response.unsent)
+  end
+
+  def test_write_empty
+    assert wf.write([])
+  end
+
+  def test_bad_write
+    write_method = Spy.on(wf.writer, :write).and_return(BadMocket.new)
+    refute wf.write(point_array(19)).ok?
+    assert write_method.has_been_called?
+    assert_equal(1, write_method.calls.size)
+  end
+
+  def test_write_single_chunk
+    write_method = Spy.on(wf.writer, :write).and_return(Mocket.new)
+    assert wf.write(point_array(19)).ok?
+    assert write_method.has_been_called?
+    assert_equal(1, write_method.calls.size)
+  end
+
+  def test_write_multi_chunk
+    write_method = Spy.on(wf.writer, :write).and_return(Mocket.new)
+    assert wf.write(point_array(4321))
+    assert write_method.has_been_called?
+    assert_equal(5, write_method.calls.size)
+  end
+
+  # helper to test write chunking
+  #
+  def point_array(count)
+    1.upto(count).map do |i|
+      { path: 'dummy.path', value: i, ts: Time.now.to_i - i }
+    end
   end
 
   def test_paths_to_deltas

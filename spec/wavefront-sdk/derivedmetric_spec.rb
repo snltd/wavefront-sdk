@@ -12,7 +12,7 @@ DERIVED_METRIC_BODY = {
   processRateMinutes: 1
 }.freeze
 
-# Unit tests for dashboard class
+# Unit tests for derived metric class
 #
 class WavefrontDerivedMetricTest < WavefrontTestBase
   def test_list

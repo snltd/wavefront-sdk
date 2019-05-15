@@ -85,20 +85,24 @@ class WavefrontWriterSocketTest < MiniTest::Test
     tcp_spy = Spy.on(TCPSocket, :new)
     wf.open
     assert tcp_spy.has_been_called?
-    assert_equal(tcp_spy.calls.first.args, ['wavefront-proxy', 2878])
+    assert_equal(['wavefront-proxy', 2878], tcp_spy.calls.first.args)
   end
 
   def test_noop_open
     tcp_spy = Spy.on(TCPSocket, :new)
+    log_spy = Spy.on(wf_noop.logger, :log)
     wf_noop.open
     refute tcp_spy.has_been_called?
+    assert_equal(['No-op requested. Not opening connection to proxy.'],
+                 log_spy.calls.last.args)
+    assert_equal(1, log_spy.calls.size)
   end
-end
 
-# A mock socket
-#
-class Mocket
-  def puts(socket); end
-
-  def close; end
+  def test_noop_close
+    tcp_spy = Spy.on(TCPSocket, :new)
+    log_spy = Spy.on(wf_noop.logger, :log)
+    wf_noop.close
+    refute tcp_spy.has_been_called?
+    refute log_spy.has_been_called?
+  end
 end

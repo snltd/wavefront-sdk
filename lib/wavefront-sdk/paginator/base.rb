@@ -70,7 +70,7 @@ module Wavefront
       #
       def user_page_size(args)
         arg_val = limit_and_offset(args)[:offset].to_i
-        return arg_val if arg_val && arg_val > 0
+        return arg_val if arg_val&.positive?
         PAGE_SIZE
       end
 
@@ -80,13 +80,14 @@ module Wavefront
       #
       def set_pagination(offset, page_size, args)
         args.map do |arg|
-          if arg.is_a?(Hash)
-            arg.tap do |a|
-              a[:limit] = page_size if a.key?(:limit)
-              a[:offset] = offset if a.key?(:offset)
-            end
-          end
-          arg
+          arg.is_a?(Hash) ? set_limit_and_offset(arg, page_size, offset) : arg
+        end
+      end
+
+      def set_limit_and_offset(arg, page_size, offset)
+        arg.tap do |a|
+          a[:limit] = page_size if a.key?(:limit)
+          a[:offset] = offset if a.key?(:offset)
         end
       end
 

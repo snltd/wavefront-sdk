@@ -8,6 +8,8 @@ module Wavefront
     class EnumerableError < RuntimeError; end
     class InvalidAlertId < RuntimeError; end
     class InvalidAlertSeverity < RuntimeError; end
+    class InvalidApiTokenId < RuntimeError; end
+    class InvalidConfigFile < RuntimeError; end
     class InvalidCloudIntegrationId < RuntimeError; end
     class InvalidDashboardId < RuntimeError; end
     class InvalidDerivedMetricId < RuntimeError; end
@@ -40,9 +42,11 @@ module Wavefront
     class InvalidTimeUnit < RuntimeError; end
     class InvalidTimestamp < RuntimeError; end
     class InvalidUserId < RuntimeError; end
+    class InvalidUserGroupId < RuntimeError; end
     class InvalidVersion < RuntimeError; end
     class InvalidWebhookId < RuntimeError; end
     class NotImplemented < RuntimeError; end
+    class SocketError < RuntimeError; end
     class UnparseableResponse < RuntimeError; end
     class UnsupportedWriter < RuntimeError; end
     class ValueOutOfRange < RuntimeError; end

@@ -7,12 +7,15 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 require 'minitest/autorun'
+require 'spy/integration'
 require 'webmock/minitest'
 
 # rubocop:disable Style/MutableConstant
 CREDS = { endpoint: 'test.example.com',
           token:    '0123456789-ABCDEF' }
 # rubocop:enable Style/MutableConstant
+
+W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
 
 POST_HEADERS = {
   'Content-Type': 'text/plain', Accept: 'application/json'
@@ -28,6 +31,10 @@ DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
 
 RESOURCE_DIR = (Pathname.new(__FILE__).dirname +
                 'wavefront-sdk' + 'resources').freeze
+
+U_ACL_1 = 'someone@example.com'.freeze
+U_ACL_2 = 'other@elsewhere.com'.freeze
+GRP_ACL = 'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'.freeze
 
 # Common testing code
 class WavefrontTestBase < MiniTest::Test
@@ -58,6 +65,8 @@ class WavefrontTestBase < MiniTest::Test
   end
 
   def target_uri(path)
+    return "https://#{CREDS[:endpoint]}#{path}" if path.start_with?('/')
+
     [uri_base, path].join(path.start_with?('?') ? '' : '/')
   end
 
@@ -158,6 +167,48 @@ class WavefrontTestBase < MiniTest::Test
       wf.send(method, id, '<!!!>')
     end
   end
+
+  def acl_tester(id)
+    id2 = id.reverse
+    should_work(:acls, [[id, id2]], "acl?id=#{id}&id=#{id2}")
+
+    should_work(:acl_add, [id, [U_ACL_1, U_ACL_2], [GRP_ACL]],
+                'acl/add', :post, {}, acl_body(id,
+                                               [U_ACL_1, U_ACL_2],
+                                               [GRP_ACL]))
+
+    should_work(:acl_add, [id, [U_ACL_1, U_ACL_2]],
+                'acl/add', :post, {}, acl_body(id,
+                                               [U_ACL_1, U_ACL_2]))
+    assert_raises(ArgumentError) { wf.acl_add(id, U_ACL_1) }
+    assert_raises(ArgumentError) { wf.acl_add(id, [U_ACL_1], GRP_ACL) }
+
+    should_work(:acl_delete, [id, [U_ACL_1, U_ACL_2], [GRP_ACL]],
+                'acl/remove', :post, {}, acl_body(id,
+                                                  [U_ACL_1, U_ACL_2],
+                                                  [GRP_ACL]))
+
+    should_work(:acl_delete, [id, [U_ACL_1, U_ACL_2]],
+                'acl/remove', :post, {}, acl_body(id,
+                                                  [U_ACL_1, U_ACL_2]))
+    assert_raises(ArgumentError) { wf.acl_delete(id, U_ACL_1) }
+
+    should_work(:acl_set, [id, [U_ACL_1, U_ACL_2], [GRP_ACL]],
+                'acl/set', :put, {}, acl_body(id,
+                                              [U_ACL_1, U_ACL_2],
+                                              [GRP_ACL]))
+
+    should_work(:acl_set, [id, [U_ACL_1, U_ACL_2]],
+                'acl/set', :put, {}, acl_body(id,
+                                              [U_ACL_1, U_ACL_2]))
+    assert_raises(ArgumentError) { wf.acl_set(id, U_ACL_1) }
+  end
+
+  # used by acl_tester
+  #
+  def acl_body(id, view = [], modify = [])
+    [{ entityId: id, viewAcl: view, modifyAcl: modify }].to_json
+  end
 end
 
 # Extensions to stdlib
@@ -167,5 +218,41 @@ class Hash
   #
   def dup
     Marshal.load(Marshal.dump(self))
+  end
+end
+
+# A mock socket
+#
+class Mocket
+  def puts(socket); end
+
+  def close; end
+
+  def ok?
+    true
+  end
+
+  def response
+    { sent: 1, rejected: 0, unsent: 0 }
+  end
+
+  def status
+    { result: 'OK', message: nil, code: nil }
+  end
+end
+
+# A mock socket which says things went wrong.
+#
+class BadMocket < Mocket
+  def ok?
+    false
+  end
+
+  def status
+    { result: 'ERROR', message: nil, code: nil }
+  end
+
+  def response
+    { sent: 0, rejected: 1, unsent: 0 }
   end
 end

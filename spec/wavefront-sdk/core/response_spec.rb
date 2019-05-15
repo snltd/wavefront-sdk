@@ -13,15 +13,19 @@ BAD_RESP = "error='not_found'
 message='resource cannot be found'
 trackingId=eca22ddc-848b-4e67-876a-366145c8a759".freeze
 
-# Unit tests for Response class. Also inderectly tests the Status
+ERR_RESP = { error:      'HTTP 415 Unsupported Media Type',
+             trackingId: 'ce231eaf-8d0e-4138-a82d-12725376a3b0' }.to_json
+
+# Unit tests for Response class. Also indirectly tests the Status
 # type.
 #
 class WavefrontResponseTest < MiniTest::Test
-  attr_reader :wfg, :wfb
+  attr_reader :wfg, :wfb, :wfe
 
   def setup
     @wfg = Wavefront::Response.new(GOOD_RESP, 200)
     @wfb = Wavefront::Response.new(BAD_RESP, 404)
+    @wfe = Wavefront::Response.new(ERR_RESP, 415)
   end
 
   def test_initialize_good_data
@@ -55,6 +59,21 @@ class WavefrontResponseTest < MiniTest::Test
     refute wfb.ok?
     refute wfb.more_items?
     refute wfb.next_item
+  end
+
+  def test_initialize_err_data
+    assert_instance_of(Wavefront::Response, wfe)
+    assert_respond_to(wfe, :status)
+    assert_respond_to(wfe, :response)
+    refute_respond_to(wfe, :to_a)
+    refute_respond_to(wfe.response, :items)
+    assert_instance_of(Wavefront::Type::Status, wfe.status)
+    assert_equal(415, wfe.status.code)
+    assert_equal('ERROR', wfe.status.result)
+    assert_equal('HTTP 415 Unsupported Media Type', wfe.status.message)
+    refute wfe.ok?
+    refute wfe.more_items?
+    refute wfe.next_item
   end
 
   # This is a private method, so we test its public interface

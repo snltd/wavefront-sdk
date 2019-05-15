@@ -77,10 +77,21 @@ module Wavefront
     # paths. The default response is a single array.
     #
     def response_shim(body, status)
-      { response: JSON.parse(body),
+      resp, err_msg = parsed_response(body)
+
+      { response: resp,
         status:   { result:  status == 200 ? 'OK' : 'ERROR',
-                    message: '',
+                    message: err_msg,
                     code:    status } }.to_json
+    end
+
+    # A bad query doesn't send back a JSON object. It sends back a
+    # string with an embedded message.
+    #
+    def parsed_response(body)
+      [JSON.parse(body), '']
+    rescue JSON::ParserError
+      ['', body.match(/message='([^']+)'/).captures.first]
     end
   end
 end

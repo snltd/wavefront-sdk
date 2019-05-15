@@ -2,7 +2,6 @@ require 'pathname'
 require 'date'
 require_relative 'lib/wavefront-sdk/defs/version'
 
-# rubocop:disable Metrics/BlockLength:
 Gem::Specification.new do |gem|
   gem.name          = 'wavefront-sdk'
   gem.version       = WF_SDK_VERSION
@@ -12,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = 'SDK for Wavefront (wavefront.com) API v2 '
 
   gem.authors       = ['Robert Fisher']
-  gem.email         = 'slackboy@gmail.com'
+  gem.email         = 'rob@sysdef.xyz'
   gem.homepage      = 'https://github.com/snltd/wavefront-sdk'
   gem.license       = 'BSD-2-Clause'
 
@@ -22,11 +21,10 @@ Gem::Specification.new do |gem|
   gem.bindir        = 'bin'
 
   gem.add_dependency 'addressable', '~> 2.4'
-  gem.add_dependency 'faraday', '~> 0.14.0'
+  gem.add_dependency 'faraday', '~> 0.15.4'
   gem.add_dependency 'inifile', '~> 3.0'
   gem.add_dependency 'map', '~> 6.6'
 
-  gem.add_development_dependency 'bundler', '~> 1.3'
   gem.add_development_dependency 'minitest', '~> 5.11'
   gem.add_development_dependency 'rake', '~> 12.0'
   gem.add_development_dependency 'rubocop', '~> 0.54.0'
@@ -35,6 +33,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 3.0'
   gem.add_development_dependency 'yard', '~> 0.9.5'
 
-  gem.required_ruby_version = Gem::Requirement.new('>= 2.2.0')
+  gem.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
 end
-# rubocop:enable Metrics/BlockLength:

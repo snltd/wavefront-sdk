@@ -35,7 +35,9 @@ module Wavefront
       end
 
       def message
-        obj[:message] || nil
+        return obj[:message] if obj[:message]
+        return obj[:error] if obj[:error]
+        nil
       end
 
       def code

@@ -1,10 +1,15 @@
 require_relative 'core/api'
+require_relative 'api_mixins/acl'
+require_relative 'api_mixins/tag'
 
 module Wavefront
   #
   # View and manage dashboards.
   #
   class Dashboard < CoreApi
+    include Wavefront::Mixin::Acl
+    include Wavefront::Mixin::Tag
+
     def update_keys
       %i[id name url description sections]
     end
@@ -93,6 +98,7 @@ module Wavefront
       wf_dashboard_id?(id)
       api.post([id, 'favorite'].uri_concat)
     end
+    alias favourite favorite
 
     # GET /api/v2/dashboard/id/history
     # Get the version history of a dashboard.
@@ -103,57 +109,6 @@ module Wavefront
     def history(id)
       wf_dashboard_id?(id)
       api.get([id, 'history'].uri_concat)
-    end
-
-    # GET /api/v2/dashboard/id/tag
-    # Get all tags associated with a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @return [Wavefront::Response]
-    #
-    def tags(id)
-      wf_dashboard_id?(id)
-      api.get([id, 'tag'].uri_concat)
-    end
-
-    # POST /api/v2/dashboard/id/tag
-    # Set all tags associated with a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tags [Array] list of tags to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_set(id, tags)
-      wf_dashboard_id?(id)
-      tags = Array(tags)
-      tags.each { |t| wf_string?(t) }
-      api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
-    end
-
-    # DELETE /api/v2/dashboard/id/tag/tagValue
-    # Remove a tag from a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tag [String] tag to delete
-    # @return [Wavefront::Response]
-    #
-    def tag_delete(id, tag)
-      wf_dashboard_id?(id)
-      wf_string?(tag)
-      api.delete([id, 'tag', tag].uri_concat)
-    end
-
-    # PUT /api/v2/dashboard/id/tag/tagValue
-    # Add a tag to a specific dashboard.
-    #
-    # @param id [String] ID of the dashboard
-    # @param tag [String] tag to set.
-    # @return [Wavefront::Response]
-    #
-    def tag_add(id, tag)
-      wf_dashboard_id?(id)
-      wf_string?(tag)
-      api.put([id, 'tag', tag].uri_concat)
     end
 
     # POST /api/v2/dashboard/id/undelete
@@ -176,6 +131,11 @@ module Wavefront
     def unfavorite(id)
       wf_dashboard_id?(id)
       api.post([id, 'unfavorite'].uri_concat)
+    end
+    alias unfavourite unfavorite
+
+    def valid_id?(id)
+      wf_dashboard_id?(id)
     end
   end
 end

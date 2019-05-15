@@ -1,6 +1,7 @@
 require 'socket'
 require_relative 'core/exception'
 require_relative 'core/logger'
+require_relative 'core/response'
 require_relative 'defs/constants'
 require_relative 'validators'
 
@@ -21,11 +22,10 @@ module Wavefront
     # writing points to Wavefront. The actual writing is handled by
     # a Wavefront::Writer:: subclass.
     #
-    # @param creds [Hash] credentials
-    #   signature.
-    # @param options [Hash] can contain the following keys:
+    # @param creds [Hash] credentials: can contain keys:
     #   proxy [String] the address of the Wavefront proxy. ('wavefront')
     #   port [Integer] the port of the Wavefront proxy
+    # @param options [Hash] can contain the following keys:
     #   tags [Hash] point tags which will be applied to every point
     #   noop [Bool] if true, no proxy connection will be made, and
     #     instead of sending the points, they will be printed in
@@ -38,20 +38,34 @@ module Wavefront
     #   debug [Bool]
     #   writer [Symbol, String] the name of the writer class to use.
     #     Defaults to :socket
+    #   noauto [Bool] if this is false, #write will automatically
+    #     open a connection to Wavefront on each invocation. Set
+    #     this to true to manually manage the connection.
+    #   chunk_size [Integer] So as not to create unusable metric
+    #     payloads, large batches of points will be broken into
+    #     chunks. This property controls the number of metrics in a
+    #     chunk. Defaults to 1,000.
+    #   chunk_pause [Integer] pause this many seconds between
+    #     writing chunks. Defaults to zero.
     #
     def initialize(creds = {}, opts = {})
-      defaults = { tags:       nil,
-                   writer:     :socket,
-                   noop:       false,
-                   novalidate: false,
-                   verbose:    false,
-                   debug:      false }
-
       @opts = setup_options(opts, defaults)
       @creds = creds
       wf_point_tags?(opts[:tags]) if opts[:tags]
       @logger = Wavefront::Logger.new(opts)
       @writer = setup_writer
+    end
+
+    def defaults
+      { tags:        nil,
+        writer:      :socket,
+        noop:        false,
+        novalidate:  false,
+        noauto:      false,
+        verbose:     false,
+        debug:       false,
+        chunk_size:  1000,
+        chunk_pause: 0 }
     end
 
     def setup_options(user, defaults)
@@ -75,9 +89,39 @@ module Wavefront
     # Writers implement this method differently, Check the
     # appropriate class documentation for @return information etc.
     # The signature is always the same.
+    # @return [Boolean] false should any chunk fail
+    # @raise any exceptions raised by the writer classes are passed
+    #   through
     #
-    def write(points = [], openclose = true, prefix = nil)
-      writer.write(points, openclose, prefix)
+    def write(points = [], openclose = manage_conn, prefix = nil)
+      resps = [points].flatten.each_slice(opts[:chunk_size]).map do |chunk|
+        resp = writer.write(chunk, openclose, prefix)
+        sleep(opts[:chunk_pause])
+        resp
+      end
+
+      composite_response(resps)
+    end
+
+    # Compound the responses of all chunked writes into one. It will
+    # be 'ok' only if *everything* passed.
+    #
+    def composite_response(responses)
+      result = responses.all?(&:ok?) ? 'OK' : 'ERROR'
+      summary = { sent: 0, rejected: 0, unsent: 0 }
+
+      %i[sent rejected unsent].each do |k|
+        summary[k] = responses.map { |r| r.response[k] }.inject(:+)
+      end
+
+      Wavefront::Response.new(
+        { status:   { result: result, message: nil, code: nil },
+          response: summary.to_h }.to_json, nil
+      )
+    end
+
+    def manage_conn
+      opts[:noauto] ? false : true
     end
 
     # A wrapper method around #write() which guarantees all points
@@ -89,7 +133,7 @@ module Wavefront
     # @param points [Array[Hash]] see #write()
     # @param openclose [Bool] see #write()
     #
-    def write_delta(points, openclose = true)
+    def write_delta(points, openclose = manage_conn)
       write(paths_to_deltas(points), openclose)
     end
 
@@ -129,7 +173,7 @@ module Wavefront
     #   open a socket to the proxy before sending points, and
     #   afterwards, close it.
     #
-    def raw(points, openclose = true)
+    def raw(points, openclose = manage_conn)
       writer.open if openclose && writer.respond_to?(:open)
 
       begin
@@ -169,8 +213,8 @@ module Wavefront
        point[:value] || raise,
        point.fetch(:ts, nil),
        point.fetch(:source, HOSTNAME),
-       point[:tags] && point[:tags].to_wf_tag,
-       opts[:tags] && opts[:tags].to_wf_tag]
+       point[:tags]&.to_wf_tag,
+       opts[:tags]&.to_wf_tag]
     end
 
     private

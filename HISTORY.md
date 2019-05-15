@@ -1,7 +1,69 @@
 # Changelog
 
-## 2.2.0 (15/12/2018)
+## 3.3.0
+* Reflect the way the API ACL format has changed.
 
+## 3.2.0 (01/05/2019)
+* Add support for new `apitoken` path.
+* Add support for alert ACLs
+* Tag and ACL methods have been broken out into mixins which are
+  automatically included by classes which support them
+
+## 3.1.0 (23/04/2019)
+* When using `Wavefront::Write`, large numbers of points are written
+  in chunks, rather than all at once. The chunk size can be set by
+  the user when instantiating the class.
+
+## 3.0.2 (06/04/2019)
+* Better handling of non-existent or malformed config files.
+* Look for `~/.wavefront.conf` as well as `~/.wavefront`. Both these
+  fixes are related to finding out that other Wavefront tooling
+  creates `~/.wavefront` as a directory.
+
+## 3.0.1 (05/04/2019)
+* User IDs do not have to be e-mail addresses.
+
+## 3.0.0 (23/03/2019)
+* Drop support for Ruby 2.2. (Potentially breaking change.)
+* Add `Wavefront::Settings` class to cover new `settings` API
+  endpoint.
+* Add ACL methods to `Wavefront::Dashboard` class.
+* Add `Dashboard#favourite` and `Dashboard#unfavourite` methods, as
+  aliases to `favorite` and `unfavorite`.
+* Add `sort_field` to `Wavefront::Search` options. Lets user select
+  the field on which to sort results.
+
+## 2.5.1 (06/03/2019)
+* Fix messy handling of raw query errors.
+
+## 2.5.0 (21/02/2019)
+* New `Wavefront::UserGroup` class, for new API `UserGroup` feature.
+* Extended `Wavefront::User` to cover new API methods.
+
+## 2.4.0 (28/01/2019)
+* New `Wavefront::MetricHelper` class creates and in-memory buffer
+  to which you can instantaneously add metrics, flushing it to
+  Wavefront when appropriate. All `Writer` types are supported.
+* Add `noauto` option to `Write` class. This lets you manage the
+  connection yourself without having to pass `false` as the second
+  argument to every single `Write#write` call. (Though this still
+  works.)
+* Improve error handling when proxy socket is not available.
+* Raise an exception if an interval is not given when writing a
+  histogram.
+* Improve `README` instructions on writing metrics.
+* Support Ruby 2.6.
+
+## 2.3.0 (06/01/2019)
+* When sending points via the API, send bundles of up to 100 points
+  with each `POST`, rather than a call per point.
+
+## 2.2.1 (20/12/2018)
+* Fix typo in `Wavefront::Alert#affected_by_maintenance` method
+  name.
+* Full `Wavefront::Alert` test coverage.
+
+## 2.2.0 (15/12/2018)
 * New methods to cover new API paths.
  * `Wavefront::Alert#install`,
  * `Wavefront::Alert#uninstall`,
