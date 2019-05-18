@@ -109,7 +109,7 @@ module Wavefront
     #
     def extract_error_message(body)
       body.match(/message='([^']+)'/).captures.first
-    rescue
+    rescue StandardError
       body.lines.last.strip
     end
   end
