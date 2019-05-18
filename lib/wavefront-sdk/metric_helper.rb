@@ -1,9 +1,10 @@
 require_relative 'write'
 require_relative 'distribution'
 require_relative 'core/logger'
-require_relative 'metric_type/gauge'
 require_relative 'metric_type/counter'
 require_relative 'metric_type/distribution'
+require_relative 'metric_type/gauge'
+require_relative 'metric_type/heartbeat'
 
 module Wavefront
   #
@@ -16,7 +17,7 @@ module Wavefront
   # queue for next time.
   #
   class MetricHelper
-    attr_reader :opts, :gauge, :counter, :dist
+    attr_reader :opts, :gauge, :counter, :dist, :heartbeat
 
     # @param creds [Hash] a Wavefront::Credentials object. Which one
     #   you use may depend on the method by which you send your
@@ -39,6 +40,9 @@ module Wavefront
         creds, writer_opts, metric_opts
       )
       @dist = Wavefront::MetricType::Distribution.new(
+        creds, writer_opts, metric_opts
+      )
+      @heartbeat = Wavefront::MetricType::Heartbeat.new(
         creds, writer_opts, metric_opts
       )
     end
