@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.3.1
+* Better handling of query errors.
+
 ## 3.3.0
 * Reflect the way the API ACL format has changed.
 
