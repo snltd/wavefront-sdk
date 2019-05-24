@@ -1,9 +1,12 @@
 # Changelog
 
-## 3.3.1
+## 3.3.2 (24/05/2019)
+* Don't report `moreItems` as `true` at the end of a recursive `GET`.
+
+## 3.3.1 (10/05/2019)
 * Better handling of query errors.
 
-## 3.3.0
+## 3.3.0 (09/05/2019)
 * Reflect the way the API ACL format has changed.
 
 ## 3.2.0 (01/05/2019)

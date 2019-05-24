@@ -111,10 +111,20 @@ module Wavefront
           resp = api_caller.respond(conn.public_send(method, *p_args))
           raise StopIteration unless resp.ok?
           ret.response.items += resp.response.items
-          raise StopIteration unless resp.more_items?
+          return finalize_response(ret) unless resp.more_items?
         end
+      end
 
-        ret
+      # In #make_recursive_call we've built up a composite response
+      # object. This method corrects a couple of things in that
+      # object which are misleading. (Because they're left over from
+      # the original call.)
+      #
+      def finalize_response(resp)
+        resp.tap do |r|
+          r.response[:limit] = r.response.items.size - 1
+          r.response[:moreItems] = false
+        end
       end
 
       # Return all objects using a lazy enumerator.
