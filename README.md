@@ -116,11 +116,6 @@ wf.list(99, :lazy).each { |alert| puts alert.name }
 # ...
 ```
 
-We can easily write queries. Let's retrieve a timeseries over the
-last 10 minutes, with one minute bucket granularity. We will
-describe the time as a Ruby object, but could also use an epoch
-timestamp. The SDK happily converts between the two.
-
 ### Credentials
 
 The SDK provides a helper class for extracting credentials from a
@@ -147,6 +142,11 @@ wf = Wavefront::Write.new(c.all)
 ```
 
 ### Queries
+
+We can easily write queries. Let's retrieve a timeseries over the
+last 10 minutes, with one minute bucket granularity. We will
+describe the time as a Ruby object, but could also use an epoch
+timestamp. The SDK happily converts between the two.
 
 ```ruby
 require 'wavefront-sdk/query'
