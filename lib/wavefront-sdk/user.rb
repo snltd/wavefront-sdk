@@ -204,7 +204,7 @@ module Wavefront
                     offset:     0,
                     limit:      items.size,
                     totalItems: items.size,
-                    modeItems:  false },
+                    moreItems:  false },
         status:   { result:     status == 200 ? 'OK' : 'ERROR',
                     message:    extract_api_message(status, items),
                     code:       status } }.to_json
