@@ -3,6 +3,8 @@
 require_relative '../../../lib/wavefront-sdk/writers/summary'
 require_relative '../../spec_helper'
 
+# Tests for summarizer
+#
 class WavefronWriterSummaryTest < MiniTest::Test
   attr_reader :wf
 

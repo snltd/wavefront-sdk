@@ -1,41 +1,36 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-
-PROXY = 'fd248f53-378e-4fbe-bbd3-efabace8d724'.freeze
+require_relative '../test_mixins/general'
 
 # Unit tests for proxy class
 #
 class WavefrontProxyTest < WavefrontTestBase
-  def test_list
-    should_work(:list, 10, '?offset=10&limit=100')
-  end
-
-  def test_describe
-    should_work(:describe, PROXY, PROXY)
-    should_be_invalid(:describe)
-    assert_raises(ArgumentError) { wf.describe }
-  end
-
-  def test_delete
-    should_work(:delete, PROXY, PROXY, :delete)
-    should_be_invalid('delete')
-  end
+  include WavefrontTest::DeleteUndelete
+  include WavefrontTest::Describe
+  include WavefrontTest::List
 
   def test_rename
-    should_work(:rename, [PROXY, 'newname'],
-                [PROXY, { name: 'newname' }.to_json], :put,
-                JSON_POST_HEADERS)
-    assert_raises(ArgumentError) { wf.rename }
-    assert_raises(ArgumentError) { wf.rename('abc123') }
-    assert_raises(Wavefront::Exception::InvalidProxyId) do
-      wf.rename('abc', 'name')
+    assert_puts("/api/v2/proxy/#{id}", name: 'newname') do
+      wf.rename(id, 'newname')
     end
+
+    assert_invalid_id { wf.rename(invalid_id, 'newname') }
+    assert_raises(ArgumentError) { wf.rename(id) }
+    assert_raises(ArgumentError) { wf.rename }
   end
 
-  def test_undelete
-    should_work(:undelete, PROXY, ["#{PROXY}/undelete", nil],
-                :post, POST_HEADERS)
-    should_be_invalid('undelete')
+  private
+
+  def api_class
+    'proxy'
+  end
+
+  def id
+    'fd248f53-378e-4fbe-bbd3-efabace8d724'
+  end
+
+  def invalid_id
+    'my awesome stupid proxy id'
   end
 end

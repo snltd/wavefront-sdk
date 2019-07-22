@@ -4,30 +4,47 @@ require 'cgi'
 require 'date'
 require_relative '../spec_helper'
 
-SERIES = 'test.metric'.freeze
-T = Time.now.freeze
-T_MS = T.to_datetime.strftime('%Q').freeze
-TE = (T + 10).freeze
-TE_MS = TE.to_datetime.strftime('%Q')
-Q = "ts(\"#{SERIES}\")".freeze
-QE = CGI.escape(Q).freeze
-
 # Unit tests for Query class
 #
 class WavefrontQueryTest < WavefrontTestBase
-  def api_base
-    'chart'
+  attr_reader :series, :t_start, :t_start_in_ms, :t_end, :t_end_in_ms,
+              :query, :escaped_query
+
+  def setup_fixtures
+    @series = 'test.metric'
+    @t_start = Time.now
+    @t_start_in_ms = t_start.to_datetime.strftime('%Q')
+    @t_end = t_start + 10
+    @t_end_in_ms = t_end.to_datetime.strftime('%Q')
+    @query = "ts(\"#{series}\")"
+    @escaped_query = CGI.escape(query)
   end
 
   def test_query
-    should_work(:query, [Q, 'd', T_MS], "api?q=#{QE}&g=d&s=#{T_MS}")
-    should_work(:query, [Q, 'h', T], "api?q=#{QE}&g=h&s=#{T_MS}")
-    should_work(:query, [Q, 'm', T, TE],
-                "api?q=#{QE}&g=m&s=#{T_MS}&e=#{TE_MS}")
-    should_work(:query, [Q, 'h', T, nil, {}], "api?q=#{Q}&g=h&s=#{T_MS}")
-    should_work(:query, [Q, 'h', T, nil, { strict: true,
-                                           summarization: 'MAX' }],
-                "api?q=#{QE}&g=h&s=#{T_MS}&strict=true&summarization=MAX")
+    assert_gets("/api/v2/chart/api?q=#{escaped_query}&g=d&" \
+                "s=#{t_start_in_ms}") do
+      wf.query(query, 'd', t_start_in_ms)
+    end
+
+    assert_gets("/api/v2/chart/api?q=#{escaped_query}&g=h&" \
+                "s=#{t_start_in_ms}") do
+      wf.query(query, 'h', t_start)
+    end
+
+    assert_gets("/api/v2/chart/api?q=#{escaped_query}&g=m&" \
+                "s=#{t_start_in_ms}&e=#{t_end_in_ms}") do
+      wf.query(query, 'm', t_start, t_end)
+    end
+
+    assert_gets("/api/v2/chart/api?q=#{query}&g=h&s=#{t_start_in_ms}") do
+      wf.query(query, 'h', t_start, nil, {})
+    end
+
+    assert_gets("/api/v2/chart/api?q=#{escaped_query}&g=h&" \
+                "s=#{t_start_in_ms}&strict=true&summarization=MAX") do
+      wf.query(query, 'h', t_start, nil, strict: true,
+                                         summarization: 'MAX')
+    end
 
     assert_raises(ArgumentError) { wf.query }
 
@@ -41,12 +58,21 @@ class WavefrontQueryTest < WavefrontTestBase
   end
 
   def test_raw
-    should_work(:raw, [SERIES, 'src'], "raw?metric=#{SERIES}&source=src")
-    should_work(:raw, [SERIES, 'src', T],
-                "raw?metric=#{SERIES}&source=src&startTime=#{T_MS}")
-    should_work(:raw, [SERIES, 'src', T, TE],
-                "raw?metric=#{SERIES}&source=src&startTime=#{T_MS}" \
-                "&endTime=#{TE_MS}")
+    assert_gets("/api/v2/chart/raw?metric=#{series}&source=src") do
+      wf.raw(series, 'src')
+    end
+
+    assert_gets("/api/v2/chart/raw?metric=#{series}&source=src&" \
+                "startTime=#{t_start_in_ms}") do
+      wf.raw(series, 'src', t_start)
+    end
+
+    assert_gets("/api/v2/chart/raw?metric=#{series}&source=src&" \
+                "startTime=#{t_start_in_ms}" \
+                "&endTime=#{t_end_in_ms}") do
+      wf.raw(series, 'src', t_start, t_end)
+    end
+
     assert_raises(ArgumentError) { wf.raw }
   end
 end

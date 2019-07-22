@@ -1,258 +1,33 @@
-#
-# Stuff needed by multiple tests
-#
-
 require 'simplecov'
-SimpleCov.start do
-  add_filter '/spec/'
-end
+SimpleCov.start { add_filter '/spec/' }
 require 'minitest/autorun'
 require 'spy/integration'
 require 'webmock/minitest'
+require_relative 'support/minitest_assertions'
+require_relative 'constants'
 
-# rubocop:disable Style/MutableConstant
-CREDS = { endpoint: 'test.example.com',
-          token:    '0123456789-ABCDEF' }
-# rubocop:enable Style/MutableConstant
-
-W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
-
-POST_HEADERS = {
-  'Content-Type': 'text/plain', Accept: 'application/json'
-}.freeze
-
-JSON_POST_HEADERS = {
-  'Content-Type': 'application/json', Accept: 'application/json'
-}.freeze
-
-DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
-                 '"response":{"items":[{"name":"test data"}],"offset":0,' \
-                 '"limit":100,"totalItems":3,"moreItems":false}}'.freeze
-
-RESOURCE_DIR = (Pathname.new(__FILE__).dirname +
-                'wavefront-sdk' + 'resources').freeze
-
-U_ACL_1 = 'someone@example.com'.freeze
-U_ACL_2 = 'other@elsewhere.com'.freeze
-GRP_ACL = 'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'.freeze
-
-# Common testing code
+# Abstract class which sets up everything needed by the API tests
+#
 class WavefrontTestBase < MiniTest::Test
-  attr_reader :wf, :wf_noop, :headers
+  attr_reader :wf, :wf_noop, :headers, :invalid_id, :valid_id
 
   def initialize(args)
     require_relative "../lib/wavefront-sdk/#{class_basename.downcase}"
+    setup_fixtures if respond_to?(:setup_fixtures)
     super(args)
+  end
+
+  private
+
+  def setup
+    @wf = Object.const_get("Wavefront::#{class_basename}").new(CREDS)
   end
 
   def class_basename
     self.class.name.match(/Wavefront(\w+)Test/)[1]
   end
 
-  def api_base
-    class_basename.downcase
-  end
-
-  def setup
-    klass = Object.const_get('Wavefront').const_get(class_basename)
-    @wf = klass.new(CREDS)
-    @uri_base = uri_base
-    @headers = { 'Authorization' => "Bearer #{CREDS[:token]}" }
-  end
-
-  def uri_base
-    "https://#{CREDS[:endpoint]}/api/v2/" + api_base
-  end
-
-  def target_uri(path)
-    return "https://#{CREDS[:endpoint]}#{path}" if path.start_with?('/')
-
-    [uri_base, path].join(path.start_with?('?') ? '' : '/')
-  end
-
-  # A shorthand method for very common tests.
-  #
-  # @param method [String] the method you wish to test
-  # @args [String, Integer, Array] arguments with which to call method
-  # @path [String] extra API path components (beyond /api/v2/class)
-  # @call [Symbol] the type of API call (:get, :put etc.)
-  # @more_headers [Hash] any additional headers which should be
-  #   sent. You will normally need to add these for :put and :post
-  #   requests.
-  # @body [String] a JSON object you expect to be sent as part of
-  #   the request
-  #
-  # rubocop:disable Metrics/PerceivedComplexity
-  # rubocop:disable Metrics/ParameterLists
-  def should_work(method, args, path, call = :get, more_headers = {},
-                  body = nil, id = nil)
-    path = Array(path)
-    uri = target_uri(path.first).sub(%r{/$}, '')
-
-    headers = { 'Accept':          /.*/,
-                'Accept-Encoding': /.*/,
-                'Authorization':  'Bearer 0123456789-ABCDEF',
-                'User-Agent':     "wavefront-sdk #{WF_SDK_VERSION}" }
-              .merge(more_headers)
-
-    if body
-      stub_request(call, uri).with(body: body, headers: headers)
-                             .to_return(body: DUMMY_RESPONSE, status: 200)
-    else
-      stub_request(call, uri).to_return(body: DUMMY_RESPONSE, status: 200)
-    end
-
-    if args.is_a?(Hash)
-      if id
-        wf.send(method, id, args)
-      else
-        wf.send(method, args)
-      end
-    elsif id
-      wf.send(method, id, *args)
-    else
-      wf.send(method, *args)
-    end
-
-    assert_requested(call, uri, headers: headers)
-    WebMock.reset!
-  end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/ParameterLists
-
   def standard_exception
-    Object.const_get('Wavefront::Exception')
-          .const_get("Invalid#{class_basename}Id")
-  end
-
-  def should_be_invalid(method, args = '!!invalid_val!!')
-    assert_raises(standard_exception) { wf.send(method, *args) }
-  end
-
-  # Generic tag method testing.
-  #
-  def tag_tester(id)
-    # Can we get tags? : tests #tags
-    #
-    should_work('tags', id, "#{id}/tag")
-    should_be_invalid('tags')
-
-    # Can we set tags? tests #tag_set
-    #
-    should_work('tag_set', [id, 'tag'],
-                ["#{id}/tag", ['tag'].to_json], :post, JSON_POST_HEADERS)
-    should_work('tag_set', [id, %w[tag1 tag2]],
-                ["#{id}/tag", %w[tag1 tag2].to_json], :post,
-                JSON_POST_HEADERS)
-    should_fail_tags('tag_set', id)
-
-    # Can we add tags? : tests #tag_add
-    #
-    should_work('tag_add', [id, 'tagval'],
-                ["#{id}/tag/tagval", nil], :put, JSON_POST_HEADERS)
-    should_fail_tags('tag_add', id)
-
-    # Can we delete tags? : tests #tag_delete
-    #
-    should_work('tag_delete', [id, 'tagval'], "#{id}/tag/tagval", :delete)
-    should_fail_tags('tag_delete', id)
-  end
-
-  def should_fail_tags(method, id)
-    assert_raises(standard_exception) do
-      wf.send(method, '!!invalid!!', 'tag1')
-    end
-
-    assert_raises(Wavefront::Exception::InvalidString) do
-      wf.send(method, id, '<!!!>')
-    end
-  end
-
-  def acl_tester(id)
-    id2 = id.reverse
-    should_work(:acls, [[id, id2]], "acl?id=#{id}&id=#{id2}")
-
-    should_work(:acl_add, [id, [U_ACL_1, U_ACL_2], [GRP_ACL]],
-                'acl/add', :post, {}, acl_body(id,
-                                               [U_ACL_1, U_ACL_2],
-                                               [GRP_ACL]))
-
-    should_work(:acl_add, [id, [U_ACL_1, U_ACL_2]],
-                'acl/add', :post, {}, acl_body(id,
-                                               [U_ACL_1, U_ACL_2]))
-    assert_raises(ArgumentError) { wf.acl_add(id, U_ACL_1) }
-    assert_raises(ArgumentError) { wf.acl_add(id, [U_ACL_1], GRP_ACL) }
-
-    should_work(:acl_delete, [id, [U_ACL_1, U_ACL_2], [GRP_ACL]],
-                'acl/remove', :post, {}, acl_body(id,
-                                                  [U_ACL_1, U_ACL_2],
-                                                  [GRP_ACL]))
-
-    should_work(:acl_delete, [id, [U_ACL_1, U_ACL_2]],
-                'acl/remove', :post, {}, acl_body(id,
-                                                  [U_ACL_1, U_ACL_2]))
-    assert_raises(ArgumentError) { wf.acl_delete(id, U_ACL_1) }
-
-    should_work(:acl_set, [id, [U_ACL_1, U_ACL_2], [GRP_ACL]],
-                'acl/set', :put, {}, acl_body(id,
-                                              [U_ACL_1, U_ACL_2],
-                                              [GRP_ACL]))
-
-    should_work(:acl_set, [id, [U_ACL_1, U_ACL_2]],
-                'acl/set', :put, {}, acl_body(id,
-                                              [U_ACL_1, U_ACL_2]))
-    assert_raises(ArgumentError) { wf.acl_set(id, U_ACL_1) }
-  end
-
-  # used by acl_tester
-  #
-  def acl_body(id, view = [], modify = [])
-    [{ entityId: id, viewAcl: view, modifyAcl: modify }].to_json
-  end
-end
-
-# Extensions to stdlib
-#
-class Hash
-  # A quick way to deep-copy a hash.
-  #
-  def dup
-    Marshal.load(Marshal.dump(self))
-  end
-end
-
-# A mock socket
-#
-class Mocket
-  def puts(socket); end
-
-  def close; end
-
-  def ok?
-    true
-  end
-
-  def response
-    { sent: 1, rejected: 0, unsent: 0 }
-  end
-
-  def status
-    { result: 'OK', message: nil, code: nil }
-  end
-end
-
-# A mock socket which says things went wrong.
-#
-class BadMocket < Mocket
-  def ok?
-    false
-  end
-
-  def status
-    { result: 'ERROR', message: nil, code: nil }
-  end
-
-  def response
-    { sent: 0, rejected: 1, unsent: 0 }
+    Object.const_get("Wavefront::Exception::Invalid#{class_basename}Id")
   end
 end
