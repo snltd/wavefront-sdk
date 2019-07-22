@@ -1,66 +1,64 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-
-CLOUD = '3b56f61d-1a79-46f6-905c-d75a0f613d10'.freeze
-CLOUD_BODY = {
-  name: 'SDK test Cloudwatch Integration',
-  service: 'CLOUDWATCH',
-  cloudWatch: {
-    baseCredentials: {
-      roleArn:    'arn:aws:iam::<accountid>:role/<rolename>',
-      externalId: 'wave123'
-    }
-  },
-  metricFilterRegex: '^aws.(sqs|ec2|ebs|elb).*$'
-}.freeze
+require_relative '../test_mixins/general'
 
 # Unit tests for CloudIntegration class
 #
 class WavefrontCloudIntegrationTest < WavefrontTestBase
-  def test_list
-    should_work(:list, 10, '?offset=10&limit=100')
-  end
-
-  def test_create
-    should_work(:create, CLOUD_BODY, '', :post, JSON_POST_HEADERS,
-                CLOUD_BODY.to_json)
-    assert_raises(ArgumentError) { wf.create }
-    assert_raises(ArgumentError) { wf.create('test') }
-  end
-
-  def test_delete
-    should_work(:delete, CLOUD, CLOUD, :delete)
-    should_be_invalid(:delete)
-  end
-
-  def test_describe
-    should_work(:describe, CLOUD, CLOUD)
-    should_be_invalid(:describe)
-  end
+  include WavefrontTest::List
+  include WavefrontTest::Create
+  include WavefrontTest::Describe
+  include WavefrontTest::Update
+  include WavefrontTest::DeleteUndelete
 
   def test_update
-    should_work(:update, [CLOUD, CLOUD_BODY], CLOUD, :put,
-                JSON_POST_HEADERS, CLOUD_BODY.to_json)
-    should_be_invalid(:update, ['abcde', CLOUD_BODY])
+    assert_puts("/api/v2/cloudintegration/#{id}", payload) do
+      wf.update(id, payload)
+    end
+
+    assert_invalid_id { wf.update(invalid_id, payload) }
     assert_raises(ArgumentError) { wf.update }
   end
 
-  def test_undelete
-    should_work(:undelete, CLOUD, ["#{CLOUD}/undelete", nil], :post,
-                POST_HEADERS)
-    should_be_invalid(:undelete)
+  def test_enable
+    assert_posts("/api/v2/cloudintegration/#{id}/enable") { wf.enable(id) }
+    assert_invalid_id { wf.enable(invalid_id) }
+    assert_raises(ArgumentError) { wf.enable }
   end
 
   def test_disable
-    should_work(:disable, CLOUD, ["#{CLOUD}/disable", nil], :post,
-                POST_HEADERS)
-    should_be_invalid(:disable)
+    assert_posts("/api/v2/cloudintegration/#{id}/disable") do
+      wf.disable(id)
+    end
+
+    assert_invalid_id { wf.disable(invalid_id) }
+    assert_raises(ArgumentError) { wf.disable }
   end
 
-  def test_enable
-    should_work(:enable, CLOUD, ["#{CLOUD}/enable", nil], :post,
-                POST_HEADERS)
-    should_be_invalid(:enable)
+  private
+
+  def id
+    '3b56f61d-1a79-46f6-905c-d75a0f613d10'
+  end
+
+  def invalid_id
+    '__rubbish__'
+  end
+
+  def payload
+    { name: 'SDK test Cloudwatch Integration',
+      service: 'CLOUDWATCH',
+      cloudWatch: {
+        baseCredentials: {
+          roleArn:    'arn:aws:iam::<accountid>:role/<rolename>',
+          externalId: 'wave123'
+        }
+      },
+      metricFilterRegex: '^aws.(sqs|ec2|ebs|elb).*$' }
+  end
+
+  def api_class
+    'cloudintegration'
   end
 end

@@ -8,12 +8,9 @@ REPORT_HEADERS = POST_HEADERS.merge('Content-Type': 'application/octet-stream')
 # Unit tests for Report class
 #
 class WavefrontReportTest < WavefrontTestBase
-  def uri_base
-    "https://#{CREDS[:endpoint]}/report"
-  end
-
   def test_write
-    should_work(:write, POINT, ['?f=wavefront', nil],
-                :post, REPORT_HEADERS, POINT_L)
+    assert_posts('/report?f=wavefront', POINT_L, :octet) do
+      wf.write(POINT)
+    end
   end
 end

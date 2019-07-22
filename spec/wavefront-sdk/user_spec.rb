@@ -1,123 +1,128 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-
-USER = 'user@example.com'.freeze
-BAD_USER = ('user' * 500).freeze
-PERMISSION = 'agent_management'.freeze
-
-USER_BODY = { emailAddress: USER, groups: %w[browse] }.freeze
-
-USERGROUP_LIST = %w[f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672
-                    2659191e-aad4-4302-a94e-9667e1517127].freeze
-
-USER_LIST = %w[user@example.com other@elsewhere.com].freeze
+require_relative '../test_mixins/general'
 
 # Unit tests for User class
 #
 class WavefrontUserTest < WavefrontTestBase
+  attr_reader :users, :groups, :permission
+
+  include WavefrontTest::Delete
+  include WavefrontTest::Describe
+  include WavefrontTest::Update
+
   def test_list
-    should_work(:list, nil, '')
+    assert_gets('/api/v2/user') { wf.list }
   end
 
   def test_create
-    should_work(:create, [USER_BODY, true], '?sendEmail=true', :post,
-                JSON_POST_HEADERS, USER_BODY.to_json)
+    assert_posts('/api/v2/user?sendEmail=true', payload) do
+      wf.create(payload, true)
+    end
+
+    assert_posts('/api/v2/user?sendEmail=false', payload) do
+      wf.create(payload)
+    end
+
     assert_raises(ArgumentError) { wf.create }
     assert_raises(ArgumentError) { wf.create('test') }
   end
 
-  def test_delete
-    should_work(:delete, USER, USER, :delete)
-    should_be_invalid(:delete, BAD_USER)
-    assert_raises(ArgumentError) { wf.delete }
-  end
-
-  def test_describe
-    should_work(:describe, USER, USER)
-    should_be_invalid(:describe, BAD_USER)
-    assert_raises(ArgumentError) { wf.describe }
-  end
-
-  def test_update
-    should_work(:update, [USER, USER_BODY, false], USER, :put,
-                JSON_POST_HEADERS, USER_BODY.to_json)
-    should_be_invalid(:update, [BAD_USER, USER_BODY])
-    assert_raises(ArgumentError) { wf.update }
-  end
-
   def test_add_groups_to_user
-    should_work(:add_groups_to_user, [USER, USERGROUP_LIST],
-                [USER, :addUserGroups].uri_concat, :post,
-                JSON_POST_HEADERS, USERGROUP_LIST.to_json)
-
-    assert_raises(Wavefront::Exception::InvalidUserId) do
-      wf.add_groups_to_user(BAD_USER, USERGROUP_LIST)
+    assert_posts("/api/v2/user/#{id}/addUserGroups", groups.to_json) do
+      wf.add_groups_to_user(id, groups)
     end
+
+    assert_invalid_id { wf.add_groups_to_user(invalid_id, groups) }
   end
 
   def test_remove_groups_from_user
-    should_work(:remove_groups_from_user, [USER, USERGROUP_LIST],
-                [USER, :removeUserGroups].uri_concat, :post,
-                JSON_POST_HEADERS, USERGROUP_LIST.to_json)
-
-    assert_raises(Wavefront::Exception::InvalidUserId) do
-      wf.remove_groups_from_user(BAD_USER, USERGROUP_LIST)
+    assert_posts("/api/v2/user/#{id}/removeUserGroups", groups.to_json) do
+      wf.remove_groups_from_user(id, groups)
     end
+
+    assert_invalid_id { wf.remove_groups_from_user(invalid_id, groups) }
   end
 
   def test_grant
-    should_work(:grant, [USER, PERMISSION], 'user%40example.com/grant',
-                :post, JSON_POST_HEADERS.merge(
-                         'Content-Type': 'application/x-www-form-urlencoded'
-                ),
-                "group=#{PERMISSION}")
-    should_be_invalid(:grant, [BAD_USER, PERMISSION])
+    assert_posts("/api/v2/user/#{id}/grant", { group: permission },
+                 :form) do
+      wf.grant(id, permission)
+    end
+
+    assert_invalid_id { wf.grant(invalid_id, permission) }
     assert_raises(ArgumentError) { wf.grant }
   end
 
   def test_revoke
-    should_work(:revoke, [USER, PERMISSION], 'user%40example.com/revoke',
-                :post, JSON_POST_HEADERS.merge(
-                         'Content-Type': 'application/x-www-form-urlencoded'
-                ),
-                "group=#{PERMISSION}")
-    should_be_invalid(:revoke, [BAD_USER, PERMISSION])
+    assert_posts("/api/v2/user/#{id}/revoke", { group: permission },
+                 :form) do
+      wf.revoke(id, permission)
+    end
+
+    assert_invalid_id { wf.revoke(invalid_id, permission) }
     assert_raises(ArgumentError) { wf.revoke }
   end
 
   def test_delete_users
-    should_work(:delete_users, [[USER, 'other@example.com']],
-                'deleteUsers', :post, JSON_POST_HEADERS,
-                [USER, 'other@example.com'].to_json)
-
-    assert_raises(Wavefront::Exception::InvalidUserId) do
-      wf.delete_users([BAD_USER])
+    assert_posts('/api/v2/user/deleteUsers', users.to_json) do
+      wf.delete_users(users)
     end
 
-    assert_raises(ArgumentError) { wf.delete_users('a@b.com') }
+    assert_invalid_id { wf.delete_users([invalid_id]) }
+    assert_raises(ArgumentError) { wf.delete_users(id) }
   end
 
   def test_grant_permission
-    should_work(:grant_permission, [PERMISSION, USER_LIST],
-                [:grant, PERMISSION].uri_concat, :post,
-                JSON_POST_HEADERS, USER_LIST.to_json)
-    should_be_invalid(:grant, [BAD_USER, PERMISSION])
+    assert_posts("/api/v2/user/grant/#{permission}", users.to_json) do
+      wf.grant_permission(permission, users)
+    end
+
+    assert_invalid_id { wf.grant_permission(permission, [invalid_id]) }
     assert_raises(ArgumentError) { wf.grant }
   end
 
   def test_revoke_permission
-    should_work(:revoke_permission, [PERMISSION, USER_LIST],
-                [:revoke, PERMISSION].uri_concat, :post,
-                JSON_POST_HEADERS, USER_LIST.to_json)
-    should_be_invalid(:revoke, [BAD_USER, PERMISSION])
+    assert_posts("/api/v2/user/revoke/#{permission}", users.to_json) do
+      wf.revoke_permission(permission, users)
+    end
+
+    assert_invalid_id { wf.revoke_permission(permission, [invalid_id]) }
     assert_raises(ArgumentError) { wf.grant }
   end
 
   def test_invite
-    should_work(:invite, [[USER_BODY]], 'invite', :post,
-                JSON_POST_HEADERS, [USER_BODY].to_json)
+    assert_posts('/api/v2/user/invite', [payload].to_json) do
+      wf.invite([payload])
+    end
+
     assert_raises(ArgumentError) { wf.invite }
     assert_raises(ArgumentError) { wf.invite('test') }
+  end
+
+  def setup_fixtures
+    @users = %w[user@example.com other@elsewhere.com]
+    @groups = %w[f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672
+                 2659191e-aad4-4302-a94e-9667e1517127]
+    @permission = 'agent_management'
+  end
+
+  private
+
+  def api_class
+    'user'
+  end
+
+  def id
+    'user@example.com'
+  end
+
+  def invalid_id
+    'user' * 500
+  end
+
+  def payload
+    { emailAddress: id, groups: %w[browse] }
   end
 end

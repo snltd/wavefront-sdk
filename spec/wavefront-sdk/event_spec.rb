@@ -1,25 +1,18 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-
-EVENT = '1481553823153:testev'.freeze
-EVENT_BODY = {
-  name:        'test_event',
-  annotations: {
-    severity: 'info',
-    type:     'SDK test event',
-    details:  'an imaginary event to test the SDK'
-  },
-  hosts:       %w[host1 host2],
-  startTime:   1_493_385_089_000,
-  endTime:     1_493_385_345_678,
-  tags:        %w[tag1 tag2],
-  isEphemeral: false
-}.freeze
+require_relative '../test_mixins/general'
+require_relative '../test_mixins/tag'
 
 # Unit tests for event class
 #
 class WavefrontEventTest < WavefrontTestBase
+  include WavefrontTest::Tag
+  include WavefrontTest::Create
+  include WavefrontTest::Delete
+  include WavefrontTest::Describe
+  include WavefrontTest::Update
+
   def test_list
     t1 = Time.now - 600
     t2 = Time.now
@@ -28,54 +21,52 @@ class WavefrontEventTest < WavefrontTestBase
 
     assert_raises(ArgumentError) { wf.list }
 
-    should_work(:list, [t1, t2],
-                "?earliestStartTimeEpochMillis=#{tms1}" \
-                "&latestStartTimeEpochMillis=#{tms2}" \
-                '&limit=100')
+    time_qs = ["earliestStartTimeEpochMillis=#{tms1}",
+               "latestStartTimeEpochMillis=#{tms2}",
+               'limit=100'].join('&')
 
-    should_work(:list, [tms1, tms2],
-                "?earliestStartTimeEpochMillis=#{tms1}" \
-                "&latestStartTimeEpochMillis=#{tms2}" \
-                '&limit=100')
+    assert_gets("/api/v2/event?#{time_qs}") { wf.list(t1, t2) }
+    assert_gets("/api/v2/event?#{time_qs}") { wf.list(tms1, tms2) }
 
     assert_raises(Wavefront::Exception::InvalidTimestamp) do
       wf.list(t1, 'abc')
     end
   end
 
-  def test_create
-    should_work(:create, EVENT_BODY, '', :post,
-                JSON_POST_HEADERS, EVENT_BODY.to_json)
-    assert_raises(ArgumentError) { wf.create }
-    assert_raises(ArgumentError) { wf.create('test') }
-  end
-
-  def test_describe
-    should_work(:describe, EVENT, EVENT)
-    should_be_invalid(:describe, 'abcdefg')
-    assert_raises(ArgumentError) { wf.describe }
-  end
-
   def test_close
-    should_work(:close, EVENT, "#{EVENT}/close", :post, POST_HEADERS)
-    should_be_invalid(:close, 'abcdefg')
+    assert_posts("/api/v2/event/#{id}/close") do
+      wf.close(id)
+    end
+
+    assert_invalid_id { wf.close(invalid_id) }
     assert_raises(ArgumentError) { wf.close }
   end
 
-  def test_update
-    should_work(:update, [EVENT, EVENT_BODY, false], EVENT, :put,
-                JSON_POST_HEADERS, EVENT_BODY.to_json)
-    should_be_invalid(:update, ['abcde', EVENT_BODY])
-    assert_raises(ArgumentError) { wf.update }
+  private
+
+  def id
+    '1481553823153:testev'
   end
 
-  def test_delete
-    should_work(:delete, EVENT, EVENT, :delete)
-    should_be_invalid(:delete, 'abcdefg')
-    assert_raises(ArgumentError) { wf.delete }
+  def invalid_id
+    'nonsense'
   end
 
-  def test_tags
-    tag_tester(EVENT)
+  def api_class
+    'event'
+  end
+
+  def payload
+    { name:        'test_event',
+      annotations: {
+        severity: 'info',
+        type:     'SDK test event',
+        details:  'an imaginary event to test the SDK'
+      },
+      hosts:       %w[host1 host2],
+      startTime:   1_493_385_089_000,
+      endTime:     1_493_385_345_678,
+      tags:        %w[tag1 tag2],
+      isEphemeral: false }
   end
 end
