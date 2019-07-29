@@ -3,6 +3,7 @@
 ## 3.3.3 (29/07/2019)
 * Fix slightly misleading verbose message when using recursive or
   lazy calls
+* Fix bug where `Alert#versions` would fault on a noop.
 
 ## 3.3.2 (24/05/2019)
 * Don't report `moreItems` as `true` at the end of a recursive `GET`.
