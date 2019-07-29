@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.3 (29/07/2019)
+* Fix slightly misleading verbose message when using recursive or
+  lazy calls
+
 ## 3.3.2 (24/05/2019)
 * Don't report `moreItems` as `true` at the end of a recursive `GET`.
 
