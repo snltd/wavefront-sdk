@@ -100,6 +100,10 @@ module Wavefront
       def make_recursive_call
         offset = 0
         p_args = set_pagination(offset, page_size, args)
+        api_caller.verbosity(conn, method, *p_args)
+
+        return if api_caller.opts[:noop]
+
         ret = api_caller.respond(conn.public_send(method, *p_args))
 
         return ret unless ret.more_items?
@@ -137,6 +141,10 @@ module Wavefront
       def make_lazy_call
         offset = 0
         p_args = set_pagination(offset, page_size, args)
+
+        api_caller.verbosity(conn, method, *p_args)
+
+        return if api_caller.opts[:noop]
 
         Enumerator.new do |y|
           loop do
