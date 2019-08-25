@@ -77,5 +77,12 @@ module Wavefront
       api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
+
+    private
+
+    def update_keys
+      %i[id name description template metricFilterRegex
+         sourceFilterRegex pointTagFilterRegexes]
+    end
   end
 end
