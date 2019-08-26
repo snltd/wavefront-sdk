@@ -10,8 +10,8 @@ module Wavefront
     end
 
     def update_keys
-      %i[name template description metricFilterRegex sourceFilterRegex
-         pointTagFilterRegexes]
+      %i[id name template description metricFilterRegex
+         sourceFilterRegex pointTagFilterRegexes]
     end
 
     # GET /api/v2/extlink
@@ -76,13 +76,6 @@ module Wavefront
 
       api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
-    end
-
-    private
-
-    def update_keys
-      %i[id name description template metricFilterRegex
-         sourceFilterRegex pointTagFilterRegexes]
     end
   end
 end
