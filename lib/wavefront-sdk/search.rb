@@ -45,8 +45,7 @@ module Wavefront
     # Build a query body
     #
     def body(query, options)
-      ret = { limit:  options[:limit]  || 10,
-              offset: options[:offset] || 0 }
+      ret = query_limits(options)
 
       if query && !query.empty?
         ret[:query] = [query].flatten.map do |q|
@@ -57,6 +56,16 @@ module Wavefront
       end
 
       ret
+    end
+
+    def query_limits(options)
+      { limit: options[:limit] || 10 }.tap do |ret|
+        if options[:cursor]
+          ret[:cursor] = options[:cursor]
+        else
+          ret[:offset] = options[:offset] || 0
+        end
+      end
     end
 
     def sort_field(options, query)
