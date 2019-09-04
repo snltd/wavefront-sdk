@@ -213,8 +213,8 @@ module Wavefront
     end
 
     def itemize_response(body_obj)
-      { status: body_obj[:status],
-        response: { items: Array(body_obj[:response]).flatten } }.to_json
+      { status:   body_obj[:status],
+        response: { items: [body_obj[:response]].flatten } }.to_json
     end
 
     # Construct a response almost from scratch. Used for 'list', among others.
@@ -223,7 +223,7 @@ module Wavefront
       { status:   { result:     status.to_s.start_with?('2') ? 'OK' : 'ERROR',
                     message:    extract_api_message(status, body_obj),
                     code:       status },
-        response: { items:      Array(body_obj).flatten,
+        response: { items:      [body_obj].flatten,
                     offset:     0,
                     limit:      body_obj.size,
                     totalItems: body_obj.size,
