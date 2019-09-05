@@ -10,8 +10,8 @@ module Wavefront
     end
 
     def update_keys
-      %i[name template description metricFilterRegex sourceFilterRegex
-         pointTagFilterRegexes]
+      %i[id name template description metricFilterRegex
+         sourceFilterRegex pointTagFilterRegexes]
     end
 
     # GET /api/v2/extlink

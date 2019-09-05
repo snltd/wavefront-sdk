@@ -79,5 +79,12 @@ module Wavefront
       wf_notificant_id?(id)
       api.post(['test', id].uri_concat, nil)
     end
+
+    private
+
+    def update_keys
+      %i[id contentType method description title template triggers
+         recipient customHttpHeaders emailSubject isHtmlContent]
+    end
   end
 end
