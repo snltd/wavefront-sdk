@@ -130,6 +130,8 @@ module Wavefront
     # If we need to massage a raw response to fit what the
     # Wavefront::Response class expects (I'm looking at you,
     # 'User'), a class can provide a {#response_shim} method.
+    # @param resp [Faraday::Response]
+    # @return [String] body of response (JSON)
     #
     def respond(resp)
       body = if calling_class.respond_to?(:response_shim)

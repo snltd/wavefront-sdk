@@ -101,6 +101,28 @@ class WavefrontUserTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.invite('test') }
   end
 
+  def test_response_shim
+    (RESOURCE_DIR + 'user_responses').each_child do |input|
+      # Ugly hack for the 202 in the 'create' file
+      status = input.basename.to_s == 'create.json' ? 202 : 200
+      shimmed = wf.response_shim(IO.read(input), status)
+      assert_instance_of(String, shimmed)
+
+      ret_obj = JSON.parse(shimmed, symbolize_names: true)
+      assert_instance_of(Hash, ret_obj)
+      assert_equal(%i[response status], ret_obj.keys.sort)
+
+      ret_status = ret_obj[:status]
+      assert_instance_of(Hash, ret_status)
+      assert_equal(%i[result message code], ret_status.keys)
+
+      ret_resp = ret_obj[:response]
+      assert_instance_of(Hash, ret_resp)
+      assert ret_resp.key?(:items)
+      assert_instance_of(Array, ret_resp[:items])
+    end
+  end
+
   def setup_fixtures
     @users = %w[user@example.com other@elsewhere.com]
     @groups = %w[f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672
