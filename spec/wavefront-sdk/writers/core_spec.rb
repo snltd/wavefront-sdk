@@ -9,6 +9,8 @@ require_relative '../resources/dummy_points'
 WBWT_CREDS = { endpoint: 'stub.wavefront.com', token: 'tkn' }
 # rubocop:enable Style/MutableConstant
 
+# Fake class for testing
+#
 class TestClassNoTags
   def creds
     WBWT_CREDS

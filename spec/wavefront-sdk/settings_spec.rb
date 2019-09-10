@@ -2,30 +2,36 @@
 
 require_relative '../spec_helper'
 
-SETTINGS_BODY = { showQuerybuilderByDefault: true,
-                  hideTSWhenQuerybuilderShown: true }.freeze
-
 # Unit tests for Settings class
 #
 class WavefrontSettingsTest < WavefrontTestBase
-  def api_base
-    'customer'
-  end
-
   def test_permissions
-    should_work(:permissions, nil, 'permissions')
+    assert_gets('/api/v2/customer/permissions') do
+      wf.permissions
+    end
   end
 
   def test_preferences
-    should_work(:preferences, nil, 'preferences')
+    assert_gets('/api/v2/customer/preferences') do
+      wf.preferences
+    end
   end
 
   def test_update_preferences
-    should_work(:update_preferences, SETTINGS_BODY, 'preferences',
-                :post, JSON_POST_HEADERS, SETTINGS_BODY.to_json)
+    assert_posts('/api/v2/customer/preferences', payload) do
+      wf.update_preferences(payload)
+    end
   end
 
   def test_default_user_groups
-    should_work(:default_user_groups, nil, 'preferences/defaultUserGroups')
+    assert_gets('/api/v2/customer/preferences/defaultUserGroups') do
+      wf.default_user_groups
+    end
+  end
+
+  private
+
+  def payload
+    { showQuerybuilderByDefault: true, hideTSWhenQuerybuilderShown: true }
   end
 end

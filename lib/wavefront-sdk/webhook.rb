@@ -6,7 +6,7 @@ module Wavefront
   #
   class Webhook < CoreApi
     def update_keys
-      %i[title description template title triggers recipient]
+      %i[id title description template title triggers recipient]
     end
 
     # GET /api/v2/webhook

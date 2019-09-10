@@ -1,67 +1,62 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
-
-INTEGRATION = 'tester'.freeze
+require_relative '../test_mixins/general'
 
 # Unit tests for Integration class
 #
 class WavefrontIntegrationTest < WavefrontTestBase
-  def test_list
-    should_work(:list, 10, '?offset=10&limit=100')
-  end
-
-  def test_install
-    should_work(:install, INTEGRATION, ["#{INTEGRATION}/install", nil],
-                :post, POST_HEADERS)
-    should_be_invalid(:install)
-    assert_raises(ArgumentError) { wf.install }
-  end
+  include WavefrontTest::Describe
+  include WavefrontTest::InstallUninstall
+  include WavefrontTest::List
 
   def test_install_all_alerts
-    should_work(:install_all_alerts, INTEGRATION,
-                ["#{INTEGRATION}/install-all-alerts", nil],
-                :post, POST_HEADERS)
-    should_be_invalid(:install_all_alerts)
+    assert_posts("/api/v2/integration/#{id}/install-all-alerts") do
+      wf.install_all_alerts(id)
+    end
+
+    assert_invalid_id { wf.install_all_alerts(invalid_id) }
     assert_raises(ArgumentError) { wf.install_all_alerts }
   end
 
-  def test_uninstall
-    should_work(:uninstall, INTEGRATION, ["#{INTEGRATION}/uninstall", nil],
-                :post, POST_HEADERS)
-    should_be_invalid(:uninstall)
-    assert_raises(ArgumentError) { wf.uninstall }
-  end
-
   def test_uninstall_all_alerts
-    should_work(:uninstall_all_alerts, INTEGRATION,
-                ["#{INTEGRATION}/uninstall-all-alerts", nil],
-                :post, POST_HEADERS)
-    should_be_invalid(:uninstall_all_alerts)
+    assert_posts("/api/v2/integration/#{id}/uninstall-all-alerts") do
+      wf.uninstall_all_alerts(id)
+    end
+
+    assert_invalid_id { wf.uninstall_all_alerts(invalid_id) }
     assert_raises(ArgumentError) { wf.uninstall_all_alerts }
   end
 
-  def test_describe
-    should_work(:describe, INTEGRATION, INTEGRATION)
-    should_be_invalid(:describe)
-    assert_raises(ArgumentError) { wf.describe }
-  end
-
   def test_status
-    should_work(:status, INTEGRATION, "#{INTEGRATION}/status")
-    should_be_invalid(:status)
+    assert_gets("/api/v2/integration/#{id}/status") { wf.status(id) }
+    assert_invalid_id { wf.status(invalid_id) }
     assert_raises(ArgumentError) { wf.status }
   end
 
   def test_installed
-    should_work(:installed, nil, 'installed')
+    assert_gets('/api/v2/integration/installed') { wf.installed }
   end
 
   def test_manifests
-    should_work(:manifests, nil, 'manifests')
+    assert_gets('/api/v2/integration/manifests') { wf.manifests }
   end
 
   def test_statuses
-    should_work(:statuses, nil, 'status')
+    assert_gets('/api/v2/integration/status') { wf.statuses }
+  end
+
+  private
+
+  def api_class
+    'integration'
+  end
+
+  def id
+    'tester'
+  end
+
+  def invalid_id
+    'very bad id'
   end
 end

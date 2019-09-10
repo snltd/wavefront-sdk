@@ -100,6 +100,10 @@ module Wavefront
       def make_recursive_call
         offset = 0
         p_args = set_pagination(offset, page_size, args)
+        api_caller.verbosity(conn, method, *p_args)
+
+        return if api_caller.opts[:noop]
+
         ret = api_caller.respond(conn.public_send(method, *p_args))
 
         return ret unless ret.more_items?
@@ -111,10 +115,20 @@ module Wavefront
           resp = api_caller.respond(conn.public_send(method, *p_args))
           raise StopIteration unless resp.ok?
           ret.response.items += resp.response.items
-          raise StopIteration unless resp.more_items?
+          return finalize_response(ret) unless resp.more_items?
         end
+      end
 
-        ret
+      # In #make_recursive_call we've built up a composite response
+      # object. This method corrects a couple of things in that
+      # object which are misleading. (Because they're left over from
+      # the original call.)
+      #
+      def finalize_response(resp)
+        resp.tap do |r|
+          r.response[:limit] = r.response.items.size - 1
+          r.response[:moreItems] = false
+        end
       end
 
       # Return all objects using a lazy enumerator.
@@ -127,6 +141,10 @@ module Wavefront
       def make_lazy_call
         offset = 0
         p_args = set_pagination(offset, page_size, args)
+
+        api_caller.verbosity(conn, method, *p_args)
+
+        return if api_caller.opts[:noop]
 
         Enumerator.new do |y|
           loop do
