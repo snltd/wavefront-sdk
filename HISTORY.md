@@ -5,12 +5,10 @@
   lazy calls
 * Fix bug where `Alert#versions` would fault on a noop.
 * Make `Search` work correctly with API classes which use cursors.
-* Improve user response shim, and its tes, '#{groups[1]}'ts.
+* Improve user response shim, and its tests.
 
-
-
-end
-* Removed't report `moreItemsfrom as `true` at the end of a recursive `GET`.
+## 3.3.2 (2019-05-24)
+* Don't report `moreItems` as true at the end of a recursive GET.
 
 ## 3.3.1 (2019-05-10)
 * Better handling of query errors.
