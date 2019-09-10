@@ -196,18 +196,38 @@ module Wavefront
     # Fake a response which looks like we get from all the other
     # paths. I'm expecting the user response model to be made
     # consistent with others in the future.
+    # @return [String] of JSON
     #
     def response_shim(body, status)
-      items = JSON.parse(body, symbolize_names: true)
+      body_obj = JSON.parse(body, symbolize_names: true)
 
-      { response: { items:      items,
+      if body_obj.is_a?(Hash) && body_obj.key?(:status)
+        if response_looks_right?(body_obj)
+          body
+        else
+          itemize_response(body_obj)
+        end
+      else
+        construct_response(body_obj, status)
+      end
+    end
+
+    def itemize_response(body_obj)
+      { status:   body_obj[:status],
+        response: { items: [body_obj[:response]].flatten } }.to_json
+    end
+
+    # Construct a response almost from scratch. Used for 'list', among others.
+    #
+    def construct_response(body_obj, status)
+      { status:   { result:     status.to_s.start_with?('2') ? 'OK' : 'ERROR',
+                    message:    extract_api_message(status, body_obj),
+                    code:       status },
+        response: { items:      [body_obj].flatten,
                     offset:     0,
-                    limit:      items.size,
-                    totalItems: items.size,
-                    modeItems:  false },
-        status:   { result:     status == 200 ? 'OK' : 'ERROR',
-                    message:    extract_api_message(status, items),
-                    code:       status } }.to_json
+                    limit:      body_obj.size,
+                    totalItems: body_obj.size,
+                    moreItems:  false } }.to_json
     end
 
     # the user API class does not support pagination. Be up-front
@@ -219,9 +239,20 @@ module Wavefront
 
     private
 
+    def response_looks_right?(body_obj)
+      body_obj.key?(:response) &&
+        body_obj[:response].is_a?(Hash) &&
+        body_obj[:response].key?(:items) &&
+        body_obj[:response][:items].is_a?(Array)
+    end
+
     def extract_api_message(status, items)
       return '' if status < 300
       items.fetch(:message, 'no message from API')
+    end
+
+    def update_keys
+      %i[identifier groups userGroups]
     end
   end
 end

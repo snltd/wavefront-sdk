@@ -1,4 +1,4 @@
 require 'pathname'
 
-WF_SDK_VERSION = '3.3.0'.freeze
-WF_SDK_LOCATION = Pathname.new(__FILE__).dirname.parent.parent.parent
+WF_SDK_VERSION = '3.3.3'.freeze
+WF_SDK_LOCATION = Pathname.new(__dir__).parent.parent.parent

@@ -1,29 +1,42 @@
 # Changelog
 
-## 3.3.0
+## 3.3.3 (2019-09-10)
+* Fix slightly misleading verbose message when using recursive or
+  lazy calls
+* Fix bug where `Alert#versions` would fault on a noop.
+* Make `Search` work correctly with API classes which use cursors.
+* Improve user response shim, and its tests.
+
+## 3.3.2 (2019-05-24)
+* Don't report `moreItems` as true at the end of a recursive GET.
+
+## 3.3.1 (2019-05-10)
+* Better handling of query errors.
+
+## 3.3.0 (2019-05-09)
 * Reflect the way the API ACL format has changed.
 
-## 3.2.0 (01/05/2019)
+## 3.2.0 (2019-05-01)
 * Add support for new `apitoken` path.
 * Add support for alert ACLs
 * Tag and ACL methods have been broken out into mixins which are
   automatically included by classes which support them
 
-## 3.1.0 (23/04/2019)
+## 3.1.0 (2019-04-23)
 * When using `Wavefront::Write`, large numbers of points are written
   in chunks, rather than all at once. The chunk size can be set by
   the user when instantiating the class.
 
-## 3.0.2 (06/04/2019)
+## 3.0.2 (2019-04-06)
 * Better handling of non-existent or malformed config files.
 * Look for `~/.wavefront.conf` as well as `~/.wavefront`. Both these
   fixes are related to finding out that other Wavefront tooling
   creates `~/.wavefront` as a directory.
 
-## 3.0.1 (05/04/2019)
+## 3.0.1 (2019-04-05)
 * User IDs do not have to be e-mail addresses.
 
-## 3.0.0 (23/03/2019)
+## 3.0.0 (2019-03-23)
 * Drop support for Ruby 2.2. (Potentially breaking change.)
 * Add `Wavefront::Settings` class to cover new `settings` API
   endpoint.
@@ -33,14 +46,14 @@
 * Add `sort_field` to `Wavefront::Search` options. Lets user select
   the field on which to sort results.
 
-## 2.5.1 (06/03/2019)
+## 2.5.1 (2019-03-06)
 * Fix messy handling of raw query errors.
 
-## 2.5.0 (21/02/2019)
+## 2.5.0 (2019-02-21)
 * New `Wavefront::UserGroup` class, for new API `UserGroup` feature.
 * Extended `Wavefront::User` to cover new API methods.
 
-## 2.4.0 (28/01/2019)
+## 2.4.0 (2019-01-28)
 * New `Wavefront::MetricHelper` class creates and in-memory buffer
   to which you can instantaneously add metrics, flushing it to
   Wavefront when appropriate. All `Writer` types are supported.
@@ -54,16 +67,16 @@
 * Improve `README` instructions on writing metrics.
 * Support Ruby 2.6.
 
-## 2.3.0 (06/01/2019)
+## 2.3.0 (2019-01-06)
 * When sending points via the API, send bundles of up to 100 points
   with each `POST`, rather than a call per point.
 
-## 2.2.1 (20/12/2018)
+## 2.2.1 (2018-12-20)
 * Fix typo in `Wavefront::Alert#affected_by_maintenance` method
   name.
 * Full `Wavefront::Alert` test coverage.
 
-## 2.2.0 (15/12/2018)
+## 2.2.0 (2018-12-15)
 * New methods to cover new API paths.
  * `Wavefront::Alert#install`,
  * `Wavefront::Alert#uninstall`,
@@ -75,20 +88,20 @@
  * `Wavefront::Integration#uninstall_all_alerts`
  * `Wavefront::Integration#installed`
 
-## 2.1.0 (25/11/2018)
+## 2.1.0 (2018-11-25)
 * New `unix` writer lets you write points to a local Unix datagram
   socket.
 
-## 2.0.3 (23/10/2018)
+## 2.0.3 (2018-10-23)
 * Remove unnecessarily strict argument check on `event#list`.
 
-## 2.0.2 (22/10/2018)
+## 2.0.2 (2018-10-22)
 * Bugfix
 
-## 2.0.1 (22/10/2018)
+## 2.0.1 (2018-10-22)
 * Bugfix on response types.
 
-## 2.0.0 (20/10/2018)
+## 2.0.0 (2018-10-20)
 * Remove `#everything` method from all classes. (Breaking change.)
 * Calling any method which takes the `limit` argument with  `limit`
   set to `:all` will automatically handle pagination, fetching all
@@ -131,36 +144,36 @@
 * Make `Wavefront::User` return a response object containing an
   `items` element, like every other class.
 
-## 1.6.2 (22/08/2018)
+## 1.6.2 (2018-08-22)
 * Drop log priority of write class messages.
 
-## 1.6.1 (22/08/2018)
+## 1.6.1 (2018-08-22)
 * Fix Ruby 2.2 bugs
 * Improve unit test separation
 * Allow updating of all external link parameters
 
-## 1.6.0 (07/08/2018)
+## 1.6.0 (2018-08-07)
 * Improve validation of point tags.
 * Break extensions to standard library out into their own files.
 * Improve README.
 
-## 1.5.0 (25/06/2018)
+## 1.5.0 (2018-06-25)
 * Add [derived
   metric](https://docs.wavefront.com/derived_metrics.html) support.
 * Add this changelog.
 
-## 1.4.0 (10/04/2018)
+## 1.4.0 (2018-04-10)
 * Add support for [direct
   ingestion](https://docs.wavefront.com/direct_ingestion.html).
 
-## 1.3.2 (03/04/2018)
+## 1.3.2 (2018-04-03)
 * Fix regression in write class.
 
-## 1.3.1 (03/04/2018)
+## 1.3.1 (2018-04-03)
 * Fix Ruby 2.2 support.
 * Code tidy and linting improvements.
 
-## 1.3.0 (29/03/2018)
+## 1.3.0 (2018-03-29)
 * Add support for delta metrics.
 * Add automatic pagination support for long lists of objects.
   Such lists can be treated as Ruby enumerables.
@@ -170,27 +183,27 @@
 * Update dependencies.
 * Support Ruby 2.5.
 
-## 1.2.1 (12/10/2017)
+## 1.2.1 (2017-10-12)
 * Fix bug in relative time support.
 * Fix Ruby 2.4 support.
 
-## 1.2.0 (12/10/2017)
+## 1.2.0 (2017-10-12)
 * Support relative times through mixin methods.
 
-## 1.1.0 (09/10/2017)
+## 1.1.0 (2017-10-09)
 * Add support for notificant (alert target) API path.
 * Add support for integration API path.
 * Support new source description set/delete API endpoint.
 
-## 1.0.3 (20/09/2017)
+## 1.0.3 (2017-09-20)
 * Gracefully handle tags with `nil` values.
 * Bump dependencies.
 
-## 1.0.2 (04/08/2017)
+## 1.0.2 (2017-08-04)
 * Maintenance window bugfixes.
 
-## 1.0.1 (31/07/2017)
+## 1.0.1 (2017-07-31)
 * Fix message ID validator.
 
-## 1.0.0 (11/06/2017)
+## 1.0.0 (2017-06-11)
 First official release.

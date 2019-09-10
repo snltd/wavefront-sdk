@@ -81,6 +81,8 @@ module Wavefront
       wf_alert_id?(id)
       resp = api.get([id, 'history'].uri_concat)
 
+      return if opts[:noop]
+
       versions = resp.response.items.map(&:version)
       resp.response[:items] = versions
       resp

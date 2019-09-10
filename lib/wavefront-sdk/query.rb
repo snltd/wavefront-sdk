@@ -76,8 +76,15 @@ module Wavefront
     # Fake a response which looks like we get from all the other
     # paths. The default response is a single array.
     #
+    # I don't know if something has changed in the API, but sending
+    # a complete nonsense query like 'st("some.series")' returns an
+    # error message, but with a 200 code. So we fudge a 400 if we
+    # see a message.
+    #
     def response_shim(body, status)
       resp, err_msg = parsed_response(body)
+
+      status = 400 if status == 200 && !err_msg.empty?
 
       { response: resp,
         status:   { result:  status == 200 ? 'OK' : 'ERROR',
@@ -87,11 +94,23 @@ module Wavefront
 
     # A bad query doesn't send back a JSON object. It sends back a
     # string with an embedded message.
+    # @return [Array] [parsed body of response, error_message]. One
+    #   or the other
     #
     def parsed_response(body)
       [JSON.parse(body), '']
     rescue JSON::ParserError
-      ['', body.match(/message='([^']+)'/).captures.first]
+      ['', extract_error_message(body)]
+    end
+
+    # There ought to be a message= block in the response, but
+    # sometimes there isn't. So far it seems that in this second
+    # case, the message is on its own line.
+    #
+    def extract_error_message(body)
+      body.match(/message='([^']+)'/).captures.first
+    rescue StandardError
+      body.lines.last.strip
     end
   end
 end

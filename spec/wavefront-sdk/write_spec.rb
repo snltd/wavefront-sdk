@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 require_relative '../spec_helper'
+require_relative '../support/mocket'
+require_relative '../support/bad_mocket'
 require_relative '../../lib/wavefront-sdk/write'
 require_relative '../../lib/wavefront-sdk/core/response'
 require_relative 'resources/dummy_points'

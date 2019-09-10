@@ -128,6 +128,8 @@ module Wavefront
     # If we need to massage a raw response to fit what the
     # Wavefront::Response class expects (I'm looking at you,
     # 'User'), a class can provide a {#response_shim} method.
+    # @param resp [Faraday::Response]
+    # @return [String] body of response (JSON)
     #
     def respond(resp)
       body = if calling_class.respond_to?(:response_shim)
@@ -144,6 +146,7 @@ module Wavefront
     #
     def verbosity(conn, method, *args)
       return unless noop || verbose
+
       log format('uri: %s %s', method.upcase, conn.url_prefix)
 
       return unless args.last && !args.last.empty?
@@ -166,9 +169,6 @@ module Wavefront
     #   endpoint
     #
     def make_call(conn, method, *args)
-      verbosity(conn, method, *args)
-      return if noop
-
       paginator = paginator_class(method).new(self, conn, method, *args)
 
       case paginator.initial_limit
@@ -182,6 +182,9 @@ module Wavefront
     end
 
     def make_single_call(conn, method, *args)
+      verbosity(conn, method, *args)
+      return if noop
+
       pp args if debug
 
       resp = conn.public_send(method, *args)
