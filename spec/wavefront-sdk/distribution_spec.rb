@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/distribution'
@@ -29,33 +30,38 @@ class WavefrontDistributionTest < MiniTest::Test
                  wf.mk_wf_distribution([1, 1, 1], [1, 3, 3, 2, 6, 6]))
   end
 
-  def test_hash_to_wf
+  def test_hash_to_wf_full
     assert_equal(wf.hash_to_wf(distribution),
                  '!M 1538865613 #5 11 #15 2.533 #8 -15 #12 1000000.0 ' \
                  'test.distribution source=minitest ' \
                  'tag1="val1" tag2="val2"')
+  end
 
-    d2 = distribution.dup
-    d2[:tags] = {}
+  def test_hash_to_wf_no_tags
+    dist = distribution.dup.tap { |d| d[:tags] = {} }
 
-    assert_equal(wf.hash_to_wf(d2),
+    assert_equal(wf.hash_to_wf(dist),
                  '!M 1538865613 #5 11 #15 2.533 #8 -15 #12 1000000.0 ' \
                  'test.distribution source=minitest')
+  end
 
-    d3 = distribution.dup
-    d3[:ts] = Time.at(1_538_865_613)
-    d3 = d3.tap { |d| d.delete(:source) }
+  def test_hash_to_wf_no_tags_real_timestamp
+    dist = distribution.dup.tap do |d|
+      d[:ts] = Time.at(1_538_865_613)
+      d.delete(:source)
+    end
 
-    assert_equal(wf.hash_to_wf(d3),
+    assert_equal(wf.hash_to_wf(dist),
                  '!M 1538865613 #5 11 #15 2.533 #8 -15 #12 1000000.0 ' \
                  "test.distribution source=#{Socket.gethostname} " \
                  'tag1="val1" tag2="val2"')
+  end
 
-    bad_dist = distribution.dup
-    bad_dist.delete(:interval)
+  def test_hash_to_wf_missing_interval
+    dist = distribution.dup.tap { |d| d.delete(:interval) }
 
     assert_raises(Wavefront::Exception::InvalidDistribution) do
-      wf.hash_to_wf(bad_dist)
+      wf.hash_to_wf(dist)
     end
   end
 
@@ -66,10 +72,10 @@ class WavefrontDistributionTest < MiniTest::Test
 
   def distribution
     { interval: :m,
-      path:     'test.distribution',
-      value:    [[5, 11], [15, 2.533], [8, -15], [12, 1e6]],
-      ts:       1_538_865_613,
-      source:   'minitest',
-      tags:     { tag1: 'val1', tag2: 'val2' } }
+      path: 'test.distribution',
+      value: [[5, 11], [15, 2.533], [8, -15], [12, 1e6]],
+      ts: 1_538_865_613,
+      source: 'minitest',
+      tags: { tag1: 'val1', tag2: 'val2' } }
   end
 end
