@@ -1,23 +1,24 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 
-ANOM_OPTS = { offset:  0,
-              limit:   100,
+ANOM_OPTS = { offset: 0,
+              limit: 100,
               startMs: 1_544_891_884_000,
-              endMs:   1_544_891_884_000 }.freeze
+              endMs: 1_544_891_884_000 }.freeze
 
 ANOM_QS = '?offset=0&limit=100&startMs=1544891884000&' \
-          'endMs=1544891884000'.freeze
+          'endMs=1544891884000'
 
-ANOM_DASH = 'test_dashboard'.freeze
+ANOM_DASH = 'test_dashboard'
 
 # XXX I have no idea what these hashes really look like. The API doc
 # says they're a string though. Whether it means the data structure
 # or and MD5-style hash, I don't know.
 #
-ANOM_PHASH = 'a=1,b=2'.freeze
-ANOM_CHASH = 'c=3,d=4'.freeze
+ANOM_PHASH = 'a=1,b=2'
+ANOM_CHASH = 'c=3,d=4'
 
 # Unit tests for anomaly class
 #
