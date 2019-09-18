@@ -120,22 +120,6 @@ class WavefrontWriteTest < MiniTest::Test
                    opttags: nil }, wf.point_hash(point))
   end
 
-  def test_point_hash_missing_path
-    point = POINT.dup.tap { |p| p.delete(:path) }
-
-    assert_raises(Wavefront::Exception::InvalidMetricName) do
-      wf.point_hash(point)
-    end
-  end
-
-  def test_point_hash_missing_value
-    point = POINT.dup.tap { |p| p.delete(:value) }
-
-    assert_raises(Wavefront::Exception::InvalidMetricValue) do
-      wf.point_hash(point)
-    end
-  end
-
   def test_point_hash_missing_timestamp
     point = POINT.dup.tap { |p| p.delete(:ts) }
 

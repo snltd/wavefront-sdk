@@ -206,14 +206,14 @@ module Wavefront
     #   the format.
     #
     def hash_to_wf(point)
+      raise Wavefront::Exception::InvalidMetricName unless point[:path]
+      raise Wavefront::Exception::InvalidMetricValue unless point[:value]
+
       format('%<path>s %<value>s %<ts>s source=%<source>s %<tags>s %<opttags>s',
              point_hash(point)).squeeze(' ').strip
     end
 
     def point_hash(point)
-      raise Wavefront::Exception::InvalidMetricName unless point[:path]
-      raise Wavefront::Exception::InvalidMetricValue unless point[:value]
-
       point.dup.tap do |p|
         p[:ts] ||= nil
         p[:source] ||= HOSTNAME

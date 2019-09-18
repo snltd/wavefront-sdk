@@ -66,8 +66,6 @@ module Wavefront
     # @return [Bool]
     #
     def more_items?
-      return false unless response.key?(:moreItems)
-
       response.moreItems ? true : false
     rescue StandardError
       false
