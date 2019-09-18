@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core'
 
 module Wavefront
@@ -54,6 +56,7 @@ module Wavefront
       #
       def _send_point(point)
         return if opts[:noop]
+
         conn.puts(point)
       rescue StandardError
         raise Wavefront::Exception::SocketError

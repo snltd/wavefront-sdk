@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 
@@ -47,7 +48,7 @@ class WavefrontSearchTest < WavefrontTestBase
 
     assert_equal({ limit: 10,
                    offset: 0,
-                   query:  [
+                   query: [
                      { key: 'k1', value: 'v1', matchingMethod: 'EXACT' },
                      { key: 'k2', value: 'v2', matchingMethod: 'CONTAINS' }
                    ],
@@ -72,10 +73,10 @@ class WavefrontSearchTest < WavefrontTestBase
   def payload
     { limit: 10,
       offset: 0,
-      query: [{ key:            'name',
-                value:          'Wavefront',
+      query: [{ key: 'name',
+                value: 'Wavefront',
                 matchingMethod: 'CONTAINS' }],
-      sort: { field:     'string',
+      sort: { field: 'string',
               ascending: true } }
   end
 end

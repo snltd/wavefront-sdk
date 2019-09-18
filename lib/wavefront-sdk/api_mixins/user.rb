@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Wavefront
   module Mixin
     #
@@ -10,6 +12,7 @@ module Wavefront
       #
       def validate_user_list(list)
         raise ArgumentError unless list.is_a?(Array)
+
         list.each { |id| wf_user_id?(id) }
       end
 
@@ -19,6 +22,7 @@ module Wavefront
       #
       def validate_usergroup_list(list)
         raise ArgumentError unless list.is_a?(Array)
+
         list.each { |id| wf_usergroup_id?(id) }
       end
     end

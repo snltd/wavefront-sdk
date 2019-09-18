@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Automatically load all SDK classes.
 #
 require 'pathname'

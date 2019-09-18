@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'write'
 require_relative 'support/mixins'
 
@@ -38,7 +40,7 @@ module Wavefront
     end
 
     def default_port
-      40000
+      40_000
     end
 
     # Convert a validated point to a string conforming to

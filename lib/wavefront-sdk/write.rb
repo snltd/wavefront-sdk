@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 require_relative 'core/exception'
 require_relative 'core/logger'
@@ -57,14 +59,14 @@ module Wavefront
     end
 
     def defaults
-      { tags:        nil,
-        writer:      :socket,
-        noop:        false,
-        novalidate:  false,
-        noauto:      false,
-        verbose:     false,
-        debug:       false,
-        chunk_size:  1000,
+      { tags: nil,
+        writer: :socket,
+        noop: false,
+        novalidate: false,
+        noauto: false,
+        verbose: false,
+        debug: false,
+        chunk_size: 1000,
         chunk_pause: 0 }
     end
 
@@ -115,7 +117,7 @@ module Wavefront
       end
 
       Wavefront::Response.new(
-        { status:   { result: result, message: nil, code: nil },
+        { status: { result: result, message: nil, code: nil },
           response: summary.to_h }.to_json, nil
       )
     end

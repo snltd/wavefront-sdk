@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
@@ -80,7 +81,7 @@ class WavefrontUserGroupTest < WavefrontTestBase
   end
 
   def payload
-    { name:        'test group',
+    { name: 'test group',
       permissions: %w[alerts_management dashboard_management
                       events_management] }
   end

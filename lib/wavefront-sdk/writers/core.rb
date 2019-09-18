@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require_relative 'summary'
 require_relative '../core/response'
@@ -68,7 +70,7 @@ module Wavefront
 
       def respond
         Wavefront::Response.new(
-          { status:   { result: summary.result, message: nil, code: nil },
+          { status: { result: summary.result, message: nil, code: nil },
             response: summary.to_h }.to_json, nil, opts
         )
       end

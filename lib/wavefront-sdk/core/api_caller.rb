@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'faraday'
 require 'addressable'
@@ -47,7 +49,7 @@ module Wavefront
     def mk_conn(path, headers = {}, opts = {})
       url = format('%s://%s%s', net[:scheme], net[:endpoint],
                    [net[:api_base], path].uri_concat)
-      set_opts = { url:     Addressable::URI.encode(url),
+      set_opts = { url: Addressable::URI.encode(url),
                    headers: net[:headers].merge(headers) }
       Faraday.new(set_opts.merge(opts))
     end
@@ -79,7 +81,7 @@ module Wavefront
                      request: {
                        params_encoder: Faraday::FlatParamsEncoder
                      },
-                     params:  query)
+                     params: query)
 
       make_call(conn, :get)
     end
@@ -206,8 +208,8 @@ module Wavefront
         creds[:agent] = "wavefront-sdk #{WF_SDK_VERSION}"
       end
 
-      @net = { headers:  headers(creds),
-               scheme:   opts[:scheme] || 'https',
+      @net = { headers: headers(creds),
+               scheme: opts[:scheme] || 'https',
                endpoint: creds[:endpoint],
                api_base: calling_class.api_path }
     end

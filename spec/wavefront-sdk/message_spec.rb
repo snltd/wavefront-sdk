@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 
-MESSAGE = 'CLUSTER::IHjNaHM9'.freeze
+MESSAGE = 'CLUSTER::IHjNaHM9'
 
 # Unit tests for Message class
 #

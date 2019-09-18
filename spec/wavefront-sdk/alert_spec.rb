@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/acl'
@@ -125,19 +126,19 @@ class WavefrontAlertTest < WavefrontTestBase
   end
 
   def payload
-    { name:               'SDK test alert',
-      target:             'user@example.com',
-      condition:          'ts("app.errors") > 0',
-      displayExpression:  'ts("app.errors")',
-      minutes:             5,
+    { name: 'SDK test alert',
+      target: 'user@example.com',
+      condition: 'ts("app.errors") > 0',
+      displayExpression: 'ts("app.errors")',
+      minutes: 5,
       resolveAfterMinutes: 5,
-      severity:            'INFO' }
+      severity: 'INFO' }
   end
 
   def search_payload(value)
-    { limit:  999,
+    { limit: 999,
       offset: 0,
-      query:  [{ key: 'status', value: value, matchingMethod: 'EXACT' }],
-      sort:   { field: 'status', ascending: true } }
+      query: [{ key: 'status', value: value, matchingMethod: 'EXACT' }],
+      sort: { field: 'status', ascending: true } }
   end
 end

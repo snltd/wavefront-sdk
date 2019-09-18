@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'date'
 require_relative '../spec_helper'
@@ -51,8 +52,6 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = ['1', 'abc', '0', {}, []]
     good_and_bad('wf_value?', 'InvalidMetricValue', good, bad)
   end
-
-  # rubocop:disable Style/DateTime
   def test_wf_ts?
     good = [Time.now, Date.today, DateTime.now]
     bad  = ['2017-03-25 23:52:22 +0000', 1_490_485_946,

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
@@ -23,11 +24,11 @@ class WavefrontExternalLinkTest < WavefrontTestBase
   end
 
   def payload
-    [{ name:        'test link',
-       template:    'https://example.com/link/{{value}}',
+    [{ name: 'test link',
+       template: 'https://example.com/link/{{value}}',
        description: 'an imaginary link for unit testing purposes' },
-     { name:        'test link',
-       template:    'https://example.com/link/{{value}}' }]
+     { name: 'test link',
+       template: 'https://example.com/link/{{value}}' }]
   end
 
   def api_class

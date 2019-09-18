@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 require_relative 'api_mixins/tag'
 
@@ -28,6 +30,7 @@ module Wavefront
     #
     def list(from = nil, to = Time.now, limit = 100, cursor = nil)
       raise ArgumentError unless from && to
+
       wf_event_id?(cursor) if cursor
 
       from = parse_time(from, true)
@@ -37,9 +40,9 @@ module Wavefront
       wf_ms_ts?(to)
 
       body = { earliestStartTimeEpochMillis: from,
-               latestStartTimeEpochMillis:   to,
-               cursor:                       cursor,
-               limit:                        limit }
+               latestStartTimeEpochMillis: to,
+               cursor: cursor,
+               limit: limit }
 
       api.get('', body.cleanse)
     end
@@ -56,6 +59,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Wavefront
   #
   # Log to a user-supplied Ruby logger, or to standard output.
