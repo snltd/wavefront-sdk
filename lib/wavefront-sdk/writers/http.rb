@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core'
 require_relative '../core/api_caller'
 
@@ -11,8 +13,9 @@ module Wavefront
     #
     class Http < Core
       def open
-        creds[:endpoint] = format('%s:%s', creds[:proxy],
-                                  creds[:port] || default_port)
+        creds[:endpoint] = format('%<proxy>s:%<port>s',
+                                  proxy: creds[:proxy],
+                                  port: creds[:port] || default_port)
         opts[:scheme] = 'http'
         @conn = Wavefront::ApiCaller.new(self, creds, opts)
       end

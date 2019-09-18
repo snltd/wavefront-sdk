@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Minitest
   #
   # Some custom Minitest assertions to simplify testing

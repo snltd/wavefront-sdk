@@ -1,17 +1,13 @@
-AllCops:
-  TargetRubyVersion: 2.2
-#
-#
-# Allow long blocks of tests
-#
-Metrics/BlockLength:
-  Max: 120
-
-Metrics/MethodLength:
-  Max: 80
-
+# Offense count: 64
 Metrics/AbcSize:
-  Max: 80
+  Max: 64
 
+# Offense count: 5
+# Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 300
+  Max: 279
+
+# Offense count: 46
+# Configuration parameters: CountComments, ExcludedMethods.
+Metrics/MethodLength:
+  Max: 39

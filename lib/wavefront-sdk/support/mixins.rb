@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'date'
 require_relative 'parse_time'
 require_relative '../core/exception'
@@ -22,6 +24,7 @@ module Wavefront
     #
     def parse_time(time, in_ms = false)
       return relative_time(time, in_ms) if time =~ /^[\-+]/
+
       ParseTime.new(time, in_ms).parse!
     end
 
@@ -57,7 +60,7 @@ module Wavefront
       end
 
       m = in_ms ? 1000 : 1
-      time.delete!('+')
+      time = time.delete('+')
       match = time.match(/^(-?\d*\.?\d*)([smhdwy])$/)
       (match[1].to_f * time_multiplier(match[2]) * m).to_i
     end
@@ -85,6 +88,7 @@ module Wavefront
       u = { s: 1, m: 60, h: 3600, d: 86_400, w: 604_800, y: 31_536_000 }
 
       return u[suffix.to_sym] if u.key?(suffix.to_sym)
+
       raise Wavefront::Exception::InvalidTimeUnit
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Wavefront
   #
   # Simple exception classes

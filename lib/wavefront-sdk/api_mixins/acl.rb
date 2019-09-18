@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Wavefront
   module Mixin
     #
@@ -79,6 +81,7 @@ module Wavefront
 
       def valid_acl_body?(list)
         return true if list.is_a?(Array) && list.all? { |h| h.is_a?(String) }
+
         raise ArgumentError
       end
     end

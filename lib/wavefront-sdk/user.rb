@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 require_relative 'api_mixins/user'
 
@@ -25,6 +27,7 @@ module Wavefront
     #
     def create(body, send_email = false)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post("?sendEmail=#{send_email}", body, 'application/json')
     end
 
@@ -115,6 +118,7 @@ module Wavefront
     def grant(id, pgroup)
       wf_user_id?(id)
       raise ArgumentError unless pgroup.is_a?(String)
+
       api.post([id, 'grant'].uri_concat, "group=#{pgroup}",
                'application/x-www-form-urlencoded')
     end
@@ -131,6 +135,7 @@ module Wavefront
     def revoke(id, pgroup)
       wf_user_id?(id)
       raise ArgumentError unless pgroup.is_a?(String)
+
       api.post([id, 'revoke'].uri_concat, "group=#{pgroup}",
                'application/x-www-form-urlencoded')
     end
@@ -145,6 +150,7 @@ module Wavefront
     #
     def delete_users(user_list)
       raise ArgumentError unless user_list.is_a?(Array)
+
       validate_user_list(user_list)
       api.post('deleteUsers', user_list, 'application/json')
     end
@@ -160,6 +166,7 @@ module Wavefront
     #
     def grant_permission(permission, user_list)
       raise ArgumentError unless user_list.is_a?(Array)
+
       validate_user_list(user_list)
       api.post(['grant', permission].uri_concat, user_list,
                'application/json')
@@ -176,6 +183,7 @@ module Wavefront
     #
     def revoke_permission(permission, user_list)
       raise ArgumentError unless user_list.is_a?(Array)
+
       validate_user_list(user_list)
       api.post(['revoke', permission].uri_concat, user_list,
                'application/json')
@@ -190,6 +198,7 @@ module Wavefront
     def invite(body)
       raise ArgumentError unless body.is_a?(Array)
       raise ArgumentError unless body.first.is_a?(Hash)
+
       api.post('invite', body, 'application/json')
     end
 
@@ -213,21 +222,21 @@ module Wavefront
     end
 
     def itemize_response(body_obj)
-      { status:   body_obj[:status],
+      { status: body_obj[:status],
         response: { items: [body_obj[:response]].flatten } }.to_json
     end
 
     # Construct a response almost from scratch. Used for 'list', among others.
     #
     def construct_response(body_obj, status)
-      { status:   { result:     status.to_s.start_with?('2') ? 'OK' : 'ERROR',
-                    message:    extract_api_message(status, body_obj),
-                    code:       status },
-        response: { items:      [body_obj].flatten,
-                    offset:     0,
-                    limit:      body_obj.size,
+      { status: { result: status.to_s.start_with?('2') ? 'OK' : 'ERROR',
+                  message: extract_api_message(status, body_obj),
+                  code: status },
+        response: { items: [body_obj].flatten,
+                    offset: 0,
+                    limit: body_obj.size,
                     totalItems: body_obj.size,
-                    moreItems:  false } }.to_json
+                    moreItems: false } }.to_json
     end
 
     # the user API class does not support pagination. Be up-front
@@ -248,6 +257,7 @@ module Wavefront
 
     def extract_api_message(status, items)
       return '' if status < 300
+
       items.fetch(:message, 'no message from API')
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontTest
   module List
     def test_list

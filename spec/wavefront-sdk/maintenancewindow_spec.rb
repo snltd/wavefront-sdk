@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
@@ -23,11 +24,11 @@ class WavefrontMaintenanceWindowTest < WavefrontTestBase
   end
 
   def payload
-    { reason:   'testing SDK',
-      title:    'test window',
-      start:    Time.now.to_i,
-      end:      Time.now.to_i + 600,
-      tags:     %w[testtag1 testtag2],
+    { reason: 'testing SDK',
+      title: 'test window',
+      start: Time.now.to_i,
+      end: Time.now.to_i + 600,
+      tags: %w[testtag1 testtag2],
       hostTags: %w[hosttag1 hosttag2] }
   end
 end

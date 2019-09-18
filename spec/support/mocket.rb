@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A mock socket
 #
 class Mocket

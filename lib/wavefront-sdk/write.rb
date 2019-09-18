@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 require_relative 'core/exception'
 require_relative 'core/logger'
@@ -118,7 +120,7 @@ module Wavefront
       end
 
       Wavefront::Response.new(
-        { status:   { result: result, message: nil, code: nil },
+        { status: { result: result, message: nil, code: nil },
           response: summary.to_h }.to_json, nil
       )
     end
@@ -204,24 +206,30 @@ module Wavefront
     #   the format.
     #
     def hash_to_wf(point)
-      format('%s %s %s source=%s %s %s',
-             *point_array(point)).squeeze(' ').strip
-    rescue StandardError
-      raise Wavefront::Exception::InvalidPoint
+      raise Wavefront::Exception::InvalidMetricName unless point[:path]
+      raise Wavefront::Exception::InvalidMetricValue unless point[:value]
+
+      format('%<path>s %<value>s %<ts>s source=%<source>s %<tags>s %<opttags>s',
+             point_hash(point)).squeeze(' ').strip
     end
 
-    # Make an array which can be used by #hash_to_wf.
-    # @param point [Hash] a hash describing a point. See #write() for
-    #   the format.
-    # @raise
-    #
-    def point_array(point)
-      [point[:path] || raise,
-       point[:value] || raise,
-       point.fetch(:ts, nil),
-       point.fetch(:source, HOSTNAME),
-       point[:tags]&.to_wf_tag,
-       opts[:tags]&.to_wf_tag]
+    def point_hash(point)
+      point.dup.tap do |p|
+        p[:ts] ||= nil
+        p[:source] ||= HOSTNAME
+        p[:tags] = tags_or_nothing(p.fetch(:tags, nil))
+        p[:opttags] = tags_or_nothing(opts.fetch(:tags, nil))
+      end
+    end
+
+    def tags_or_nothing(tags)
+      return nil unless tags
+
+      tags.to_wf_tag
+    end
+
+    def data_format
+      :wavefront
     end
 
     def data_format
@@ -237,8 +245,8 @@ module Wavefront
     def setup_writer
       writer = opts[:writer].to_s
       require_relative File.join('writers', writer)
-      Object.const_get(format('Wavefront::Writer::%s',
-                              writer.capitalize)).new(self)
+      Object.const_get(format('Wavefront::Writer::%<writer_class>s',
+                              writer_class: writer.capitalize)).new(self)
     rescue LoadError
       raise(Wavefront::Exception::UnsupportedWriter, writer)
     end
