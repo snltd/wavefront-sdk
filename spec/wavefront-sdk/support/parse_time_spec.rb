@@ -64,4 +64,3 @@ class WavefrontParseTimeTest < MiniTest::Test
     assert_kind_of(Numeric, ptm.parse!)
   end
 end
-# rubocop:enable Style/DateTime

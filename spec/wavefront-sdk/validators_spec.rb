@@ -52,13 +52,13 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = ['1', 'abc', '0', {}, []]
     good_and_bad('wf_value?', 'InvalidMetricValue', good, bad)
   end
+
   def test_wf_ts?
     good = [Time.now, Date.today, DateTime.now]
     bad  = ['2017-03-25 23:52:22 +0000', 1_490_485_946,
             '#<Date: 2017-03-25 ((2457838j,0s,0n),+0s,2299161j)>']
     good_and_bad('wf_ts?', 'InvalidTimestamp', good, bad)
   end
-  # rubocop:enable Style/DateTime
 
   def test_wf_ms_ts?
     good = [Time.now.to_i * 1000]

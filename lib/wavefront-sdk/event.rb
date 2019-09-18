@@ -31,19 +31,10 @@ module Wavefront
     def list(from = nil, to = Time.now, limit = 100, cursor = nil)
       raise ArgumentError unless from && to
 
+      body = list_body(from, to, limit, cursor)
       wf_event_id?(cursor) if cursor
-
-      from = parse_time(from, true)
-      to   = parse_time(to, true)
-
-      wf_ms_ts?(from)
-      wf_ms_ts?(to)
-
-      body = { earliestStartTimeEpochMillis: from,
-               latestStartTimeEpochMillis: to,
-               cursor: cursor,
-               limit: limit }
-
+      wf_ms_ts?(body[:earliestStartTimeEpochMillis])
+      wf_ms_ts?(body[:latestStartTimeEpochMillis])
       api.get('', body.cleanse)
     end
 
@@ -124,6 +115,15 @@ module Wavefront
 
     def valid_id?(id)
       wf_event_id?(id)
+    end
+
+    private
+
+    def list_body(t_start, t_end, limit, cursor)
+      { earliestStartTimeEpochMillis: parse_time(t_start, true),
+        latestStartTimeEpochMillis: parse_time(t_end, true),
+        cursor: cursor,
+        limit: limit }
     end
   end
 end

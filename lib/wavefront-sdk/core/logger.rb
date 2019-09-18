@@ -32,19 +32,20 @@ module Wavefront
     end
 
     def print_message(level, msg)
-      method = format('print_%s_message', level).to_sym
+      method = format('print_%<level>s_message', level: level).to_sym
       msg = format_message(level, msg)
 
       if respond_to?(:method)
         send(method, msg)
       else
-        print_warn_message(format('undefined message level:%s', level))
+        print_warn_message(format('undefined message level:%<level>s',
+                                  level: level))
         print_warn_message(msg)
       end
     end
 
     def format_message(level, msg)
-      format('SDK %s: %s', level.to_s.upcase, msg)
+      format('SDK %<level>s: %<msg>s', level: level.to_s.upcase, msg: msg)
     end
 
     def print_debug_message(msg)

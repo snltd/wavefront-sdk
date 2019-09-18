@@ -47,8 +47,10 @@ module Wavefront
     # @return [URI::HTTPS]
     #
     def mk_conn(path, headers = {}, opts = {})
-      url = format('%s://%s%s', net[:scheme], net[:endpoint],
-                   [net[:api_base], path].uri_concat)
+      url = format('%<scheme>s://%<endpoint>s%<path>s',
+                   scheme: net[:scheme],
+                   endpoint: net[:endpoint],
+                   path: [net[:api_base], path].uri_concat)
       set_opts = { url: Addressable::URI.encode(url),
                    headers: net[:headers].merge(headers) }
       Faraday.new(set_opts.merge(opts))
@@ -151,7 +153,9 @@ module Wavefront
     def verbosity(conn, method, *args)
       return unless noop || verbose
 
-      log format('uri: %s %s', method.upcase, conn.url_prefix)
+      log format('uri: %<method>s %<path>s',
+                 method: method.upcase,
+                 path: conn.url_prefix)
 
       return unless args.last && !args.last.empty?
 
@@ -162,8 +166,8 @@ module Wavefront
 
     def paginator_class(method)
       require_relative File.join('..', 'paginator', method.to_s)
-      Object.const_get(format('Wavefront::Paginator::%s',
-                              method.to_s.capitalize))
+      Object.const_get(format('Wavefront::Paginator::%<method>s',
+                              method: method.to_s.capitalize))
     end
 
     # A dispatcher for making API calls. We now have three methods
@@ -232,7 +236,7 @@ module Wavefront
       %w[endpoint token].each do |k|
         unless creds.key?(k.to_sym)
           raise(Wavefront::Exception::CredentialError,
-                format('credentials must contain %s', k))
+                format('credentials must contain %<key>s', key: k))
         end
       end
     end

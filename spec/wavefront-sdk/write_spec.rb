@@ -109,56 +109,75 @@ class WavefrontWriteTest < MiniTest::Test
     end
   end
 
-  def test_point_array
-    p1 = POINT.dup
-    assert_equal(['test.metric', 123_456, 1_469_987_572, 'testhost',
-                  't1="v1" t2="v2"', nil], wf.point_array(p1))
+  def test_point_hash_all_values
+    point = POINT.dup
 
-    p2 = POINT.dup.tap { |p| p.delete(:point) }
-    assert_raises(StandardError) { wf.point_arrayt(p2) }
+    assert_equal({ path: 'test.metric',
+                   value: 123_456,
+                   ts: 1_469_987_572,
+                   source: 'testhost',
+                   tags: 't1="v1" t2="v2"',
+                   opttags: nil }, wf.point_hash(point))
+  end
 
-    p3 = POINT.dup.tap { |p| p.delete(:value) }
-    assert_raises(StandardError) { wf.point_arrayt(p3) }
+  def test_point_hash_missing_timestamp
+    point = POINT.dup.tap { |p| p.delete(:ts) }
 
-    p4 = POINT.dup.tap { |p| p.delete(:ts) }
-    assert_equal(['test.metric', 123_456, nil, 'testhost',
-                  't1="v1" t2="v2"', nil], wf.point_array(p4))
+    assert_equal({ path: 'test.metric',
+                   value: 123_456,
+                   ts: nil,
+                   source: 'testhost',
+                   tags: 't1="v1" t2="v2"',
+                   opttags: nil }, wf.point_hash(point))
+  end
 
-    p5 = POINT.dup.tap { |p| p.delete(:tags) }
-    assert_equal(['test.metric', 123_456, 1_469_987_572, 'testhost',
-                  nil, nil], wf.point_array(p5))
+  def test_point_hash_missing_tags
+    point = POINT.dup.tap { |p| p.delete(:tags) }
+
+    assert_equal({ path: 'test.metric',
+                   value: 123_456,
+                   ts: 1_469_987_572,
+                   source: 'testhost',
+                   tags: nil,
+                   opttags: nil }, wf.point_hash(point))
   end
 
   def test_hash_to_wf
     assert_equal(wf.hash_to_wf(POINT),
                  'test.metric 123456 1469987572 ' \
                  'source=testhost t1="v1" t2="v2"')
+  end
+
+  def test_hash_to_wf_tags_via_options
     assert_equal(wf_tags.hash_to_wf(POINT),
                  'test.metric 123456 1469987572 ' \
                  'source=testhost t1="v1" t2="v2" ' \
                  'gt1="gv1" gt2="gv2"')
+  end
 
-    p1 = POINT.dup
-    p1.delete(:ts)
-    assert_equal(wf.hash_to_wf(p1),
+  def test_hash_to_wf_missing_timestamp
+    point = POINT.dup.tap { |p| p.delete(:ts) }
+    assert_equal(wf.hash_to_wf(point),
                  'test.metric 123456 source=testhost t1="v1" t2="v2"')
+  end
 
-    p2 = POINT.dup
-    p2.delete(:tags)
-    assert_equal(wf.hash_to_wf(p2),
+  def test_hash_to_wf_missing_tags
+    point = POINT.dup.tap { |p| p.delete(:tags) }
+    assert_equal(wf.hash_to_wf(point),
                  'test.metric 123456 1469987572 source=testhost')
+  end
 
-    %i[value path].each do |k|
-      p3 = POINT.dup
-      p3.delete(k)
+  def test_hash_to_wf_missing_value
+    point = POINT.dup.tap { |p| p.delete(:value) }
+    assert_raises(Wavefront::Exception::InvalidMetricValue) do
+      wf.hash_to_wf(point)
+    end
+  end
 
-      assert_raises(Wavefront::Exception::InvalidPoint) do
-        wf.hash_to_wf(p3)
-      end
-
-      assert_raises(Wavefront::Exception::InvalidPoint) do
-        wf_tags.hash_to_wf(p3)
-      end
+  def test_hash_to_wf_missing_path
+    point = POINT.dup.tap { |p| p.delete(:path) }
+    assert_raises(Wavefront::Exception::InvalidMetricName) do
+      wf.hash_to_wf(point)
     end
   end
 end

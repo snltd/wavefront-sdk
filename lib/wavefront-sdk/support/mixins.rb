@@ -60,7 +60,7 @@ module Wavefront
       end
 
       m = in_ms ? 1000 : 1
-      time.delete!('+')
+      time = time.delete('+')
       match = time.match(/^(-?\d*\.?\d*)([smhdwy])$/)
       (match[1].to_f * time_multiplier(match[2]) * m).to_i
     end

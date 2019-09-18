@@ -14,7 +14,6 @@ module Wavefront
       # in instance variable @conn.
       # @return [TCPSocket]
       #
-      # rubocop:disable Metrics/AbcSize
       def open
         if opts[:noop]
           logger.log('No-op requested. Not opening connection to proxy.')
@@ -23,15 +22,8 @@ module Wavefront
 
         port = creds[:port] || default_port
         logger.log("Connecting to #{creds[:proxy]}:#{port}.", :debug)
-
-        begin
-          @conn = TCPSocket.new(creds[:proxy], port)
-        rescue StandardError => e
-          logger.log(e, :error)
-          raise Wavefront::Exception::InvalidEndpoint
-        end
+        open_socket(creds[:proxy], port)
       end
-      # rubocop:enable Metrics/AbcSize
 
       # Close the connection described by the @conn instance variable.
       #
@@ -50,6 +42,13 @@ module Wavefront
       end
 
       private
+
+      def open_socket(proxy, port)
+        @conn = TCPSocket.new(proxy, port)
+      rescue StandardError => e
+        logger.log(e, :error)
+        raise Wavefront::Exception::InvalidEndpoint
+      end
 
       # @param point [String] point or points in native Wavefront format.
       # @raise [SocketError] if point cannot be written

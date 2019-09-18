@@ -42,7 +42,7 @@ module Wavefront
       @response = build_response(raw)
       logger.log(self, :debug)
     rescue StandardError => e
-      logger.log(format("could not parse:\n%s", json), :debug)
+      logger.log(format("could not parse:\n%<str>s", str: json), :debug)
       logger.log(e.message.to_s, :debug)
       raise Wavefront::Exception::UnparseableResponse
     end
@@ -66,9 +66,7 @@ module Wavefront
     # @return [Bool]
     #
     def more_items?
-      return false unless response.key?(:moreItems)
-
-      !!response.moreItems
+      response.moreItems ? true : false
     rescue StandardError
       false
     end

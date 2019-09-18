@@ -132,11 +132,26 @@ module Wavefront
              Wavefront::Exception::InvalidTimestamp,
              Wavefront::Exception::InvalidSourceId,
              Wavefront::Exception::InvalidTag => e
-        logger.log('Invalid point, skipping.', :info)
-        logger.log(e.class, :info)
-        logger.log(format('Invalid point: %s (%s)', point, e.to_s), :debug)
+        log_invalid_point(point, e)
         summary.rejected += 1
         false
+      end
+
+      def log_invalid_point(rawpoint, exception)
+        logger.log('Invalid point, skipping.', :info)
+        logger.log(exception.class, :info)
+        logger.log(format('Invalid point: %<rawpoint>s (%<message>s)',
+                          rawpoint: rawpoint,
+                          message: exception.to_s), :debug)
+      end
+
+      # We divide metrics up into manageable chunks and send them in
+      # batches. This dictates how large those bundles are. You can
+      # override the value with the chunk_size option
+      # @return [Integer]
+      #
+      def chunk_size
+        1000
       end
 
       private
