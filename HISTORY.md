@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.4 (2019-09-18)
+* Upgrade Rubocop dev dependency to 0.74.0, and make codebase compliant with
+  those standards. No interfaces are changed.
+
 ## 3.3.3 (2019-09-10)
 * Fix slightly misleading verbose message when using recursive or
   lazy calls
