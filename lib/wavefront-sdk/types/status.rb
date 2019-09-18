@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Wavefront
   #
   # Status types are used by the Wavefront::Response class. They
@@ -37,6 +39,7 @@ module Wavefront
       def message
         return obj[:message] if obj[:message]
         return obj[:error] if obj[:error]
+
         nil
       end
 
@@ -47,6 +50,7 @@ module Wavefront
       def result
         return obj[:result] if obj[:result]
         return 'OK' if status.between?(200, 299)
+
         'ERROR'
       end
     end

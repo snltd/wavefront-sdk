@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontTest
   #
   # include this into any class which has update keys

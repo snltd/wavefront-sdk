@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'map'
 require_relative 'logger'
@@ -40,7 +42,7 @@ module Wavefront
       @response = build_response(raw)
       logger.log(self, :debug)
     rescue StandardError => e
-      logger.log(format("could not parse:\n%s", json), :debug)
+      logger.log(format("could not parse:\n%<str>s", str: json), :debug)
       logger.log(e.message.to_s, :debug)
       raise Wavefront::Exception::UnparseableResponse
     end
@@ -65,7 +67,8 @@ module Wavefront
     #
     def more_items?
       return false unless response.key?(:moreItems)
-      !!response.moreItems
+
+      response.moreItems ? true : false
     rescue StandardError
       false
     end
@@ -78,6 +81,7 @@ module Wavefront
     def next_item
       return nil unless more_items?
       return response.cursor if response.respond_to?(:cursor)
+
       response.offset + response.limit
     rescue StandardError
       nil
@@ -116,6 +120,7 @@ module Wavefront
       return Map.new unless raw.is_a?(Hash)
       return Map.new(raw) unless raw.key?(:response)
       return raw[:response] unless raw[:response].is_a?(Hash)
+
       Map(raw[:response])
     end
 

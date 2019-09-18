@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../../spec_helper'
 require_relative '../resources/dummy_points'
 require_relative '../../../lib/wavefront-sdk/write'
 
-BODY = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'.freeze
+BODY = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'
 
 # Test HTTP transport
 #

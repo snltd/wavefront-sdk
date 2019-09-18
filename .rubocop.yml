@@ -1,22 +1,4 @@
 ---
-AllCops:
-  DisplayStyleGuide: true
-  TargetRubyVersion: 2.3
-
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
-Style/FormatStringToken:
-  Enabled: false
 
 Metrics/ClassLength:
-  Enabled: false
-
-Metrics/MethodLength:
-  Max: 13
-
-Style/DoubleNegation:
-  Enabled: false
-
-Style/NumericLiterals:
-  Enabled: false
+  Max: 124

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 
 module Wavefront
@@ -15,8 +17,8 @@ module Wavefront
       # "intermediate format" points.
       #
       def ready_point(point)
-        { key:   [point[:path], point[:source], point[:tags]],
-          ts:    point[:ts],
+        { key: [point[:path], point[:source], point[:tags]],
+          ts: point[:ts],
           value: point[:value] }
       end
 
@@ -112,11 +114,11 @@ module Wavefront
 
         eg = kdata.first
 
-        { path:   eg[:key][0],
+        { path: eg[:key][0],
           source: eg[:key][1],
-          ts:     t_end,
-          value:  kdata.map { |p| p[:value] }.inject(:+),
-          tags:   eg[:key][2] }
+          ts: t_end,
+          value: kdata.map { |p| p[:value] }.inject(:+),
+          tags: eg[:key][2] }
       end
 
       def validate(point)

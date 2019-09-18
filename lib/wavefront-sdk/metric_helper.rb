@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'write'
 require_relative 'distribution'
 require_relative 'core/logger'
@@ -33,18 +35,14 @@ module Wavefront
     # @param metric_opts [Hash] flush interval etc
     #
     def initialize(creds, writer_opts = {}, metric_opts = {})
-      @gauge = Wavefront::MetricType::Gauge.new(
-        creds, writer_opts, metric_opts
-      )
-      @counter = Wavefront::MetricType::Counter.new(
-        creds, writer_opts, metric_opts
-      )
-      @dist = Wavefront::MetricType::Distribution.new(
-        creds, writer_opts, metric_opts
-      )
-      @heartbeat = Wavefront::MetricType::Heartbeat.new(
-        creds, writer_opts, metric_opts
-      )
+      @gauge = Wavefront::MetricType::Gauge.new(creds, writer_opts,
+                                                metric_opts)
+      @counter = Wavefront::MetricType::Counter.new(creds, writer_opts,
+                                                    metric_opts)
+      @dist = Wavefront::MetricType::Distribution.new(creds, writer_opts,
+                                                      metric_opts)
+      @heartbeat = Wavefront::MetricType::Heartbeat.new(creds, writer_opts,
+                                                        metric_opts)
     end
 
     # Trigger a flush of all metrics.

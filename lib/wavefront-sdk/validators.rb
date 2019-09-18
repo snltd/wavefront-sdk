@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'defs/constants'
 require_relative 'core/exception'
 
@@ -63,6 +65,7 @@ module Wavefront
     #
     def wf_name?(name)
       return true if name.is_a?(String) && name.size < 1024 && name =~ /^\w+$/
+
       raise Wavefront::Exception::InvalidName
     end
 
@@ -93,6 +96,7 @@ module Wavefront
     #
     def wf_ts?(timestamp)
       return true if timestamp.is_a?(Time) || timestamp.is_a?(Date)
+
       raise Wavefront::Exception::InvalidTimestamp
     end
 
@@ -107,6 +111,7 @@ module Wavefront
     #
     def wf_ms_ts?(timestamp)
       return true if timestamp.is_a?(Numeric)
+
       raise Wavefront::Exception::InvalidTimestamp
     end
 
@@ -119,6 +124,7 @@ module Wavefront
     #
     def wf_epoch?(timestamp)
       return true if timestamp.is_a?(Numeric)
+
       raise Wavefront::Exception::InvalidTimestamp
     end
 
@@ -150,6 +156,7 @@ module Wavefront
     #
     def wf_value?(value)
       return true if value.is_a?(Numeric)
+
       raise Wavefront::Exception::InvalidMetricValue
     end
 
@@ -163,6 +170,7 @@ module Wavefront
     def wf_version?(version)
       version = version.to_i if version.is_a?(String) && version =~ /^\d+$/
       return true if version.is_a?(Integer) && version.positive?
+
       raise Wavefront::Exception::InvalidVersion
     end
 
@@ -176,6 +184,7 @@ module Wavefront
     #
     def wf_point_tags?(tags)
       raise Wavefront::Exception::InvalidTag unless tags.is_a?(Hash)
+
       tags.each { |k, v| wf_point_tag?(k, v) }
     end
 
@@ -203,6 +212,7 @@ module Wavefront
     #
     def wf_proxy_id?(id)
       return true if uuid?(id)
+
       raise Wavefront::Exception::InvalidProxyId
     end
 
@@ -218,6 +228,7 @@ module Wavefront
     def wf_alert_id?(id)
       id = id.to_s if id.is_a?(Numeric)
       return true if id.is_a?(String) && id.match(/^\d{13}$/)
+
       raise Wavefront::Exception::InvalidAlertId
     end
 
@@ -231,6 +242,7 @@ module Wavefront
     #
     def wf_cloudintegration_id?(id)
       return true if uuid?(id)
+
       raise Wavefront::Exception::InvalidCloudIntegrationId
     end
 
@@ -245,6 +257,7 @@ module Wavefront
     #
     def wf_dashboard_id?(id)
       return true if id.is_a?(String) && id.size < 256 && id.match(/^[\w\-]+$/)
+
       raise Wavefront::Exception::InvalidDashboardId
     end
 
@@ -274,6 +287,7 @@ module Wavefront
     #
     def wf_event_id?(id)
       return true if id.is_a?(String) && id =~ /^\d{13}:.+/
+
       raise Wavefront::Exception::InvalidEventId
     end
 
@@ -286,6 +300,7 @@ module Wavefront
     #
     def wf_link_id?(id)
       return true if id.is_a?(String) && id =~ /^\w{16}$/
+
       raise Wavefront::Exception::InvalidExternalLinkId
     end
 
@@ -312,6 +327,7 @@ module Wavefront
     #
     def wf_alert_severity?(severity)
       return true if %w[INFO SMOKE WARN SEVERE].include?(severity)
+
       raise Wavefront::Exception::InvalidAlertSeverity
     end
 
@@ -323,6 +339,7 @@ module Wavefront
     #
     def wf_message_id?(id)
       return true if id.is_a?(String) && id =~ /^\w+::\w+$/
+
       raise Wavefront::Exception::InvalidMessageId
     end
 
@@ -335,6 +352,7 @@ module Wavefront
     #
     def wf_granularity?(granularity)
       return true if %w[d h m s].include?(granularity.to_s)
+
       raise Wavefront::Exception::InvalidGranularity
     end
 
@@ -346,6 +364,7 @@ module Wavefront
     #
     def wf_savedsearch_id?(id)
       return true if id.is_a?(String) && id =~ /^\w{8}$/
+
       raise Wavefront::Exception::InvalidSavedSearchId
     end
 
@@ -360,6 +379,7 @@ module Wavefront
       return true if %w[DASHBOARD ALERT MAINTENANCE_WINDOW
                         NOTIFICANT EVENT SOURCE EXTERNAL_LINK AGENT
                         CLOUD_INTEGRATION].include?(id)
+
       raise Wavefront::Exception::InvalidSavedSearchEntity
     end
 
@@ -387,6 +407,7 @@ module Wavefront
     #
     def wf_user_id?(user)
       return true if user.is_a?(String) && user.length < 256 && !user.empty?
+
       raise Wavefront::Exception::InvalidUserId
     end
 
@@ -398,6 +419,7 @@ module Wavefront
     #
     def wf_usergroup_id?(gid)
       return true if uuid?(gid)
+
       raise Wavefront::Exception::InvalidUserGroupId
     end
 
@@ -409,6 +431,7 @@ module Wavefront
     #
     def wf_webhook_id?(id)
       return true if id.is_a?(String) && id =~ /^[a-zA-Z0-9]{16}$/
+
       raise Wavefront::Exception::InvalidWebhookId
     end
 
@@ -455,6 +478,7 @@ module Wavefront
     #
     def wf_distribution_values?(vals, flat = false)
       return wf_distribution_flat_vals?(vals) if flat
+
       vals.each do |times, val|
         wf_distribution_count?(times)
         wf_value?(val)
@@ -481,6 +505,7 @@ module Wavefront
     #
     def wf_notificant_id?(id)
       return true if id.is_a?(String) && id =~ /^\w{16}$/
+
       raise Wavefront::Exception::InvalidNotificantId
     end
 
@@ -494,6 +519,7 @@ module Wavefront
     #
     def wf_integration_id?(id)
       return true if id.is_a?(String) && id =~ /^[a-z0-9]+$/
+
       raise Wavefront::Exception::InvalidIntegrationId
     end
 
@@ -504,6 +530,7 @@ module Wavefront
     #
     def wf_distribution_interval?(interval)
       return true if %i[m h d].include?(interval)
+
       raise Wavefront::Exception::InvalidDistributionInterval
     end
 
@@ -514,6 +541,7 @@ module Wavefront
     #
     def wf_distribution_count?(count)
       return true if count.is_a?(Integer) && count.positive?
+
       raise Wavefront::Exception::InvalidDistributionCount
     end
 
@@ -524,6 +552,7 @@ module Wavefront
     #
     def wf_apitoken_id?(id)
       return true if uuid?(id)
+
       raise Wavefront::Exception::InvalidApiTokenId
     end
   end
