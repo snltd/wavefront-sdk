@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/support/parse_time'
@@ -8,7 +9,6 @@ TSM = 1_517_151_869_523
 
 # Test parse_time class
 #
-# rubocop:disable Style/DateTime
 class WavefrontParseTimeTest < MiniTest::Test
   attr_reader :pts, :ptm
 
@@ -64,4 +64,3 @@ class WavefrontParseTimeTest < MiniTest::Test
     assert_kind_of(Numeric, ptm.parse!)
   end
 end
-# rubocop:enable Style/DateTime

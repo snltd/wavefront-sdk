@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../defs/constants'
 
 module Wavefront
@@ -71,6 +73,7 @@ module Wavefront
       def user_page_size(args)
         arg_val = limit_and_offset(args)[:offset].to_i
         return arg_val if arg_val&.positive?
+
         PAGE_SIZE
       end
 
@@ -114,6 +117,7 @@ module Wavefront
           api_caller.verbosity(conn, method, *p_args)
           resp = api_caller.respond(conn.public_send(method, *p_args))
           raise StopIteration unless resp.ok?
+
           ret.response.items += resp.response.items
           return finalize_response(ret) unless resp.more_items?
         end
@@ -154,6 +158,7 @@ module Wavefront
             unless resp.ok?
               raise(Wavefront::Exception::EnumerableError, resp.status)
             end
+
             p_args = set_pagination(offset, page_size, p_args)
             resp.response.items.map { |i| y.<< i }
             raise StopIteration unless resp.more_items?

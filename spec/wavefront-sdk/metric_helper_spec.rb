@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'minitest/autorun'
 require_relative '../spec_helper'
@@ -91,9 +92,9 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_counters_to_wf
-    input = { ['test.counter1', nil]     => 7,
+    input = { ['test.counter1', nil] => 7,
               ['test.counter1', WH_TAGS] => 8,
-              ['test.counter2', nil]     => 9 }
+              ['test.counter2', nil] => 9 }
 
     out = wf.counters_to_wf(input)
     assert_instance_of(Array, out)
@@ -109,7 +110,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
   def test_dists_to_wf
     input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
               ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
-              ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+              ['test.dist1', :h, nil] => [6, 6, 7, 4, 6, 4, 8] }
 
     out = wfd.dists_to_wf(input)
     assert_instance_of(Array, out)
@@ -161,9 +162,9 @@ class WavefrontMetricHelperTest < MiniTest::Test
   def test_flush_counters
     assert_nil(wf.flush_counters([]))
 
-    input = { ['test.counter1', nil]     => 7,
+    input = { ['test.counter1', nil] => 7,
               ['test.counter1', WH_TAGS] => 8,
-              ['test.counter2', nil]     => 9 }
+              ['test.counter2', nil] => 9 }
 
     mocket = Mocket.new
     spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
@@ -189,9 +190,9 @@ class WavefrontMetricHelperTest < MiniTest::Test
   end
 
   def test_flush_counters_fail
-    input = { ['test.counter1', nil]     => 7,
+    input = { ['test.counter1', nil] => 7,
               ['test.counter1', WH_TAGS] => 8,
-              ['test.counter2', nil]     => 9 }
+              ['test.counter2', nil] => 9 }
 
     mocket = BadMocket.new
     spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
@@ -222,7 +223,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
 
     input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
               ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
-              ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+              ['test.dist1', :h, nil] => [6, 6, 7, 4, 6, 4, 8] }
 
     mocket = Mocket.new
     spy = Spy.on(wfd.dist_writer.writer, :write).and_return(mocket)
@@ -251,7 +252,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
   def test_flush_dists_fail
     input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
               ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
-              ['test.dist1', :h, nil]     => [6, 6, 7, 4, 6, 4, 8] }
+              ['test.dist1', :h, nil] => [6, 6, 7, 4, 6, 4, 8] }
 
     mocket = BadMocket.new
     spy = Spy.on(wfd.dist_writer.writer, :write).and_return(mocket)

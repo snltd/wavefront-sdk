@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'write'
 
 module Wavefront
@@ -18,7 +20,7 @@ module Wavefront
     #
     def initialize(creds, opts = {})
       @opts        = opts
-      @buf         = { gauges:   empty_gauges,
+      @buf         = { gauges: empty_gauges,
                        counters: empty_counters }
       @writer      = setup_writer(creds, opts)
       @dist_writer = setup_dist_writer(creds, opts) if opts[:dist_port]
@@ -139,9 +141,9 @@ module Wavefront
     def dists_to_wf(dists)
       dists.map do |k, v|
         path, interval, tags = k
-        dist = { path:     path,
-                 value:    dist_writer.mk_distribution(v),
-                 ts:       Time.now.utc.to_i,
+        dist = { path: path,
+                 value: dist_writer.mk_distribution(v),
+                 ts: Time.now.utc.to_i,
                  interval: interval }
         dist[:tags] = tags unless tags.nil?
         dist

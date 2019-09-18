@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yard'
 require 'rake/testtask'
 require 'bundler/gem_tasks'

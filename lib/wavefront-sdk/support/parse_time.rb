@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'time'
 
 module Wavefront
@@ -33,6 +35,7 @@ module Wavefront
     #
     def parse_time_string
       return t.to_i if t =~ /^\d+$/
+
       @t = Time.parse("#{t} #{Time.now.getlocal.zone}")
       parse_time_time
     end

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
@@ -57,16 +58,16 @@ class WavefrontEventTest < WavefrontTestBase
   end
 
   def payload
-    { name:        'test_event',
+    { name: 'test_event',
       annotations: {
         severity: 'info',
-        type:     'SDK test event',
-        details:  'an imaginary event to test the SDK'
+        type: 'SDK test event',
+        details: 'an imaginary event to test the SDK'
       },
-      hosts:       %w[host1 host2],
-      startTime:   1_493_385_089_000,
-      endTime:     1_493_385_345_678,
-      tags:        %w[tag1 tag2],
+      hosts: %w[host1 host2],
+      startTime: 1_493_385_089_000,
+      endTime: 1_493_385_345_678,
+      tags: %w[tag1 tag2],
       isEphemeral: false }
   end
 end

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
@@ -41,8 +42,8 @@ class WavefrontSourceTest < WavefrontTestBase
   end
 
   def payload
-    { sourceName:  'source.name',
-      tags:        { sourceTag1: true },
+    { sourceName: 'source.name',
+      tags: { sourceTag1: true },
       description: 'Source Description' }
   end
 end

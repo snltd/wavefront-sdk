@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'defs/constants'
 require_relative 'core/api'
 require_relative 'api_mixins/acl'
@@ -38,6 +40,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 
@@ -120,9 +123,9 @@ module Wavefront
       wf_version?(version) if version
 
       api.post([id, 'clone'].uri_concat,
-               { id:   id,
+               { id: id,
                  name: nil,
-                 v:    version }, 'application/json')
+                 v: version }, 'application/json')
     end
 
     # GET /api/v2/alert/id/history

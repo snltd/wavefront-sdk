@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'write'
 require_relative 'support/mixins'
 
@@ -38,39 +40,57 @@ module Wavefront
     end
 
     def default_port
-      40000
+      40_000
+    end
+
+    def data_format
+      :histogram
     end
 
     # Convert a validated point to a string conforming to
     # https://docs.wavefront.com/proxies_histograms.html. No
     # validation is done here.
     #
-    # @param point [Hash] a hash describing a distribution. See
+    # @param dist [Hash] a hash describing a distribution. See
     #   #write() for the format.
     #
-    # rubocop:disable Metrics/AbcSize
     def hash_to_wf(dist)
       logger.log("writer subclass #{writer}", :debug)
-      raise unless dist.key?(:interval)
 
-      format('!%s %i %s %s source=%s %s %s',
-             dist[:interval].to_s.upcase,
-             parse_time(dist.fetch(:ts, Time.now)),
-             array2dist(dist[:value]),
-             dist[:path] || raise,
-             dist.fetch(:source, HOSTNAME),
-             dist[:tags]&.to_wf_tag,
-             opts[:tags]&.to_wf_tag).squeeze(' ').strip
-    rescue StandardError
+      raise unless dist.key?(:interval) && dist.key?(:path)
+
+      format('!%<interval>s %<ts>i %<value>s %<path>s source=%<source>s ' \
+             '%<tags>s %<opttags>s', dist_hash(dist)).squeeze(' ').strip
+    rescue RuntimeError
       raise Wavefront::Exception::InvalidDistribution
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def dist_hash(dist)
+      dist.dup.tap do |d|
+        d[:interval] = distribution_interval(dist)
+        d[:ts] = distribution_timestamp(dist)
+        d[:value] = array2dist(dist[:value])
+        d[:source] ||= HOSTNAME
+        d[:tags] = tags_or_nothing(d[:tags])
+        d[:opttags] = tags_or_nothing(opts[:tags])
+      end
+    end
+
+    def distribution_timestamp(dist)
+      parse_time(dist.fetch(:ts, Time.now))
+    end
+
+    def distribution_interval(dist)
+      dist[:interval].to_s.upcase
+    end
 
     # Turn an array of arrays into a the values part of a distribution
     # @return [String]
     #
     def array2dist(values)
-      values.map { |x, v| format('#%i %s', x, v) }.join(' ')
+      values.map do |x, v|
+        format('#%<count>i %<value>s', count: x, value: v)
+      end.join(' ')
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WavefrontTest
   #
   # require and include this module to get tag tests

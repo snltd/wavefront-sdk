@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
@@ -27,12 +28,12 @@ class WavefrontWebhookTest < WavefrontTestBase
   end
 
   def payload
-    { description:       'WebHook Description',
-      template:          'POST Body -- Mustache syntax',
-      title:             'WebHook Title',
-      triggers:          %w[ALERT_OPENED],
-      recipient:         'http://example.com',
+    { description: 'WebHook Description',
+      template: 'POST Body -- Mustache syntax',
+      title: 'WebHook Title',
+      triggers: %w[ALERT_OPENED],
+      recipient: 'http://example.com',
       customHttpHeaders: {},
-      contentType:       'text/plain' }
+      contentType: 'text/plain' }
   end
 end

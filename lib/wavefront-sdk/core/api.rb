@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'logger'
 require_relative 'api_caller'
 require_relative 'exception'
@@ -75,6 +77,7 @@ module Wavefront
     def time_to_ms(time)
       return false unless time.is_a?(Integer)
       return time if time.to_s.size == 13
+
       (time.to_f * 1000).round
     end
 
