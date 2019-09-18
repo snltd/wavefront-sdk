@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.4 (2019-09-18)
+* Code tidy to modern Rubocop standards.
+* Some minor refactoring.
+
 ## 3.3.3 (2019-09-10)
 * Fix slightly misleading verbose message when using recursive or
   lazy calls
