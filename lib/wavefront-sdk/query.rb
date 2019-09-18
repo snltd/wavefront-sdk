@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -32,6 +34,7 @@ module Wavefront
               options = {})
 
       raise ArgumentError unless query.is_a?(String)
+
       wf_granularity?(granularity)
       raise Wavefront::Exception::InvalidTimestamp if t_start.nil?
 
@@ -87,9 +90,9 @@ module Wavefront
       status = 400 if status == 200 && !err_msg.empty?
 
       { response: resp,
-        status:   { result:  status == 200 ? 'OK' : 'ERROR',
-                    message: err_msg,
-                    code:    status } }.to_json
+        status: { result: status == 200 ? 'OK' : 'ERROR',
+                  message: err_msg,
+                  code: status } }.to_json
     end
 
     # A bad query doesn't send back a JSON object. It sends back a

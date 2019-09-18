@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'json'
 require_relative '../../spec_helper'
@@ -7,13 +8,13 @@ require_relative '../../../lib/wavefront-sdk/core/response'
 
 GOOD_RESP = '{"status":{"result":"OK","message":"","code":200},' \
              '"response":{"items":[{"name":"test agent"}],"offset":0,' \
-             '"limit":100,"totalItems":3,"moreItems":false}}'.freeze
+             '"limit":100,"totalItems":3,"moreItems":false}}'
 
 BAD_RESP = "error='not_found'
 message='resource cannot be found'
-trackingId=eca22ddc-848b-4e67-876a-366145c8a759".freeze
+trackingId=eca22ddc-848b-4e67-876a-366145c8a759"
 
-ERR_RESP = { error:      'HTTP 415 Unsupported Media Type',
+ERR_RESP = { error: 'HTTP 415 Unsupported Media Type',
              trackingId: 'ce231eaf-8d0e-4138-a82d-12725376a3b0' }.to_json
 
 # Unit tests for Response class. Also indirectly tests the Status

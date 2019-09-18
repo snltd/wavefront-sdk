@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/MutableConstant
 CREDS = { endpoint: 'test.example.com',
-          token:    '0123456789-ABCDEF' }
+          token: '0123456789-ABCDEF' }
 # rubocop:enable Style/MutableConstant
 
 W_CREDS = { proxy: 'wavefront', port: 2878 }.freeze
@@ -15,16 +17,16 @@ JSON_POST_HEADERS = {
 
 DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
                  '"response":{"items":[{"name":"test data"}],"offset":0,' \
-                 '"limit":100,"totalItems":3,"moreItems":false}}'.freeze
+                 '"limit":100,"totalItems":3,"moreItems":false}}'
 
 RESOURCE_DIR = (Pathname.new(__FILE__).dirname +
                 'wavefront-sdk' + 'resources').freeze
 
-U_ACL_1 = 'someone@example.com'.freeze
-U_ACL_2 = 'other@elsewhere.com'.freeze
-GRP_ACL = 'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'.freeze
+U_ACL_1 = 'someone@example.com'
+U_ACL_2 = 'other@elsewhere.com'
+GRP_ACL = 'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'
 
-DEFAULT_HEADERS = { 'Accept':          /.*/,
+DEFAULT_HEADERS = { 'Accept': /.*/,
                     'Accept-Encoding': /.*/,
-                    'Authorization':  'Bearer 0123456789-ABCDEF',
-                    'User-Agent':     /wavefront-sdk \d+\.\d+\.\d+/ }.freeze
+                    'Authorization': 'Bearer 0123456789-ABCDEF',
+                    'User-Agent': /wavefront-sdk \d+\.\d+\.\d+/ }.freeze

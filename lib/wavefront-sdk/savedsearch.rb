@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -26,6 +28,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 
@@ -60,6 +63,7 @@ module Wavefront
     def update(id, body)
       wf_savedsearch_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.put(id, body)
     end
 

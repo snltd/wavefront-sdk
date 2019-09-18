@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -24,6 +26,7 @@ module Wavefront
 
       if cursor
         raise ArgumentError unless cursor.is_a?(String)
+
         query.<< [:c, cursor]
       end
 

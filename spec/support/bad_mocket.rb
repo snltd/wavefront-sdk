@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A mock socket which says things went wrong.
 #
 class BadMocket < Mocket

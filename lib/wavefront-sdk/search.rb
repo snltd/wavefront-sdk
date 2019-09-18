@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -39,6 +41,7 @@ module Wavefront
     #
     def search(entity, query, options = {})
       raise ArgumentError unless options.is_a?(Hash)
+
       raw_search(entity, body(query, options), options[:deleted] || false)
     end
 
@@ -71,7 +74,7 @@ module Wavefront
     def sort_field(options, query)
       field = options[:sort_field] || [query].flatten.first[:key]
 
-      { field:     field,
+      { field: field,
         ascending: !options[:desc] || true }
     end
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/distribution'
@@ -66,10 +67,10 @@ class WavefrontDistributionTest < MiniTest::Test
 
   def distribution
     { interval: :m,
-      path:     'test.distribution',
-      value:    [[5, 11], [15, 2.533], [8, -15], [12, 1e6]],
-      ts:       1_538_865_613,
-      source:   'minitest',
-      tags:     { tag1: 'val1', tag2: 'val2' } }
+      path: 'test.distribution',
+      value: [[5, 11], [15, 2.533], [8, -15], [12, 1e6]],
+      ts: 1_538_865_613,
+      source: 'minitest',
+      tags: { tag1: 'val1', tag2: 'val2' } }
   end
 end

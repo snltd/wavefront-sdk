@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 require_relative 'core'
 
@@ -20,13 +22,7 @@ module Wavefront
         end
 
         logger.log("Connecting to #{creds[:socket]}.", :debug)
-
-        begin
-          @conn = UNIXSocket.new(creds[:socket])
-        rescue StandardError => e
-          logger.log(e, :error)
-          raise Wavefront::Exception::InvalidEndpoint
-        end
+        open_socket(creds[:socket])
       end
 
       def close
@@ -44,6 +40,13 @@ module Wavefront
       end
 
       private
+
+      def open_socket(socket)
+        @conn = UNIXSocket.new(socket)
+      rescue StandardError => e
+        logger.log(e, :error)
+        raise Wavefront::Exception::InvalidEndpoint
+      end
 
       # @param point [String] point or points in native Wavefront
       # format.
