@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.0 (2019-09-28)
+* Add `serviceaccount` class.
+* Validator exceptions now return the value which failed validation.
+
 ## 3.3.4 (2019-09-18)
 * Upgrade Rubocop dev dependency to 0.74.0, and make codebase compliant with
   those standards. No interfaces are changed.
