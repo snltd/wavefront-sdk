@@ -85,12 +85,12 @@ module Minitest
     end
 
     def extra_headers(payload, type)
-      if payload.nil?
+      if type
+        header_lookup(type)
+      elsif payload.nil?
         header_lookup(:plain)
       elsif type.nil?
         header_lookup(:json)
-      else
-        header_lookup(type)
       end
     end
 
