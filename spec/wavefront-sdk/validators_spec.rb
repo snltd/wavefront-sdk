@@ -351,4 +351,18 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_distribution_interval?',
                  'InvalidDistributionInterval', good, bad)
   end
+
+  def test_serviceaccount_id
+    good = %w[sa::my-id sa::ID]
+    bad = %w[sc:id fca312fb-5ff4-420d-862d-5d6d99ed6bcf]
+    good_and_bad('wf_serviceaccount_id?',
+                 'InvalidServiceAccountId', good, bad)
+  end
+
+  def test_permission
+    good = %w[events_management external_links_management]
+    bad = ['events management', 'event_management', 'EVENT_MANAGEMENT']
+    good_and_bad('wf_permission?',
+                 'InvalidPermission', good, bad)
+  end
 end

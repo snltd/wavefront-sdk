@@ -31,12 +31,14 @@ module Wavefront
     class InvalidMetricValue < RuntimeError; end
     class InvalidName < RuntimeError; end
     class InvalidNotificantId < RuntimeError; end
+    class InvalidPermission < RuntimeError; end
     class InvalidPoint < RuntimeError; end
     class InvalidPrefixLength < RuntimeError; end
     class InvalidProxyId < RuntimeError; end
     class InvalidRelativeTime < RuntimeError; end
     class InvalidSavedSearchEntity < RuntimeError; end
     class InvalidSavedSearchId < RuntimeError; end
+    class InvalidServiceAccountId < RuntimeError; end
     class InvalidSourceId < RuntimeError; end
     class InvalidString < RuntimeError; end
     class InvalidTag < RuntimeError; end
