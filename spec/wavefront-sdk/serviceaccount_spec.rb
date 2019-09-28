@@ -58,6 +58,6 @@ class WavefrontServiceAccountTest < WavefrontTestBase
       ],
       groups: [
         'agent_management'
-      ]}
+      ] }
   end
 end

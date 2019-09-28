@@ -568,7 +568,6 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidPermission, id, id
     end
-
   end
   # rubocop:enable Metrics/ModuleLength
 end
