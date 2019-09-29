@@ -37,7 +37,7 @@ module Wavefront
     # GET /api/v2/account/serviceaccount/{id}
     # Retrieves a service account by identifier
     #
-    # @param id [String, Integer] ID of the account
+    # @param id [String] ID of the account
     # @return [Wavefront::Response]
     #
     def describe(id)
@@ -69,7 +69,7 @@ module Wavefront
     # POST /api/v2/account/serviceaccount/{id}/activate
     # Activates the given service account
     #
-    # @param id [String, Integer] ID of the account
+    # @param id [String] ID of the account
     # @return [Wavefront::Response]
     #
     def activate(id)
@@ -80,7 +80,7 @@ module Wavefront
     # POST /api/v2/account/serviceaccount/{id}/deactivate
     # Deactivates the given service account
     #
-    # @param id [String, Integer] ID of the account
+    # @param id [String] ID of the account
     # @return [Wavefront::Response]
     #
     def deactivate(id)

@@ -14,9 +14,13 @@ class WavefrontTestBase < MiniTest::Test
   attr_reader :wf, :wf_noop, :headers, :invalid_id, :valid_id
 
   def initialize(args)
-    require_relative "../lib/wavefront-sdk/#{class_basename.downcase}"
+    require_relative libfile_to_test
     setup_fixtures if respond_to?(:setup_fixtures)
     super(args)
+  end
+
+  def libfile_to_test
+    "../lib/wavefront-sdk/#{class_basename.downcase}"
   end
 
   private

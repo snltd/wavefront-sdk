@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.5.0 (2019-09-30)
+* Extend `apitoken` class to cover new service account paths.
+
 ## 3.4.0 (2019-09-28)
 * Add `serviceaccount` class.
 * Validator exceptions now return the value which failed validation.
