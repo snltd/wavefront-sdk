@@ -23,13 +23,13 @@ Gem::Specification.new do |gem|
   gem.bindir        = 'bin'
 
   gem.add_dependency 'addressable', '~> 2.7'
-  gem.add_dependency 'faraday', '~> 0.15.4'
+  gem.add_dependency 'faraday', '~> 0.17.0'
   gem.add_dependency 'inifile', '~> 3.0'
   gem.add_dependency 'map', '~> 6.6'
 
   gem.add_development_dependency 'minitest', '~> 5.11'
   gem.add_development_dependency 'rake', '~> 12.3'
-  gem.add_development_dependency 'rubocop', '~> 0.74'
+  gem.add_development_dependency 'rubocop', '~> 0.76'
   gem.add_development_dependency 'simplecov', '~> 0.16'
   gem.add_development_dependency 'spy', '~> 1.0.0'
   gem.add_development_dependency 'webmock', '~> 3.7'
