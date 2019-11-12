@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.0 (2019-11-12)
+* Add `User#business_functions` method.
+* Update Faraday and Rubocop dependencies
+
 ## 3.5.0 (2019-09-30)
 * Extend `apitoken` class to cover new service account paths.
 
