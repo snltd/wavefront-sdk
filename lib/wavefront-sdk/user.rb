@@ -202,6 +202,16 @@ module Wavefront
       api.post('invite', body, 'application/json')
     end
 
+    # GET /api/v2/user/{id}/businessFunctions
+    # Returns business functions of a specific user.
+    # @param id [String] user ID
+    # @return [Wavefront::Response]
+    #
+    def business_functions(id)
+      wf_user_id?(id)
+      api.get([id, 'businessFunctions'].uri_concat)
+    end
+
     # Fake a response which looks like we get from all the other
     # paths. I'm expecting the user response model to be made
     # consistent with others in the future.

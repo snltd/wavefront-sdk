@@ -102,6 +102,14 @@ class WavefrontUserTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.invite('test') }
   end
 
+  def test_business_functions
+    assert_gets("/api/v2/user/#{id}/businessFunctions") do
+      wf.business_functions(id)
+    end
+
+    assert_raises(ArgumentError) { wf.business_functions }
+  end
+
   def test_response_shim
     (RESOURCE_DIR + 'user_responses').each_child do |input|
       # Ugly hack for the 202 in the 'create' file
