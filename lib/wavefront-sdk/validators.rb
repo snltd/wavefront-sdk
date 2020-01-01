@@ -568,6 +568,17 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidPermission, id, id
     end
+
+    # Ensure the given argument is a valid ingestion policy ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidIngestionPolicyId if the
+    #   ID is not valid
+    #
+    def wf_ingestionpolicy_id?(id)
+      return true if uuid?(id)
+
+      raise Wavefront::Exception::InvalidIngestionPolicyId, id
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

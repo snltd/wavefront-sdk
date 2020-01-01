@@ -23,6 +23,7 @@ module Wavefront
     class InvalidExternalLinkId < RuntimeError; end
     class InvalidGranularity < RuntimeError; end
     class InvalidHostname < RuntimeError; end
+    class InvalidIngestionPolicyId < RuntimeError; end
     class InvalidIntegrationId < RuntimeError; end
     class InvalidLinkTemplate < RuntimeError; end
     class InvalidMaintenanceWindowId < RuntimeError; end
