@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.7.0 (2020-01-01)
+* Add `Usage` and `IngestionPolicy` classes.
+
 ## 3.6.0 (2019-11-12)
 * Add `User#business_functions` method.
 * Update Faraday and Rubocop dependencies
