@@ -3,6 +3,9 @@
 ## 3.7.0 (2020-01-01)
 * Add `Usage` and `IngestionPolicy` classes.
 
+## 3.6.1 (2020-01-15)
+* Test build against, and fix warning messages on, Ruby 2.7.0
+
 ## 3.6.0 (2019-11-12)
 * Add `User#business_functions` method.
 * Update Faraday and Rubocop dependencies
