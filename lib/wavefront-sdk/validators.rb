@@ -575,7 +575,7 @@ module Wavefront
     #   ID is not valid
     #
     def wf_ingestionpolicy_id?(id)
-      return true if uuid?(id)
+      return true if id.is_a?(String) && id =~ /^[a-z0-9\-_]+-\d{13}$/
 
       raise Wavefront::Exception::InvalidIngestionPolicyId, id
     end
