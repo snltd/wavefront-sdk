@@ -579,6 +579,21 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidIngestionPolicyId, id
     end
+
+    # Ensure the given argument is a valid User or SystemAccount ID.
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidAccountId if the
+    #   ID is not valid
+    #
+    def wf_account_id?(id)
+      return true if wf_user_id?(id)
+    rescue Wavefront::Exception::InvalidUserId
+      begin
+        return true if wf_serviceaccount_id?(id)
+      rescue Wavefront::Exception::InvalidServiceAccountId
+        raise Wavefront::Exception::InvalidAccountId, id
+      end
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

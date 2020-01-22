@@ -71,7 +71,7 @@ module Wavefront
     #   a hash describing the existing object, and modify that with
     #   the new body. If false, pass the new body straight through.
     # @return [Wavefront::Response]
-
+    #
     def update(id, body, modify = true)
       wf_ingestionpolicy_id?(id)
       raise ArgumentError unless body.is_a?(Hash)

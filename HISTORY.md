@@ -1,7 +1,7 @@
 # Changelog
 
 ## 3.7.0 (2020-01-01)
-* Add `Usage` and `IngestionPolicy` classes.
+* Add `Account`, `Usage` and `IngestionPolicy` classes.
 
 ## 3.6.1 (2020-01-15)
 * Test build against, and fix warning messages on, Ruby 2.7.0

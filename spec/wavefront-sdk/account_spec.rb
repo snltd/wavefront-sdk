@@ -1,0 +1,132 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../spec_helper'
+require_relative '../test_mixins/general'
+
+# Unit tests for Account class
+#
+class WavefrontAccountTest < WavefrontTestBase
+  include WavefrontTest::List
+  include WavefrontTest::Delete
+  include WavefrontTest::Describe
+
+  def test_add_user_groups
+    assert_posts("/api/v2/account/#{id}/addUserGroups", groups.to_json) do
+      wf.add_user_groups(id, groups)
+    end
+
+    assert_invalid_id { wf.add_user_groups(invalid_id, groups) }
+  end
+
+  def test_business_functions
+    assert_gets("/api/v2/account/#{id}/businessFunctions") do
+      wf.business_functions(id)
+    end
+
+    assert_raises(ArgumentError) { wf.business_functions }
+  end
+
+  def test_grant_to_single_user
+    assert_posts("/api/v2/account/#{id}/grant/#{permission}") do
+      wf.grant(id, permission)
+    end
+  end
+
+  def test_grant_to_multiple_users
+    assert_posts("/api/v2/account/grant/#{permission}", id_list.to_json) do
+      wf.grant(id_list, permission)
+    end
+  end
+
+  def test_remove_user_groups
+    assert_posts("/api/v2/account/#{id}/removeUserGroups", groups.to_json) do
+      wf.remove_user_groups(id, groups)
+    end
+
+    assert_invalid_id { wf.remove_user_groups(invalid_id, groups) }
+  end
+
+  def test_revoke_from_single_user
+    assert_posts("/api/v2/account/#{id}/revoke/#{permission}") do
+      wf.revoke(id, permission)
+    end
+  end
+
+  def test_revoke_from_multiple_users
+    assert_posts("/api/v2/account/revoke/#{permission}", id_list.to_json) do
+      wf.revoke(id_list, permission)
+    end
+  end
+
+  def test_delete_accounts
+    assert_posts('/api/v2/account/deleteAccounts', id_list.to_json) do
+      wf.delete_accounts(id_list)
+    end
+
+    assert_invalid_id { wf.delete_accounts([invalid_id]) }
+  end
+
+  def test_add_ingestion_policy
+    assert_posts('/api/v2/account/addIngestionPolicy',
+                 { ingestionPolicyId: policy_id,
+                   accounts: id_list }.to_json) do
+      wf.add_ingestion_policy(policy_id, id_list)
+    end
+
+    assert_raises Wavefront::Exception::InvalidIngestionPolicyId do
+      wf.add_ingestion_policy(invalid_policy_id, id_list)
+    end
+
+    assert_invalid_id { wf.add_ingestion_policy(policy_id, [invalid_id]) }
+  end
+
+  def test_remove_ingestion_policy
+    assert_posts('/api/v2/account/removeIngestionPolicy',
+                 { ingestionPolicyId: policy_id,
+                   accounts: id_list }.to_json) do
+      wf.remove_ingestion_policy(policy_id, id_list)
+    end
+
+    assert_raises Wavefront::Exception::InvalidIngestionPolicyId do
+      wf.add_ingestion_policy(invalid_policy_id, id_list)
+    end
+
+    assert_invalid_id { wf.add_ingestion_policy(policy_id, [invalid_id]) }
+  end
+
+  private
+
+  def api_class
+    'account'
+  end
+
+  def id
+    'sa::tester'
+  end
+
+  def invalid_id
+    'bad_id' * 1000
+  end
+
+  def groups
+    %w[f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672
+       2659191e-aad4-4302-a94e-9667e1517127]
+  end
+
+  def id_list
+    %w[sa:test user@example.com]
+  end
+
+  def permission
+    'agent_management'
+  end
+
+  def policy_id
+    'testpolicy-1579537565010'
+  end
+
+  def invalid_policy_id
+    'badpolicy'
+  end
+end

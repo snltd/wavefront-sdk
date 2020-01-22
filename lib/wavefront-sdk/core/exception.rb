@@ -8,6 +8,7 @@ module Wavefront
     class CredentialError < RuntimeError; end
     class EmptyMetricName < RuntimeError; end
     class EnumerableError < RuntimeError; end
+    class InvalidAccountId < RuntimeError; end
     class InvalidAlertId < RuntimeError; end
     class InvalidAlertSeverity < RuntimeError; end
     class InvalidApiTokenId < RuntimeError; end

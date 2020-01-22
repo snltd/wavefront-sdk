@@ -34,7 +34,7 @@ class WavefrontIngestionPolicyTest < WavefrontTestBase
   end
 
   def id
-    'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'
+    'test-ingestion-policy-1579538401492'
   end
 
   def invalid_id
