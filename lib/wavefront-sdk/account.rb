@@ -125,7 +125,7 @@ module Wavefront
     def add_ingestion_policy(policy_id, id_list)
       wf_ingestionpolicy_id?(policy_id)
       validate_account_list(id_list)
-      api.post('addIngestionPolicy',
+      api.post('addingestionpolicy',
                { ingestionPolicyId: policy_id,
                  accounts: id_list },
                'application/json')
@@ -140,7 +140,7 @@ module Wavefront
     def remove_ingestion_policy(policy_id, id_list)
       wf_ingestionpolicy_id?(policy_id)
       validate_account_list(id_list)
-      api.post('removeIngestionPolicy',
+      api.post('removeingestionpolicy',
                { ingestionPolicyId: policy_id,
                  accounts: id_list },
                'application/json')

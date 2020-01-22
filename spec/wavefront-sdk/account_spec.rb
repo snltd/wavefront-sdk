@@ -68,7 +68,7 @@ class WavefrontAccountTest < WavefrontTestBase
   end
 
   def test_add_ingestion_policy
-    assert_posts('/api/v2/account/addIngestionPolicy',
+    assert_posts('/api/v2/account/addingestionpolicy',
                  { ingestionPolicyId: policy_id,
                    accounts: id_list }.to_json) do
       wf.add_ingestion_policy(policy_id, id_list)
@@ -82,7 +82,7 @@ class WavefrontAccountTest < WavefrontTestBase
   end
 
   def test_remove_ingestion_policy
-    assert_posts('/api/v2/account/removeIngestionPolicy',
+    assert_posts('/api/v2/account/removeingestionpolicy',
                  { ingestionPolicyId: policy_id,
                    accounts: id_list }.to_json) do
       wf.remove_ingestion_policy(policy_id, id_list)
