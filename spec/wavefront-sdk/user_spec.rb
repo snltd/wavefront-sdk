@@ -110,6 +110,14 @@ class WavefrontUserTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.business_functions }
   end
 
+  def test_validate_users
+    assert_posts('/api/v2/user/validateUsers', id_list.to_json) do
+      wf.validate_users(id_list)
+    end
+
+    assert_raises(ArgumentError) { wf.validate_users }
+  end
+
   def test_response_shim
     (RESOURCE_DIR + 'user_responses').each_child do |input|
       # Ugly hack for the 202 in the 'create' file
@@ -155,5 +163,9 @@ class WavefrontUserTest < WavefrontTestBase
 
   def payload
     { emailAddress: id, groups: %w[browse] }
+  end
+
+  def id_list
+    %w[id1 id2 id3]
   end
 end

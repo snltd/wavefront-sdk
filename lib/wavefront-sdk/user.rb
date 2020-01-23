@@ -212,6 +212,16 @@ module Wavefront
       api.get([id, 'businessFunctions'].uri_concat)
     end
 
+    # POST /api/v2/user/validateUsers
+    # Returns valid users and service accounts, also invalid identifiers from
+    # the given list
+    # @param id_list [Array[String]] list of user IDs
+    # @return [Wavefront::Response]
+    #
+    def validate_users(id_list)
+      api.post('validateUsers', id_list, 'application/json')
+    end
+
     # Fake a response which looks like we get from all the other
     # paths. I'm expecting the user response model to be made
     # consistent with others in the future.
