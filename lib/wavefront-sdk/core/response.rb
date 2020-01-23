@@ -25,7 +25,8 @@ module Wavefront
   #
   class Response
     include Wavefront::Mixins
-    attr_reader :status, :response, :opts, :logger
+    attr_reader :status, :opts, :logger
+    attr_accessor :response
 
     # Create and return a Wavefront::Response object
     # @param json [String] a raw response body from the Wavefront API

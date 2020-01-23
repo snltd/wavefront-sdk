@@ -25,6 +25,16 @@ module Wavefront
 
         list.each { |id| wf_usergroup_id?(id) }
       end
+
+      # Validate a list of accounts.
+      # @param list [Array[String]] list of account IDs
+      # @raise Wavefront::Exception::InvalidAccount
+      #
+      def validate_account_list(list)
+        raise ArgumentError unless list.is_a?(Array)
+
+        list.each { |id| wf_account_id?(id) }
+      end
     end
   end
 end

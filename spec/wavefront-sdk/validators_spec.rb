@@ -323,19 +323,19 @@ class WavefrontValidatorsTest < MiniTest::Test
     end
   end
 
-  def test_notificant_id
+  def test_wf_notificant_id
     good = %w[CHTo47HvsPzSaGhh]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
     good_and_bad('wf_notificant_id?', 'InvalidNotificantId', good, bad)
   end
 
-  def test_integration_id
+  def test_wf_integration_id
     good = %w[aws tutorial elasticsearch cassandra go]
     bad = ['CTo47HvsPzSaGhh', [], {}, nil, 'bad id']
     good_and_bad('wf_integration_id?', 'InvalidIntegrationId', good, bad)
   end
 
-  def test_apitoken_id
+  def test_wf_apitoken_id
     good = %w[2bfdcac7-1c9c-4c4b-9b56-c41c22c586dc
               17db4cc1-65f6-40a8-a1fa-6fcae460c4bd
               fca312fb-5ff4-420d-862d-5d6d99ed6bcf
@@ -345,24 +345,45 @@ class WavefrontValidatorsTest < MiniTest::Test
     good_and_bad('wf_apitoken_id?', 'InvalidApiTokenId', good, bad)
   end
 
-  def test_distribution_interval
+  def test_wf_distribution_interval
     good = %i[m h d]
     bad = ['m', [], {}, nil, 'bad id', :x, 'p']
     good_and_bad('wf_distribution_interval?',
                  'InvalidDistributionInterval', good, bad)
   end
 
-  def test_serviceaccount_id
+  def test_wf_serviceaccount_id
     good = %w[sa::my-id sa::ID]
     bad = %w[sc:id fca312fb-5ff4-420d-862d-5d6d99ed6bcf]
     good_and_bad('wf_serviceaccount_id?',
                  'InvalidServiceAccountId', good, bad)
   end
 
-  def test_permission
+  def test_wf_permission
     good = %w[events_management external_links_management]
     bad = ['events management', 'event_management', 'EVENT_MANAGEMENT']
     good_and_bad('wf_permission?',
                  'InvalidPermission', good, bad)
+  end
+
+  def test_wf_ingestionpolicy_id
+    good = %w[another-ingestion-policy-1579538401492
+              testpolicy-1579537565010
+              213452-34-_-0-4-ingestion-policy-1579538556267
+              yet_another-ingestion-policy-1579538414190]
+
+    bad = %w[fa312fb-5ff4-420d-862d-5d6d99ed6bcf thing 123]
+    good_and_bad('wf_ingestionpolicy_id?',
+                 'InvalidIngestionPolicyId',
+                 good,
+                 bad)
+  end
+
+  def test_wf_account_id
+    good = %w[sa::my-id sa::ID Some.User@example.com
+              general99+specific@somewhere.net someone@somewhere.com a user
+              user-name]
+    bad = ['', [], {}, 'a' * 1000]
+    good_and_bad('wf_account_id?', 'InvalidAccountId', good, bad)
   end
 end
