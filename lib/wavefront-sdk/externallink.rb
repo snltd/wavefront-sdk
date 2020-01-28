@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -10,8 +12,8 @@ module Wavefront
     end
 
     def update_keys
-      %i[name template description metricFilterRegex sourceFilterRegex
-         pointTagFilterRegexes]
+      %i[id name template description metricFilterRegex
+         sourceFilterRegex pointTagFilterRegexes]
     end
 
     # GET /api/v2/extlink
@@ -32,6 +34,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 

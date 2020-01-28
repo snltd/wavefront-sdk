@@ -1,95 +1,77 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
-
-DASHBOARD = 'test_dashboard'.freeze
-DASHBOARD_BODY = {
-  name: 'SDK Dashboard test',
-  id: 'sdk-test',
-  description: 'dummy test dashboard',
-  sections: [
-    name: 'Section 1',
-    rows: [
-      { charts: [
-        name: 'S1 Chart1',
-        description: 'chart',
-        sources: [
-          { name: 'S1 C1 Source 1',
-            query: 'ts("some.series")' }
-        ]
-      ] }
-    ]
-  ]
-}.freeze
+require_relative '../test_mixins/acl'
+require_relative '../test_mixins/tag'
+require_relative '../test_mixins/update_keys'
+require_relative '../test_mixins/general'
 
 # Unit tests for dashboard class
 #
 class WavefrontDashboardTest < WavefrontTestBase
-  def test_list
-    should_work(:list, 10, '?offset=10&limit=100')
-  end
-
-  def test_create
-    should_work(:create, DASHBOARD_BODY, '', :post,
-                JSON_POST_HEADERS, DASHBOARD_BODY.to_json)
-    assert_raises(ArgumentError) { wf.create }
-    assert_raises(ArgumentError) { wf.create('test') }
-  end
-
-  def test_describe
-    should_work(:describe, DASHBOARD, DASHBOARD)
-    assert_raises(ArgumentError) { wf.describe }
-  end
-
-  def test_describe_v
-    should_work(:describe, [DASHBOARD, 4], "#{DASHBOARD}/history/4")
-  end
-
-  def test_delete
-    should_work(:delete, DASHBOARD, DASHBOARD, :delete)
-    should_be_invalid(:delete)
-  end
-
-  def test_update
-    should_work(:update, [DASHBOARD, DASHBOARD_BODY, false],
-                DASHBOARD, :put, JSON_POST_HEADERS,
-                DASHBOARD_BODY.to_json)
-    should_be_invalid(:update, ['!invalid dash!', DASHBOARD_BODY])
-    assert_raises(ArgumentError) { wf.update }
-  end
+  include WavefrontTest::Acl
+  include WavefrontTest::Create
+  include WavefrontTest::DeleteUndelete
+  include WavefrontTest::Describe
+  include WavefrontTest::History
+  include WavefrontTest::List
+  include WavefrontTest::Tag
+  include WavefrontTest::Update
+  include WavefrontTest::UpdateKeys
 
   def test_favorite
-    should_work(:favorite, DASHBOARD, ["#{DASHBOARD}/favorite",
-                                       nil], :post, POST_HEADERS)
-    should_work(:favourite, DASHBOARD, ["#{DASHBOARD}/favorite",
-                                        nil], :post, POST_HEADERS)
-    should_be_invalid(:favorite)
-  end
-
-  def test_history
-    should_work(:history, DASHBOARD, "#{DASHBOARD}/history")
-    should_be_invalid(:history)
-  end
-
-  def test_tags
-    tag_tester(DASHBOARD)
-  end
-
-  def test_acls
-    acl_tester(DASHBOARD)
-  end
-
-  def test_undelete
-    should_work(:undelete, DASHBOARD, ["#{DASHBOARD}/undelete",
-                                       nil], :post, POST_HEADERS)
-    should_be_invalid(:undelete)
+    assert_posts("/api/v2/dashboard/#{id}/favorite") { wf.favorite(id) }
+    assert_invalid_id { wf.favorite(invalid_id) }
+    assert_raises(ArgumentError) { wf.favorite }
+    assert_posts("/api/v2/dashboard/#{id}/favorite") { wf.favourite(id) }
+    assert_invalid_id { wf.favourite(invalid_id) }
+    assert_raises(ArgumentError) { wf.favourite }
   end
 
   def test_unfavorite
-    should_work(:unfavorite, DASHBOARD, ["#{DASHBOARD}/unfavorite",
-                                         nil], :post, POST_HEADERS)
-    should_work(:unfavourite, DASHBOARD, ["#{DASHBOARD}/unfavorite",
-                                          nil], :post, POST_HEADERS)
-    should_be_invalid(:unfavorite)
+    assert_posts("/api/v2/dashboard/#{id}/unfavorite") { wf.unfavorite(id) }
+    assert_invalid_id { wf.unfavorite(invalid_id) }
+    assert_raises(ArgumentError) { wf.unfavorite }
+
+    assert_posts("/api/v2/dashboard/#{id}/unfavorite") do
+      wf.unfavourite(id)
+    end
+
+    assert_invalid_id { wf.unfavourite(invalid_id) }
+    assert_raises(ArgumentError) { wf.unfavourite }
+  end
+
+  private
+
+  def api_class
+    'dashboard'
+  end
+
+  def id
+    'test_dashboard'
+  end
+
+  def invalid_id
+    'a bad dashboard name'
+  end
+
+  def payload
+    { name: 'SDK Dashboard test',
+      id: 'sdk-test',
+      description: 'dummy test dashboard',
+      sections: [
+        name: 'Section 1',
+        rows: [
+          { charts: [
+            name: 'S1 Chart1',
+            description: 'chart',
+            sources: [
+              { name: 'S1 C1 Source 1',
+                query: 'ts("some.series")' }
+            ]
+          ] }
+        ]
+      ] }
   end
 end

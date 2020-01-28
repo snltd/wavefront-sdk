@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 require_relative 'api_mixins/tag'
 
@@ -37,6 +39,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 

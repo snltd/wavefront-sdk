@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -6,7 +8,7 @@ module Wavefront
   #
   class MaintenanceWindow < CoreApi
     def update_keys
-      %i[reason title startTimeInSeconds endTimeInSeconds
+      %i[id reason title startTimeInSeconds endTimeInSeconds
          relevantCustomerTags relevantHostTags relevantHostNames]
     end
 
@@ -32,6 +34,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 
@@ -92,7 +95,11 @@ module Wavefront
     def pending(hours = 24)
       cutoff = Time.now.to_i + hours * 3600
 
-      windows_in_state(:pending).tap do |r|
+      ret = windows_in_state(:pending)
+
+      return if opts[:noop]
+
+      ret.tap do |r|
         r.response.items.delete_if { |w| w.startTimeInSeconds > cutoff }
       end
     end
@@ -106,7 +113,7 @@ module Wavefront
       ret = pending
 
       items = { UPCOMING: ret.response.items,
-                CURRENT:  ongoing.response.items }
+                CURRENT: ongoing.response.items }
 
       ret.response.items = items
       ret

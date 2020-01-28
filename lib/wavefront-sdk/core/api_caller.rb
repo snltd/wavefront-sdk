@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'faraday'
 require 'addressable'
@@ -45,9 +47,11 @@ module Wavefront
     # @return [URI::HTTPS]
     #
     def mk_conn(path, headers = {}, opts = {})
-      url = format('%s://%s%s', net[:scheme], net[:endpoint],
-                   [net[:api_base], path].uri_concat)
-      set_opts = { url:     Addressable::URI.encode(url),
+      url = format('%<scheme>s://%<endpoint>s%<path>s',
+                   scheme: net[:scheme],
+                   endpoint: net[:endpoint],
+                   path: [net[:api_base], path].uri_concat)
+      set_opts = { url: Addressable::URI.encode(url),
                    headers: net[:headers].merge(headers) }
       Faraday.new(set_opts.merge(opts))
     end
@@ -79,7 +83,7 @@ module Wavefront
                      request: {
                        params_encoder: Faraday::FlatParamsEncoder
                      },
-                     params:  query)
+                     params: query)
 
       make_call(conn, :get)
     end
@@ -130,6 +134,8 @@ module Wavefront
     # If we need to massage a raw response to fit what the
     # Wavefront::Response class expects (I'm looking at you,
     # 'User'), a class can provide a {#response_shim} method.
+    # @param resp [Faraday::Response]
+    # @return [String] body of response (JSON)
     #
     def respond(resp)
       body = if calling_class.respond_to?(:response_shim)
@@ -146,7 +152,10 @@ module Wavefront
     #
     def verbosity(conn, method, *args)
       return unless noop || verbose
-      log format('uri: %s %s', method.upcase, conn.url_prefix)
+
+      log format('uri: %<method>s %<path>s',
+                 method: method.upcase,
+                 path: conn.url_prefix)
 
       return unless args.last && !args.last.empty?
 
@@ -157,8 +166,8 @@ module Wavefront
 
     def paginator_class(method)
       require_relative File.join('..', 'paginator', method.to_s)
-      Object.const_get(format('Wavefront::Paginator::%s',
-                              method.to_s.capitalize))
+      Object.const_get(format('Wavefront::Paginator::%<method>s',
+                              method: method.to_s.capitalize))
     end
 
     # A dispatcher for making API calls. We now have three methods
@@ -168,9 +177,6 @@ module Wavefront
     #   endpoint
     #
     def make_call(conn, method, *args)
-      verbosity(conn, method, *args)
-      return if noop
-
       paginator = paginator_class(method).new(self, conn, method, *args)
 
       case paginator.initial_limit
@@ -184,6 +190,9 @@ module Wavefront
     end
 
     def make_single_call(conn, method, *args)
+      verbosity(conn, method, *args)
+      return if noop
+
       pp args if debug
 
       resp = conn.public_send(method, *args)
@@ -203,8 +212,8 @@ module Wavefront
         creds[:agent] = "wavefront-sdk #{WF_SDK_VERSION}"
       end
 
-      @net = { headers:  headers(creds),
-               scheme:   opts[:scheme] || 'https',
+      @net = { headers: headers(creds),
+               scheme: opts[:scheme] || 'https',
                endpoint: creds[:endpoint],
                api_base: calling_class.api_path }
     end
@@ -227,7 +236,7 @@ module Wavefront
       %w[endpoint token].each do |k|
         unless creds.key?(k.to_sym)
           raise(Wavefront::Exception::CredentialError,
-                format('credentials must contain %s', k))
+                format('credentials must contain %<key>s', key: k))
         end
       end
     end

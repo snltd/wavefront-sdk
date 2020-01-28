@@ -1,0 +1,28 @@
+{
+  "status": {
+    "result": "OK",
+    "message": "Invalid user groups found and ignored [8b23136b-ecd2-4cb5-8c92-62477dcc4090]",
+    "code": 202
+  },
+  "response": {
+    "identifier": "user@example.com",
+    "customer": "sysdef",
+    "groups": [
+      "user_management"
+    ],
+    "userGroups": [
+      {
+        "id": "2659191e-aad4-4302-a94e-9667e1517127",
+        "name": "Everyone",
+        "permissions": [],
+        "customer": "sysdef",
+        "properties": {
+          "nameEditable": false,
+          "permissionsEditable": true,
+          "usersEditable": false
+        },
+        "description": "System group which contains all users"
+      }
+    ]
+  }
+}

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 
 module Wavefront
@@ -6,7 +8,7 @@ module Wavefront
   #
   class Webhook < CoreApi
     def update_keys
-      %i[title description template title triggers recipient]
+      %i[id title description template title triggers recipient]
     end
 
     # GET /api/v2/webhook
@@ -29,6 +31,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 

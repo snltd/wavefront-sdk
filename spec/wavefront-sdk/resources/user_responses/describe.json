@@ -1,0 +1,1 @@
+{"identifier":"user1@merp.com","customer":"sysdef","groups":[],"userGroups":[{"id":"2659191e-aad4-4302-a94e-9667e1517127","name":"Everyone","permissions":[],"customer":"sysdef","properties":{"nameEditable":false,"permissionsEditable":true,"usersEditable":false},"description":"System group which contains all users"}]}

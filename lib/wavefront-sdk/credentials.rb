@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'inifile'
 require 'map'
@@ -45,8 +47,8 @@ module Wavefront
     #
     def env_override(raw)
       { endpoint: 'WAVEFRONT_ENDPOINT',
-        token:    'WAVEFRONT_TOKEN',
-        proxy:    'WAVEFRONT_PROXY' }.each { |k, v| raw[k] = ENV[v] if ENV[v] }
+        token: 'WAVEFRONT_TOKEN',
+        proxy: 'WAVEFRONT_PROXY' }.each { |k, v| raw[k] = ENV[v] if ENV[v] }
       raw
     end
 
@@ -88,6 +90,7 @@ module Wavefront
 
       files.each do |f|
         next unless f.exist? && f.file?
+
         ret = load_profile(f, profile)
         ret[:file] = f
       end

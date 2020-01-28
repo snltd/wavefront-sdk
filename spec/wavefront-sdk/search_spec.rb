@@ -1,45 +1,40 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../spec_helper'
-
-SEARCH_BODY = {
-  limit: 10,
-  offset: 0,
-  query: [{ key:            'name',
-            value:          'Wavefront',
-            matchingMethod: 'CONTAINS' }],
-  sort: { field:     'string',
-          ascending: true }
-}.freeze
 
 # Unit tests for Search class
 #
 class WavefrontSearchTest < WavefrontTestBase
-  def test_search
-    should_work(:raw_search, ['agent', SEARCH_BODY], 'agent', :post,
-                JSON_POST_HEADERS, SEARCH_BODY.to_json)
-    should_work(:raw_search, ['agent', SEARCH_BODY, true], 'agent/deleted',
-                :post, JSON_POST_HEADERS, SEARCH_BODY.to_json)
-    assert_raises(ArgumentError) { wf.raw_search }
+  def test_raw_search
+    assert_posts('/api/v2/search/agent', payload) do
+      wf.raw_search('agent', payload)
+    end
+
+    assert_posts('/api/v2/search/agent/deleted', payload) do
+      wf.raw_search('agent', payload, true)
+    end
+
     assert_raises(ArgumentError) { wf.raw_search('ALERT', 'junk') }
+    assert_raises(ArgumentError) { wf.raw_search }
   end
 
-  def test_facet_search
-    should_work(:raw_facet_search, ['agent', SEARCH_BODY],
-                'agent/facets', :post, JSON_POST_HEADERS,
-                SEARCH_BODY.to_json)
+  def test_raw_facet_search
+    assert_posts('/api/v2/search/agent/facets', payload) do
+      wf.raw_facet_search('agent', payload)
+    end
 
-    should_work(:raw_facet_search, ['agent', SEARCH_BODY, true],
-                'agent/deleted/facets', :post, JSON_POST_HEADERS,
-                SEARCH_BODY.to_json)
+    assert_posts('/api/v2/search/agent/deleted/facets', payload) do
+      wf.raw_facet_search('agent', payload, true)
+    end
 
-    should_work(:raw_facet_search, ['agent', SEARCH_BODY, false, 'Tags'],
-                'agent/Tags', :post, JSON_POST_HEADERS,
-                SEARCH_BODY.to_json)
+    assert_posts('/api/v2/search/agent/Tags', payload) do
+      wf.raw_facet_search('agent', payload, false, 'Tags')
+    end
 
-    should_work(:raw_facet_search, ['agent', SEARCH_BODY, true, 'Tags'],
-                'agent/deleted/Tags', :post, JSON_POST_HEADERS,
-                SEARCH_BODY.to_json)
+    assert_posts('/api/v2/search/agent/deleted/Tags', payload) do
+      wf.raw_facet_search('agent', payload, true, 'Tags')
+    end
 
     assert_raises(ArgumentError) { wf.raw_facet_search }
     assert_raises(ArgumentError) { wf.raw_facet_search('ALERT', 'junk') }
@@ -53,7 +48,7 @@ class WavefrontSearchTest < WavefrontTestBase
 
     assert_equal({ limit: 10,
                    offset: 0,
-                   query:  [
+                   query: [
                      { key: 'k1', value: 'v1', matchingMethod: 'EXACT' },
                      { key: 'k2', value: 'v2', matchingMethod: 'CONTAINS' }
                    ],
@@ -71,5 +66,17 @@ class WavefrontSearchTest < WavefrontTestBase
 
     r4 = wf.body(q, sort_field: :mykey)
     assert_equal({ field: :mykey, ascending: true }, r4[:sort])
+  end
+
+  private
+
+  def payload
+    { limit: 10,
+      offset: 0,
+      query: [{ key: 'name',
+                value: 'Wavefront',
+                matchingMethod: 'CONTAINS' }],
+      sort: { field: 'string',
+              ascending: true } }
   end
 end

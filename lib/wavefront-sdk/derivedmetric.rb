@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'core/api'
 require_relative 'api_mixins/tag'
 
@@ -28,6 +30,7 @@ module Wavefront
     #
     def create(body)
       raise ArgumentError unless body.is_a?(Hash)
+
       api.post('', body, 'application/json')
     end
 
@@ -71,7 +74,7 @@ module Wavefront
     #   a hash describing the existing object, and modify that with
     #   the new body. If false, pass the new body straight through.
     # @return [Wavefront::Response]
-
+    #
     def update(id, body, modify = true)
       wf_derivedmetric_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
@@ -107,6 +110,13 @@ module Wavefront
 
     def valid_id?(id)
       wf_derivedmetric_id?(id)
+    end
+
+    private
+
+    def update_keys
+      %i[id name query tags additionalInformation
+         includeObsoleteMetrics processRateMinutes minutes]
     end
   end
 end
