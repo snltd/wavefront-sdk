@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.7.1 (2020-02-09)
+* `Response` object returned by `Wavefront::Write#write` includes a valid HTTP
+  code, rather than `nil`.
+
 ## 3.7.0 (2020-01-23)
 * Add `Account`, `Usage` and `IngestionPolicy` classes.
 * Allow modification of `Wavefront::Response`'s `response` object.
