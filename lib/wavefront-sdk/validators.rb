@@ -594,6 +594,16 @@ module Wavefront
         raise Wavefront::Exception::InvalidAccountId, id
       end
     end
+
+    # Ensure the given value is a valid sampling rate.
+    # @param rate [Float]
+    # @raise Wavefront::Exception::InvalidSamplingValue
+    #
+    def wf_sampling_value?(value)
+      return true if value.is_a?(Numeric) && value.between?(0, 1)
+
+      raise Wavefront::Exception::InvalidSamplingValue, value
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

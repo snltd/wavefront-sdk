@@ -88,6 +88,16 @@ module Wavefront
       make_call(conn, :get)
     end
 
+    def get_stream(path, query = {})
+      conn = mk_conn(path, {})
+      verbosity(conn, :get, query)
+
+      conn.get do |req|
+        req.options.on_data = Proc.new { |chunk, size| puts chunk }
+        pp req.options.stream_response?
+      end
+    end
+
     # Make a POST call to the Wavefront API and return the result as
     # a Ruby hash.
     #

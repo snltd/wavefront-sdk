@@ -6,9 +6,9 @@ module Wavefront
     #
     # This is an unstable class. Please refer to README.md.
     #
-    # Everything about this API is different from the public one. To
-    # make it appear similar we must change various things we
-    # normally take for granted.
+    # Everything about this API is different from the public one. To make it
+    # appear similar we must change various things we normally take for
+    # granted.
     #
     class Chart < CoreApi
       def metrics_under(path, cursor = nil, limit = 100)
