@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.8.0
+* Add `Wavefront::Spy` class to speak to (undocumented) spy interface.
+
 ## 3.7.0 (2020-01-23)
 * Add `Account`, `Usage` and `IngestionPolicy` classes.
 * Allow modification of `Wavefront::Response`'s `response` object.

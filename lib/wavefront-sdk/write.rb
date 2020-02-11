@@ -113,13 +113,7 @@ module Wavefront
     # @return Wavefront::Response
     #
     def composite_response(responses)
-      if responses.all?(&:ok?)
-        result = 'OK'
-        code = 200
-      else
-        result = 'ERROR'
-        code = 400
-      end
+      result, code = response_results(responses)
 
       summary = { sent: 0, rejected: 0, unsent: 0 }
 
@@ -131,6 +125,14 @@ module Wavefront
         { status: { result: result, message: nil, code: code },
           response: summary.to_h }.to_json, nil
       )
+    end
+
+    def response_results(responses)
+      if responses.all?(&:ok?)
+        ['OK', 200]
+      else
+        ['ERROR', 400]
+      end
     end
 
     def manage_conn

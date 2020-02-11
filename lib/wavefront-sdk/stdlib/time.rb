@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Extensions to the stdlib Time class
 #
 class Time

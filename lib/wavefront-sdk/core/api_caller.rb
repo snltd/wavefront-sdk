@@ -97,25 +97,29 @@ module Wavefront
     def get_stream(path, query = {}, opts = {})
       conn = flat_param_conn(path, query)
       verbosity(conn, :get, query)
-      t_end = if opts[:timeout] && opts[:timeout].positive?
-                Time.right_now + opts[:timeout]
-              else
-                nil
-              end
+      stream_connection(conn, query, opts)
+    rescue Faraday::TimeoutError
+      raise Wavefront::Exception::NetworkTimeout
+    rescue StopIteration
+      nil
+    end
+
+    def stream_connection(conn, query, opts)
+      t_end = end_time(opts)
 
       conn.get do |req|
         req.params = query
-        req.options.on_data = Proc.new do |chunk, size|
+        req.options.on_data = proc do |chunk, _size|
           raise StopIteration if t_end && Time.right_now >= t_end
 
           puts Time.now if opts[:timestamp_chunks]
           puts chunk
         end
       end
-    rescue Faraday::TimeoutError
-      raise Wavefront::Exception::NetworkTimeout
-    rescue StopIteration
-      return
+    end
+
+    def end_time(opts)
+      Time.right_now + opts[:timeout] if opts[:timeout]&.positive?
     end
 
     # Make a POST call to the Wavefront API and return the result as

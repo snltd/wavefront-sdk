@@ -15,31 +15,33 @@ module Wavefront
     class Chart < CoreApi
       def metrics_under(path, cursor = nil, limit = 100); end
 
-      def make_recursive_call
-        raw = api.get('metrics/all',
-                      trie: true, q: path, p: cursor, l: limit)
-
-        return raw unless raw.ok?
-
-        metrics = raw.response.items
-
-        metrics.each do |m|
-          if m.end_with?('.')
-            metrics += metrics_under(m).response.items
-            metrics.delete(m)
-          end
-        end
-
-        # raw.more_items? doesn't work: we don't get that from this
-        # API
-
-        if metrics.size == limit
-          metrics += metrics_under(path, metrics.last, limit).response.items
-        end
-
-        raw.items = metrics.sort
-        raw
-      end
+      #       def make_recursive_call
+      #         raw = api.get('metrics/all',
+      #                       trie: true, q: path, p: cursor, l: limit)
+      #
+      #         return raw unless raw.ok?
+      #
+      #         metrics = raw.response.items
+      #
+      #         metrics.each do |m|
+      #           if m.end_with?('.')
+      #             metrics += metrics_under(m).response.items
+      #             metrics.delete(m)
+      #           end
+      #         end
+      #
+      #         # raw.more_items? doesn't work: we don't get that from this
+      #         # API
+      #
+      #         if metrics.size == limit
+      #           metrics += metrics_under(path,
+      #           metrics.last, limit).response.items
+      #         end
+      #
+      #         raw.items = metrics.sort
+      #         raw
+      #       end
+      #
 
       def api_path
         '/chart'

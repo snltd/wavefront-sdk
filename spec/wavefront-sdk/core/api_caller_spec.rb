@@ -70,7 +70,7 @@ class WavefrontApiCallerTest < MiniTest::Test
     out, err = capture_io do
       wf.get_stream('/path',
                     { key1: 'val1' },
-                    { timestamp_chunks: true })
+                    timestamp_chunks: true)
     end
 
     assert_requested(:get, uri, headers: headers)
