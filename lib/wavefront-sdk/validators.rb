@@ -600,7 +600,7 @@ module Wavefront
     # @raise Wavefront::Exception::InvalidSamplingValue
     #
     def wf_sampling_value?(value)
-      return true if value.is_a?(Numeric) && value.between?(0, 1)
+      return true if value.is_a?(Numeric) && value.between?(0, 0.05)
 
       raise Wavefront::Exception::InvalidSamplingValue, value
     end

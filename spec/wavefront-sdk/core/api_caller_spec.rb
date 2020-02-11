@@ -37,6 +37,49 @@ class WavefrontApiCallerTest < MiniTest::Test
     assert_requested(:get, uri, headers: headers)
   end
 
+  def test_get_flat_params
+    query = { rkey: %w[val1 val2 val3], ukey: 36 }
+    uri = "#{uri_base}/path?rkey=val1&rkey=val2&rkey=val3&ukey=36"
+    stub_request(:get, uri).to_return(body: DUMMY_RESPONSE, status: 200)
+    wf.get_flat_params('/path', query)
+    assert_requested(:get, uri, headers: headers)
+  end
+
+  def test_get_stream
+    uri = "#{uri_base}/path?key1=val1"
+    stub_request(:get, uri).to_return(body: DUMMY_RESPONSE, status: 200)
+    out, err = capture_io { wf.get_stream('/path', key1: 'val1') }
+    assert_requested(:get, uri, headers: headers)
+    assert_equal(out.strip, DUMMY_RESPONSE)
+    assert_empty(err)
+  end
+
+  def test_get_stream_array_params
+    uri = "#{uri_base}/path?key=val1&key=val2"
+    stub_request(:get, uri).to_return(body: DUMMY_RESPONSE, status: 200)
+    out, err = capture_io { wf.get_stream('/path', key: %w[val1 val2]) }
+    assert_requested(:get, uri, headers: headers)
+    assert_equal(out.strip, DUMMY_RESPONSE)
+    assert_empty(err)
+  end
+
+  def test_get_stream_timestamp
+    uri = "#{uri_base}/path?key1=val1"
+    stub_request(:get, uri).to_return(body: DUMMY_RESPONSE, status: 200)
+
+    out, err = capture_io do
+      wf.get_stream('/path',
+                    { key1: 'val1' },
+                    { timestamp_chunks: true })
+    end
+
+    assert_requested(:get, uri, headers: headers)
+    out_lines = out.split("\n")
+    assert_match(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d \+\d{4}$/, out_lines[0])
+    assert_equal(out_lines[1], DUMMY_RESPONSE)
+    assert_empty(err)
+  end
+
   def test_post
     uri = "#{uri_base}/path"
     obj = { key: 'value' }

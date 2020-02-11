@@ -1,54 +1,86 @@
+# frozen_string_literal: true
+
 require_relative '../defs/constants'
 require_relative '../core/api'
 
 module Wavefront
   module Unstable
     #
-    # This is an unstable class. Please refer to README.md.
+    # THIS IS AN UNSTABLE CLASS. PLEASE REFER TO README.md.
     #
     # Everything about this API is different from the public one. To make it
     # appear similar we must change various things we normally take for
     # granted.
     #
+    # This class is built according to the documentation at
+    # https://docs.wavefront.com/wavefront_monitoring_spy.html
+    #
     class Spy < CoreApi
       # https://<cluster>.wavefront.com/api/spy/points
       # Gets new metric data points that are added to existing time series.
+      # @param sampling [Float] the amount of points to sample, from 0
+      #   (none) to 1 (all)
       # @param filter [Hash] with the following keys:
       #   :prefix [String] only list points whose metric name begins with this
       #     case-sensitive string
-      #   :host [String] only list points if source name begins with this
+      #   :host [Array] only list points if source name begins with this
       #     case-sensitive string
-      #   :point_tag_key [Array[String]] only list points with one or more of
+      #   :tag_key [String,Array[String]] only list points with one or more of
       #     the given points tags
-      #   :sampling [Integer] the amount of points to sample, from 0 (none) to
-      #     1 (all)
+      # @param options [Hash] with the following keys
+      #   :timestamp [Boolean] prefix each block of streamed data with a
+      #     timestamp
+      #   :timeout [Integer] how many seconds to run the spy. After this time
+      #     the method returns
       # @raise Wavefront::Exception::InvalidSamplingValue
-      # @return
+      # @return [Nil]
       #
-      def points(sampling = 0.01, filters = {})
+      def points(sampling = 0.01, filters = {}, options = {})
         wf_sampling_value?(sampling)
-        api.get_stream('points', points_filter(sampling, filters))
+        api.get_stream('points', points_filter(sampling, filters), options)
       end
 
-      def points_filter(sampling, filters)
-        { metric: filters.fetch(:prefix, nil),
-          host: filters.fetch(:host, nil),
-          sampling: sampling,
-          pointTagKey: filters.fetch(:point_tag_key, nil) }.compact
+      # Gets new histograms that are added to existing time series.
+      # @param sampling [Float] see #points
+      # @param filter [Hash] see #points
+      # @param options [Hash] see #points
+      # @raise Wavefront::Exception::InvalidSamplingValue
+      # @return [Nil]
+      #
+      def histograms(sampling = 0.01, filters = {}, options = {})
+        wf_sampling_value?(sampling)
+        api.get_stream('histograms',
+                       histograms_filter(sampling, filters),
+                       options)
       end
 
       # https://<cluster>.wavefront.com/api/spy/spans
       # Gets new spans with existing source names and span tags.
+      # @param sampling [Float] see #points
+      # @param filter [Hash] see #points
+      # @param options [Hash] see #points
+      # @raise Wavefront::Exception::InvalidSamplingValue
+      # @return [Nil]
       #
-      def spans
+      def spans(sampling = 0.01, filters = {}, options = {})
+        wf_sampling_value?(sampling)
+        api.get_stream('spans', spans_filter(sampling, filters), options)
       end
 
       # https://<cluster>.wavefront.com/api/spy/ids
       # Gets newly allocated IDs that correspond to new metric names, source
       # names, point tags, or span tags. A new ID generally indicates that a
       # new time series has been introduced.
+      # @param sampling [Float] see #points
+      # @param filter [Hash] with keys:
+      #   :prefix [String] only list assignments whose metric name begins with
+      #     this case-sensitive string
+      #   :type [String] one of METRIC, SPAN, HOST or STRING
+      # @param options [Hash] see #points
       #
-      def ids
+      def ids(sampling = 0.01, filters = {}, options = {})
+        wf_sampling_value?(sampling)
+        api.get_stream('ids', ids_filter(sampling, filters), options)
       end
 
       def api_path
@@ -64,29 +96,38 @@ module Wavefront
       #
       def _response_shim(resp, status)
         { response: parse_response(resp),
-            status:  { result:     status == 200 ? 'OK' : 'ERROR',
-                       message:    extract_api_message(status, resp),
-                       code:       status } }.to_json
+          status: { result: status == 200 ? 'OK' : 'ERROR',
+                    message: extract_api_message(status, resp),
+                    code: status } }.to_json
       end
 
       private
 
-      def _parse_response(resp)
-        metrics = JSON.parse(resp, symbolize_names: true)[:metrics]
-
-        { items:      metrics,
-          offset:     0,
-          limit:      metrics.size,
-          totalItems: metrics.size,
-          moreItems:  false }
-      rescue JSON::ParserError
-        nil
+      def points_filter(sampling, filters)
+        { metric: filters.fetch(:prefix, nil),
+          host: filters.fetch(:host, nil),
+          sampling: sampling,
+          pointTagKey: filters.fetch(:tag_key, nil) }.compact
       end
 
-      def extract_api_message(status, resp)
-        resp.match(/^message='(.*)'/)[1]
-      rescue NoMethodError
-        ''
+      def histograms_filter(sampling, filters)
+        { histogram: filters.fetch(:prefix, nil),
+          host: filters.fetch(:host, nil),
+          sampling: sampling,
+          histogramTagKey: filters.fetch(:tag_key, nil) }.compact
+      end
+
+      def spans_filter(sampling, filters)
+        { name: filters.fetch(:prefix, nil),
+          host: filters.fetch(:host, nil),
+          sampling: sampling,
+          spanTagKey: filters.fetch(:tag_key, nil) }.compact
+      end
+
+      def ids_filter(sampling, filters)
+        { name: filters.fetch(:prefix, nil),
+          type: filters.fetch(:type, nil),
+          sampling: sampling }.compact
       end
     end
   end

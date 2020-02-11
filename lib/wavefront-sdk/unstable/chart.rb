@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../defs/constants'
 require_relative '../core/api'
 
@@ -11,8 +13,7 @@ module Wavefront
     # granted.
     #
     class Chart < CoreApi
-      def metrics_under(path, cursor = nil, limit = 100)
-      end
+      def metrics_under(path, cursor = nil, limit = 100); end
 
       def make_recursive_call
         raw = api.get('metrics/all',
@@ -40,7 +41,6 @@ module Wavefront
         raw
       end
 
-
       def api_path
         '/chart'
       end
@@ -54,9 +54,9 @@ module Wavefront
       #
       def _response_shim(resp, status)
         { response: parse_response(resp),
-            status:  { result:     status == 200 ? 'OK' : 'ERROR',
-                       message:    extract_api_message(status, resp),
-                       code:       status } }.to_json
+          status: { result: status == 200 ? 'OK' : 'ERROR',
+                    message: extract_api_message(status, resp),
+                    code: status } }.to_json
       end
 
       private
@@ -64,16 +64,16 @@ module Wavefront
       def _parse_response(resp)
         metrics = JSON.parse(resp, symbolize_names: true)[:metrics]
 
-        { items:      metrics,
-          offset:     0,
-          limit:      metrics.size,
+        { items: metrics,
+          offset: 0,
+          limit: metrics.size,
           totalItems: metrics.size,
-          moreItems:  false }
+          moreItems: false }
       rescue JSON::ParserError
         nil
       end
 
-      def extract_api_message(status, resp)
+      def extract_api_message(_status, resp)
         resp.match(/^message='(.*)'/)[1]
       rescue NoMethodError
         ''
