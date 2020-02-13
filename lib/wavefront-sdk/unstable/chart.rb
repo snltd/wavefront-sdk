@@ -8,40 +8,45 @@ module Wavefront
     #
     # This is an unstable class. Please refer to README.md.
     #
-    # Everything about this API is different from the public one. To make it
-    # appear similar we must change various things we normally take for
-    # granted.
-    #
     class Chart < CoreApi
-      def metrics_under(path, cursor = nil, limit = 100); end
+      def all_metrics
+        metrics_under('')
+      end
 
-      #       def make_recursive_call
-      #         raw = api.get('metrics/all',
-      #                       trie: true, q: path, p: cursor, l: limit)
+      # Gets a list of metrics under the given path. This must be done via
+      # recursive calls to the API, so calls can take a while. If you ask for
+      # all your metrics, expect to be waiting some time.
       #
-      #         return raw unless raw.ok?
+      # @return [Wavefront::Response]
       #
-      #         metrics = raw.response.items
-      #
-      #         metrics.each do |m|
-      #           if m.end_with?('.')
-      #             metrics += metrics_under(m).response.items
-      #             metrics.delete(m)
-      #           end
-      #         end
-      #
-      #         # raw.more_items? doesn't work: we don't get that from this
-      #         # API
-      #
-      #         if metrics.size == limit
-      #           metrics += metrics_under(path,
-      #           metrics.last, limit).response.items
-      #         end
-      #
-      #         raw.items = metrics.sort
-      #         raw
-      #       end
-      #
+      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
+      def metrics_under(path, cursor = nil, limit = 100)
+        resp = api.get('metrics/all',
+                       { trie: true, q: path, p: cursor, l: limit }.compact)
+
+        return resp unless resp.ok?
+
+        metrics = resp.response.items
+
+        metrics.each do |m|
+          if m.end_with?('.')
+            metrics += metrics_under(m).response.items
+            metrics.delete(m)
+          end
+        end
+
+        # resp.more_items? doesn't work: we don't get that from this API
+
+        if metrics.size == limit
+          metrics += metrics_under(path, metrics.last, limit).response.items
+        end
+
+        resp.response.items = metrics.sort
+        resp
+      end
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
 
       def api_path
         '/chart'
@@ -54,7 +59,7 @@ module Wavefront
       # This method must be public because a #respond_to? looks for
       # it.
       #
-      def _response_shim(resp, status)
+      def response_shim(resp, status)
         { response: parse_response(resp),
           status: { result: status == 200 ? 'OK' : 'ERROR',
                     message: extract_api_message(status, resp),
@@ -63,7 +68,7 @@ module Wavefront
 
       private
 
-      def _parse_response(resp)
+      def parse_response(resp)
         metrics = JSON.parse(resp, symbolize_names: true)[:metrics]
 
         { items: metrics,

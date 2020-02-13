@@ -1,7 +1,11 @@
 # Changelog
 
-## 3.8.0
-* Add `Wavefront::Spy` class to speak to (undocumented) spy interface.
+## 4.0.0
+* Drop support for Ruby 2.3. (Breaking change.)
+* Add `Wavefront::Unstable::Spy` class to speak to (undocumented) spy
+  interface.
+* Add `Wavefront::Unstable::Chart` class to speak to (undocumented) chart
+  interface.
 
 ## 3.7.0 (2020-01-23)
 * Add `Account`, `Usage` and `IngestionPolicy` classes.
