@@ -23,6 +23,10 @@ class WavefrontTestBase < MiniTest::Test
     "../lib/wavefront-sdk/#{class_basename.downcase}"
   end
 
+  def dummy_response
+    DUMMY_RESPONSE
+  end
+
   private
 
   def setup

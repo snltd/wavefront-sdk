@@ -106,4 +106,8 @@ class WavefrontSpyTest < MiniTest::Test
       end
     end
   end
+
+  def dummy_response
+    DUMMY_RESPONSE
+  end
 end
