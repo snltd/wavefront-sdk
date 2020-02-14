@@ -594,6 +594,20 @@ module Wavefront
         raise Wavefront::Exception::InvalidAccountId, id
       end
     end
+
+    # Ensure the given argument is a valid monitored cluster ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidMonitoredClusterId if the ID is not
+    #   valid
+    #
+    def wf_monitoredcluster_id?(id)
+      if id.is_a?(String) && id.size < 256 && id =~ /^[a-z0-9\-_]+$/
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidMonitoredClusterId, id
+    end
+
   end
   # rubocop:enable Metrics/ModuleLength
 end

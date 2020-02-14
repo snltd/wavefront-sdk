@@ -28,6 +28,7 @@ module Wavefront
     class InvalidIntegrationId < RuntimeError; end
     class InvalidLinkTemplate < RuntimeError; end
     class InvalidMaintenanceWindowId < RuntimeError; end
+    class InvalidMonitoredClusterId < RuntimeError; end
     class InvalidMessageId < RuntimeError; end
     class InvalidMetricName < RuntimeError; end
     class InvalidMetricValue < RuntimeError; end

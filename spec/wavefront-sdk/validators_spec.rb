@@ -386,4 +386,13 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = ['', [], {}, 'a' * 1000]
     good_and_bad('wf_account_id?', 'InvalidAccountId', good, bad)
   end
+
+  def test_wf_managedcluster_id
+    good = %w[test-cluster other-cluster cluster]
+    bad = ['', [], {}, 'a' * 1000, '£"^WR"!']
+    good_and_bad('wf_monitoredcluster_id?',
+                 'InvalidMonitoredClusterId',
+                 good,
+                 bad)
+  end
 end
