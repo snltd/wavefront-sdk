@@ -113,7 +113,7 @@ module Wavefront
     # @return Wavefront::Response
     #
     def composite_response(responses)
-      result, code = response_codes(responses)
+      result, code = response_results(responses)
 
       summary = { sent: 0, rejected: 0, unsent: 0 }
 
@@ -125,6 +125,14 @@ module Wavefront
         { status: { result: result, message: nil, code: code },
           response: summary.to_h }.to_json, nil
       )
+    end
+
+    def response_results(responses)
+      if responses.all?(&:ok?)
+        ['OK', 200]
+      else
+        ['ERROR', 400]
+      end
     end
 
     def manage_conn
@@ -247,14 +255,6 @@ module Wavefront
                               writer_class: writer.capitalize)).new(self)
     rescue LoadError
       raise(Wavefront::Exception::UnsupportedWriter, writer)
-    end
-
-    def response_codes(responses)
-      if responses.all?(&:ok?)
-        ['OK', 200]
-      else
-        ['ERROR', 400]
-      end
     end
   end
 end

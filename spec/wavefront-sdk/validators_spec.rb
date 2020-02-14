@@ -395,4 +395,10 @@ class WavefrontValidatorsTest < MiniTest::Test
                  good,
                  bad)
   end
+
+  def test_wf_sampling_value
+    good = [0, 0.01, 0.003, 0.05]
+    bad = ['a', 0.1, 0.99, 1, -1, 1.1]
+    good_and_bad('wf_sampling_value?', 'InvalidSamplingValue', good, bad)
+  end
 end

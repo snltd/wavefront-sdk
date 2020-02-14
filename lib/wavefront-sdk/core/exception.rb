@@ -39,6 +39,7 @@ module Wavefront
     class InvalidPrefixLength < RuntimeError; end
     class InvalidProxyId < RuntimeError; end
     class InvalidRelativeTime < RuntimeError; end
+    class InvalidSamplingValue < RuntimeError; end
     class InvalidSavedSearchEntity < RuntimeError; end
     class InvalidSavedSearchId < RuntimeError; end
     class InvalidServiceAccountId < RuntimeError; end
@@ -52,6 +53,7 @@ module Wavefront
     class InvalidUserGroupId < RuntimeError; end
     class InvalidVersion < RuntimeError; end
     class InvalidWebhookId < RuntimeError; end
+    class NetworkTimeout < RuntimeError; end
     class NotImplemented < RuntimeError; end
     class SocketError < RuntimeError; end
     class UnparseableResponse < RuntimeError; end

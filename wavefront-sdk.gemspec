@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.bindir        = 'bin'
 
   gem.add_dependency 'addressable', '~> 2.7'
-  gem.add_dependency 'faraday', '~> 0.17.0'
+  gem.add_dependency 'faraday', '~> 1.0'
   gem.add_dependency 'inifile', '~> 3.0'
   gem.add_dependency 'map', '~> 6.6'
 
