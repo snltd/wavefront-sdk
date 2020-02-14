@@ -601,13 +601,10 @@ module Wavefront
     #   valid
     #
     def wf_monitoredcluster_id?(id)
-      if id.is_a?(String) && id.size < 256 && id =~ /^[a-z0-9\-_]+$/
-        return true
-      end
+      return true if id.is_a?(String) && id.size < 256 && id =~ /^[a-z0-9\-_]+$/
 
       raise Wavefront::Exception::InvalidMonitoredClusterId, id
     end
-
   end
   # rubocop:enable Metrics/ModuleLength
 end
