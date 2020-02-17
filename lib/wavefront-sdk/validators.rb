@@ -594,6 +594,27 @@ module Wavefront
         raise Wavefront::Exception::InvalidAccountId, id
       end
     end
+
+    # Ensure the given argument is a valid monitored cluster ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidMonitoredClusterId if the ID is not
+    #   valid
+    #
+    def wf_monitoredcluster_id?(id)
+      return true if id.is_a?(String) && id.size < 256 && id =~ /^[a-z0-9\-_]+$/
+
+      raise Wavefront::Exception::InvalidMonitoredClusterId, id
+    end
+
+    # Ensure the given value is a valid sampling rate.
+    # @param rate [Float]
+    # @raise Wavefront::Exception::InvalidSamplingValue
+    #
+    def wf_sampling_value?(value)
+      return true if value.is_a?(Numeric) && value.between?(0, 0.05)
+
+      raise Wavefront::Exception::InvalidSamplingValue, value
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

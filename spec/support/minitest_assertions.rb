@@ -20,7 +20,7 @@ module Minitest
       headers = DEFAULT_HEADERS
       stub_request(:get, uri(api_path))
         .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:get, uri(api_path), headers: headers)
       WebMock.reset!
@@ -39,7 +39,7 @@ module Minitest
       payload = 'null' if payload.nil?
       stub_request(:post, uri(api_path))
         .with(body: payload, headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:post, uri(api_path), headers: headers)
       WebMock.reset!
@@ -58,7 +58,7 @@ module Minitest
       payload = 'null' if payload.nil?
       stub_request(:put, uri(api_path))
         .with(body: payload, headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:put, uri(api_path), headers: headers)
       WebMock.reset!
@@ -72,7 +72,7 @@ module Minitest
       headers = DEFAULT_HEADERS
       stub_request(:delete, uri(api_path))
         .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:delete, uri(api_path), headers: headers)
       WebMock.reset!

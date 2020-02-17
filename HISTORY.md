@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.0 (2020-02-17)
+* Drop support for Ruby 2.3. (Breaking change.)
+* Add `Wavefront::MonitoredCluster` class.
+* Add `Wavefront::Unstable::Spy` class to speak to (undocumented) spy
+  interface.
+* Add `Wavefront::Unstable::Chart` class to speak to (undocumented) chart
+  interface.
+
 ## 3.7.1 (2020-02-09)
 * `Response` object returned by `Wavefront::Write#write` includes a valid HTTP
   code, rather than `nil`.
