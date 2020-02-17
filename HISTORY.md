@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0
+## 4.0.0 (2020-02-17)
 * Drop support for Ruby 2.3. (Breaking change.)
 * Add `Wavefront::MonitoredCluster` class.
 * Add `Wavefront::Unstable::Spy` class to speak to (undocumented) spy
