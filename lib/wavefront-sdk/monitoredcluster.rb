@@ -75,7 +75,8 @@ module Wavefront
     # Merge two monitored clusters. The first cluster will remain and the
     # second cluster will be deleted, with its id added as an alias to the
     # first cluster.
-    # @param id [String, Integer] ID of the cluster
+    # @param id1 [String, Integer] ID of the target cluster
+    # @param id2 [String, Integer] ID of the other cluster
     # @return [Wavefront::Response]
     #
     def merge(id1, id2)
