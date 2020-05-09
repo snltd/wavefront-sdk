@@ -39,24 +39,6 @@ class WavefrontUserGroupTest < WavefrontTestBase
     assert_invalid_id { wf.remove_users_from_group(invalid_id, users) }
   end
 
-  def test_grant
-    assert_posts("/api/v2/usergroup/grant/#{permission}",
-                 groups.to_json) do
-      wf.grant(permission, groups)
-    end
-
-    assert_invalid_id { wf.grant(permission, invalid_groups) }
-  end
-
-  def test_revoke
-    assert_posts("/api/v2/usergroup/revoke/#{permission}",
-                 groups.to_json) do
-      wf.revoke(permission, groups)
-    end
-
-    assert_invalid_id { wf.revoke(permission, invalid_groups) }
-  end
-
   def setup_fixtures
     @permission = 'alerts_management'
     @invalid_groups = %w[some-nonsense more-nonsense]

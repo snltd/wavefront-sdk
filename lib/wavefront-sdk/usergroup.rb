@@ -107,31 +107,5 @@ module Wavefront
       api.post([id, 'removeUsers'].uri_concat, user_list,
                'application/json')
     end
-
-    # POST /api/v2/usergroup/grant/{permission}
-    # Grants a single permission to user group(s)
-    #
-    # @param perm [String] permission to grant
-    # @param group_list [Array[String]] list of groups who should
-    #   receive permission
-    # @return [Wavefront::Response]
-    #
-    def grant(perm, group_list = [])
-      validate_usergroup_list(group_list)
-      api.post(['grant', perm].uri_concat, group_list, 'application/json')
-    end
-
-    # POST /api/v2/usergroup/revoke/{permission}
-    # Revokes a single permission from user group(s)
-    #
-    # @param perm [String] permission to revoke
-    # @param group_list [Array[String]] list of groups who should
-    #   lose permission
-    # @return [Wavefront::Response]
-    #
-    def revoke(perm, group_list = [])
-      validate_usergroup_list(group_list)
-      api.post(['revoke', perm].uri_concat, group_list, 'application/json')
-    end
   end
 end
