@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.0.0 (2020-05-09)
+* Remove `Wavefront::UserGroup#grant` and `Wavefront::UserGroup#revoke` as [the
+ API paths they used have been
+ removed](https://docs.wavefront.com/2020.06.x_release_notes.html#obsolete-and-deprecated-apis).
+ (Breaking change.)
+* Remove `Wavefront::MonitoredCluster` class, as it has been removed from the
+  public API.
+* Deprecate `Wavefront::User` class, as [the user API is now
+  deprecated](https://docs.wavefront.com/2020.06.x_release_notes.html#obsolete-and-deprecated-apis)
+
 ## 4.0.0 (2020-02-17)
 * Drop support for Ruby 2.3. (Breaking change.)
 * Add `Wavefront::MonitoredCluster` class.
