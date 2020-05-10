@@ -35,6 +35,16 @@ module Wavefront
 
         list.each { |id| wf_account_id?(id) }
       end
+
+      # Validate a list of roles
+      # @param list [Array[String]] list of role IDs
+      # @raise Wavefront::Exception::InvalidRole
+      #
+      def validate_role_list(list)
+        raise ArgumentError unless list.is_a?(Array)
+
+        list.each { |id| wf_role_id?(id) }
+      end
     end
   end
 end

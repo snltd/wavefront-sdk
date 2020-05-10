@@ -615,6 +615,17 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidSamplingValue, value
     end
+
+    # Ensure the given argument is a valid Wavefront role ID
+    # @param id [String] the role ID to validate
+    # @return true if the role ID is valid
+    # @raise Wavefront::Exception::InvalidRoleId if the role ID is not valid
+    #
+    def wf_role_id?(id)
+      return true if uuid?(id)
+
+      raise Wavefront::Exception::InvalidRoleId, id
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

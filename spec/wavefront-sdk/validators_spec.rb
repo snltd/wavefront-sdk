@@ -401,4 +401,14 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = ['a', 0.1, 0.99, 1, -1, 1.1]
     good_and_bad('wf_sampling_value?', 'InvalidSamplingValue', good, bad)
   end
+
+  def test_wf_role_id
+    good = %w[2bfdcac7-1c9c-4c4b-9b56-c41c22c586dc
+              17db4cc1-65f6-40a8-a1fa-6fcae460c4bd
+              fca312fb-5ff4-420d-862d-5d6d99ed6bcf
+              3a1957e0-459e-49e5-9209-3888a4e8ac5b]
+
+    bad = %w[fa312fb-5ff4-420d-862d-5d6d99ed6bcf thing 123]
+    good_and_bad('wf_role_id?', 'InvalidRoleId', good, bad)
+  end
 end
