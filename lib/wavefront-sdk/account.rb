@@ -44,6 +44,18 @@ module Wavefront
       api.get(id)
     end
 
+    # POST /api/v2/account/{id}/addRoles
+    # Add specific roles to the account (user or service account)
+    # @param id [String] ID of the account
+    # @param role_list [Array[String]] list of roles to add
+    # @return [Wavefront::Response]
+    #
+    def add_roles(id, role_list)
+      wf_account_id?(id)
+      validate_role_list(role_list)
+      api.post([id, 'addRoles'].uri_concat, role_list, 'application/json')
+    end
+
     # POST /api/v2/account/{id}/addUserGroups
     # Adds specific user groups to the account (user or service account)
     # @param id [String] ID of the account
@@ -68,10 +80,22 @@ module Wavefront
       api.get([id, 'businessFunctions'].uri_concat)
     end
 
+    # POST /api/v2/account/{id}/removeRoles
+    # Removes specific roles from the account (user or service account)
+    # @param id [String] ID of the account
+    # @param role_list [Array[String]] list of roles to remove
+    # @return [Wavefront::Response]
+    #
+    def remove_roles(id, role_list)
+      wf_account_id?(id)
+      validate_role_list(role_list)
+      api.post([id, 'removeRoles'].uri_concat, role_list, 'application/json')
+    end
+
     # POST /api/v2/account/{id}/removeUserGroups
     # Removes specific user groups from the account (user or service account)
     # @param id [String] ID of the account
-    # @param group_list [Array[String]] list of groups to add
+    # @param group_list [Array[String]] list of groups to remove
     # @return [Wavefront::Response]
     #
     def remove_user_groups(id, group_list)
@@ -132,7 +156,8 @@ module Wavefront
     end
 
     # POST /api/v2/account/removeingestionpolicies
-    # Removes ingestion policies from multiple accounts
+    # Removes ingestion policies from multiple accounts. The API path says
+    # "policies" but I've made the method name "policy" for consistency.
     # @param policy_id [String] ID of the ingestion policy
     # @param id_list [Array[String]] list of accounts to be put in policy
     # @return [Wavefront::Response]
@@ -140,7 +165,7 @@ module Wavefront
     def remove_ingestion_policy(policy_id, id_list)
       wf_ingestionpolicy_id?(policy_id)
       validate_account_list(id_list)
-      api.post('removeingestionpolicy',
+      api.post('removeingestionpolicies',
                { ingestionPolicyId: policy_id,
                  accounts: id_list },
                'application/json')

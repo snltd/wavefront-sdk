@@ -11,6 +11,18 @@ class WavefrontAccountTest < WavefrontTestBase
   include WavefrontTest::Delete
   include WavefrontTest::Describe
 
+  def test_add_roles
+    assert_posts("/api/v2/account/#{id}/addRoles", roles.to_json) do
+      wf.add_roles(id, roles)
+    end
+
+    assert_invalid_id { wf.add_roles(invalid_id, roles) }
+
+    assert_raises(Wavefront::Exception::InvalidRoleId) do
+      wf.add_roles(id, invalid_role)
+    end
+  end
+
   def test_add_user_groups
     assert_posts("/api/v2/account/#{id}/addUserGroups", groups.to_json) do
       wf.add_user_groups(id, groups)
@@ -37,6 +49,22 @@ class WavefrontAccountTest < WavefrontTestBase
     assert_posts("/api/v2/account/grant/#{permission}", id_list.to_json) do
       wf.grant(id_list, permission)
     end
+
+    assert_raises(Wavefront::Exception::InvalidRoleId) do
+      wf.remove_roles(id, invalid_role)
+    end
+  end
+
+  def test_remove_roles
+    assert_posts("/api/v2/account/#{id}/removeRoles", roles.to_json) do
+      wf.remove_roles(id, roles)
+    end
+
+    assert_invalid_id { wf.remove_roles(invalid_id, roles) }
+
+    assert_raises(Wavefront::Exception::InvalidRoleId) do
+      wf.remove_roles(id, invalid_role)
+    end
   end
 
   def test_remove_user_groups
@@ -45,11 +73,21 @@ class WavefrontAccountTest < WavefrontTestBase
     end
 
     assert_invalid_id { wf.remove_user_groups(invalid_id, groups) }
+
+    assert_raises(Wavefront::Exception::InvalidUserGroupId) do
+      wf.remove_user_groups(id, invalid_group)
+    end
   end
 
   def test_revoke_from_single_user
     assert_posts("/api/v2/account/#{id}/revoke/#{permission}") do
       wf.revoke(id, permission)
+    end
+
+    assert_invalid_id { wf.revoke(invalid_id, permission) }
+
+    assert_raises(Wavefront::Exception::InvalidPermission) do
+      wf.revoke(id, invalid_permission)
     end
   end
 
@@ -82,7 +120,7 @@ class WavefrontAccountTest < WavefrontTestBase
   end
 
   def test_remove_ingestion_policy
-    assert_posts('/api/v2/account/removeingestionpolicy',
+    assert_posts('/api/v2/account/removeingestionpolicies',
                  { ingestionPolicyId: policy_id,
                    accounts: id_list }.to_json) do
       wf.remove_ingestion_policy(policy_id, id_list)
@@ -114,8 +152,25 @@ class WavefrontAccountTest < WavefrontTestBase
        2659191e-aad4-4302-a94e-9667e1517127]
   end
 
+  def roles
+    %w[f8dc0c14-91a0-4ca9-8a2a-7d47f4db1234
+       2659191e-aad4-4302-a94e-9667e1515678]
+  end
+
+  def invalid_role
+    %w[bad_role]
+  end
+
+  def invalid_group
+    %w[bad_group]
+  end
+
   def id_list
     %w[sa:test user@example.com]
+  end
+
+  def invalid_permission
+    'some_nonsense_permission_i_made_up'
   end
 
   def permission
