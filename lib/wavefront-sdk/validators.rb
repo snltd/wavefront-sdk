@@ -566,7 +566,7 @@ module Wavefront
         return true
       end
 
-      raise Wavefront::Exception::InvalidPermission, id, id
+      raise Wavefront::Exception::InvalidPermission, id
     end
 
     # Ensure the given argument is a valid ingestion policy ID
