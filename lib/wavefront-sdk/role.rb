@@ -10,6 +10,10 @@ module Wavefront
   class Role < CoreApi
     include Wavefront::Mixin::User
 
+    def update_keys
+      %i[id description]
+    end
+
     # GET /api/v2/role
     # Get all roles for a customer
     # @param offset [Int] alert at which the list begins
