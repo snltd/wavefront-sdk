@@ -77,7 +77,7 @@ class WavefrontRoleTest < WavefrontTestBase
   end
 
   def assignees
-    roles.append('sa::test')
+    roles.push('sa::test')
   end
 
   def invalid_id
