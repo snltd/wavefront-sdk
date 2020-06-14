@@ -107,5 +107,32 @@ module Wavefront
       api.post([id, 'removeUsers'].uri_concat, user_list,
                'application/json')
     end
+
+    # POST /api/v2/usergroup/{id}/addRoles
+    # Add multiple roles to a specific user group
+    #
+    # @param id [String] ID of the user group
+    # @param role_list [Array[String]] list of roles to add
+    # @return [Wavefront::Response]
+    #
+    def add_roles_to_group(id, role_list = [])
+      wf_usergroup_id?(id)
+      validate_role_list(role_list)
+      api.post([id, 'addRoles'].uri_concat, role_list, 'application/json')
+    end
+
+    # POST /api/v2/usergroup/{id}/removeRoles
+    # Remove multiple roles from a specific user group
+    #
+    # @param id [String] ID of the user group
+    # @param user_list [Array[String]] list of roles to remove
+    # @return [Wavefront::Response]
+    #
+    def remove_roles_from_group(id, role_list = [])
+      wf_usergroup_id?(id)
+      validate_role_list(role_list)
+      api.post([id, 'removeRoles'].uri_concat, role_list,
+               'application/json')
+    end
   end
 end
