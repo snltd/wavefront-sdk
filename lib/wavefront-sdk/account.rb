@@ -182,6 +182,78 @@ module Wavefront
       api.post('deleteAccounts', id_list, 'application/json')
     end
 
+    # GET /api/v2/account/user
+    # Get all user accounts
+    # @param offset [Int] user account at which the list begins
+    # @param limit [Int] the number of user accounts to return
+    # @return [Wavefront::Response]
+    #
+    def user_list(offset = 0, limit = 100)
+      api.get('user', offset: offset, limit: limit)
+    end
+
+    def user_create(body, send_email = false)
+      raise ArgumentError unless body.is_a?(Hash)
+
+      uri = send_email ? "?sendEmail=#{send_email}" : 'user'
+
+      api.post(uri, body, 'application/json')
+    end
+
+    # POST /api/v2/account/user
+    # Creates or updates a user account
+    # @param id [String] a Wavefront user ID
+    # @param body [Hash] key-value hash of the parameters you wish to change
+    # @param modify [true, false] if true, use {#describe()} to get a hash
+    #   describing the existing object, and modify that with the new body. If
+    #   false, pass the new body straight through.
+    # @return [Wavefront::Response]
+    def user_update(body, modify = true)
+      raise ArgumentError unless body.is_a?(Hash)
+
+      return api.post('user', body, 'application/json') unless modify
+
+      api.post('user',
+               hash_for_update(describe(id).response, body),
+               'application/json')
+    end
+
+    # GET /api/v2/account/user/{id}
+    # Retrieves a user by identifier (email address)
+    # @param id [String] ID of the proxy
+    # @return [Wavefront::Response]
+    #
+    def user_describe(id)
+      wf_user_id?(id)
+      api.get(['user', id].uri_concat)
+    end
+
+    # POST /api/v2/account/user/invite
+    # Invite user accounts with given user groups and permissions.
+    # @param body [Array[Hash]] array of hashes, each hash describing a user.
+    #   See API docs for more details. It is your responsibility to validate
+    #   the data which describes each user.
+    # @return [Wavefront::Response]
+    #
+    def user_invite(body)
+      raise ArgumentError unless body.is_a?(Array)
+      raise ArgumentError unless body.first.is_a?(Hash)
+
+      api.post('user/invite', body, 'application/json')
+    end
+
+    # POST /api/v2/account/validateAccounts
+    # Returns valid accounts (users and service accounts), also invalid
+    # identifiers from the given list
+    # @param id_list [Array[String]] list of user IDs
+    # @return [Wavefront::Response]
+    #
+    def validate_accounts(id_list)
+      raise ArgumentError unless id_list.is_a?(Array)
+
+      api.post('validateAccounts', id_list, 'application/json')
+    end
+
     private
 
     # @param id [String] ID of the user
@@ -222,6 +294,10 @@ module Wavefront
       validate_account_list(id_list)
       wf_permission?(permission)
       api.post(['revoke', permission].uri_concat, id_list, 'application/json')
+    end
+
+    def update_keys
+      %i[identifier groups userGroups roles ingestionPolicyId]
     end
   end
 end

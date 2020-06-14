@@ -133,6 +133,52 @@ class WavefrontAccountTest < WavefrontTestBase
     assert_invalid_id { wf.add_ingestion_policy(policy_id, [invalid_id]) }
   end
 
+  def test_user_list
+    assert_gets('/api/v2/account/user?offset=0&limit=100') do
+      wf.user_list
+    end
+
+    assert_gets('/api/v2/account/user?offset=10&limit=50') do
+      wf.user_list(10, 50)
+    end
+  end
+
+  def test_user_describe
+    assert_gets("/api/v2/account/user/#{id}") { wf.user_describe(id) }
+
+    assert_raises(Wavefront::Exception::InvalidUserId) do
+      wf.user_describe(invalid_id)
+    end
+
+    assert_raises(ArgumentError) { wf.user_describe }
+  end
+
+  def test_user_create
+    assert_posts('/api/v2/account/user', payload.to_json) do
+      wf.user_create(payload)
+    end
+
+    assert_raises(ArgumentError) { wf.user_create }
+    assert_raises(ArgumentError) { wf.user_create('test') }
+  end
+
+  def test_user_invite
+    assert_posts('/api/v2/account/user/invite', [payload].to_json) do
+      wf.user_invite([payload])
+    end
+
+    assert_raises(ArgumentError) { wf.user_invite }
+    assert_raises(ArgumentError) { wf.user_invite('test') }
+  end
+
+  def test_validate_accounts
+    assert_posts('/api/v2/account/validateAccounts', id_list.to_json) do
+      wf.validate_accounts(id_list)
+    end
+
+    assert_raises(ArgumentError) { wf.validate_accounts }
+  end
+
   private
 
   def api_class
@@ -183,5 +229,10 @@ class WavefrontAccountTest < WavefrontTestBase
 
   def invalid_policy_id
     'badpolicy'
+  end
+
+  def payload
+    { emailAddress: id,
+      groups: %w[browse] }
   end
 end
