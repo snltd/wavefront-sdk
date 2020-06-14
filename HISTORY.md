@@ -10,6 +10,7 @@
 * Deprecate `Wavefront::User` class, as [the user API is now
   deprecated](https://docs.wavefront.com/2020.06.x_release_notes.html#obsolete-and-deprecated-apis)
 * Add `Wavefront::Role` class, for managing roles.
+* Promote `Wavefront::Spy` class from unstable. It is now an official API.
 
 ## 4.0.0 (2020-02-17)
 * Drop support for Ruby 2.3. (Breaking change.)
