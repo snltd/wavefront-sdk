@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1 (2020-07-08)
+* Reinstate `Wavefront::Role#grant` and `Wavefront::Role#revoke`, which were
+  accidentally removed prior to release of 5.0.0.
+
 ## 5.0.0 (2020-07-08)
 * Remove `Wavefront::UserGroup#grant` and `Wavefront::UserGroup#revoke` as [the
  API paths they used have been
