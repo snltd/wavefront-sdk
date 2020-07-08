@@ -13,34 +13,6 @@ class WavefrontRoleTest < WavefrontTestBase
   include WavefrontTest::List
   include WavefrontTest::Update
 
-  def test_grant
-    assert_posts("/api/v2/role/grant/#{permission}", roles.to_json) do
-      wf.grant(permission, roles)
-    end
-
-    assert_raises(Wavefront::Exception::InvalidRoleId) do
-      wf.grant(permission, [invalid_id])
-    end
-
-    assert_raises(Wavefront::Exception::InvalidPermission) do
-      wf.grant('made_up_permission', roles)
-    end
-  end
-
-  def test_revoke
-    assert_posts("/api/v2/role/revoke/#{permission}", roles.to_json) do
-      wf.revoke(permission, roles)
-    end
-
-    assert_raises(Wavefront::Exception::InvalidRoleId) do
-      wf.revoke(permission, [invalid_id])
-    end
-
-    assert_raises(Wavefront::Exception::InvalidPermission) do
-      wf.revoke('made_up_permission', roles)
-    end
-  end
-
   def test_add_assignees
     assert_posts("/api/v2/role/#{id}/addAssignees", assignees.to_json) do
       wf.add_assignees(id, assignees)

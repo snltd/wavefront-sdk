@@ -11,7 +11,7 @@ module Wavefront
     include Wavefront::Mixin::User
 
     def update_keys
-      %i[id description]
+      %i[id name description]
     end
 
     # GET /api/v2/role
@@ -99,30 +99,6 @@ module Wavefront
       api.post([id, 'removeAssignees'].uri_concat,
                assignees,
                'application/json')
-    end
-
-    # POST /api/v2/role/grant/{permission}
-    # Grants a single permission to role(s)
-    # @param permission [String] permission to grant
-    # @param roles [Array[String]] list of roles to receive permission
-    # @return [Wavefront::Response]
-    #
-    def grant(permission, roles)
-      wf_permission?(permission)
-      validate_role_list(roles)
-      api.post(['grant', permission].uri_concat, roles, 'application/json')
-    end
-
-    # POST /api/v2/role/revoke/{permission}
-    # Revokes a single permission from role(s)
-    # @param permission [String] permission to revoke
-    # @param roles [Array[String]] list of roles to lose permission
-    # @return [Wavefront::Response]
-    #
-    def revoke(permission, roles)
-      wf_permission?(permission)
-      validate_role_list(roles)
-      api.post(['revoke', permission].uri_concat, roles, 'application/json')
     end
   end
 end
