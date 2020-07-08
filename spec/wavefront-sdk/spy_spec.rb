@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../../spec_helper'
-require_relative '../../../lib/wavefront-sdk/unstable/spy'
+require_relative '../spec_helper'
+require_relative '../../lib/wavefront-sdk/spy'
 
 # Unit tests for Spy class
 #
@@ -10,7 +10,7 @@ class WavefrontSpyTest < MiniTest::Test
   attr_reader :wf
 
   def setup
-    @wf = Wavefront::Unstable::Spy.new(CREDS)
+    @wf = Wavefront::Spy.new(CREDS)
   end
 
   def test_points

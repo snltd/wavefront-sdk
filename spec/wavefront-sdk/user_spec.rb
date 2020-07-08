@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'logger'
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
 
@@ -12,6 +13,13 @@ class WavefrontUserTest < WavefrontTestBase
   include WavefrontTest::Delete
   include WavefrontTest::Describe
   include WavefrontTest::Update
+
+  # Override the parent constructor so we can suppress all the 'deprecated'
+  # log messages
+  #
+  def setup
+    @wf = Wavefront::User.new(CREDS, logger: Logger.new('/dev/null'))
+  end
 
   def test_list
     assert_gets('/api/v2/user') { wf.list }

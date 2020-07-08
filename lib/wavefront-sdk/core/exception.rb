@@ -38,6 +38,7 @@ module Wavefront
     class InvalidPoint < RuntimeError; end
     class InvalidPrefixLength < RuntimeError; end
     class InvalidProxyId < RuntimeError; end
+    class InvalidRoleId < RuntimeError; end
     class InvalidRelativeTime < RuntimeError; end
     class InvalidSamplingValue < RuntimeError; end
     class InvalidSavedSearchEntity < RuntimeError; end

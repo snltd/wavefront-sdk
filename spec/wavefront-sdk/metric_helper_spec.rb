@@ -118,7 +118,7 @@ class WavefrontMetricHelperTest < MiniTest::Test
     assert_equal(1, out.select do |o|
                       o[:value] == [[2, 10.0], [1, 11.0],
                                     [1, 12.0]]
-                    end .size)
+                    end.size)
     assert_equal(1, out.select { |o| o[:tags] == WH_TAGS }.size)
     assert_equal(3, out.select { |o| o[:path] == 'test.dist1' }.size)
   end

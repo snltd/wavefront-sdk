@@ -11,6 +11,6 @@ class Array
   # @return [String] a URI path
   #
   def uri_concat
-    join('/').squeeze('/').sub(%r{\/$}, '').sub(%r{\/\?}, '?')
+    join('/').squeeze('/').sub(%r{/$}, '').sub(%r{/\?}, '?')
   end
 end

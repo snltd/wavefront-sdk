@@ -48,8 +48,8 @@ module Wavefront
     #
     def wf_metric_name?(metric)
       if metric.is_a?(String) && metric.size < 1024 &&
-         (metric.match(/^#{DELTA}?[\w\-\.]+$/) ||
-          metric.match(%r{^\"#{DELTA}?[\w\-\.\/,]+\"$}))
+         (metric.match(/^#{DELTA}?[\w\-.]+$/) ||
+          metric.match(%r{^"#{DELTA}?[\w\-./,]+"$}))
         return true
       end
 
@@ -81,7 +81,7 @@ module Wavefront
       # commas in tags and descriptions. This might be too restrictive,
       # but if it is, this is the only place we need to change it.
       #
-      if str.is_a?(String) && str.size < 1024 && str =~ /^[\-\w \.,]*$/
+      if str.is_a?(String) && str.size < 1024 && str =~ /^[\-\w .,]*$/
         return true
       end
 
@@ -139,7 +139,7 @@ module Wavefront
     #
     def wf_tag?(*tags)
       Array(*tags).each do |tag|
-        unless tag.is_a?(String) && tag.size < 255 && tag =~ /^[\w:\-\.]+$/
+        unless tag.is_a?(String) && tag.size < 255 && tag =~ /^[\w:\-.]+$/
           raise Wavefront::Exception::InvalidTag, tag
         end
       end
@@ -196,7 +196,7 @@ module Wavefront
     #
     def wf_point_tag?(key, val)
       if key && val && (key.size + val.size < 254) &&
-         key =~ /^[\w\-\.:]+$/ && val !~ /\\$/
+         key =~ /^[\w\-.:]+$/ && val !~ /\\$/
         return
       end
 
@@ -391,7 +391,7 @@ module Wavefront
     #   is not valid
     #
     def wf_source_id?(source)
-      if source.is_a?(String) && source.match(/^[\w\.\-]+$/) &&
+      if source.is_a?(String) && source.match(/^[\w.\-]+$/) &&
          source.size < 1024
         return true
       end
@@ -566,7 +566,7 @@ module Wavefront
         return true
       end
 
-      raise Wavefront::Exception::InvalidPermission, id, id
+      raise Wavefront::Exception::InvalidPermission, id
     end
 
     # Ensure the given argument is a valid ingestion policy ID
@@ -614,6 +614,17 @@ module Wavefront
       return true if value.is_a?(Numeric) && value.between?(0, 0.05)
 
       raise Wavefront::Exception::InvalidSamplingValue, value
+    end
+
+    # Ensure the given argument is a valid Wavefront role ID
+    # @param id [String] the role ID to validate
+    # @return true if the role ID is valid
+    # @raise Wavefront::Exception::InvalidRoleId if the role ID is not valid
+    #
+    def wf_role_id?(id)
+      return true if uuid?(id)
+
+      raise Wavefront::Exception::InvalidRoleId, id
     end
   end
   # rubocop:enable Metrics/ModuleLength
