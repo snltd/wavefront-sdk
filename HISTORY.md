@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.0.0 (2020-05-09)
+## 5.0.0 (2020-07-08)
 * Remove `Wavefront::UserGroup#grant` and `Wavefront::UserGroup#revoke` as [the
  API paths they used have been
  removed](https://docs.wavefront.com/2020.06.x_release_notes.html#obsolete-and-deprecated-apis).
