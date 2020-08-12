@@ -635,7 +635,7 @@ module Wavefront
     # not valid
     #
     def wf_aws_external_id?(id)
-      return true if id =~ /^[a-z0-9A-Z]{16}$/
+      return true if id.is_a?(String) && id =~ /^[a-z0-9A-Z]{16}$/
 
       raise Wavefront::Exception::InvalidAwsExternalId, id
     end
