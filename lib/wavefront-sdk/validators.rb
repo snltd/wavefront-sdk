@@ -626,6 +626,19 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidRoleId, id
     end
+
+    # Ensure the given argument is a valid AWS external ID, used in the AWS
+    # cloud integration.
+    # @param id [String] the external ID to validate
+    # @return true if the external ID is valid
+    # @raise Wavefront::Exception::InvalidAwsExternalId if the external ID is
+    # not valid
+    #
+    def wf_aws_external_id?(id)
+      return true if id =~ /^[a-z0-9A-Z]{16}$/
+
+      raise Wavefront::Exception::InvalidAwsExternalId, id
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

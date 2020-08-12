@@ -101,5 +101,32 @@ module Wavefront
       wf_cloudintegration_id?(id)
       api.post([id, 'undelete'].uri_concat)
     end
+
+    # POST /api/v2/cloudintegration/awsExternalIdCreate an external id
+    # @return [Wavefront::Response]
+    #
+    def create_aws_external_id
+      api.post('awsExternalId', nil, 'application/json')
+    end
+
+    # DELETE /api/v2/cloudintegration/awsExternalId/{id}DELETEs an external id
+    # that was created by Wavefront
+    # @param id [String] AWS external ID
+    # @return [Wavefront::Response]
+    #
+    def delete_aws_external_id(external_id)
+      wf_aws_external_id?(external_id)
+      api.delete(['awsExternalId', external_id].uri_concat)
+    end
+
+    # GET /api/v2/cloudintegration/awsExternalId/{id}GETs (confirms) a valid
+    # external id that was created by Wavefront
+    # @param id [String] AWS external ID
+    # @return [Wavefront::Response]
+    #
+    def confirm_aws_external_id(external_id)
+      wf_aws_external_id?(external_id)
+      api.get(['awsExternalId', external_id].uri_concat)
+    end
   end
 end

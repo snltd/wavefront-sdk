@@ -411,4 +411,10 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = %w[fa312fb-5ff4-420d-862d-5d6d99ed6bcf thing 123]
     good_and_bad('wf_role_id?', 'InvalidRoleId', good, bad)
   end
+
+  def test_wf_aws_external_id
+    good = %w[ah5Z9dkr46jbvLtJ HqOM4mru5svd3uFp c1lBxILCBNxLKdx9]
+    bad = %w[h5Z9dkr46jbvLtJ HqOM4mru5svd3uFp3 c!lBx!LC*NxLKdx*]
+    good_and_bad('wf_aws_external_id?', 'InvalidAwsExternalId', good, bad)
+  end
 end
