@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0 (2020-08-15)
+* Add `create_aws_external_id`, `delete_aws_external_id`, and
+  `confirm_aws_external_id` methods to `Wavefront::CloudIntegration`.
+
 ## 5.0.1 (2020-07-08)
 * Reinstate `Wavefront::Role#grant` and `Wavefront::Role#revoke`, which were
   accidentally removed prior to release of 5.0.0.

@@ -12,6 +12,7 @@ module Wavefront
     class InvalidAlertId < RuntimeError; end
     class InvalidAlertSeverity < RuntimeError; end
     class InvalidApiTokenId < RuntimeError; end
+    class InvalidAwsExternalId < RuntimeError; end
     class InvalidConfigFile < RuntimeError; end
     class InvalidCloudIntegrationId < RuntimeError; end
     class InvalidDashboardId < RuntimeError; end
