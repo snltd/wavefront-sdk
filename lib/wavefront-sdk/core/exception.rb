@@ -55,6 +55,7 @@ module Wavefront
     class InvalidUserGroupId < RuntimeError; end
     class InvalidVersion < RuntimeError; end
     class InvalidWebhookId < RuntimeError; end
+    class MissingConfigProfile < RuntimeError; end
     class NetworkTimeout < RuntimeError; end
     class NotImplemented < RuntimeError; end
     class SocketError < RuntimeError; end
