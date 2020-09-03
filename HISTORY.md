@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.2.0 (2020-09-03)
+* Add `:raise_on_no_profile` option to `Wavefront::Credentials` constructor
+  options. If this is true and a specific config stanza is requested but not
+  found, `Wavefront::Exception::MissingConfigProfile` is thrown.
+
 ## 5.1.0 (2020-08-15)
 * Add `create_aws_external_id`, `delete_aws_external_id`, and
   `confirm_aws_external_id` methods to `Wavefront::CloudIntegration`.
