@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.2.1 (2020-09-18)
+* Remove necessity for user to `require 'pathname'`
+
 ## 5.2.0 (2020-09-03)
 * Add `:raise_on_no_profile` option to `Wavefront::Credentials` constructor
   options. If this is true and a specific config stanza is requested but not
