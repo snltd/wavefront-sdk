@@ -138,8 +138,8 @@ module Wavefront
       end
 
       def log_invalid_point(rawpoint, exception)
-        logger.log('Invalid point, skipping.', :info)
-        logger.log(exception.class, :info)
+        logger.log('Invalid point, skipping.', :warn)
+        logger.log(exception.class, :warn)
         logger.log(format('Invalid point: %<rawpoint>s (%<message>s)',
                           rawpoint: rawpoint,
                           message: exception.to_s), :debug)
