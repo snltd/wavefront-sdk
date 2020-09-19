@@ -1,54 +1,23 @@
-# Offense count: 64
+AllCops:
+  NewCops: enable
+
 Metrics/AbcSize:
   Max: 64
 
-# Offense count: 5
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
   Max: 400
 
-# Offense count: 46
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 39
 
-# New cops
-#
-Lint/RaiseException:
-  Enabled: true
-Lint/StructNewOverride:
-  Enabled: true
-Style/ExponentialNotation:
-  Enabled: true
-Style/HashEachMethods:
-  Enabled: true
-Style/HashTransformKeys:
-  Enabled: true
-Style/HashTransformValues:
-  Enabled: true
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: true
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: true
-Style/SlicingWithRange:
-  Enabled: true
-Lint/DeprecatedOpenSSLConstant:
-  Enabled: true
-Lint/MixedRegexpCaptureTypes:
-  Enabled: true
-Style/RedundantRegexpCharacterClass:
-  Enabled: true
-Style/RedundantRegexpEscape:
-  Enabled: true
-Style/AccessorGrouping:
-  Enabled: true
-Style/BisectedAttrAccessor:
-  Enabled: true
-Style/RedundantAssignment:
-  Enabled: true
-Style/RedundantFetchBlock:
-  Enabled: true
-
 # Is nothing sacred?
 Layout/LineLength:
   Max: 80
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
