@@ -60,9 +60,11 @@ end
 # Test individual methods. We must override the constructor to do
 # this.
 #
+# rubocop:disable Lint/MissingSuper
 class Giblets < Wavefront::Credentials
   def initialize; end
 end
+# rubocop:enable Lint/MissingSuper
 
 # And here are the tests
 #

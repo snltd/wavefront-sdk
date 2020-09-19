@@ -95,18 +95,12 @@ module Minitest
     end
 
     def header_lookup(type)
-      ctype = case type
-              when :plain
-                'text/plain'
-              when :json
-                'application/json'
-              when :octet
-                'application/octet-stream'
-              when :form
-                'application/x-www-form-urlencoded'
-              end
+      ctypes = { plain: 'text/plain',
+                 json: 'application/json',
+                 octet: 'application/octet-stream',
+                 form: 'application/x-www-form-urlencoded' }
 
-      { 'Content-Type': ctype, Accept: 'application/json' }
+      { 'Content-Type': ctypes[type], Accept: 'application/json' }
     end
   end
 end
