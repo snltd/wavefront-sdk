@@ -22,7 +22,7 @@ class TestClassNoTags
   end
 
   def logger
-    Logger.new(STDOUT)
+    Logger.new($stdout)
   end
 
   def manage_conn
