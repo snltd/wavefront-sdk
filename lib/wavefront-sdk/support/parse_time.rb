@@ -34,7 +34,7 @@ module Wavefront
     # @return [Fixnum] timestamp
     #
     def parse_time_string
-      return t.to_i if t =~ /^\d+$/
+      return t.to_i if t.match?(/^\d+$/)
 
       @t = Time.parse("#{t} #{Time.now.getlocal.zone}")
       parse_time_time
