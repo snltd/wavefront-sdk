@@ -6,6 +6,7 @@ require 'addressable'
 require_relative 'response'
 require_relative '../defs/version'
 require_relative '../support/mixins'
+require_relative '../stdlib/time'
 
 module Wavefront
   #
@@ -76,14 +77,47 @@ module Wavefront
     # was cleaner to add this method. Parameters are same as #get.
     #
     def get_flat_params(path, query = {})
-      conn = mk_conn(path,
-                     {},
-                     request: {
-                       params_encoder: Faraday::FlatParamsEncoder
-                     },
-                     params: query)
+      make_call(flat_param_conn(path, query), :get)
+    end
 
-      make_call(conn, :get)
+    # This is used by the Wavefront::Unstable::Spy methods to stream data.
+    # It prints to standard out.
+    # @param path [String] path to be appended to the net[:api_base] path.
+    # @param query [Hash] optional key-value pairs with will be made into a
+    #   query string
+    # @param opts [Hash] keys:
+    #   timestamp_chunks -- prints a timestamp before each chunk of streamed
+    #     data
+    #   timeout -- after approximately this many seconds, return. It will be
+    #     the first chunk *after* the given time
+    # @return
+    #
+    def get_stream(path, query = {}, opts = {})
+      conn = flat_param_conn(path, query)
+      verbosity(conn, :get, query)
+      stream_connection(conn, query, opts)
+    rescue Faraday::TimeoutError
+      raise Wavefront::Exception::NetworkTimeout
+    rescue StopIteration
+      nil
+    end
+
+    def stream_connection(conn, query, opts)
+      t_end = end_time(opts)
+
+      conn.get do |req|
+        req.params = query
+        req.options.on_data = proc do |chunk, _size|
+          raise StopIteration if t_end && Time.right_now >= t_end
+
+          puts Time.now if opts[:timestamp_chunks]
+          puts chunk
+        end
+      end
+    end
+
+    def end_time(opts)
+      Time.right_now + opts[:timeout] if opts[:timeout]&.positive?
     end
 
     # Make a POST call to the Wavefront API and return the result as
@@ -237,6 +271,15 @@ module Wavefront
                 format('credentials must contain %<key>s', key: k))
         end
       end
+    end
+
+    def flat_param_conn(path, query)
+      mk_conn(path,
+              {},
+              request: {
+                params_encoder: Faraday::FlatParamsEncoder
+              },
+              params: query)
     end
   end
 end

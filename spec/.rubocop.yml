@@ -1,13 +1,23 @@
-# Offense count: 64
+AllCops:
+  NewCops: enable
+
 Metrics/AbcSize:
   Max: 64
 
-# Offense count: 5
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 279
+  Max: 400
 
-# Offense count: 46
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 39
+
+# Is nothing sacred?
+Layout/LineLength:
+  Max: 80
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false

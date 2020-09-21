@@ -108,30 +108,31 @@ module Wavefront
                'application/json')
     end
 
-    # POST /api/v2/usergroup/grant/{permission}
-    # Grants a single permission to user group(s)
+    # POST /api/v2/usergroup/{id}/addRoles
+    # Add multiple roles to a specific user group
     #
-    # @param perm [String] permission to grant
-    # @param group_list [Array[String]] list of groups who should
-    #   receive permission
+    # @param id [String] ID of the user group
+    # @param role_list [Array[String]] list of roles to add
     # @return [Wavefront::Response]
     #
-    def grant(perm, group_list = [])
-      validate_usergroup_list(group_list)
-      api.post(['grant', perm].uri_concat, group_list, 'application/json')
+    def add_roles_to_group(id, role_list = [])
+      wf_usergroup_id?(id)
+      validate_role_list(role_list)
+      api.post([id, 'addRoles'].uri_concat, role_list, 'application/json')
     end
 
-    # POST /api/v2/usergroup/revoke/{permission}
-    # Revokes a single permission from user group(s)
+    # POST /api/v2/usergroup/{id}/removeRoles
+    # Remove multiple roles from a specific user group
     #
-    # @param perm [String] permission to revoke
-    # @param group_list [Array[String]] list of groups who should
-    #   lose permission
+    # @param id [String] ID of the user group
+    # @param user_list [Array[String]] list of roles to remove
     # @return [Wavefront::Response]
     #
-    def revoke(perm, group_list = [])
-      validate_usergroup_list(group_list)
-      api.post(['revoke', perm].uri_concat, group_list, 'application/json')
+    def remove_roles_from_group(id, role_list = [])
+      wf_usergroup_id?(id)
+      validate_role_list(role_list)
+      api.post([id, 'removeRoles'].uri_concat, role_list,
+               'application/json')
     end
   end
 end

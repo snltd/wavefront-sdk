@@ -1,5 +1,68 @@
 # Changelog
 
+## 5.2.1 (2020-09-18)
+* Remove necessity for user to `require 'pathname'`
+
+## 5.2.0 (2020-09-03)
+* Add `:raise_on_no_profile` option to `Wavefront::Credentials` constructor
+  options. If this is true and a specific config stanza is requested but not
+  found, `Wavefront::Exception::MissingConfigProfile` is thrown.
+
+## 5.1.0 (2020-08-15)
+* Add `create_aws_external_id`, `delete_aws_external_id`, and
+  `confirm_aws_external_id` methods to `Wavefront::CloudIntegration`.
+
+## 5.0.1 (2020-07-08)
+* Reinstate `Wavefront::Role#grant` and `Wavefront::Role#revoke`, which were
+  accidentally removed prior to release of 5.0.0.
+
+## 5.0.0 (2020-07-08)
+* Remove `Wavefront::UserGroup#grant` and `Wavefront::UserGroup#revoke` as [the
+ API paths they used have been
+ removed](https://docs.wavefront.com/2020.06.x_release_notes.html#obsolete-and-deprecated-apis).
+ (Breaking change.)
+* Remove `Wavefront::MonitoredCluster` class, as it has been removed from the
+  public API.
+* Deprecate `Wavefront::User` class, as [the user API is now
+  deprecated](https://docs.wavefront.com/2020.06.x_release_notes.html#obsolete-and-deprecated-apis)
+* Add `Wavefront::Role` class, for managing roles.
+* Promote `Wavefront::Spy` class from unstable. It is now an official API.
+
+## 4.0.0 (2020-02-17)
+* Drop support for Ruby 2.3. (Breaking change.)
+* Add `Wavefront::MonitoredCluster` class.
+* Add `Wavefront::Unstable::Spy` class to speak to (undocumented) spy
+  interface.
+* Add `Wavefront::Unstable::Chart` class to speak to (undocumented) chart
+  interface.
+
+## 3.7.1 (2020-02-09)
+* `Response` object returned by `Wavefront::Write#write` includes a valid HTTP
+  code, rather than `nil`.
+
+## 3.7.0 (2020-01-23)
+* Add `Account`, `Usage` and `IngestionPolicy` classes.
+* Allow modification of `Wavefront::Response`'s `response` object.
+* Add `User#validate_users` method.
+
+## 3.6.1 (2020-01-15)
+* Test build against, and fix warning messages on, Ruby 2.7.0
+
+## 3.6.0 (2019-11-12)
+* Add `User#business_functions` method.
+* Update Faraday and Rubocop dependencies
+
+## 3.5.0 (2019-09-30)
+* Extend `apitoken` class to cover new service account paths.
+
+## 3.4.0 (2019-09-28)
+* Add `serviceaccount` class.
+* Validator exceptions now return the value which failed validation.
+
+## 3.3.4 (2019-09-18)
+* Upgrade Rubocop dev dependency to 0.74.0, and make codebase compliant with
+  those standards. No interfaces are changed.
+
 ## 3.3.3 (2019-09-10)
 * Fix slightly misleading verbose message when using recursive or
   lazy calls

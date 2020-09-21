@@ -41,21 +41,21 @@ class WavefrontLoggerTest < MiniTest::Test
   end
 
   def test_log_logger_debug
-    l = Wavefront::Logger.new(logger: Logger.new(STDOUT))
+    l = Wavefront::Logger.new(logger: Logger.new($stdout))
     out, err = capture_subprocess_io { l.log('my message', :debug) }
     assert_match(/DEBUG -- : my message$/, out)
     assert_empty(err)
   end
 
   def test_log_logger_info
-    l = Wavefront::Logger.new(logger: Logger.new(STDOUT))
+    l = Wavefront::Logger.new(logger: Logger.new($stdout))
     out, err = capture_subprocess_io { l.log('my message', :info) }
     assert_match(/INFO -- : my message$/, out)
     assert_empty(err)
   end
 
   def test_log_logger_error
-    l = Wavefront::Logger.new(logger: Logger.new(STDOUT))
+    l = Wavefront::Logger.new(logger: Logger.new($stdout))
     out, err = capture_subprocess_io { l.log('my message', :error) }
     assert_match(/ERROR -- : my message$/, out)
     assert_empty(err)

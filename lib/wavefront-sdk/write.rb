@@ -107,12 +107,14 @@ module Wavefront
     end
 
     # Compound the responses of all chunked writes into one. It will
-    # be 'ok' only if *everything* passed.
+    # be 'ok' only if *everything* passed. Returns 400 as the HTTP code on
+    # error, regardless of what actual errors occurred.
     # @param responses [Array[Wavefront::Response]]
     # @return Wavefront::Response
     #
     def composite_response(responses)
-      result = responses.all?(&:ok?) ? 'OK' : 'ERROR'
+      result, code = response_results(responses)
+
       summary = { sent: 0, rejected: 0, unsent: 0 }
 
       %i[sent rejected unsent].each do |k|
@@ -120,9 +122,17 @@ module Wavefront
       end
 
       Wavefront::Response.new(
-        { status: { result: result, message: nil, code: nil },
+        { status: { result: result, message: nil, code: code },
           response: summary.to_h }.to_json, nil
       )
+    end
+
+    def response_results(responses)
+      if responses.all?(&:ok?)
+        ['OK', 200]
+      else
+        ['ERROR', 400]
+      end
     end
 
     def manage_conn

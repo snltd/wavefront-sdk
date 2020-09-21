@@ -5,15 +5,32 @@ require_relative 'api_mixins/user'
 
 module Wavefront
   #
+  # In line with the API changes in the 2020-06 release of Wavefront, this
+  # class has been deprecated.
+  #
+  # Please use Wavefront::Account to manage users.
+  #
+  # https://docs.wavefront.com/2020.06.x_release_notes.html
+  #
   # Manage and query Wavefront users
   #
   class User < CoreApi
     include Wavefront::Mixin::User
 
+    def deprecation_warning
+      logger.log('Wavefront::User is deprecated and will be removed from the ' \
+               'next major release. Please use Wavefront::Account.', :warn)
+    end
+
+    def post_initialize(_creds, _opts)
+      deprecation_warning
+    end
+
     # GET /api/v2/user
     # Get all users.
     #
     def list
+      deprecation_warning
       api.get('')
     end
 
@@ -26,6 +43,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def create(body, send_email = false)
+      deprecation_warning
       raise ArgumentError unless body.is_a?(Hash)
 
       api.post("?sendEmail=#{send_email}", body, 'application/json')
@@ -38,6 +56,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def delete(id)
+      deprecation_warning
       wf_user_id?(id)
       api.delete(id)
     end
@@ -49,6 +68,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def describe(id)
+      deprecation_warning
       wf_user_id?(id)
       api.get(id)
     end
@@ -65,6 +85,7 @@ module Wavefront
     # @return [Wavefront::Response]
 
     def update(id, body, modify = true)
+      deprecation_warning
       wf_user_id?(id)
       raise ArgumentError unless body.is_a?(Hash)
 
@@ -82,6 +103,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def add_groups_to_user(id, group_list = [])
+      deprecation_warning
       wf_user_id?(id)
       validate_usergroup_list(group_list)
       api.post([id, 'addUserGroups'].uri_concat, group_list,
@@ -95,6 +117,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def remove_groups_from_user(id, group_list = [])
+      deprecation_warning
       wf_user_id?(id)
       validate_usergroup_list(group_list)
       api.post([id, 'removeUserGroups'].uri_concat, group_list,
@@ -116,6 +139,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def grant(id, pgroup)
+      deprecation_warning
       wf_user_id?(id)
       raise ArgumentError unless pgroup.is_a?(String)
 
@@ -133,6 +157,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def revoke(id, pgroup)
+      deprecation_warning
       wf_user_id?(id)
       raise ArgumentError unless pgroup.is_a?(String)
 
@@ -149,6 +174,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def delete_users(user_list)
+      deprecation_warning
       raise ArgumentError unless user_list.is_a?(Array)
 
       validate_user_list(user_list)
@@ -165,6 +191,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def grant_permission(permission, user_list)
+      deprecation_warning
       raise ArgumentError unless user_list.is_a?(Array)
 
       validate_user_list(user_list)
@@ -182,6 +209,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def revoke_permission(permission, user_list)
+      deprecation_warning
       raise ArgumentError unless user_list.is_a?(Array)
 
       validate_user_list(user_list)
@@ -196,10 +224,33 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def invite(body)
+      deprecation_warning
       raise ArgumentError unless body.is_a?(Array)
       raise ArgumentError unless body.first.is_a?(Hash)
 
       api.post('invite', body, 'application/json')
+    end
+
+    # GET /api/v2/user/{id}/businessFunctions
+    # Returns business functions of a specific user.
+    # @param id [String] user ID
+    # @return [Wavefront::Response]
+    #
+    def business_functions(id)
+      deprecation_warning
+      wf_user_id?(id)
+      api.get([id, 'businessFunctions'].uri_concat)
+    end
+
+    # POST /api/v2/user/validateUsers
+    # Returns valid users and service accounts, also invalid identifiers from
+    # the given list
+    # @param id_list [Array[String]] list of user IDs
+    # @return [Wavefront::Response]
+    #
+    def validate_users(id_list)
+      deprecation_warning
+      api.post('validateUsers', id_list, 'application/json')
     end
 
     # Fake a response which looks like we get from all the other

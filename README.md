@@ -24,7 +24,7 @@ or to build locally,
 $ gem build wavefront-sdk.gemspec
 ```
 
-`wavefront-sdk` requires Ruby >= 2.3. All its dependencies are pure
+`wavefront-sdk` requires Ruby >= 2.4. All its dependencies are pure
 Ruby, right the way down, so a compiler should never be required to
 install it.
 
@@ -100,10 +100,11 @@ when you ask for a list of objects.
 
 You can set an offset and a limit when you list, but setting the
 limit to the magic value `:all` will return all items, without you
-having to deal with pagination.
+having to deal with pagination. When you do that, `offset` is repurposed as
+the number of results fetched with each call to the API.
 
 Calling a method with the limit set to `:lazy` returns a lazy
-enumerable.
+enumerable. Again, `offset` is the chunk size.
 
 ```ruby
 wf = Wavefront::Alert.new(creds.all)

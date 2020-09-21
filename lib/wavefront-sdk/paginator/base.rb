@@ -5,23 +5,29 @@ require_relative '../defs/constants'
 module Wavefront
   module Paginator
     #
-    # Automatically handle pagination. This is an abstract class
-    # made concrete by an extension for each HTTP request type.
+    # Automatically handle pagination. This is an abstract class made concrete
+    # by an extension for each HTTP request type.
     #
-    # This class and its children do slightly unpleasant things with
-    # the HTTP request passed to us by the user, extracting and
-    # changing values in the URI, query string, or POST/PUT body.
-    # The POST class is particularly onerous.
+    # This class and its children do slightly unpleasant things with the HTTP
+    # request passed to us by the user, extracting and changing values in the
+    # URI, query string, or POST/PUT body.  The POST class is particularly
+    # onerous.
     #
-    # Automatic pagination works by letting the user override the
-    # limit and offset values in API calls. Setting the limit to
-    # :all iteratively calls the Wavefront API, returning all
-    # requested objects an a standard Wavefront::Response wrapper;
-    # setting limit to :lazy returns a lazy Enumerable. The number
-    # of objects fetched in each API call, whether eager or lazy
-    # defaults to PAGE_SIZE, but the user can override that value by
-    # using the offset argument in conjunction with limit = :lazy |
-    # :all.
+    # Automatic pagination works by letting the user override the limit and
+    # offset values in API calls.
+    #
+    # * Calling with limit = :all iteratively calls the Wavefront API,
+    # returning all requested objects in a standard Wavefront::Response
+    # wrapper.
+    #
+    # * Calling with limit = :lazy returns a lazy Enumerable.
+    #
+    # The number of objects fetched in each API call, eager or lazy, defaults
+    # to PAGE_SIZE, but the user can override that value by using the offset
+    # argument in conjunction with limit = :lazy | :all.
+    #
+    # So, for example, to fetch all objects in blocks of ten (which could
+    # require a lot of API calls) you would use { limit: :all, offset: 10 }
     #
     class Base
       attr_reader :api_caller, :conn, :method, :args, :page_size,

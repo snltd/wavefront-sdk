@@ -35,7 +35,7 @@ module Wavefront
         return true
       end
 
-      raise Wavefront::Exception::InvalidLinkTemplate
+      raise Wavefront::Exception::InvalidLinkTemplate, template
     end
 
     # Ensure the given argument is a valid Wavefront metric name, or
@@ -48,12 +48,12 @@ module Wavefront
     #
     def wf_metric_name?(metric)
       if metric.is_a?(String) && metric.size < 1024 &&
-         (metric.match(/^#{DELTA}?[\w\-\.]+$/) ||
-          metric.match(%r{^\"#{DELTA}?[\w\-\.\/,]+\"$}))
+         (metric.match(/^#{DELTA}?[\w\-.]+$/) ||
+          metric.match(%r{^"#{DELTA}?[\w\-./,]+"$}))
         return true
       end
 
-      raise Wavefront::Exception::InvalidMetricName
+      raise Wavefront::Exception::InvalidMetricName, metric
     end
 
     # Ensure the given argument is a valid name, for instance for an
@@ -66,7 +66,7 @@ module Wavefront
     def wf_name?(name)
       return true if name.is_a?(String) && name.size < 1024 && name =~ /^\w+$/
 
-      raise Wavefront::Exception::InvalidName
+      raise Wavefront::Exception::InvalidName, name
     end
 
     # Ensure the given argument is a valid string, for a tag name.
@@ -81,11 +81,11 @@ module Wavefront
       # commas in tags and descriptions. This might be too restrictive,
       # but if it is, this is the only place we need to change it.
       #
-      if str.is_a?(String) && str.size < 1024 && str =~ /^[\-\w \.,]*$/
+      if str.is_a?(String) && str.size < 1024 && str =~ /^[\-\w .,]*$/
         return true
       end
 
-      raise Wavefront::Exception::InvalidString
+      raise Wavefront::Exception::InvalidString, str
     end
 
     # Ensure the given argument is a valid timestamp
@@ -97,7 +97,7 @@ module Wavefront
     def wf_ts?(timestamp)
       return true if timestamp.is_a?(Time) || timestamp.is_a?(Date)
 
-      raise Wavefront::Exception::InvalidTimestamp
+      raise Wavefront::Exception::InvalidTimestamp, timestamp
     end
 
     # Ensure the given argument is a valid millisecond epoch
@@ -112,7 +112,7 @@ module Wavefront
     def wf_ms_ts?(timestamp)
       return true if timestamp.is_a?(Numeric)
 
-      raise Wavefront::Exception::InvalidTimestamp
+      raise Wavefront::Exception::InvalidTimestamp, timestamp
     end
 
     # Ensure the given argument is a valid epoch timestamp. Again,
@@ -125,7 +125,7 @@ module Wavefront
     def wf_epoch?(timestamp)
       return true if timestamp.is_a?(Numeric)
 
-      raise Wavefront::Exception::InvalidTimestamp
+      raise Wavefront::Exception::InvalidTimestamp, timestamp
     end
 
     # Ensure one, or an array, of tags are valid. These tags are
@@ -139,8 +139,8 @@ module Wavefront
     #
     def wf_tag?(*tags)
       Array(*tags).each do |tag|
-        unless tag.is_a?(String) && tag.size < 255 && tag =~ /^[\w:\-\.]+$/
-          raise Wavefront::Exception::InvalidTag
+        unless tag.is_a?(String) && tag.size < 255 && tag =~ /^[\w:\-.]+$/
+          raise Wavefront::Exception::InvalidTag, tag
         end
       end
 
@@ -157,7 +157,7 @@ module Wavefront
     def wf_value?(value)
       return true if value.is_a?(Numeric)
 
-      raise Wavefront::Exception::InvalidMetricValue
+      raise Wavefront::Exception::InvalidMetricValue, value
     end
 
     # Ensure the given argument is a valid version number
@@ -171,7 +171,7 @@ module Wavefront
       version = version.to_i if version.is_a?(String) && version =~ /^\d+$/
       return true if version.is_a?(Integer) && version.positive?
 
-      raise Wavefront::Exception::InvalidVersion
+      raise Wavefront::Exception::InvalidVersion, version
     end
 
     # Ensure a hash of key:value point tags are value. Not to be
@@ -196,11 +196,11 @@ module Wavefront
     #
     def wf_point_tag?(key, val)
       if key && val && (key.size + val.size < 254) &&
-         key =~ /^[\w\-\.:]+$/ && val !~ /\\$/
+         key =~ /^[\w\-.:]+$/ && val !~ /\\$/
         return
       end
 
-      raise Wavefront::Exception::InvalidTag
+      raise Wavefront::Exception::InvalidTag, "#{key}=#{val}"
     end
 
     # Ensure the given argument is a valid Wavefront proxy ID
@@ -213,7 +213,7 @@ module Wavefront
     def wf_proxy_id?(id)
       return true if uuid?(id)
 
-      raise Wavefront::Exception::InvalidProxyId
+      raise Wavefront::Exception::InvalidProxyId, id
     end
 
     # Ensure the given argument is a valid Wavefront alert ID.
@@ -229,7 +229,7 @@ module Wavefront
       id = id.to_s if id.is_a?(Numeric)
       return true if id.is_a?(String) && id.match(/^\d{13}$/)
 
-      raise Wavefront::Exception::InvalidAlertId
+      raise Wavefront::Exception::InvalidAlertId, id
     end
 
     # Ensure the given argument is a valid Wavefront cloud
@@ -243,7 +243,7 @@ module Wavefront
     def wf_cloudintegration_id?(id)
       return true if uuid?(id)
 
-      raise Wavefront::Exception::InvalidCloudIntegrationId
+      raise Wavefront::Exception::InvalidCloudIntegrationId, id
     end
 
     # There doesn't seem to be a public statement on what's allowed
@@ -258,7 +258,7 @@ module Wavefront
     def wf_dashboard_id?(id)
       return true if id.is_a?(String) && id.size < 256 && id.match(/^[\w\-]+$/)
 
-      raise Wavefront::Exception::InvalidDashboardId
+      raise Wavefront::Exception::InvalidDashboardId, id
     end
 
     # Ensure the given argument is a valid derived metric ID.  IDs
@@ -273,7 +273,7 @@ module Wavefront
       id = id.to_s if id.is_a?(Numeric)
       return true if id.is_a?(String) && id =~ /^\d{13}$/
 
-      raise Wavefront::Exception::InvalidDerivedMetricId
+      raise Wavefront::Exception::InvalidDerivedMetricId, id
     end
 
     # Ensure the given argument is a valid event ID. Event IDs are
@@ -288,7 +288,7 @@ module Wavefront
     def wf_event_id?(id)
       return true if id.is_a?(String) && id =~ /^\d{13}:.+/
 
-      raise Wavefront::Exception::InvalidEventId
+      raise Wavefront::Exception::InvalidEventId, id
     end
 
     # Ensure the given argument is a valid external Link ID
@@ -301,7 +301,7 @@ module Wavefront
     def wf_link_id?(id)
       return true if id.is_a?(String) && id =~ /^\w{16}$/
 
-      raise Wavefront::Exception::InvalidExternalLinkId
+      raise Wavefront::Exception::InvalidExternalLinkId, id
     end
 
     # Ensure the given argument is a valid maintenance window ID.
@@ -316,7 +316,7 @@ module Wavefront
       id = id.to_s if id.is_a?(Numeric)
       return true if id.is_a?(String) && id =~ /^\d{13}$/
 
-      raise Wavefront::Exception::InvalidMaintenanceWindowId
+      raise Wavefront::Exception::InvalidMaintenanceWindowId, id
     end
 
     # Ensure the given argument is a valid alert severity
@@ -328,7 +328,7 @@ module Wavefront
     def wf_alert_severity?(severity)
       return true if %w[INFO SMOKE WARN SEVERE].include?(severity)
 
-      raise Wavefront::Exception::InvalidAlertSeverity
+      raise Wavefront::Exception::InvalidAlertSeverity, severity
     end
 
     # Ensure the given argument is a valid message ID
@@ -340,7 +340,7 @@ module Wavefront
     def wf_message_id?(id)
       return true if id.is_a?(String) && id =~ /^\w+::\w+$/
 
-      raise Wavefront::Exception::InvalidMessageId
+      raise Wavefront::Exception::InvalidMessageId, id
     end
 
     # Ensure the given argument is a valid query granularity
@@ -353,7 +353,7 @@ module Wavefront
     def wf_granularity?(granularity)
       return true if %w[d h m s].include?(granularity.to_s)
 
-      raise Wavefront::Exception::InvalidGranularity
+      raise Wavefront::Exception::InvalidGranularity, granularity
     end
 
     # Ensure the given argument is a valid saved search ID.
@@ -365,7 +365,7 @@ module Wavefront
     def wf_savedsearch_id?(id)
       return true if id.is_a?(String) && id =~ /^\w{8}$/
 
-      raise Wavefront::Exception::InvalidSavedSearchId
+      raise Wavefront::Exception::InvalidSavedSearchId, id
     end
 
     # Ensure the given argument is a valid saved search entity type.
@@ -380,7 +380,7 @@ module Wavefront
                         NOTIFICANT EVENT SOURCE EXTERNAL_LINK AGENT
                         CLOUD_INTEGRATION].include?(id)
 
-      raise Wavefront::Exception::InvalidSavedSearchEntity
+      raise Wavefront::Exception::InvalidSavedSearchEntity, id
     end
 
     # Ensure the given argument is a valid Wavefront source name
@@ -391,12 +391,12 @@ module Wavefront
     #   is not valid
     #
     def wf_source_id?(source)
-      if source.is_a?(String) && source.match(/^[\w\.\-]+$/) &&
+      if source.is_a?(String) && source.match(/^[\w.\-]+$/) &&
          source.size < 1024
         return true
       end
 
-      raise Wavefront::Exception::InvalidSourceId
+      raise Wavefront::Exception::InvalidSourceId, source
     end
 
     # Ensure the given argument is a valid user.
@@ -408,7 +408,7 @@ module Wavefront
     def wf_user_id?(user)
       return true if user.is_a?(String) && user.length < 256 && !user.empty?
 
-      raise Wavefront::Exception::InvalidUserId
+      raise Wavefront::Exception::InvalidUserId, user
     end
 
     # Ensure the given argument is a valid user group.
@@ -420,7 +420,7 @@ module Wavefront
     def wf_usergroup_id?(gid)
       return true if uuid?(gid)
 
-      raise Wavefront::Exception::InvalidUserGroupId
+      raise Wavefront::Exception::InvalidUserGroupId, gid
     end
 
     # Ensure the given argument is a valid webhook ID.
@@ -432,7 +432,7 @@ module Wavefront
     def wf_webhook_id?(id)
       return true if id.is_a?(String) && id =~ /^[a-zA-Z0-9]{16}$/
 
-      raise Wavefront::Exception::InvalidWebhookId
+      raise Wavefront::Exception::InvalidWebhookId, id
     end
 
     # Validate a point so it conforms to the standard described in
@@ -491,7 +491,7 @@ module Wavefront
     def wf_notificant_id?(id)
       return true if id.is_a?(String) && id =~ /^\w{16}$/
 
-      raise Wavefront::Exception::InvalidNotificantId
+      raise Wavefront::Exception::InvalidNotificantId, id
     end
 
     # Ensure the given argument is a valid Wavefront
@@ -505,7 +505,7 @@ module Wavefront
     def wf_integration_id?(id)
       return true if id.is_a?(String) && id =~ /^[a-z0-9]+$/
 
-      raise Wavefront::Exception::InvalidIntegrationId
+      raise Wavefront::Exception::InvalidIntegrationId, id
     end
 
     # Ensure the given argument is a valid distribution interval.
@@ -516,7 +516,7 @@ module Wavefront
     def wf_distribution_interval?(interval)
       return true if %i[m h d].include?(interval)
 
-      raise Wavefront::Exception::InvalidDistributionInterval
+      raise Wavefront::Exception::InvalidDistributionInterval, interval
     end
 
     # Ensure the given argument is a valid distribution count.
@@ -527,18 +527,117 @@ module Wavefront
     def wf_distribution_count?(count)
       return true if count.is_a?(Integer) && count.positive?
 
-      raise Wavefront::Exception::InvalidDistributionCount
+      raise Wavefront::Exception::InvalidDistributionCount, count
     end
 
     # Ensure the given argument is a valid API token ID
     # @param id [String]
     # @raise Wavefront::Exception::InvalidApiTokenId if the
-    #   count is not valid
+    #   token ID is not valid
     #
     def wf_apitoken_id?(id)
       return true if uuid?(id)
 
-      raise Wavefront::Exception::InvalidApiTokenId
+      raise Wavefront::Exception::InvalidApiTokenId, id
+    end
+
+    # Ensure the given argument is a valid service account ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidApiTokenId if the
+    #   ID is not valid
+    #
+    def wf_serviceaccount_id?(id)
+      return true if id.is_a?(String) && id.start_with?('sa::')
+
+      raise Wavefront::Exception::InvalidServiceAccountId, id
+    end
+
+    # Ensure the given argument is a Wavefront permission
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidApiTokenId if the
+    #   ID is not valid
+    #
+    def wf_permission?(id)
+      if %w[alerts_management batch_query_priority embedded_charts
+            dashboard_management derived_metrics_management ingestion
+            events_management external_links_management
+            application_management metrics_management agent_management
+            host_tag_management user_management].include?(id)
+        return true
+      end
+
+      raise Wavefront::Exception::InvalidPermission, id
+    end
+
+    # Ensure the given argument is a valid ingestion policy ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidIngestionPolicyId if the
+    #   ID is not valid
+    #
+    def wf_ingestionpolicy_id?(id)
+      return true if id.is_a?(String) && id =~ /^[a-z0-9\-_]+-\d{13}$/
+
+      raise Wavefront::Exception::InvalidIngestionPolicyId, id
+    end
+
+    # Ensure the given argument is a valid User or SystemAccount ID.
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidAccountId if the
+    #   ID is not valid
+    #
+    def wf_account_id?(id)
+      return true if wf_user_id?(id)
+    rescue Wavefront::Exception::InvalidUserId
+      begin
+        return true if wf_serviceaccount_id?(id)
+      rescue Wavefront::Exception::InvalidServiceAccountId
+        raise Wavefront::Exception::InvalidAccountId, id
+      end
+    end
+
+    # Ensure the given argument is a valid monitored cluster ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidMonitoredClusterId if the ID is not
+    #   valid
+    #
+    def wf_monitoredcluster_id?(id)
+      return true if id.is_a?(String) && id.size < 256 && id =~ /^[a-z0-9\-_]+$/
+
+      raise Wavefront::Exception::InvalidMonitoredClusterId, id
+    end
+
+    # Ensure the given value is a valid sampling rate.
+    # @param rate [Float]
+    # @raise Wavefront::Exception::InvalidSamplingValue
+    #
+    def wf_sampling_value?(value)
+      return true if value.is_a?(Numeric) && value.between?(0, 0.05)
+
+      raise Wavefront::Exception::InvalidSamplingValue, value
+    end
+
+    # Ensure the given argument is a valid Wavefront role ID
+    # @param id [String] the role ID to validate
+    # @return true if the role ID is valid
+    # @raise Wavefront::Exception::InvalidRoleId if the role ID is not valid
+    #
+    def wf_role_id?(id)
+      return true if uuid?(id)
+
+      raise Wavefront::Exception::InvalidRoleId, id
+    end
+
+    # Ensure the given argument is a valid AWS external ID, used in the AWS
+    # cloud integration.
+    # @param id [String] the external ID to validate
+    # @return true if the external ID is valid
+    # @raise Wavefront::Exception::InvalidAwsExternalId if the external ID is
+    # not valid
+    #
+    def wf_aws_external_id?(id)
+      return true if id.is_a?(String) && id =~ /^[a-z0-9A-Z]{16}$/
+
+      raise Wavefront::Exception::InvalidAwsExternalId, id
     end
   end
   # rubocop:enable Metrics/ModuleLength

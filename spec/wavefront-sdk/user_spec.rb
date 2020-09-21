@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'logger'
 require_relative '../spec_helper'
 require_relative '../test_mixins/general'
 
@@ -12,6 +13,13 @@ class WavefrontUserTest < WavefrontTestBase
   include WavefrontTest::Delete
   include WavefrontTest::Describe
   include WavefrontTest::Update
+
+  # Override the parent constructor so we can suppress all the 'deprecated'
+  # log messages
+  #
+  def setup
+    @wf = Wavefront::User.new(CREDS, logger: Logger.new('/dev/null'))
+  end
 
   def test_list
     assert_gets('/api/v2/user') { wf.list }
@@ -102,6 +110,22 @@ class WavefrontUserTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.invite('test') }
   end
 
+  def test_business_functions
+    assert_gets("/api/v2/user/#{id}/businessFunctions") do
+      wf.business_functions(id)
+    end
+
+    assert_raises(ArgumentError) { wf.business_functions }
+  end
+
+  def test_validate_users
+    assert_posts('/api/v2/user/validateUsers', id_list.to_json) do
+      wf.validate_users(id_list)
+    end
+
+    assert_raises(ArgumentError) { wf.validate_users }
+  end
+
   def test_response_shim
     (RESOURCE_DIR + 'user_responses').each_child do |input|
       # Ugly hack for the 202 in the 'create' file
@@ -147,5 +171,9 @@ class WavefrontUserTest < WavefrontTestBase
 
   def payload
     { emailAddress: id, groups: %w[browse] }
+  end
+
+  def id_list
+    %w[id1 id2 id3]
   end
 end

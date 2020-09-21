@@ -23,7 +23,7 @@ module Wavefront
     # @raise Wavefront::InvalidTimestamp
     #
     def parse_time(time, in_ms = false)
-      return relative_time(time, in_ms) if time =~ /^[\-+]/
+      return relative_time(time, in_ms) if time.to_s.match?(/^[\-+]/)
 
       ParseTime.new(time, in_ms).parse!
     end

@@ -37,6 +37,36 @@ class WavefrontCloudIntegrationTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.disable }
   end
 
+  def test_create_aws_external_id
+    assert_posts('/api/v2/cloudintegration/awsExternalId', nil, :json) do
+      wf.create_aws_external_id
+    end
+  end
+
+  def test_delete_aws_external_id
+    assert_deletes("/api/v2/cloudintegration/awsExternalId/#{external_id}") do
+      wf.delete_aws_external_id(external_id)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidAwsExternalId) do
+      wf.delete_aws_external_id(invalid_external_id)
+    end
+
+    assert_raises(ArgumentError) { wf.delete_aws_external_id }
+  end
+
+  def test_confirm_aws_external_id
+    assert_gets("/api/v2/cloudintegration/awsExternalId/#{external_id}") do
+      wf.confirm_aws_external_id(external_id)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidAwsExternalId) do
+      wf.confirm_aws_external_id(invalid_external_id)
+    end
+
+    assert_raises(ArgumentError) { wf.confirm_aws_external_id }
+  end
+
   private
 
   def id
@@ -61,5 +91,13 @@ class WavefrontCloudIntegrationTest < WavefrontTestBase
 
   def api_class
     'cloudintegration'
+  end
+
+  def external_id
+    'HqOM4mru5svd3uFp'
+  end
+
+  def invalid_external_id
+    '__nonsense__'
   end
 end
