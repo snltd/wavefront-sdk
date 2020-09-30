@@ -8,9 +8,11 @@ module Wavefront
     class CredentialError < RuntimeError; end
     class EmptyMetricName < RuntimeError; end
     class EnumerableError < RuntimeError; end
+    class InvalidAccountId < RuntimeError; end
     class InvalidAlertId < RuntimeError; end
     class InvalidAlertSeverity < RuntimeError; end
     class InvalidApiTokenId < RuntimeError; end
+    class InvalidAwsExternalId < RuntimeError; end
     class InvalidConfigFile < RuntimeError; end
     class InvalidCloudIntegrationId < RuntimeError; end
     class InvalidCounterValue < RuntimeError; end
@@ -24,21 +26,27 @@ module Wavefront
     class InvalidExternalLinkId < RuntimeError; end
     class InvalidGranularity < RuntimeError; end
     class InvalidHostname < RuntimeError; end
+    class InvalidIngestionPolicyId < RuntimeError; end
     class InvalidIntegrationId < RuntimeError; end
     class InvalidInterval < RuntimeError; end
     class InvalidLinkTemplate < RuntimeError; end
     class InvalidMaintenanceWindowId < RuntimeError; end
+    class InvalidMonitoredClusterId < RuntimeError; end
     class InvalidMessageId < RuntimeError; end
     class InvalidMetricName < RuntimeError; end
     class InvalidMetricValue < RuntimeError; end
     class InvalidName < RuntimeError; end
     class InvalidNotificantId < RuntimeError; end
+    class InvalidPermission < RuntimeError; end
     class InvalidPoint < RuntimeError; end
     class InvalidPrefixLength < RuntimeError; end
     class InvalidProxyId < RuntimeError; end
+    class InvalidRoleId < RuntimeError; end
     class InvalidRelativeTime < RuntimeError; end
+    class InvalidSamplingValue < RuntimeError; end
     class InvalidSavedSearchEntity < RuntimeError; end
     class InvalidSavedSearchId < RuntimeError; end
+    class InvalidServiceAccountId < RuntimeError; end
     class InvalidSourceId < RuntimeError; end
     class InvalidString < RuntimeError; end
     class InvalidTag < RuntimeError; end
@@ -49,6 +57,8 @@ module Wavefront
     class InvalidUserGroupId < RuntimeError; end
     class InvalidVersion < RuntimeError; end
     class InvalidWebhookId < RuntimeError; end
+    class MissingConfigProfile < RuntimeError; end
+    class NetworkTimeout < RuntimeError; end
     class NotImplemented < RuntimeError; end
     class SocketError < RuntimeError; end
     class UnparseableResponse < RuntimeError; end

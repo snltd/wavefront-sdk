@@ -60,9 +60,11 @@ end
 # Test individual methods. We must override the constructor to do
 # this.
 #
+# rubocop:disable Lint/MissingSuper
 class Giblets < Wavefront::Credentials
   def initialize; end
 end
+# rubocop:enable Lint/MissingSuper
 
 # And here are the tests
 #
@@ -153,10 +155,9 @@ class GibletsTest < MiniTest::Test
   end
 
   def test_load_from_file
-    assert_equal({},
-                 wf.load_from_file(
-                   [Pathname.new('/no/file/1'), Pathname.new('/no/file/2')]
-                 ))
+    assert_raises(Wavefront::Exception::InvalidConfigFile) do
+      wf.load_from_file([Pathname.new('/nofile/1'), Pathname.new('/nofile/2')])
+    end
 
     assert_equal({ file: CONF1 }, wf.load_from_file([CONF1], 'noprofile'))
 

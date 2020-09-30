@@ -69,6 +69,7 @@ module Wavefront
       raise Wavefront::Exception::InvalidDistribution
     end
 
+    # rubocop:disable Metrics/AbcSize
     def dist_hash(dist)
       dist.dup.tap do |d|
         d[:interval] = distribution_interval(dist)
@@ -79,6 +80,7 @@ module Wavefront
         d[:opttags] = tags_or_nothing(opts[:tags])
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def distribution_timestamp(dist)
       parse_time(dist.fetch(:ts, Time.now))

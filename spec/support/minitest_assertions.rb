@@ -20,7 +20,7 @@ module Minitest
       headers = DEFAULT_HEADERS
       stub_request(:get, uri(api_path))
         .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:get, uri(api_path), headers: headers)
       WebMock.reset!
@@ -39,7 +39,7 @@ module Minitest
       payload = 'null' if payload.nil?
       stub_request(:post, uri(api_path))
         .with(body: payload, headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:post, uri(api_path), headers: headers)
       WebMock.reset!
@@ -58,7 +58,7 @@ module Minitest
       payload = 'null' if payload.nil?
       stub_request(:put, uri(api_path))
         .with(body: payload, headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:put, uri(api_path), headers: headers)
       WebMock.reset!
@@ -72,7 +72,7 @@ module Minitest
       headers = DEFAULT_HEADERS
       stub_request(:delete, uri(api_path))
         .with(headers: headers)
-        .to_return(body: DUMMY_RESPONSE, status: 200)
+        .to_return(body: dummy_response, status: 200)
       yield block
       assert_requested(:delete, uri(api_path), headers: headers)
       WebMock.reset!
@@ -85,28 +85,22 @@ module Minitest
     end
 
     def extra_headers(payload, type)
-      if payload.nil?
+      if type
+        header_lookup(type)
+      elsif payload.nil?
         header_lookup(:plain)
       elsif type.nil?
         header_lookup(:json)
-      else
-        header_lookup(type)
       end
     end
 
     def header_lookup(type)
-      ctype = case type
-              when :plain
-                'text/plain'
-              when :json
-                'application/json'
-              when :octet
-                'application/octet-stream'
-              when :form
-                'application/x-www-form-urlencoded'
-              end
+      ctypes = { plain: 'text/plain',
+                 json: 'application/json',
+                 octet: 'application/octet-stream',
+                 form: 'application/x-www-form-urlencoded' }
 
-      { 'Content-Type': ctype, Accept: 'application/json' }
+      { 'Content-Type': ctypes[type], Accept: 'application/json' }
     end
   end
 end

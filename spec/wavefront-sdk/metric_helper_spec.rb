@@ -33,6 +33,162 @@ class WavefrontMetricHelperTest < MiniTest::Test
     end
   end
 
+  def test_gauge_tags
+    wf.gauge('test.gauge', 9.5, WH_TAGS)
+    b = wf.buf
+    refute_empty(b[:gauges])
+    assert_empty(b[:counters])
+    assert_instance_of(Array, b[:gauges])
+    assert_equal(1, b[:gauges].size)
+    assert_equal(9.5, b[:gauges][0][:value])
+    assert_equal(WH_TAGS, b[:gauges][0][:tags])
+  end
+
+  def test_counter
+    wf.counter('test.counter')
+    wf.counter('test.counter')
+    wf.counter('test.counter', 2)
+    b = wf.buf
+    assert_empty(b[:gauges])
+    refute_empty(b[:counters])
+    assert_instance_of(Hash, b[:counters])
+    assert_equal(4, b[:counters][['test.counter', nil]])
+  end
+
+  def test_counter_tags
+    wf.counter('test.counter')
+    wf.counter('test.counter', 1, WH_TAGS)
+    wf.counter('test.counter', 2)
+    wf.counter('test.counter', 3, WH_TAGS)
+    b = wf.buf
+    assert_empty(b[:gauges])
+    refute_empty(b[:counters])
+    assert_instance_of(Hash, b[:counters])
+    assert_equal(3, b[:counters][['test.counter', nil]])
+    assert_equal(4, b[:counters][['test.counter', WH_TAGS]])
+  end
+
+  def test_dist_nodist
+    refute wf.buf.key?(:dists)
+  end
+
+  def test_dist
+    wfd.dist('test.dist', :m, 10)
+    wfd.dist('test.dist', :h, 456)
+    wfd.dist('test.dist', :h, 123, WH_TAGS)
+    wfd.dist('test.dist', :m, [10, 12, 13, 14])
+    b = wfd.buf
+    assert_empty(b[:gauges])
+    assert_empty(b[:counters])
+    refute_empty(b[:dists])
+    assert_equal(3, b[:dists].size)
+    assert_equal([10, 10, 12, 13, 14], b[:dists][['test.dist', :m, nil]])
+    assert_equal([456], b[:dists][['test.dist', :h, nil]])
+    assert_equal([123], b[:dists][['test.dist', :h, WH_TAGS]])
+  end
+
+  def test_gauges_to_wf
+    input = [{ path: 'm1.p', ts: 1548636080, value: 0 },
+             { path: 'm1.p', ts: 1548636081, value: 1 },
+             { path: 'm2.p', ts: 1548636081, value: 9 }]
+
+    assert_equal(input, wf.gauges_to_wf(input))
+  end
+
+  def test_counters_to_wf
+    input = { ['test.counter1', nil] => 7,
+              ['test.counter1', WH_TAGS] => 8,
+              ['test.counter2', nil] => 9 }
+
+    out = wf.counters_to_wf(input)
+    assert_instance_of(Array, out)
+    assert_equal(3, out.size)
+    out.each { |o| assert_instance_of(Hash, o) }
+    assert_equal('test.counter1', out.first[:path])
+    assert_equal(9, out.last[:value])
+    refute(out.first[:tags])
+    assert_equal(WH_TAGS, out[1][:tags])
+    assert_kind_of(Numeric, out[2][:ts])
+  end
+
+  def test_dists_to_wf
+    input = { ['test.dist1', :m, nil] => [10, 10, 11, 12],
+              ['test.dist1', :m, WH_TAGS] => [123, 456, 789],
+              ['test.dist1', :h, nil] => [6, 6, 7, 4, 6, 4, 8] }
+
+    out = wfd.dists_to_wf(input)
+    assert_instance_of(Array, out)
+    assert_equal(3, out.size)
+    assert_equal(1, out.select do |o|
+                      o[:value] == [[2, 10.0], [1, 11.0],
+                                    [1, 12.0]]
+                    end.size)
+    assert_equal(1, out.select { |o| o[:tags] == WH_TAGS }.size)
+    assert_equal(3, out.select { |o| o[:path] == 'test.dist1' }.size)
+  end
+
+  def test_flush_gauges
+    assert_nil(wf.flush_gauges([]))
+
+    input = [{ path: 'm1.p', ts: 1548636080, value: 0 },
+             { path: 'm1.p', ts: 1548636081, value: 1, tags: WH_TAGS },
+             { path: 'm2.p', ts: 1548636081, value: 9 }]
+
+    mocket = Mocket.new
+    spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
+
+    out = wf.flush_gauges(input)
+    args = spy.calls.first.args.first
+    assert_instance_of(Wavefront::Response, out)
+    assert spy.has_been_called?
+    assert_equal(input, args)
+    assert(args.any? { |a| a.key?(:tags) && a[:tags] == WH_TAGS })
+    refute(args.all? { |a| a.key?(:tags) })
+    assert_empty(wf.buf[:gauges])
+  end
+
+  def test_flush_gauges_fail
+    input = [{ path: 'm1.p', ts: 1548636080, value: 0 }]
+
+    mocket = BadMocket.new
+    spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
+    out = wf.flush_gauges(input)
+    assert_instance_of(Wavefront::Response, out)
+    wf.gauge('m2.p', 9)
+    wf.gauge('m3.p', 9)
+    assert spy.has_been_called?
+    assert_equal(input, spy.calls.first.args.first)
+    assert_equal(3, wf.buf[:gauges].size)
+    assert_includes(wf.buf[:gauges],
+                    path: 'm1.p', ts: 1548636080, value: 0)
+  end
+
+  def test_flush_counters
+    assert_nil(wf.flush_counters([]))
+
+    input = { ['test.counter1', nil] => 7,
+              ['test.counter1', WH_TAGS] => 8,
+              ['test.counter2', nil] => 9 }
+
+    mocket = Mocket.new
+    spy = Spy.on(wf.writer.writer, :write).and_return(mocket)
+
+    out = wf.flush_counters(input)
+    args = spy.calls.first.args.first
+
+    assert_instance_of(Wavefront::Response, out)
+    assert spy.has_been_called?
+    assert_equal(3, args.size)
+
+    args.each do |a|
+      assert_instance_of(Hash, a)
+      assert_includes(a.keys, :path)
+      assert_includes(a.keys, :ts)
+      assert_includes(a.keys, :value)
+      assert(a[:path].start_with?(DELTA))
+    end
+  end
+
   def test_flush!
     add_points
     refute_empty wf.gauge.queue
