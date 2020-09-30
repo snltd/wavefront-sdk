@@ -1,18 +1,19 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/metric_type/distribution'
 
-QUEUE_DIST = { key:   ['test.metric', 'unit_test', :m, { tag1: 'val 1' }],
-               ts:    1_556_210_452,
+QUEUE_DIST = { key: ['test.metric', 'unit_test', :m, { tag1: 'val 1' }],
+               ts: 1_556_210_452,
                value: [1, 1, 2, 3, 4, 4] }.freeze
 
-WF_DIST = { path:     'test.metric',
+WF_DIST = { path: 'test.metric',
             interval: :m,
-            ts:       1_556_210_452,
-            value:    [[2, 1], [1, 2], [1, 3], [2, 4]],
-            source:   'unit_test',
-            tags:     { tag1: 'val 1' } }.freeze
+            ts: 1_556_210_452,
+            value: [[2, 1], [1, 2], [1, 3], [2, 4]],
+            source: 'unit_test',
+            tags: { tag1: 'val 1' } }.freeze
 
 # Test for distribution specifics. The sending mechanism is tested
 # by base_spec

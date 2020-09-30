@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../validators'
 require_relative '../write'
 require_relative '../stdlib/sized_queue'
@@ -56,11 +58,12 @@ module Wavefront
       def initialize(creds, writer_opts = {}, user_opts = {})
         @metric_opts = setup_metric_opts(user_opts)
         validate_user_options
-        @queue        = SizedQueue.new(metric_opts[:queue_size])
-        @writer       = setup_writer(creds, writer_opts)
-        @logger       = Wavefront::Logger.new(writer_opts)
+        @queue = SizedQueue.new(metric_opts[:queue_size])
+        @writer = setup_writer(creds, writer_opts)
+        @logger = Wavefront::Logger.new(writer_opts)
 
         return if metric_opts[:flush_interval].zero?
+
         @flush_thr = Thread.new { flush_loop(metric_opts[:flush_interval]) }
       end
 
@@ -76,11 +79,11 @@ module Wavefront
       # @param tags [Hash] hash of key-value tags
       #
       def q(path, value, tags = {})
-        qq(path:   path,
-           ts:     Time.now.utc.to_i,
-           value:  value,
+        qq(path: path,
+           ts: Time.now.utc.to_i,
+           value: value,
            source: HOSTNAME,
-           tags:   tags)
+           tags: tags)
       end
 
       # If you wish to specify things like source and timestamp,
@@ -143,11 +146,11 @@ module Wavefront
       # Set up options from defaults
       #
       def setup_metric_opts(user_opts)
-        { queue_size:      10_000,
-          flush_interval:  300,
-          dist_port:       40000,
-          nonblock:        true,
-          no_validate:     false,
+        { queue_size: 10_000,
+          flush_interval: 300,
+          dist_port: 40_000,
+          nonblock: true,
+          no_validate: false,
           suppress_errors: true }.merge(user_opts).tap do |opts|
             unless opts[:delta_interval]
               opts[:delta_interval] = opts[:flush_interval]

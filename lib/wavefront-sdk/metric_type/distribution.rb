@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base'
 require_relative '../distribution'
 
@@ -12,12 +14,12 @@ module Wavefront
       # @param tags [Hash] hash of key-value tags
       #
       def q(path, interval, value, tags = {})
-        qq(path:     path,
+        qq(path: path,
            interval: interval,
-           ts:       Time.now.utc.to_i,
-           value:    value,
-           source:   HOSTNAME,
-           tags:     tags)
+           ts: Time.now.utc.to_i,
+           value: value,
+           source: HOSTNAME,
+           tags: tags)
       end
 
       # Note that we flatten any distribution. This lets our users
@@ -28,9 +30,9 @@ module Wavefront
       # @return [Hash]
       #
       def ready_point(point)
-        { key:   [point[:path], point[:source], point[:interval],
-                  point[:tags]],
-          ts:    point[:ts],
+        { key: [point[:path], point[:source], point[:interval],
+                point[:tags]],
+          ts: point[:ts],
           value: unpack_distribution(point[:value]) }
       end
 
@@ -42,9 +44,10 @@ module Wavefront
       #
       def unpack_distribution(dist)
         dist.each_with_object([]) do |n, a|
-          if n.is_a?(Numeric)
+          case n
+          when Numeric
             a.<< n
-          elsif n.is_a?(Array)
+          when Array
             n[0].times { a.<< n[1] }
           end
         end
@@ -53,12 +56,12 @@ module Wavefront
       def to_wf(data, _flush_time = nil)
         data.map do |p|
           path, source, interval, tags = p[:key]
-          { path:     path,
-            value:    writer.mk_distribution(p[:value]),
-            ts:       p[:ts],
-            source:   source,
+          { path: path,
+            value: writer.mk_distribution(p[:value]),
+            ts: p[:ts],
+            source: source,
             interval: interval,
-            tags:     tags }
+            tags: tags }
         end
       end
 

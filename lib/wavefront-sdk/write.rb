@@ -61,13 +61,13 @@ module Wavefront
     # Chunk size gets overriden
     #
     def defaults
-      { tags:        nil,
-        writer:      :socket,
-        noop:        false,
-        novalidate:  false,
-        noauto:      false,
-        verbose:     false,
-        debug:       false,
+      { tags: nil,
+        writer: :socket,
+        noop: false,
+        novalidate: false,
+        noauto: false,
+        verbose: false,
+        debug: false,
         chunk_pause: 0 }
     end
 
@@ -236,10 +236,6 @@ module Wavefront
       return nil unless tags
 
       tags.to_wf_tag
-    end
-
-    def data_format
-      :wavefront
     end
 
     def data_format

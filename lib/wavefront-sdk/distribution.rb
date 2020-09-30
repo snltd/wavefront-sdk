@@ -47,10 +47,6 @@ module Wavefront
       :histogram
     end
 
-    def data_format
-      :histogram
-    end
-
     # Convert a validated point to a string conforming to
     # https://docs.wavefront.com/proxies_histograms.html. No
     # validation is done here.

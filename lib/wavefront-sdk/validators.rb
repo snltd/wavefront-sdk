@@ -478,6 +478,7 @@ module Wavefront
     #
     def wf_distribution_values?(vals, flat = false)
       return wf_distribution_flat_vals?(vals) if flat
+
       vals.each do |times, val|
         wf_distribution_count?(times)
         wf_value?(val)

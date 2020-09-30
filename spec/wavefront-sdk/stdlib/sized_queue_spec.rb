@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'minitest/autorun'
 require_relative '../../../lib/wavefront-sdk/stdlib/sized_queue'
 
+# Test exectensions to SizedQueue
+#
 class SizedQueueTest < MiniTest::Test
   def test_to_a
     q = SizedQueue.new(6)

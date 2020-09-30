@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/metric_type/counter'
@@ -22,16 +23,16 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
 
   def setup_queue
     1.upto(10) do |i|
-      wf.qq(path:      'test.path.a',
-            value:     i,
-            ts:        T_QUEUE_START + i,
-            source:    'testhost',
-            tags:      { tag1: 'val1' })
-      wf.qq(path:      'test.path.b',
-            value:     10 * i,
-            ts:        T_QUEUE_START + i,
-            source:    'unit_test',
-            tags:      { tag1: 'val2' })
+      wf.qq(path: 'test.path.a',
+            value: i,
+            ts: T_QUEUE_START + i,
+            source: 'testhost',
+            tags: { tag1: 'val1' })
+      wf.qq(path: 'test.path.b',
+            value: 10 * i,
+            ts: T_QUEUE_START + i,
+            source: 'unit_test',
+            tags: { tag1: 'val2' })
     end
   end
 
@@ -53,28 +54,28 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
 
   def test_add_point_hash
     wf.queue.clear
-    wf.qq(path:   'new.metric',
-          value:  1.5,
-          ts:     T_QUEUE_START,
+    wf.qq(path: 'new.metric',
+          value: 1.5,
+          ts: T_QUEUE_START,
           source: 'unit_test',
-          tags:   { key1: 'val1' })
+          tags: { key1: 'val1' })
     assert_equal(1, wf.queue.length)
-    assert_equal({ key:   ['new.metric', 'unit_test', { key1: 'val1' }],
-                   ts:    T_QUEUE_START,
+    assert_equal({ key: ['new.metric', 'unit_test', { key1: 'val1' }],
+                   ts: T_QUEUE_START,
                    value: 1.5 }, wf.queue.pop)
   end
 
   def test_to_wf
-    assert_equal([{ path:   'test.path.a',
+    assert_equal([{ path: 'test.path.a',
                     source: 'testhost',
-                    ts:     T_QUEUE_CALL,
-                    value:  55,
-                    tags:   { tag1: 'val1' } },
-                  { path:   'test.path.b',
+                    ts: T_QUEUE_CALL,
+                    value: 55,
+                    tags: { tag1: 'val1' } },
+                  { path: 'test.path.b',
                     source: 'unit_test',
-                    ts:     T_QUEUE_CALL,
-                    value:  550,
-                    tags:   { tag1: 'val2' } }],
+                    ts: T_QUEUE_CALL,
+                    value: 550,
+                    tags: { tag1: 'val2' } }],
                  wf.to_wf(wf.queue.to_a, T_QUEUE_CALL))
 
     1.upto(12) do |i|
@@ -102,12 +103,12 @@ class WavefrontMetricTypeCounterTest < MiniTest::Test
   end
 
   def test_metric_bucket_to_point
-    data = [{ key:   ['test.path', 'testhost', { tag1: 'val1' }],
+    data = [{ key: ['test.path', 'testhost', { tag1: 'val1' }],
               value: 9,
-              ts:    T_QUEUE_END - 1 },
-            { key:   ['test.path', 'testhost', { tag1: 'val1' }],
+              ts: T_QUEUE_END - 1 },
+            { key: ['test.path', 'testhost', { tag1: 'val1' }],
               value: 10,
-              ts:    T_QUEUE_END }]
+              ts: T_QUEUE_END }]
 
     assert_equal([{ path: 'test.path',
                     source: 'testhost',

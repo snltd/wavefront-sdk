@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/metric_type/base'
@@ -19,44 +20,44 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
   def setup_queue
     SizedQueue.new(10).tap do |queue|
       1.upto(10) do |i|
-        queue.<< ({ path:      'test.path',
-                    value:     i,
+        queue.<< ({ path: 'test.path',
+                    value: i,
                     timestamp: QUEUE_START + i,
-                    source:    'testhost',
-                    tags:      { tag1: 'val1' } })
+                    source: 'testhost',
+                    tags: { tag1: 'val1' } })
       end
     end
   end
 
   def test_setup_metric_opts
     assert_equal(
-      { queue_size:      10_000,
-        flush_interval:  300,
-        dist_port:       40_000,
-        nonblock:        true,
-        no_validate:     false,
+      { queue_size: 10_000,
+        flush_interval: 300,
+        dist_port: 40_000,
+        nonblock: true,
+        no_validate: false,
         suppress_errors: true,
-        delta_interval:  300 }, wf.setup_metric_opts({})
+        delta_interval: 300 }, wf.setup_metric_opts({})
     )
 
     assert_equal(
-      { queue_size:      10_000,
-        flush_interval:  600,
-        dist_port:       40_000,
-        delta_interval:  600,
-        nonblock:        true,
-        no_validate:     false,
+      { queue_size: 10_000,
+        flush_interval: 600,
+        dist_port: 40_000,
+        delta_interval: 600,
+        nonblock: true,
+        no_validate: false,
         suppress_errors: true }, wf.setup_metric_opts(flush_interval: 600)
     )
 
     assert_equal(
-      { queue_size:      10_000,
-        flush_interval:  300,
-        dist_port:       40_000,
-        nonblock:        true,
-        no_validate:     false,
+      { queue_size: 10_000,
+        flush_interval: 300,
+        dist_port: 40_000,
+        nonblock: true,
+        no_validate: false,
         suppress_errors: true,
-        delta_interval:  60 }, wf.setup_metric_opts(delta_interval: 60)
+        delta_interval: 60 }, wf.setup_metric_opts(delta_interval: 60)
     )
   end
 
@@ -112,9 +113,9 @@ class WavefrontMetricTypeBaseTest < MiniTest::Test
     assert_equal(HOSTNAME, x[:source])
     assert_equal(QUEUE_START, x[:ts])
 
-    input = { path:   'test.metric',
-              value:  1,
-              ts:     QUEUE_START,
+    input = { path: 'test.metric',
+              value: 1,
+              ts: QUEUE_START,
               source: 'unit_test' }
 
     assert_equal(input, wf.fill_in(input))
