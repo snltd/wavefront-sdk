@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.3.0 (2020-10-10)
+* Add `Wavefront::Proxy#shutdown` which can shut down a proxy via the API.
+
 ## 5.2.1 (2020-09-18)
 * Remove necessity for user to `require 'pathname'`
 

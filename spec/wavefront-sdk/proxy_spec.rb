@@ -21,6 +21,12 @@ class WavefrontProxyTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.rename }
   end
 
+  def test_shutdown
+    assert_puts("/api/v2/proxy/#{id}", { shutdown: true }.to_json, :json) do
+      wf.shutdown(id)
+    end
+  end
+
   private
 
   def api_class
