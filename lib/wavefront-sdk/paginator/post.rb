@@ -50,7 +50,7 @@ module Wavefront
       def body_as(desired, args, index = 1)
         body = args[index]
 
-        return args if body.class == desired
+        return args if body.instance_of?(desired)
 
         args[index] = body_as_json(body)
         args
