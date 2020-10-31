@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.bindir        = 'bin'
 
   gem.add_dependency 'addressable', '~> 2.7'
-  gem.add_dependency 'faraday', '~> 1.0'
+  gem.add_dependency 'faraday', '~> 1.1'
   gem.add_dependency 'inifile', '~> 3.0'
   gem.add_dependency 'map', '~> 6.6'
 
@@ -32,7 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rubocop', '1.0'
   gem.add_development_dependency 'simplecov', '~> 0.18'
   gem.add_development_dependency 'spy', '1.0.0'
-  gem.add_development_dependency 'webmock', '~> 3.8'
+  gem.add_development_dependency 'webmock', '~> 3.9'
   gem.add_development_dependency 'yard', '~> 0.9'
 
   gem.required_ruby_version = Gem::Requirement.new('>= 2.4.0')
