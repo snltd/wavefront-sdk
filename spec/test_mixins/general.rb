@@ -65,6 +65,7 @@ module WavefrontTest
   module Update
     def test_update
       [payload].flatten.each do |p|
+        # passes payload through as-is
         assert_puts("/api/v2/#{api_class}/#{id}", p) do
           wf.update(id, p, false)
         end
@@ -72,6 +73,11 @@ module WavefrontTest
         assert_invalid_id { wf.update(invalid_id, p) }
         assert_raises(ArgumentError) { wf.update }
       end
+    end
+
+    def test_update_keys
+      assert_instance_of Array, wf.update_keys
+      assert(wf.update_keys.all? { |k| k.is_a?(Symbol) })
     end
   end
 

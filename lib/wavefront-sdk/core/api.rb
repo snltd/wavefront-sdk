@@ -81,9 +81,9 @@ module Wavefront
       (time.to_f * 1000).round
     end
 
-    # doing a PUT to update an object requires only a certain subset of
+    # Doing a PUT to update an object requires only a certain subset of
     # the keys returned by #describe(). This method takes the
-    # existing description of an object and turns it into a new has
+    # existing description of an object and turns it into a new hash
     # which can be PUT.
     #
     # @param old [Hash] a hash of the existing object

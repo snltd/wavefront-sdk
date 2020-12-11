@@ -81,5 +81,9 @@ module Wavefront
       api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
     end
+
+    def update_keys
+      %i[name]
+    end
   end
 end

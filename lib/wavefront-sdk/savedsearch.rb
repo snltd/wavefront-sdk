@@ -80,5 +80,9 @@ module Wavefront
       api.get(['type', entitytype].uri_concat, offset: offset,
                                                limit: limit)
     end
+
+    def update_keys
+      %i[query entityType]
+    end
   end
 end

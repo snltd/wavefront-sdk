@@ -128,5 +128,9 @@ module Wavefront
       wf_aws_external_id?(external_id)
       api.get(['awsExternalId', external_id].uri_concat)
     end
+
+    def update_keys
+      %i[name]
+    end
   end
 end

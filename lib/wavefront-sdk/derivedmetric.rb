@@ -112,11 +112,9 @@ module Wavefront
       wf_derivedmetric_id?(id)
     end
 
-    private
-
     def update_keys
-      %i[id name query tags additionalInformation
-         includeObsoleteMetrics processRateMinutes minutes]
+      %i[name query tags additionalInformation includeObsoleteMetrics
+         processRateMinutes minutes]
     end
   end
 end
