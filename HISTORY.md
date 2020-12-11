@@ -2,7 +2,7 @@
 
 ## 5.3.1 (2020-12-11)
 * Fix error when renaming ingestion policies, and improve testing which should
-  have caught it.
+  have caught the problem in the first place.
 
 ## 5.3.0 (2020-10-10)
 * Add `Wavefront::Proxy#shutdown` which can shut down a proxy via the API.
