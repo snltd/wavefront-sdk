@@ -15,8 +15,7 @@ module Wavefront
   class ApiCaller
     include Wavefront::Mixins
 
-    attr_reader :opts, :noop, :debug, :verbose, :net, :logger,
-                :calling_class
+    attr_reader :opts, :noop, :debug, :verbose, :net, :logger, :calling_class
 
     # @param calling_class [
     # @param creds [Hash] Wavefront credentials
@@ -178,7 +177,9 @@ module Wavefront
                resp.body
              end
 
-      Wavefront::Response.new(body, resp.status, @opts)
+      return body if opts[:raw_response]
+
+      Wavefront::Response.new(body, resp.status, opts)
     end
 
     # Try to describe the actual HTTP calls we make. There's a bit

@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.4.0 (2020-12-16)
+* Add `raw_response` option, which makes the SDK return the raw API response
+  as plain JSON text, rather than as a `Wavefront::Response` object.
+
 ## 5.3.1 (2020-12-11)
 * Fix error when renaming ingestion policies, and improve testing which should
   have caught the problem in the first place.
