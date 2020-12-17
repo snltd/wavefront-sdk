@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.4.1 (2020-12-17)
+* Fix error on derived metric modification.
+
 ## 5.4.0 (2020-12-16)
 * Add `raw_response` option, which makes the SDK return the raw API response
   as plain JSON text, rather than as a `Wavefront::Response` object.

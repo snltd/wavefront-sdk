@@ -113,7 +113,7 @@ module Wavefront
     end
 
     def update_keys
-      %i[name query tags additionalInformation includeObsoleteMetrics
+      %i[id name query tags additionalInformation includeObsoleteMetrics
          processRateMinutes minutes]
     end
   end
