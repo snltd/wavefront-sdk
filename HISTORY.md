@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.4.2 (2021-01-11)
+* Fix bug which blocked event updates.
+
 ## 5.4.1 (2020-12-17)
 * Fix error on derived metric modification.
 

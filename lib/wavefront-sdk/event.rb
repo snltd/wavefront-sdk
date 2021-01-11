@@ -12,7 +12,7 @@ module Wavefront
     include Wavefront::Mixin::Tag
 
     def update_keys
-      %i[startTime endTime name annotations]
+      %i[id name]
     end
 
     # GET /api/v2/event
@@ -100,7 +100,9 @@ module Wavefront
 
       return api.put(id, body, 'application/json') unless modify
 
-      api.put(id, hash_for_update(describe(id), body), 'application/json')
+      api.put(id,
+              hash_for_update(describe(id).response, body),
+              'application/json')
     end
 
     # POST /api/v2/event/id/close
