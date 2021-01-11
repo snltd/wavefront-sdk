@@ -100,8 +100,6 @@ module Wavefront
 
       return api.put(id, body, 'application/json') unless modify
 
-      body["startTime"] = body["startTime"].to_i
-
       api.put(id,
               hash_for_update(describe(id).response, body),
               'application/json')
