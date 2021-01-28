@@ -1,5 +1,6 @@
 # Changelog
 
+## 5.4.3 (2021-01-28)
 * Always pass through invalid timestamp on time-parsing error.
 
 ## 5.4.2 (2021-01-11)
