@@ -99,7 +99,7 @@ module Wavefront
       #
       def hash_to_wf(point)
         wf_point = calling_class.hash_to_wf(point)
-        logger.log(wf_point, :info)
+        logger.log(wf_point, :debug)
         wf_point
       end
 
