@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.4.4 (2021-02-01)
+* Fix credential validation on writer classes.
+* Improve tests for writer classes
+* Change the level of "wire format" messages from `INFO` to `DEBUG`.
+* Officially support Ruby 3.0.0.
+* Move off Travis, and on to Github Actions.
+* Modernise linting and use of linter.
+
 ## 5.4.3 (2021-01-28)
 * Always pass through invalid timestamp on time-parsing error.
 

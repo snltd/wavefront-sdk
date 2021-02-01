@@ -35,10 +35,10 @@ module Wavefront
       end
 
       def validate_credentials(creds)
-        return true if creds.key?(:proxy)
+        return if creds.key?(:proxy) && creds[:proxy]
 
         raise(Wavefront::Exception::CredentialError,
-              'creds must contain proxy address')
+              'credentials must contain proxy address')
       end
 
       private

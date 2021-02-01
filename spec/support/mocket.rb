@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-# A mock socket
+# A mock socket. Stubs TCP sockets and UNIX domain sockets.
 #
 class Mocket
   def puts(socket); end
+
+  def write(socket); end
 
   def close; end
 

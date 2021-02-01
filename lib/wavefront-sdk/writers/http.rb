@@ -29,10 +29,10 @@ module Wavefront
       end
 
       def validate_credentials(creds)
-        return true if creds.key?(:proxy)
+        return true if creds.key?(:proxy) && creds[:proxy]
 
         raise(Wavefront::Exception::CredentialError,
-              'credentials must contain proxy')
+              'credentials must contain proxy address')
       end
 
       def chunk_size
