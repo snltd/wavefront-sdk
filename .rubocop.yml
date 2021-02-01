@@ -4,15 +4,17 @@ AllCops:
   TargetRubyVersion: 2.4
   NewCops: enable
 
-Metrics/ClassLength:
-  Max: 150
+require:
+  - rubocop-rake
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-performance
 
-# Is nothing sacred?
 Layout/LineLength:
   Max: 80
-
+Metrics/ClassLength:
+  Max: 150
 Style/StringConcatenation:
   Enabled: false
-
 Style/OptionalBooleanParameter:
   Enabled: false

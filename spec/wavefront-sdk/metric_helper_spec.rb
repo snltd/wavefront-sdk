@@ -115,12 +115,12 @@ class WavefrontMetricHelperTest < MiniTest::Test
     out = wfd.dists_to_wf(input)
     assert_instance_of(Array, out)
     assert_equal(3, out.size)
-    assert_equal(1, out.select do |o|
+    assert_equal(1, out.count do |o|
                       o[:value] == [[2, 10.0], [1, 11.0],
                                     [1, 12.0]]
-                    end.size)
-    assert_equal(1, out.select { |o| o[:tags] == WH_TAGS }.size)
-    assert_equal(3, out.select { |o| o[:path] == 'test.dist1' }.size)
+                    end)
+    assert_equal(1, out.count { |o| o[:tags] == WH_TAGS })
+    assert_equal(3, out.count { |o| o[:path] == 'test.dist1' })
   end
 
   def test_flush_gauges

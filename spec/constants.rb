@@ -26,7 +26,7 @@ U_ACL_1 = 'someone@example.com'
 U_ACL_2 = 'other@elsewhere.com'
 GRP_ACL = 'f8dc0c14-91a0-4ca9-8a2a-7d47f4db4672'
 
-DEFAULT_HEADERS = { 'Accept': /.*/,
+DEFAULT_HEADERS = { Accept: /.*/,
                     'Accept-Encoding': /.*/,
-                    'Authorization': 'Bearer 0123456789-ABCDEF',
+                    Authorization: 'Bearer 0123456789-ABCDEF',
                     'User-Agent': /wavefront-sdk \d+\.\d+\.\d+/ }.freeze

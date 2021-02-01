@@ -113,6 +113,7 @@ module Wavefront
     #   specified in the body. See the Swagger docs for more
     #   information.
     #
+    # rubocop:disable Metrics/ParameterLists
     def raw_facet_search(entity = nil, body = nil, deleted = false,
                          facet = false)
       raise ArgumentError unless entity.is_a?(String) && body.is_a?(Hash)
@@ -122,5 +123,6 @@ module Wavefront
       path.<< facet || 'facets'
       api.post(path, body, 'application/json')
     end
+    # rubocop:enable Metrics/ParameterLists
   end
 end

@@ -65,12 +65,14 @@ module Wavefront
     # @return void
     #
     def populate(raw)
+      creds_keys = %i[endpoint token]
+      proxy_keys = %i[proxy port]
+      all_keys = creds_keys + proxy_keys
+
       @config = Map(raw)
-      @creds  = Map(raw.select { |k, _v| %i[endpoint token].include?(k) })
-      @proxy  = Map(raw.select { |k, _v| %i[proxy port].include?(k) })
-      @all    = Map(raw.select do |k, _v|
-        %i[proxy port endpoint token].include?(k)
-      end)
+      @creds  = Map(raw.select { |k, _v| creds_keys.include?(k) })
+      @proxy  = Map(raw.select { |k, _v| proxy_keys.include?(k) })
+      @all    = Map(raw.select { |k, _v| all_keys.include?(k) })
     end
 
     # @return [Array] a list of possible credential files

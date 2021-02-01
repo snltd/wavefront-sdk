@@ -30,6 +30,7 @@ module Wavefront
     # @raise [ArgumentError] if query is not a string
     # @return [Wavefront::Response]
     #
+    # rubocop:disable Metrics/ParameterLists
     def query(query, granularity = nil, t_start = nil, t_end = nil,
               options = {})
 
@@ -45,6 +46,7 @@ module Wavefront
 
       api.get('api', options)
     end
+    # rubocop:enable Metrics/ParameterLists
 
     # GET /api/v2/chart/raw
     # Perform a raw data query against Wavefront servers that
