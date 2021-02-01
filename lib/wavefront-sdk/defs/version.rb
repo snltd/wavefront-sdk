@@ -2,5 +2,5 @@
 
 require 'pathname'
 
-WF_SDK_VERSION = '5.4.3'
+WF_SDK_VERSION = '5.4.4'
 WF_SDK_LOCATION = Pathname.new(__dir__).parent.parent.parent

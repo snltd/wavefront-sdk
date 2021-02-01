@@ -42,5 +42,9 @@ class WavefrontWriterApiTest < MiniTest::Test
     assert_raises(Wavefront::Exception::CredentialError) do
       Wavefront::Write.new({ token: 'abcdef' }, writer: :api)
     end
+
+    assert_raises(Wavefront::Exception::CredentialError) do
+      Wavefront::Write.new({ token: 'abcdef', endpoint: nil }, writer: :api)
+    end
   end
 end

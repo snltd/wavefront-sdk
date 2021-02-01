@@ -6,6 +6,7 @@ require_relative '../resources/dummy_points'
 require_relative '../../../lib/wavefront-sdk/write'
 
 BODY = 'test.metric 123456 1469987572 source=testhost t1="v1" t2="v2"'
+WH_CREDS = { proxy: 'wavefront-proxy' }.freeze
 
 # Test HTTP transport
 #
@@ -18,27 +19,6 @@ class WavefrontWriterSocketTest < MiniTest::Test
 
   def test_writer_class
     assert_instance_of(Wavefront::Writer::Http, wf.writer)
-  end
-
-  def test_validate_credentials
-    assert Wavefront::Write.new({ proxy: 'wavefront' }, writer: :http)
-    assert_instance_of(Wavefront::Write, wf)
-
-    assert_raises(Wavefront::Exception::CredentialError) do
-      Wavefront::Write.new(CREDS, writer: :http)
-    end
-
-    assert_raises(Wavefront::Exception::CredentialError) do
-      Wavefront::Write.new({}, writer: :http)
-    end
-
-    assert_raises(Wavefront::Exception::CredentialError) do
-      Wavefront::Write.new({ endpoint: 'wavefront.com' }, writer: :http)
-    end
-
-    assert_raises(Wavefront::Exception::CredentialError) do
-      Wavefront::Write.new({ token: 'abcdef' }, writer: :http)
-    end
   end
 
   def test_write_2878
@@ -66,5 +46,28 @@ class WavefrontWriterSocketTest < MiniTest::Test
 
     assert_requested(:post, 'http://wavefront:1234', headers: POST_HEADERS)
     WebMock.reset!
+  end
+
+  def test_validate_credentials
+    assert(Wavefront::Write.new(WH_CREDS, writer: :http))
+
+    assert_instance_of(Wavefront::Write,
+                       Wavefront::Write.new(WH_CREDS, writer: :http))
+
+    assert_raises(Wavefront::Exception::CredentialError) do
+      Wavefront::Write.new({}, writer: :http)
+    end
+
+    assert_raises(Wavefront::Exception::CredentialError) do
+      Wavefront::Write.new({ endpoint: 'wavefront.com' }, writer: :http)
+    end
+
+    assert_raises(Wavefront::Exception::CredentialError) do
+      Wavefront::Write.new({ token: 'abcdef' }, writer: :http)
+    end
+
+    assert_raises(Wavefront::Exception::CredentialError) do
+      Wavefront::Write.new({ proxy: nil }, writer: :http)
+    end
   end
 end

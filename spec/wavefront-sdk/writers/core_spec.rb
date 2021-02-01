@@ -6,9 +6,7 @@ require_relative '../../spec_helper'
 require_relative '../../../lib/wavefront-sdk/writers/core'
 require_relative '../resources/dummy_points'
 
-# rubocop:disable Style/MutableConstant
-WBWT_CREDS = { endpoint: 'stub.wavefront.com', token: 'tkn' }
-# rubocop:enable Style/MutableConstant
+WBWT_CREDS = { endpoint: 'stub.wavefront.com', token: 'tkn' }.freeze
 
 # Fake class for testing
 #
