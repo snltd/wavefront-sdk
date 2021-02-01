@@ -28,6 +28,7 @@ module Wavefront
     # @param limit [Integer] the number of events to return
     # @return [Wavefront::Response]
     #
+    # rubocop:disable Metrics/ParameterLists
     def list(from = nil, to = Time.now, limit = 100, cursor = nil)
       raise ArgumentError unless from && to
 
@@ -37,6 +38,7 @@ module Wavefront
       wf_ms_ts?(body[:latestStartTimeEpochMillis])
       api.get('', body.cleanse)
     end
+    # rubocop:enable Metrics/ParameterLists
 
     # POST /api/v2/event
     # Create a specific event.

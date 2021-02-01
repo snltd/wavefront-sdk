@@ -29,7 +29,10 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'minitest', '~> 5.14'
   gem.add_development_dependency 'rake', '~> 13.0'
-  gem.add_development_dependency 'rubocop', '1.0'
+  gem.add_development_dependency 'rubocop', '~> 1.9'
+  gem.add_development_dependency 'rubocop-minitest', '~> 0.10'
+  gem.add_development_dependency 'rubocop-performance', '~> 1.3'
+  gem.add_development_dependency 'rubocop-rake', '~> 0.5'
   gem.add_development_dependency 'simplecov', '~> 0.18'
   gem.add_development_dependency 'spy', '1.0.0'
   gem.add_development_dependency 'webmock', '~> 3.9'

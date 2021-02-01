@@ -48,8 +48,8 @@ module Wavefront
     #
     def wf_metric_name?(metric)
       if metric.is_a?(String) && metric.size < 1024 &&
-         (metric.match(/^#{DELTA}?[\w\-.]+$/) ||
-          metric.match(%r{^"#{DELTA}?[\w\-./,]+"$}))
+         (metric.match(/^#{DELTA}?[\w\-.]+$/o) ||
+          metric.match(%r{^"#{DELTA}?[\w\-./,]+"$}o))
         return true
       end
 

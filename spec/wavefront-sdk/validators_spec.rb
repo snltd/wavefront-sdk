@@ -84,7 +84,7 @@ class WavefrontValidatorsTest < MiniTest::Test
             { tag1: 'val 1', tag2: 'val 2' },
             { TAG1: 'val 1', tag2: 'val 2' },
             { 'TAG-1': 'val 1', tag2: 'val 2' },
-            { 'TAG_1': 'val 1', tag_2: 'val 2' },
+            { TAG_1: 'val 1', tag_2: 'val 2' },
             { 'TAG.1': 'val 1', tag_2: 'val 2' },
             { 'TAG-1': 'val 1', tag2: 'val 2' },
             { tag1: '(>_<)', tag2: '^_^' }]

@@ -1,23 +1,11 @@
-AllCops:
-  NewCops: enable
+inherit_from:
+  - ../.rubocop.yml
 
 Metrics/AbcSize:
   Max: 64
-
-# Configuration parameters: CountComments.
 Metrics/ClassLength:
   Max: 400
-
-# Configuration parameters: CountComments, ExcludedMethods.
 Metrics/MethodLength:
   Max: 39
-
-# Is nothing sacred?
-Layout/LineLength:
-  Max: 80
-
-Style/StringConcatenation:
-  Enabled: false
-
-Style/OptionalBooleanParameter:
+Naming/VariableNumber:
   Enabled: false
