@@ -32,7 +32,7 @@ module Wavefront
       end
 
       def validate_credentials(creds)
-        return if creds.key?(:socket) && creds[:socket]
+        return true if creds.key?(:socket) && creds[:socket]
 
         raise(Wavefront::Exception::CredentialError,
               'credentials must contain socket file path')

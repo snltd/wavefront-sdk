@@ -24,7 +24,7 @@ module Wavefront
                 'credentials must contain API endpoint')
         end
 
-        return if creds.key?(:token) && creds[:token]
+        return true if creds.key?(:token) && creds[:token]
 
         raise(Wavefront::Exception::CredentialError,
               'credentials must contain API token')
