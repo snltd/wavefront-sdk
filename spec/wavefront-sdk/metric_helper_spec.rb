@@ -4,6 +4,8 @@
 require 'minitest/autorun'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/metric_helper'
+require_relative '../support/mocket'
+require_relative '../support/bad_mocket'
 
 ND_CREDS = { proxy: 'wavefront' }.freeze
 WH_TAGS  = { t1: 'v1', t2: 'v2' }.freeze
