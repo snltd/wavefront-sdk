@@ -94,7 +94,7 @@ module Wavefront
     def hash_for_update(old, new)
       raise ArgumentError unless old.is_a?(Hash) && new.is_a?(Hash)
 
-      Hash[old.merge(new).map { |k, v| [k.to_sym, v] }].select do |k, _v|
+      old.merge(new).map { |k, v| [k.to_sym, v] }.to_h.select do |k, _v|
         update_keys.include?(k)
       end
     end
