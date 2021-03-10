@@ -1,5 +1,10 @@
 # Changelog
 
+* Change the name of the proxy writer from `socket` to `proxy`. (Breaking
+  change.)
+* Change the name of the Unix datagram socket writer from `unix` to `socket`.
+  (Breaking change.)
+
 ## 5.4.4 (2021-02-01)
 * Fix credential validation on writer classes.
 * Improve tests for writer classes
