@@ -38,6 +38,33 @@ class WavefrontSpyTest < MiniTest::Test
     end
   end
 
+  def test_deltas
+    capture_io do
+      assert_gets('/api/spy/deltas?sampling=0.01') { wf.deltas }
+      assert_gets('/api/spy/deltas?sampling=0.05') { wf.deltas(0.05) }
+
+      assert_gets('/api/spy/deltas?sampling=0.05&counter=my_prefix') do
+        wf.deltas(0.05, prefix: 'my_prefix')
+      end
+
+      assert_gets(
+        '/api/spy/deltas?sampling=0.05&counter=my_prefix&host=h1'
+      ) do
+        wf.deltas(0.05, prefix: 'my_prefix', host: 'h1')
+      end
+
+      assert_gets('/api/spy/deltas?sampling=0.02&counter=my_prefix&' \
+                  'counterTagKey=the_tag') do
+        wf.deltas(0.02, prefix: 'my_prefix', tag_key: 'the_tag')
+      end
+
+      assert_gets('/api/spy/deltas?sampling=0.02&counter=my_prefix&' \
+                  'counterTagKey=tag1&counterTagKey=tag2') do
+        wf.deltas(0.02, prefix: 'my_prefix', tag_key: %w[tag1 tag2])
+      end
+    end
+  end
+
   def test_histograms
     capture_io do
       assert_gets('/api/spy/histograms?sampling=0.01') { wf.histograms }

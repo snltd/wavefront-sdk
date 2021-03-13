@@ -1,5 +1,7 @@
 # Changelog
 
+* Add `Wavefront::Spy#deltas`.
+
 ## 5.4.4 (2021-02-01)
 * Fix credential validation on writer classes.
 * Improve tests for writer classes
