@@ -1,5 +1,6 @@
 # Changelog
 
+* Add `Wavefront::MetricsPolicy`.
 * Add `Wavefront::Spy#deltas`.
 
 ## 5.4.4 (2021-02-01)

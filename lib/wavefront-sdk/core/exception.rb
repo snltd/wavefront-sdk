@@ -59,6 +59,8 @@ module Wavefront
 
     class InvalidMetricName < RuntimeError; end
 
+    class InvalidMetricsPolicyId < RuntimeError; end
+
     class InvalidMetricValue < RuntimeError; end
 
     class InvalidName < RuntimeError; end
