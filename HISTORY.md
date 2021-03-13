@@ -1,5 +1,10 @@
 # Changelog
 
+* added `Wavefront::Event#alert_firing_details`
+* added `Wavefront::Event#alert_queries_slug`
+* added `Wavefront::Event#events`
+* added `Wavefront::Event#alert_firings`
+
 ## 5.4.4 (2021-02-01)
 * Fix credential validation on writer classes.
 * Improve tests for writer classes

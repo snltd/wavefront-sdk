@@ -7,7 +7,6 @@ require_relative 'lib/wavefront-sdk/defs/version'
 Gem::Specification.new do |gem|
   gem.name          = 'wavefront-sdk'
   gem.version       = WF_SDK_VERSION
-  gem.date          = Date.today.to_s
 
   gem.summary       = 'SDK for Wavefront API v2'
   gem.description   = 'SDK for Wavefront (wavefront.com) API v2 '

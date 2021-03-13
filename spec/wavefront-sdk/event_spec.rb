@@ -43,10 +43,56 @@ class WavefrontEventTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.close }
   end
 
+  def test_alert_firing_details
+    assert_gets("/api/v2/event/#{id}/alertFiringDetails") do
+      wf.alert_firing_details(id)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidEventId) do
+      wf.alert_firing_details(invalid_id)
+    end
+  end
+
+  def test_alert_queries_slug
+    assert_gets("/api/v2/event/#{id}/alertQueriesSlug") do
+      wf.alert_queries_slug(id)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidEventId) do
+      wf.alert_queries_slug(invalid_id)
+    end
+  end
+
+  def test_events
+    assert_gets(
+      "/api/v2/event/#{id}/events?isOverlapped=false&renderingMethod=HOST"
+    ) do
+      wf.events(id)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidEventId) do
+      wf.events(invalid_id)
+    end
+  end
+
+  def test_alert_firings
+    assert_gets("/api/v2/event/alertFirings?alertId=#{alert_id}&asc=true") do
+      wf.alert_firings(alert_id, asc: true)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidAlertId) do
+      wf.alert_firings(invalid_id)
+    end
+  end
+
   private
 
   def id
     '1481553823153:testev'
+  end
+
+  def alert_id
+    '1481553823153'
   end
 
   def invalid_id
