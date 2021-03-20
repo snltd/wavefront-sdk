@@ -467,6 +467,10 @@ module Wavefront
       true
     end
 
+    # @
+    def wf_trace?(trace)
+    end
+
     # Validate an array of distribution values
     # @param vals [Array[Array]] [count, value]
     # @return true if valid
