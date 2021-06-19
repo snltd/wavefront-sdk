@@ -297,6 +297,10 @@ module Wavefront
       raise NoMethodError
     end
 
+    def update_keys
+      %i[identifier groups userGroups]
+    end
+
     private
 
     def response_looks_right?(body_obj)
@@ -310,10 +314,6 @@ module Wavefront
       return '' if status < 300
 
       items.fetch(:message, 'no message from API')
-    end
-
-    def update_keys
-      %i[identifier groups userGroups]
     end
   end
 end

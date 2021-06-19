@@ -19,12 +19,12 @@ module Wavefront
       end
 
       def validate_credentials(creds)
-        unless creds.key?(:endpoint)
+        unless creds.key?(:endpoint) && creds[:endpoint]
           raise(Wavefront::Exception::CredentialError,
                 'credentials must contain API endpoint')
         end
 
-        return true if creds.key?(:token)
+        return true if creds.key?(:token) && creds[:token]
 
         raise(Wavefront::Exception::CredentialError,
               'credentials must contain API token')

@@ -48,8 +48,8 @@ module Wavefront
     #
     def wf_metric_name?(metric)
       if metric.is_a?(String) && metric.size < 1024 &&
-         (metric.match(/^#{DELTA}?[\w\-.]+$/) ||
-          metric.match(%r{^"#{DELTA}?[\w\-./,]+"$}))
+         (metric.match(/^#{DELTA}?[\w\-.]+$/o) ||
+          metric.match(%r{^"#{DELTA}?[\w\-./,]+"$}o))
         return true
       end
 
@@ -467,6 +467,9 @@ module Wavefront
       true
     end
 
+    # @
+    def wf_trace?(trace); end
+
     # Validate an array of distribution values
     # @param vals [Array[Array]] [count, value]
     # @return true if valid
@@ -638,6 +641,18 @@ module Wavefront
       return true if id.is_a?(String) && id =~ /^[a-z0-9A-Z]{16}$/
 
       raise Wavefront::Exception::InvalidAwsExternalId, id
+    end
+
+    # Ensure the given argument is a valid Wavefront metrics policy ID
+    # @param id [String] the metrics policy ID to validate
+    # @return true if the role ID is valid
+    # @raise Wavefront::Exception::InvalidMetricsPolicyId if the ID is
+    #   not valid
+    #
+    def wf_metricspolicy_id?(id)
+      return true if uuid?(id)
+
+      raise Wavefront::Exception::InvalidMetricsPolicyId, id
     end
   end
   # rubocop:enable Metrics/ModuleLength

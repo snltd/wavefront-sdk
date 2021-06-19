@@ -4,7 +4,6 @@
 require_relative '../spec_helper'
 require_relative '../test_mixins/acl'
 require_relative '../test_mixins/tag'
-require_relative '../test_mixins/update_keys'
 require_relative '../test_mixins/general'
 
 # Unit tests for dashboard class
@@ -18,7 +17,6 @@ class WavefrontDashboardTest < WavefrontTestBase
   include WavefrontTest::List
   include WavefrontTest::Tag
   include WavefrontTest::Update
-  include WavefrontTest::UpdateKeys
 
   def test_favorite
     assert_posts("/api/v2/dashboard/#{id}/favorite") { wf.favorite(id) }

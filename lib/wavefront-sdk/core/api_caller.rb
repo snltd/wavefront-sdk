@@ -15,8 +15,7 @@ module Wavefront
   class ApiCaller
     include Wavefront::Mixins
 
-    attr_reader :opts, :noop, :debug, :verbose, :net, :logger,
-                :calling_class
+    attr_reader :opts, :noop, :debug, :verbose, :net, :logger, :calling_class
 
     # @param calling_class [
     # @param creds [Hash] Wavefront credentials
@@ -133,7 +132,7 @@ module Wavefront
     def post(path, body = nil, ctype = 'text/plain')
       body = body.to_json unless body.is_a?(String)
       make_call(mk_conn(path,  'Content-Type': ctype,
-                               'Accept': 'application/json'),
+                               Accept: 'application/json'),
                 :post, nil, body)
     end
 
@@ -148,7 +147,7 @@ module Wavefront
     #
     def put(path, body = nil, ctype = 'application/json')
       make_call(mk_conn(path,  'Content-Type': ctype,
-                               'Accept': 'application/json'),
+                               Accept: 'application/json'),
                 :put, nil, body.to_json)
     end
 
@@ -176,7 +175,9 @@ module Wavefront
                resp.body
              end
 
-      Wavefront::Response.new(body, resp.status, @opts)
+      return body if opts[:raw_response]
+
+      Wavefront::Response.new(body, resp.status, opts)
     end
 
     # Try to describe the actual HTTP calls we make. There's a bit

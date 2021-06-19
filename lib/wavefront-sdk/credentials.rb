@@ -65,12 +65,14 @@ module Wavefront
     # @return void
     #
     def populate(raw)
+      creds_keys = %i[endpoint token]
+      proxy_keys = %i[proxy port]
+      all_keys = creds_keys + proxy_keys
+
       @config = Map(raw)
-      @creds  = Map(raw.select { |k, _v| %i[endpoint token].include?(k) })
-      @proxy  = Map(raw.select { |k, _v| %i[proxy port].include?(k) })
-      @all    = Map(raw.select do |k, _v|
-        %i[proxy port endpoint token].include?(k)
-      end)
+      @creds  = Map(raw.select { |k, _v| creds_keys.include?(k) })
+      @proxy  = Map(raw.select { |k, _v| proxy_keys.include?(k) })
+      @all    = Map(raw.select { |k, _v| all_keys.include?(k) })
     end
 
     # @return [Array] a list of possible credential files
@@ -126,9 +128,7 @@ module Wavefront
     # @return [Hash] options loaded from file. Each key becomes a symbol
     #
     def load_profile(file, profile = 'default')
-      IniFile.load(file)[profile].each_with_object({}) do |(k, v), memo|
-        memo[k.to_sym] = v
-      end
+      IniFile.load(file)[profile].transform_keys(&:to_sym)
     rescue StandardError
       raise Wavefront::Exception::InvalidConfigFile, file
     end

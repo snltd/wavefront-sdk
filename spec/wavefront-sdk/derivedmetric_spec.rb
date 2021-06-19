@@ -29,6 +29,7 @@ class WavefrontDerivedMetricTest < WavefrontTestBase
   def payload
     { minutes: 5,
       name: 'test_1',
+      id: id,
       query: 'aliasMetric(ts("test.metric"), "derived.test_1")',
       tags: { customerTags: ['test'] },
       includeObsoleteMetrics: false,

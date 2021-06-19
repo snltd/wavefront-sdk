@@ -1,5 +1,41 @@
 # Changelog
 
+* Drop support for Ruby 2.4 (breaking change)
+* added `Wavefront::Event#alert_firing_details`
+* added `Wavefront::Event#alert_queries_slug`
+* added `Wavefront::Event#events`
+* added `Wavefront::Event#alert_firings`
+* Add `Wavefront::MetricsPolicy`.
+* Add `Wavefront::Spy#deltas`.
+
+## 5.4.4 (2021-02-01)
+* Fix credential validation on writer classes.
+* Improve tests for writer classes
+* Change the level of "wire format" messages from `INFO` to `DEBUG`.
+* Officially support Ruby 3.0.0.
+* Move off Travis, and on to Github Actions.
+* Modernise linting and use of linter.
+
+## 5.4.3 (2021-01-28)
+* Always pass through invalid timestamp on time-parsing error.
+
+## 5.4.2 (2021-01-11)
+* Fix bug which blocked event updates.
+
+## 5.4.1 (2020-12-17)
+* Fix error on derived metric modification.
+
+## 5.4.0 (2020-12-16)
+* Add `raw_response` option, which makes the SDK return the raw API response
+  as plain JSON text, rather than as a `Wavefront::Response` object.
+
+## 5.3.1 (2020-12-11)
+* Fix error when renaming ingestion policies, and improve testing which should
+  have caught the problem in the first place.
+
+## 5.3.0 (2020-10-10)
+* Add `Wavefront::Proxy#shutdown` which can shut down a proxy via the API.
+
 ## 5.2.1 (2020-09-18)
 * Remove necessity for user to `require 'pathname'`
 

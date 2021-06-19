@@ -23,7 +23,15 @@ class WavefrontCoreApiTest < MiniTest::Test
 
   def test_hash_for_update
     wf.instance_variable_set('@update_keys', %i[k1 k2])
-    body = { k1: 'ov1', k2: 'ov2', k3: 'ov3' }
+    body = { k1: 'ov1',
+             k2: 'ov2',
+             k3: 'ov3',
+             customerId: 'test',
+             creatorId: 'someone@example.com',
+             createUserId: 'someone@example.com',
+             updateUserId: 'someone@example.com',
+             createdEpochMillis: 1_607_691_387_023,
+             updatedEpochMillis: 1_607_691_387_023 }
     upd = { k2: 'nv1' }
     assert_equal({ k1: 'ov1', k2: 'nv1' }, wf.hash_for_update(body, upd))
   end

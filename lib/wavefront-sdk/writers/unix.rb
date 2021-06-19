@@ -6,8 +6,7 @@ require_relative 'core'
 module Wavefront
   module Writer
     #
-    # Everything specific to writing points to a Unix datagram
-    # socket.
+    # Everything specific to writing points to a Unix datagram socket.
     #
     class Unix < Core
       # Make a connection to a Unix datagram socket, putting the
@@ -33,10 +32,10 @@ module Wavefront
       end
 
       def validate_credentials(creds)
-        return true if creds.key?(:socket)
+        return true if creds.key?(:socket) && creds[:socket]
 
         raise(Wavefront::Exception::CredentialError,
-              'creds must contain socket file path')
+              'credentials must contain socket file path')
       end
 
       private
@@ -48,10 +47,11 @@ module Wavefront
         raise Wavefront::Exception::InvalidEndpoint
       end
 
-      # @param point [String] point or points in native Wavefront
-      # format.
+      # @param point [String] point or points in native Wavefront format.
       #
       def _send_point(point)
+        return if opts[:noop]
+
         conn.write(point)
       end
     end

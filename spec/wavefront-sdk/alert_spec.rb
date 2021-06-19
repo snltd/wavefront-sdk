@@ -4,7 +4,6 @@
 require_relative '../spec_helper'
 require_relative '../test_mixins/acl'
 require_relative '../test_mixins/tag'
-require_relative '../test_mixins/update_keys'
 require_relative '../test_mixins/general'
 
 # Unit tests for Alert class
@@ -20,7 +19,6 @@ class WavefrontAlertTest < WavefrontTestBase
   include WavefrontTest::List
   include WavefrontTest::Tag
   include WavefrontTest::Update
-  include WavefrontTest::UpdateKeys
 
   def test_snooze
     assert_posts("/api/v2/alert/#{id}/snooze") { wf.snooze(id) }

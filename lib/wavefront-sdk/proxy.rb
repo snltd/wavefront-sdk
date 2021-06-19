@@ -86,5 +86,15 @@ module Wavefront
       wf_proxy_id?(id)
       api.put(id, payload)
     end
+
+    # Shutdown a proxy. Requires proxy >=5.x. Might not be effective if you
+    # have something like systemd or SMF restarting a failed proxy.
+    # @param id [String] ID of the proxy
+    # @return [Wavefront::Response]
+    #
+    def shutdown(id)
+      wf_proxy_id?(id)
+      api.put(id, { shutdown: true }, 'application/json')
+    end
   end
 end

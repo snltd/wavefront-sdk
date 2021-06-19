@@ -12,7 +12,7 @@ module Wavefront
     include Wavefront::Mixin::Tag
 
     def update_keys
-      %i[startTime endTime name annotations]
+      %i[id name]
     end
 
     # GET /api/v2/event
@@ -28,6 +28,7 @@ module Wavefront
     # @param limit [Integer] the number of events to return
     # @return [Wavefront::Response]
     #
+    # rubocop:disable Metrics/ParameterLists
     def list(from = nil, to = Time.now, limit = 100, cursor = nil)
       raise ArgumentError unless from && to
 
@@ -37,6 +38,7 @@ module Wavefront
       wf_ms_ts?(body[:latestStartTimeEpochMillis])
       api.get('', body.cleanse)
     end
+    # rubocop:enable Metrics/ParameterLists
 
     # POST /api/v2/event
     # Create a specific event.
@@ -100,7 +102,9 @@ module Wavefront
 
       return api.put(id, body, 'application/json') unless modify
 
-      api.put(id, hash_for_update(describe(id), body), 'application/json')
+      api.put(id,
+              hash_for_update(describe(id).response, body),
+              'application/json')
     end
 
     # POST /api/v2/event/id/close
@@ -113,11 +117,74 @@ module Wavefront
       api.post([id, 'close'].uri_concat)
     end
 
-    def valid_id?(id)
+    # GET /api/v2/event/{id}/alertFiringDetails
+    # Return details of a particular alert firing, including all the series
+    # that fired during the referred alert firing
+    #
+    # @param id [String] ID of the event
+    # @return [Wavefront::Response]
+    #
+    def alert_firing_details(id)
       wf_event_id?(id)
+      api.get([id, 'alertFiringDetails'].uri_concat)
+    end
+
+    # GET /api/v2/event/{id}/alertQueriesSlug
+    # If the specified event is associated with an alert, returns a slug
+    # encoding the queries having to do with that alert firing or resolution
+    # @param id [String] ID of the event
+    # @return [Wavefront::Response]
+    #
+    def alert_queries_slug(id)
+      wf_event_id?(id)
+      api.get([id, 'alertQueriesSlug'].uri_concat)
+    end
+
+    # GET /api/v2/event/{id}/events
+    # List all related events for a specific firing event with a time span of
+    # one hour
+    # @param id [String] ID of the event
+    # @param opts [Hash] containing one or more of
+    #   is_overlapped [Bool]
+    #   rendering_method [Symbol,String] one of :HOST, :METRIC, :SIMILARITY
+    #   limit [Integer]
+    # @return [Wavefront::Response]
+    #
+    def events(id, opts = {})
+      wf_event_id?(id)
+
+      api.get([id, 'events'].uri_concat,
+              { isOverlapped: opts[:is_overlapped] || false,
+                renderingMethod: (opts[:rendering_method] || :HOST).to_s,
+                limit: opts[:limit] || nil }.compact)
+    end
+
+    # GET /api/v2/event/alertFirings
+    # Get firings events of an alert within a time range
+    # @param alert_id [String] ID of the alert
+    # @param opts [Hash] containing one or more of
+    #   earliest_start [Integer] epoch ms timestamp
+    #   latest_start [Integer] epoch ms timestamp
+    #   ascending [Bool]
+    #   limit [Integer]
+    # @return [Wavefront::Response]
+    #
+    def alert_firings(alert_id, opts = {})
+      wf_alert_id?(alert_id)
+
+      api.get('alertFirings',
+              { alertId: alert_id,
+                earliestStartTimeEpochMillis: opts[:earliest_start] || nil,
+                latestStartTimeEpochMillis: opts[:latest_start] || nil,
+                limit: opts[:limit] || nil,
+                asc: opts[:asc] || true }.compact)
     end
 
     private
+
+    def valid_id?(id)
+      wf_event_id?(id)
+    end
 
     def list_body(t_start, t_end, limit, cursor)
       { earliestStartTimeEpochMillis: parse_time(t_start, true),
