@@ -77,7 +77,7 @@ module WavefrontTest
 
     def test_update_keys
       assert_instance_of Array, wf.update_keys
-      assert(wf.update_keys.all? { |k| k.is_a?(Symbol) })
+      assert(wf.update_keys.all?(Symbol))
     end
   end
 

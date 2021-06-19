@@ -1,5 +1,6 @@
 # Changelog
 
+* Drop support for Ruby 2.4
 * Add `Wavefront::MetricsPolicy`.
 * Add `Wavefront::Spy#deltas`.
 
