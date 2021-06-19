@@ -1,6 +1,10 @@
 # Changelog
 
-* Drop support for Ruby 2.4
+* Drop support for Ruby 2.4 (breaking change)
+* added `Wavefront::Event#alert_firing_details`
+* added `Wavefront::Event#alert_queries_slug`
+* added `Wavefront::Event#events`
+* added `Wavefront::Event#alert_firings`
 * Add `Wavefront::MetricsPolicy`.
 * Add `Wavefront::Spy#deltas`.
 
