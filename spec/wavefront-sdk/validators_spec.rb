@@ -417,4 +417,14 @@ class WavefrontValidatorsTest < MiniTest::Test
     bad = %w[h5Z9dkr46jbvLtJ HqOM4mru5svd3uFp3 c!lBx!LC*NxLKdx*]
     good_and_bad('wf_aws_external_id?', 'InvalidAwsExternalId', good, bad)
   end
+
+  def test_wf_metricspolicy_id
+    good = %w[2bfdcac7-1c9c-4c4b-9b56-c41c22c586dc
+              a7d2e651-cec1-4154-a5e8-1946f57ef5b3
+              fca312fb-5ff4-420d-862d-5d6d99ed6bcf
+              3a1957e0-459e-49e5-9209-3888a4e8ac5b]
+
+    bad = %w[fa312fb-5ff4-420d-862d-5d6d99ed6bcf thing 123]
+    good_and_bad('wf_metricspolicy_id?', 'InvalidMetricsPolicyId', good, bad)
+  end
 end

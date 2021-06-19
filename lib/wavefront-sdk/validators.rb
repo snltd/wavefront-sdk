@@ -642,6 +642,18 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidAwsExternalId, id
     end
+
+    # Ensure the given argument is a valid Wavefront metrics policy ID
+    # @param id [String] the metrics policy ID to validate
+    # @return true if the role ID is valid
+    # @raise Wavefront::Exception::InvalidMetricsPolicyId if the ID is
+    #   not valid
+    #
+    def wf_metricspolicy_id?(id)
+      return true if uuid?(id)
+
+      raise Wavefront::Exception::InvalidMetricsPolicyId, id
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end
