@@ -4,6 +4,8 @@
 * added `Wavefront::Event#alert_queries_slug`
 * added `Wavefront::Event#events`
 * added `Wavefront::Event#alert_firings`
+* Add `Wavefront::MetricsPolicy`.
+* Add `Wavefront::Spy#deltas`.
 
 ## 5.4.4 (2021-02-01)
 * Fix credential validation on writer classes.
