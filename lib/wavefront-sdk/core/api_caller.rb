@@ -63,8 +63,6 @@ module Wavefront
     #   #net[:api_base] path.
     # @param query [Hash] optional key-value pairs with will be made
     #   into a query string
-    # @param request_opts [Hash] parameters to pass through to
-    #   Faraday
     # @return [Hash] API response
     #
     def get(path, query = {})
