@@ -128,9 +128,7 @@ module Wavefront
     # @return [Hash] options loaded from file. Each key becomes a symbol
     #
     def load_profile(file, profile = 'default')
-      IniFile.load(file)[profile].each_with_object({}) do |(k, v), memo|
-        memo[k.to_sym] = v
-      end
+      IniFile.load(file)[profile].transform_keys(&:to_sym)
     rescue StandardError
       raise Wavefront::Exception::InvalidConfigFile, file
     end

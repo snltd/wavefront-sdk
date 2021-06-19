@@ -1,9 +1,15 @@
 # Changelog
 
+* Drop support for Ruby 2.4. (Breaking change.)
 * Change the name of the proxy writer from `socket` to `proxy`. (Breaking
   change.)
 * Change the name of the Unix datagram socket writer from `unix` to `socket`.
-  (Breaking change.)
+* added `Wavefront::Event#alert_firing_details`
+* added `Wavefront::Event#alert_queries_slug`
+* added `Wavefront::Event#events`
+* added `Wavefront::Event#alert_firings`
+* Add `Wavefront::MetricsPolicy`.
+* Add `Wavefront::Spy#deltas`.
 
 ## 5.4.4 (2021-02-01)
 * Fix credential validation on writer classes.

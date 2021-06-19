@@ -32,6 +32,21 @@ module Wavefront
       api.get_stream('points', points_filter(sampling, filters), options)
     end
 
+    # GET /api/spy/deltas
+    # Gets new deltas that are added to existing time series.
+    # @param sampling [Float] see #points
+    # @param filter [Hash] see #points
+    # @param options [Hash] see #points
+    # @raise Wavefront::Exception::InvalidSamplingValue
+    # @return [Nil]
+    #
+    def deltas(sampling = 0.01, filters = {}, options = {})
+      wf_sampling_value?(sampling)
+      api.get_stream('deltas',
+                     deltas_filter(sampling, filters),
+                     options)
+    end
+
     # GET /api/spy/histograms
     # Gets new histograms that are added to existing time series.
     # @param sampling [Float] see #points
@@ -101,6 +116,13 @@ module Wavefront
         host: filters.fetch(:host, nil),
         sampling: sampling,
         pointTagKey: filters.fetch(:tag_key, nil) }.compact
+    end
+
+    def deltas_filter(sampling, filters)
+      { counter: filters.fetch(:prefix, nil),
+        host: filters.fetch(:host, nil),
+        sampling: sampling,
+        counterTagKey: filters.fetch(:tag_key, nil) }.compact
     end
 
     def histograms_filter(sampling, filters)

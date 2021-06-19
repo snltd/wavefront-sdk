@@ -80,7 +80,7 @@ module Wavefront
       end
 
       def valid_acl_body?(list)
-        return true if list.is_a?(Array) && list.all? { |h| h.is_a?(String) }
+        return true if list.is_a?(Array) && list.all?(String)
 
         raise ArgumentError
       end
