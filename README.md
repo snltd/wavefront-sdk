@@ -24,7 +24,7 @@ or to build locally,
 $ gem build wavefront-sdk.gemspec
 ```
 
-`wavefront-sdk` requires Ruby >= 2.4. All its dependencies are pure
+`wavefront-sdk` requires Ruby >= 2.5. All its dependencies are pure
 Ruby, right the way down, so a compiler should never be required to
 install it.
 
@@ -41,7 +41,7 @@ method will return a `Wavefront::Response` object. This object has
 `status` and `response` methods. `status` always yields a structure
 containing `result`, `message` and `code` fields which can be
 inspected to ensure an API call was processed successfully.
-`response` gives you a the JSON response from the API, conveniently
+`response` gives you the JSON response from the API, conveniently
 processed and turned into a [`Map`](https://github.com/ahoward/map)
 object. Map objects can be interrogated in various ways. For
 instance `map['items']`, `map[:items]` and `map.items` will all get
@@ -203,7 +203,7 @@ wf.close
 ```
 
 Alternatively, pass `false` as the second argument to `Write#write`.
-(This is the legacy method, kept in for backward compatability.)
+(This is the legacy method, kept in for backward compatibility.)
 
 ```ruby
 wf = Wavefront::Write.new(Wavefront::Credentials.new.proxy)
@@ -220,7 +220,7 @@ but other methods are supported via the `writer` option.
 wf = Wavefront::Write.new(Wavefront::Credentials.new.creds, writer: :api)
 
 # To send points via a local Unix socket
-wf = Wavefront::Write.new(socket: '/tmp/wf_sock', { writer: :unix })
+wf = Wavefront::Write.new({ socket: '/tmp/wf_sock'}, { writer: :socket })
 
 # To send points over HTTP
 wf = Wavefront::Write.new(Wavefront::Credentials.new.creds, writer: :http)

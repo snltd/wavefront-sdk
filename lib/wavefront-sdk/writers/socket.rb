@@ -1,70 +1,58 @@
 # frozen_string_literal: true
 
+require 'socket'
 require_relative 'core'
 
 module Wavefront
   module Writer
     #
-    # Everything specific to writing points to a Wavefront proxy, in
-    # native Wavefront format, to a socket. (The original and,
-    # once, only way to send points.)
+    # Everything specific to writing points to a Unix datagram socket.
     #
     class Socket < Core
-      # Open a socket to a Wavefront proxy, putting the descriptor
-      # in instance variable @conn.
-      # @return [TCPSocket]
+      # Make a connection to a Unix datagram socket, putting the
+      # descriptor in instance variable @conn.
+      # This requires the name of the socket file in creds[:socket]
+      # @return [UnixSocket]
       #
       def open
         if opts[:noop]
-          logger.log('No-op requested. Not opening connection to proxy.')
+          logger.log('No-op requested. Not opening socket connection.')
           return true
         end
 
-        port = creds[:port] || default_port
-        logger.log("Connecting to #{creds[:proxy]}:#{port}.", :debug)
-        open_socket(creds[:proxy], port)
+        logger.log("Connecting to #{creds[:socket]}.", :debug)
+        open_socket(creds[:socket])
       end
 
-      # Close the connection described by the @conn instance variable.
-      #
       def close
         return if opts[:noop]
 
-        logger.log('Closing connection to proxy.', :debug)
+        logger.log('Closing socket connection.', :debug)
         conn.close
       end
 
       def validate_credentials(creds)
-        return true if creds.key?(:proxy) && creds[:proxy]
+        return true if creds.key?(:socket) && creds[:socket]
 
         raise(Wavefront::Exception::CredentialError,
-              'credentials must contain proxy address')
+              'credentials must contain socket file path')
       end
 
       private
 
-      def open_socket(proxy, port)
-        @conn = TCPSocket.new(proxy, port)
+      def open_socket(socket)
+        @conn = UNIXSocket.new(socket)
       rescue StandardError => e
         logger.log(e, :error)
         raise Wavefront::Exception::InvalidEndpoint
       end
 
       # @param point [String] point or points in native Wavefront format.
-      # @raise [SocketError] if point cannot be written
       #
       def _send_point(point)
         return if opts[:noop]
 
-        conn.puts(point)
-      rescue StandardError
-        raise Wavefront::Exception::SocketError
-      end
-
-      # return [Integer] the port to connect to, if none is supplied
-      #
-      def default_port
-        2878
+        conn.write(point)
       end
     end
   end

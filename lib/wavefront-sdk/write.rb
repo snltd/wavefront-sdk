@@ -39,7 +39,7 @@ module Wavefront
     #   verbose [Bool]
     #   debug [Bool]
     #   writer [Symbol, String] the name of the writer class to use.
-    #     Defaults to :socket
+    #     Defaults to :proxy
     #   noauto [Bool] if this is false, #write will automatically
     #     open a connection to Wavefront on each invocation. Set
     #     this to true to manually manage the connection.
@@ -62,7 +62,7 @@ module Wavefront
     #
     def defaults
       { tags: nil,
-        writer: :socket,
+        writer: :proxy,
         noop: false,
         novalidate: false,
         noauto: false,

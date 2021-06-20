@@ -27,7 +27,7 @@ class WavefrontWriteTest < MiniTest::Test
     refute(wf.opts[:noop])
     assert(wf_noop.opts[:noop])
     assert_equal(wf_tags.opts[:tags], TAGS)
-    assert_instance_of(Wavefront::Writer::Socket, wf.writer)
+    assert_instance_of(Wavefront::Writer::Proxy, wf.writer)
   end
 
   def test_composite_response
