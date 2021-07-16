@@ -19,7 +19,7 @@ module Wavefront
 
     def deprecation_warning
       logger.log('Wavefront::User is deprecated and will be removed from the ' \
-               'next major release. Please use Wavefront::Account.', :warn)
+                 'next major release. Please use Wavefront::Account.', :warn)
     end
 
     def post_initialize(_creds, _opts)

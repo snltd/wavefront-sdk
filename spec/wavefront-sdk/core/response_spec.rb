@@ -7,8 +7,8 @@ require_relative '../../../lib/wavefront-sdk/core/exception'
 require_relative '../../../lib/wavefront-sdk/core/response'
 
 GOOD_RESP = '{"status":{"result":"OK","message":"","code":200},' \
-             '"response":{"items":[{"name":"test agent"}],"offset":0,' \
-             '"limit":100,"totalItems":3,"moreItems":false}}'
+            '"response":{"items":[{"name":"test agent"}],"offset":0,' \
+            '"limit":100,"totalItems":3,"moreItems":false}}'
 
 BAD_RESP = "error='not_found'
 message='resource cannot be found'

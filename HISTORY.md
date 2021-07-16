@@ -1,13 +1,14 @@
 # Changelog
 
+## 6.0.0 (2021-07-16)
 * Drop support for Ruby 2.4. (Breaking change.)
 * Change the name of the proxy writer from `socket` to `proxy`. (Breaking
   change.)
 * Change the name of the Unix datagram socket writer from `unix` to `socket`.
-* added `Wavefront::Event#alert_firing_details`
-* added `Wavefront::Event#alert_queries_slug`
-* added `Wavefront::Event#events`
-* added `Wavefront::Event#alert_firings`
+* added `Wavefront::Event#alert_firing_details`.
+* added `Wavefront::Event#alert_queries_slug`.
+* added `Wavefront::Event#events`.
+* added `Wavefront::Event#alert_firings`.
 * Add `Wavefront::MetricsPolicy`.
 * Add `Wavefront::Spy#deltas`.
 
