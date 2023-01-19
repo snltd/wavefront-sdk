@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.0.1 (2023-01-19)
+* Bugfix for `metricspolicy` API.
+
 ## 6.0.0 (2021-07-16)
 * Drop support for Ruby 2.4. (Breaking change.)
 * Change the name of the proxy writer from `socket` to `proxy`. (Breaking

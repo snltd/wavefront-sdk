@@ -18,17 +18,17 @@ class WavefrontMetricsPolicyTest < WavefrontTestBase
   end
 
   def test_history
-    assert_gets('/api/v2/metricspolicy?offset=10&limit=100') do
+    assert_gets('/api/v2/metricspolicy/history?offset=10&limit=100') do
       wf.history(10)
     end
 
-    assert_gets('/api/v2/metricspolicy?offset=12&limit=34') do
+    assert_gets('/api/v2/metricspolicy/history?offset=12&limit=34') do
       wf.history(12, 34)
     end
   end
 
   def test_revert
-    assert_posts('/api/v2/metricspolicy/revert/5') do
+    assert_posts('/api/v2/metricspolicy/revert/5', nil, :json) do
       wf.revert(5)
     end
 
