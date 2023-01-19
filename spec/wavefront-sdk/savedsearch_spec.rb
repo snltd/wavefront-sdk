@@ -54,8 +54,8 @@ class WavefrontSavedSearchTest < WavefrontTestBase
 
   def payload
     { query: {
-      foo: '{"searchTerms":[{"type":"freetext","value":"foo"}]}'
-    },
+        foo: '{"searchTerms":[{"type":"freetext","value":"foo"}]}'
+      },
       entityType: 'DASHBOARD' }
   end
 end

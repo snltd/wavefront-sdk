@@ -4,7 +4,7 @@
 #
 require 'pathname'
 
-libdir = Pathname.new(__dir__) + 'wavefront-sdk'
+libdir = Pathname.new(__dir__).join('wavefront-sdk')
 
 libdir.children.select { |f| f.extname == '.rb' }.each do |f|
   require_relative f

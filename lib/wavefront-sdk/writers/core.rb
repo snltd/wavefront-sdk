@@ -112,7 +112,7 @@ module Wavefront
         ret = [points].flatten
         return ret unless prefix
 
-        ret.map { |pt| pt.tap { |p| p[:path] = prefix + '.' + p[:path] } }
+        ret.map { |pt| pt.tap { |p| p[:path] = "#{prefix}.#{p[:path]}" } }
       end
 
       # Filter invalid points out of an array of points

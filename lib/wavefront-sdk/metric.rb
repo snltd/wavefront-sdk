@@ -27,10 +27,10 @@ module Wavefront
       if cursor
         raise ArgumentError unless cursor.is_a?(String)
 
-        query.<< [:c, cursor]
+        query << [:c, cursor]
       end
 
-      sources.each { |source| query.<< [:h, source] }
+      sources.each { |source| query << [:h, source] }
 
       api.get('detail', query)
     end

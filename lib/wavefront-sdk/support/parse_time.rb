@@ -55,7 +55,7 @@ module Wavefront
     end
 
     def parse!
-      method = ('parse_time_' + t.class.name.downcase).to_sym
+      method = "parse_time_#{t.class.name.downcase}".to_sym
       send(method)
     rescue StandardError
       raise Wavefront::Exception::InvalidTimestamp, t

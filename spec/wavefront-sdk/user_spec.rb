@@ -127,10 +127,10 @@ class WavefrontUserTest < WavefrontTestBase
   end
 
   def test_response_shim
-    (RESOURCE_DIR + 'user_responses').each_child do |input|
+    RESOURCE_DIR.join('user_responses').each_child do |input|
       # Ugly hack for the 202 in the 'create' file
       status = input.basename.to_s == 'create.json' ? 202 : 200
-      shimmed = wf.response_shim(IO.read(input), status)
+      shimmed = wf.response_shim(File.read(input), status)
       assert_instance_of(String, shimmed)
 
       ret_obj = JSON.parse(shimmed, symbolize_names: true)

@@ -81,7 +81,7 @@ module Wavefront
       # commas in tags and descriptions. This might be too restrictive,
       # but if it is, this is the only place we need to change it.
       #
-      if str.is_a?(String) && str.size < 1024 && str =~ /^[\-\w .,]*$/
+      if str.is_a?(String) && str.size < 1024 && str =~ /^[-\w .,]*$/
         return true
       end
 
@@ -256,7 +256,7 @@ module Wavefront
     #   dashboard ID is not valid
     #
     def wf_dashboard_id?(id)
-      return true if id.is_a?(String) && id.size < 256 && id.match(/^[\w\-]+$/)
+      return true if id.is_a?(String) && id.size < 256 && id.match(/^[\w-]+$/)
 
       raise Wavefront::Exception::InvalidDashboardId, id
     end
@@ -391,7 +391,7 @@ module Wavefront
     #   is not valid
     #
     def wf_source_id?(source)
-      if source.is_a?(String) && source.match(/^[\w.\-]+$/) &&
+      if source.is_a?(String) && source.match(/^[\w.-]+$/) &&
          source.size < 1024
         return true
       end

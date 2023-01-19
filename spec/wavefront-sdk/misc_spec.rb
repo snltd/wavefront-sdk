@@ -11,8 +11,8 @@ class WavefrontMiscTest < MiniTest::Test
   # defines itself as.
   #
   def test_version_vs_history
-    history_file = WF_SDK_LOCATION + 'HISTORY.md'
-    history_vers = IO.read(history_file).match(/^## (\d+\.\d+\.\d+) \(/)
+    history_file = WF_SDK_LOCATION.join('HISTORY.md')
+    history_vers = File.read(history_file).match(/^## (\d+\.\d+\.\d+) \(/)
     assert_equal(WF_SDK_VERSION, history_vers.captures.first)
   end
 end

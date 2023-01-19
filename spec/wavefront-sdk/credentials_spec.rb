@@ -5,8 +5,8 @@ require 'pathname'
 require_relative '../spec_helper'
 require_relative '../../lib/wavefront-sdk/credentials'
 
-CONF1 = RESOURCE_DIR + 'test.conf'
-CONF2 = RESOURCE_DIR + 'test2.conf'
+CONF1 = RESOURCE_DIR.join('test.conf')
+CONF2 = RESOURCE_DIR.join('test2.conf')
 
 # Test SDK base class end-to-end
 #
@@ -60,11 +60,7 @@ end
 # Test individual methods. We must override the constructor to do
 # this.
 #
-# rubocop:disable Lint/MissingSuper
-class Giblets < Wavefront::Credentials
-  def initialize; end
-end
-# rubocop:enable Lint/MissingSuper
+class Giblets < Wavefront::Credentials; end
 
 # And here are the tests
 #
@@ -119,9 +115,9 @@ class GibletsTest < MiniTest::Test
 
   def test_populate
     wf.populate(raw)
-    config = wf.instance_variable_get('@config')
-    creds = wf.instance_variable_get('@creds')
-    proxy = wf.instance_variable_get('@proxy')
+    config = wf.instance_variable_get(:@config)
+    creds = wf.instance_variable_get(:@creds)
+    proxy = wf.instance_variable_get(:@proxy)
 
     assert_instance_of(Map, config)
     assert_equal('raw_proxy', config.proxy)
@@ -143,8 +139,8 @@ class GibletsTest < MiniTest::Test
     assert_equal(3, x.length)
     x.each { |p| assert_instance_of(Pathname, p) }
     assert_includes(x, Pathname.new('/etc/wavefront/credentials'))
-    assert_includes(x, Pathname.new(ENV['HOME']) + '.wavefront')
-    assert_includes(x, Pathname.new(ENV['HOME']) + '.wavefront.conf')
+    assert_includes(x, Pathname.new(Dir.home).join('.wavefront'))
+    assert_includes(x, Pathname.new(Dir.home).join('.wavefront.conf'))
   end
 
   def test_cred_files_opts
@@ -197,7 +193,7 @@ class GibletsTest < MiniTest::Test
     end
 
     assert_raises Wavefront::Exception::InvalidConfigFile do
-      wf.load_profile(RESOURCE_DIR + 'malformed.conf')
+      wf.load_profile(RESOURCE_DIR.join('malformed.conf'))
     end
   end
 end

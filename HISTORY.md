@@ -1,6 +1,8 @@
 # Changelog
 
-## 6.0.1 (2023-01-19)
+## 7.0.0 (2023-01-19)
+* Drop support for Ruby 2.5. (Breaking change.)
+* Drop support for Ruby 2.6. (Breaking change.)
 * Bugfix for `metricspolicy` API.
 
 ## 6.0.0 (2021-07-16)

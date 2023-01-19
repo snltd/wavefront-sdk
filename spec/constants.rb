@@ -19,8 +19,8 @@ DUMMY_RESPONSE = '{"status":{"result":"OK","message":"","code":200},' \
                  '"response":{"items":[{"name":"test data"}],"offset":0,' \
                  '"limit":100,"totalItems":3,"moreItems":false}}'
 
-RESOURCE_DIR = (Pathname.new(__FILE__).dirname +
-                'wavefront-sdk' + 'resources').freeze
+RESOURCE_DIR = Pathname.new(__FILE__).dirname.join('wavefront-sdk',
+                                                   'resources').freeze
 
 U_ACL_1 = 'someone@example.com'
 U_ACL_2 = 'other@elsewhere.com'

@@ -98,7 +98,7 @@ module Wavefront
       end
 
       path = [entity]
-      path.<< 'deleted' if deleted
+      path << 'deleted' if deleted
       api.post(path, body, 'application/json')
     end
 
@@ -119,8 +119,8 @@ module Wavefront
       raise ArgumentError unless entity.is_a?(String) && body.is_a?(Hash)
 
       path = [entity]
-      path.<< 'deleted' if deleted
-      path.<< facet || 'facets'
+      path << 'deleted' if deleted
+      path << (facet || 'facets')
       api.post(path, body, 'application/json')
     end
     # rubocop:enable Metrics/ParameterLists

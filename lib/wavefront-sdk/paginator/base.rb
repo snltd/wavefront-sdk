@@ -166,7 +166,7 @@ module Wavefront
             end
 
             p_args = set_pagination(offset, page_size, p_args)
-            resp.response.items.map { |i| y.<< i }
+            resp.response.items.map { |i| y << i }
             raise StopIteration unless resp.more_items?
           end
         end.lazy
