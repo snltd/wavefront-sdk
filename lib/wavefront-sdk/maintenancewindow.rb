@@ -93,7 +93,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def pending(hours = 24)
-      cutoff = Time.now.to_i + hours * 3600
+      cutoff = Time.now.to_i + (hours * 3600)
 
       ret = windows_in_state(:pending)
 

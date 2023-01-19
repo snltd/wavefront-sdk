@@ -30,7 +30,7 @@ module Wavefront
     # @param limit [Integer] the number of versions to return
     #
     def history(offset = 0, limit = 100)
-      api.get('', offset: offset, limit: limit)
+      api.get('history', offset: offset, limit: limit)
     end
 
     # POST /api/v2/metricspolicy/revert/{version}
@@ -40,7 +40,7 @@ module Wavefront
     #
     def revert(version)
       wf_version?(version)
-      api.post(['revert', version].uri_concat)
+      api.post(['revert', version].uri_concat, nil, 'application/json')
     end
 
     # PUT /api/v2/metricspolicy

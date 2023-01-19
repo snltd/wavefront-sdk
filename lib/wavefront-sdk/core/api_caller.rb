@@ -229,14 +229,8 @@ module Wavefront
       return if noop
 
       pp args if debug
-
       resp = conn.public_send(method, *args)
-
-      if debug
-        require 'pp'
-        pp resp
-      end
-
+      pp resp if debug
       respond(resp)
     end
 

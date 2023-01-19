@@ -37,7 +37,7 @@ module Wavefront
     def gauge(path, value, tags = nil)
       gauge = { path: path, ts: Time.now.to_i, value: value }
       gauge[:tags] = tags if tags
-      @buf[:gauges].<< gauge
+      @buf[:gauges] << gauge
     end
 
     # These counters are internal, and specific to the SDK. When

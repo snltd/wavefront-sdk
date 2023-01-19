@@ -51,7 +51,7 @@ module Wavefront
     # Were there items in the response?
     #
     def empty?
-      response.items.size.zero?
+      response.items.empty?
     rescue StandardError
       false
     end

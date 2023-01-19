@@ -24,7 +24,7 @@ or to build locally,
 $ gem build wavefront-sdk.gemspec
 ```
 
-`wavefront-sdk` requires Ruby >= 2.5. All its dependencies are pure
+`wavefront-sdk` requires Ruby >= 2.7. All its dependencies are pure
 Ruby, right the way down, so a compiler should never be required to
 install it.
 

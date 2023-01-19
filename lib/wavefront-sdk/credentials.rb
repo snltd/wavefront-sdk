@@ -82,8 +82,8 @@ module Wavefront
         Array(Pathname.new(opts[:file]))
       else
         [Pathname.new('/etc/wavefront/credentials'),
-         Pathname.new(ENV['HOME']) + '.wavefront.conf',
-         Pathname.new(ENV['HOME']) + '.wavefront']
+         Pathname.new(Dir.home).join('.wavefront.conf'),
+         Pathname.new(Dir.home).join('.wavefront')]
       end
     end
 

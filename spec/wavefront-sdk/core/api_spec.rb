@@ -22,7 +22,7 @@ class WavefrontCoreApiTest < MiniTest::Test
   end
 
   def test_hash_for_update
-    wf.instance_variable_set('@update_keys', %i[k1 k2])
+    wf.instance_variable_set(:@update_keys, %i[k1 k2])
     body = { k1: 'ov1',
              k2: 'ov2',
              k3: 'ov3',
