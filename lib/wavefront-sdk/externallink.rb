@@ -38,7 +38,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/extlink/id
+    # DELETE /api/v2/extlink/{id}
     # Delete a specific external link.
     #
     # @param id [String] ID of the link
@@ -49,7 +49,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/extlink/id
+    # GET /api/v2/extlink/{id}
     # Get a specific external link.
     #
     # @param id [String] ID of the limnk
@@ -60,7 +60,7 @@ module Wavefront
       api.get(id)
     end
 
-    # PUT /api/v2/extlink/id
+    # PUT /api/v2/extlink/{id}
     # Update a specific external link.
     #
     # @param id [String] a Wavefront external link ID

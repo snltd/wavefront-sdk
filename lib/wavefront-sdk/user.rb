@@ -49,7 +49,7 @@ module Wavefront
       api.post("?sendEmail=#{send_email}", body, 'application/json')
     end
 
-    # DELETE /api/v2/user/id
+    # DELETE /api/v2/user/{id}
     # Delete a specific user. See also #delete_users.
     #
     # @param id [String] ID of the user
@@ -61,7 +61,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/user/id
+    # GET /api/v2/user/{id}
     # Retrieves a user by identifier (email addr).
     #
     # @param id [String] ID of the user
@@ -73,7 +73,7 @@ module Wavefront
       api.get(id)
     end
 
-    # PUT /api/v2/user/id
+    # PUT /api/v2/user/{id}
     # Update a specific user definition.
     #
     # @param id [String] a Wavefront user ID
@@ -124,7 +124,7 @@ module Wavefront
                'application/json')
     end
 
-    # PUT /api/v2/user/id/grant
+    # POST /api/v2/user/{id}/grant
     # Grants a specific user permission.
     #
     # @param id [String] ID of the user
@@ -147,7 +147,7 @@ module Wavefront
                'application/x-www-form-urlencoded')
     end
 
-    # PUT /api/v2/user/id/revoke
+    # POST /api/v2/user/{id}/revoke
     # Revokes a specific user permission.
     #
     # @param id [String] ID of the user

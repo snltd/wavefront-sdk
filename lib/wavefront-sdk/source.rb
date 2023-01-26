@@ -43,7 +43,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/source/id
+    # DELETE /api/v2/source/{id}
     # Delete metadata (description and tags) for a specific source.
     #
     # @param id [String] ID of the source
@@ -54,7 +54,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # POST /api/v2/source/id/description
+    # POST /api/v2/source/{id}/description
     # Set description associated with a specific source
 
     def description_set(id, description)
@@ -63,7 +63,7 @@ module Wavefront
                'application/json')
     end
 
-    # DELETE /api/v2/source/id/description
+    # DELETE /api/v2/source/{id}/description
     # Remove description from a specific source
 
     def description_delete(id)
@@ -71,7 +71,7 @@ module Wavefront
       api.delete([id, 'description'].uri_concat)
     end
 
-    # GET /api/v2/source/id
+    # GET /api/v2/source/{id}
     # Get a specific source for a customer.
     #
     # @param id [String] ID of the source
@@ -85,7 +85,7 @@ module Wavefront
       api.get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/source/id
+    # PUT /api/v2/source/{id}
     # Update metadata (description or tags) for a specific source.
     #
     # @param id [String] a Wavefront alert ID

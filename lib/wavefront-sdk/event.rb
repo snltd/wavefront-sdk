@@ -56,7 +56,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/event/id
+    # DELETE /api/v2/event/{id}
     # Delete a specific event.
     #
     # @param id [String] ID of the alert
@@ -67,7 +67,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/event/id
+    # GET /api/v2/event/{id}
     # Get a specific event / Get a specific historical version of a
     # specific event.
     #
@@ -83,7 +83,7 @@ module Wavefront
       api.get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/event/id
+    # PUT /api/v2/event/{id}
     # Update a specific event
     #
     # This method helps you update one or more properties of an event.
@@ -107,7 +107,7 @@ module Wavefront
               'application/json')
     end
 
-    # POST /api/v2/event/id/close
+    # POST /api/v2/event/{id}/close
     # Close a specific event.
     #
     # @param id [String] the ID of the event

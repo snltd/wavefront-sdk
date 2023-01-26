@@ -40,7 +40,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/dashboard/id
+    # DELETE /api/v2/dashboard/{id}
     # Delete a specific dashboard.
     # Deleting an active dashboard moves it to 'trash', from where
     # it can be restored with an #undelete operation. Deleting a
@@ -54,7 +54,8 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/dashboard/id
+    # GET /api/v2/dashboard/{id}
+    # GET /api/v2/dashboard/{id}/history/{version}
     # Get a specific dashboard / Get a specific historical version
     # of a specific dashboard.
     #
@@ -70,7 +71,7 @@ module Wavefront
       api.get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/dashboard/id
+    # PUT /api/v2/dashboard/{id}
     # Update a specific dashboard.
     #
     # @param id [String] a Wavefront alert ID
@@ -103,7 +104,7 @@ module Wavefront
     end
     alias favourite favorite
 
-    # GET /api/v2/dashboard/id/history
+    # GET /api/v2/dashboard/{id}/history
     # Get the version history of a dashboard.
     #
     # @param id [String] ID of the dashboard
@@ -114,7 +115,7 @@ module Wavefront
       api.get([id, 'history'].uri_concat)
     end
 
-    # POST /api/v2/dashboard/id/undelete
+    # POST /api/v2/dashboard/{id}/undelete
     # Move a dashboard from 'trash' back into active service.
     #
     # @param id [String] ID of the dashboard

@@ -9,10 +9,10 @@ module Wavefront
     # valid_id? method to perform ID validation.
     #
     module Tag
-      # GET /api/v2/{object}/id/tag
-      # Get all tags associated with a specific object.
+      # GET /api/v2/{entity}/{id}/tag
+      # Get all tags associated with a specific entity.
       #
-      # @param id [String] ID of the object
+      # @param id [String] ID of the entity
       # @return [Wavefront::Response]
       #
       def tags(id)
@@ -20,10 +20,10 @@ module Wavefront
         api.get([id, 'tag'].uri_concat)
       end
 
-      # POST /api/v2/{object}/id/tag
-      # Set all tags associated with a specific object.
+      # POST /api/v2/{entity}/{id}/tag
+      # Set all tags associated with a specific entity.
       #
-      # @param id [String] ID of the object
+      # @param id [String] ID of the entity
       # @param tags [Array] list of tags to set.
       # @return [Wavefront::Response]
       #
@@ -34,10 +34,10 @@ module Wavefront
         api.post([id, 'tag'].uri_concat, tags.to_json, 'application/json')
       end
 
-      # DELETE /api/v2/{object}/id/tag/tagValue
-      # Remove a tag from a specific object.
+      # DELETE /api/v2/{entity}/{id}/tag/{tagValue}
+      # Remove a tag from a specific entity.
       #
-      # @param id [String] ID of the object
+      # @param id [String] ID of the entity
       # @param tag [String] tag to delete
       # @return [Wavefront::Response]
       #
@@ -47,10 +47,10 @@ module Wavefront
         api.delete([id, 'tag', tag].uri_concat)
       end
 
-      # PUT /api/v2/{object}/id/tag/tagValue
-      # Add a tag to a specific object.
+      # PUT /api/v2/{entity}/{id}/tag/{tagValue}
+      # Add a tag to a specific entity.
       #
-      # @param id [String] ID of the object
+      # @param id [String] ID of the entity
       # @param tag [String] tag to set.
       # @return [Wavefront::Response]
       #
