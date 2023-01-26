@@ -88,6 +88,7 @@ module Wavefront
       writer.close
     end
 
+    # POST /report
     # A wrapper to the writer class's #write method.
     # Writers implement this method differently, Check the
     # appropriate class documentation for @return information etc.

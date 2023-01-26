@@ -29,7 +29,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/notificant/id
+    # DELETE /api/v2/notificant/{id}
     # Delete a specific notificant
     #
     # @param id [String] ID of the notification target
@@ -40,7 +40,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/notificant/id
+    # GET /api/v2/notificant/{id}
     # Get a specific notification target
     #
     # @param id [String] ID of the notification target
@@ -51,7 +51,7 @@ module Wavefront
       api.get(id)
     end
 
-    # PUT /api/v2/notificant/id
+    # PUT /api/v2/notificant/{id}
     # Update a specific notification target
     #
     # @param id [String] a Wavefront notification target ID
@@ -72,7 +72,7 @@ module Wavefront
               'application/json')
     end
 
-    # POST /api/v2/notificant/test/id
+    # POST /api/v2/notificant/test/{id}
     # Create a notification target.
     #
     # @param body [Hash] description of notification target

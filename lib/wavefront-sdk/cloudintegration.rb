@@ -32,7 +32,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/cloudintegration/id
+    # DELETE /api/v2/cloudintegration/{id}
     # Delete a specific cloud integration
     #
     # Deleting an active integration moves it to 'trash', from where
@@ -47,7 +47,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/cloudintegration/id
+    # GET /api/v2/cloudintegration/{id}
     # Get a specific cloud integration
     #
     # @param id [String] ID of the integration
@@ -58,7 +58,7 @@ module Wavefront
       api.get(id)
     end
 
-    # PUT /api/v2/cloudintegration/id
+    # PUT /api/v2/cloudintegration/{id}
     # Update a specific cloud integration
     #
     # @param id [String] ID of the integration
@@ -91,7 +91,7 @@ module Wavefront
       api.post([id, 'enable'].uri_concat)
     end
 
-    # POST /api/v2/cloudintegration/id/undelete
+    # POST /api/v2/cloudintegration/{id}/undelete
     # Undelete a specific cloud integration
     #
     # @param id [String] ID of the integration
@@ -102,14 +102,16 @@ module Wavefront
       api.post([id, 'undelete'].uri_concat)
     end
 
-    # POST /api/v2/cloudintegration/awsExternalIdCreate an external id
+    # POST /api/v2/cloudintegration/awsExternalId
+    # Create an external id
     # @return [Wavefront::Response]
     #
     def create_aws_external_id
       api.post('awsExternalId', nil, 'application/json')
     end
 
-    # DELETE /api/v2/cloudintegration/awsExternalId/{id}DELETEs an external id
+    # DELETE /api/v2/cloudintegration/awsExternalId/{id}
+    # Deletes an external id
     # that was created by Wavefront
     # @param id [String] AWS external ID
     # @return [Wavefront::Response]
@@ -119,8 +121,8 @@ module Wavefront
       api.delete(['awsExternalId', external_id].uri_concat)
     end
 
-    # GET /api/v2/cloudintegration/awsExternalId/{id}GETs (confirms) a valid
-    # external id that was created by Wavefront
+    # GET /api/v2/cloudintegration/awsExternalId/{id}
+    # GETs (confirms) a valid external id that was created by Wavefront
     # @param id [String] AWS external ID
     # @return [Wavefront::Response]
     #

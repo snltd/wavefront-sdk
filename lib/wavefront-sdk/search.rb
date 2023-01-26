@@ -10,8 +10,8 @@ module Wavefront
   # lot up to the user. It may grow, with convenience methods.
   #
   class Search < CoreApi
-    # POST /api/v2/search/entity
-    # POST /api/v2/search/entity/deleted
+    # POST /api/v2/search/{entity}
+    # POST /api/v2/search/{entity}/deleted
     # Run a search query. This single method maps to many API paths.
     # It is a wrapper around #raw_search() for common, single
     # key-value searches. If you need to do more complicated things,
@@ -78,8 +78,8 @@ module Wavefront
         ascending: !options[:desc] || true }
     end
 
-    # POST /api/v2/search/entity
-    # POST /api/v2/search/entity/deleted
+    # POST /api/v2/search/{entity}
+    # POST /api/v2/search/{entity}/deleted
     # Run a search query. This single method maps to many API paths.
     #
     # @param entity [String] the type of Wavefront object you wish
@@ -102,6 +102,8 @@ module Wavefront
       api.post(path, body, 'application/json')
     end
 
+    # POST /api/v2/search/{entity}/facets
+    # POST /api/v2/search/{entity}/{facet}
     # @param entity [String] the type of Wavefront object you wish
     #   to search
     # @param body [Hash] the query to use for searching. Refer to

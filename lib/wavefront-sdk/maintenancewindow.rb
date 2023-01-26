@@ -38,7 +38,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/maintenancewindow/id
+    # DELETE /api/v2/maintenancewindow/{id}
     # Delete a specific maintenance window.
     #
     # @param id [String, Integer] ID of the maintenance window
@@ -49,7 +49,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/maintenancewindow/id
+    # GET /api/v2/maintenancewindow/{id}
     # Get a specific maintenance window.
     #
     # @param id [String, Integer] ID of the maintenance window
@@ -60,7 +60,7 @@ module Wavefront
       api.get(id)
     end
 
-    # PUT /api/v2/maintenancewindow/id
+    # PUT /api/v2/maintenancewindow/{id}
     # Update a specific maintenance window.
     #
     # @param id [String] a Wavefront maintenance window ID

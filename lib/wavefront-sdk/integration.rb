@@ -19,7 +19,7 @@ module Wavefront
       api.get('', offset: offset, limit: limit)
     end
 
-    # GET /api/v2/integration/id
+    # GET /api/v2/integration/{id}
     # Gets a single Wavefront integration by its id, along with its
     # status
     #
@@ -31,7 +31,7 @@ module Wavefront
       api.get(id)
     end
 
-    # POST /api/v2/integration/id/install
+    # POST /api/v2/integration/{id}/install
     # Installs a Wavefront integration
     #
     # @param id [String] ID of the integration
@@ -53,7 +53,7 @@ module Wavefront
       api.post([id, 'install-all-alerts'].uri_concat, nil)
     end
 
-    # GET /api/v2/integration/id/status
+    # GET /api/v2/integration/{id}/status
     # Gets the status of a single Wavefront integration
     #
     # @param id [String] ID of the integration
@@ -64,7 +64,7 @@ module Wavefront
       api.get([id, 'status'].uri_concat)
     end
 
-    # POST /api/v2/integration/id/uninstall
+    # POST /api/v2/integration/{id}/uninstall
     # Uninstalls a Wavefront integration
     #
     # @param id [String] ID of the integration

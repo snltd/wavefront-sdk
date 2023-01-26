@@ -18,7 +18,7 @@ module Wavefront
       api.get('', offset: offset, limit: limit, unreadOnly: unread_only)
     end
 
-    # POST /api/v2/message/id/read
+    # POST /api/v2/message/{id}/read
     # Mark a specific message as read
     #
     # @param id [String] message ID to mark as read

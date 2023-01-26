@@ -44,7 +44,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/alert/id
+    # DELETE /api/v2/alert/{id}
     # Delete a specific alert.
     #
     # Deleting an active alert moves it to 'trash', from where it can
@@ -59,8 +59,8 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/alert/id
-    # GET /api/v2/alert/id/history/version
+    # GET /api/v2/alert/{id}
+    # GET /api/v2/alert/{id}/history/version
     # Get a specific alert / Get a specific historical version of a
     # specific alert.
     #
@@ -91,7 +91,7 @@ module Wavefront
       resp
     end
 
-    # PUT /api/v2/alert/id
+    # PUT /api/v2/alert/{id}
     # Update a specific alert.
     #
     # @param id [String] a Wavefront alert ID
@@ -128,7 +128,7 @@ module Wavefront
                  v: version }, 'application/json')
     end
 
-    # GET /api/v2/alert/id/history
+    # GET /api/v2/alert/{id}/history
     # Get the version history of a specific alert.
     #
     # @param id [String] ID of the alert
@@ -151,7 +151,7 @@ module Wavefront
       api.post([id, 'install'].uri_concat, nil)
     end
 
-    # POST /api/v2/alert/id/snooze
+    # POST /api/v2/alert/{id}/snooze
     # Snooze a specific alert for some number of seconds.
     #
     # @param id [String] ID of the alert
@@ -169,7 +169,7 @@ module Wavefront
       wf_alert_id?(id)
     end
 
-    # POST /api/v2/alert/id/undelete
+    # POST /api/v2/alert/{id}/undelete
     # Undelete a specific alert.
     #
     # @param id [String] ID of the alert
@@ -188,7 +188,7 @@ module Wavefront
       api.post([id, 'uninstall'].uri_concat, nil)
     end
 
-    # POST /api/v2/alert/id/unsnooze
+    # POST /api/v2/alert/{id}/unsnooze
     # Unsnooze a specific alert.
     #
     # @param id [String] ID of the alert

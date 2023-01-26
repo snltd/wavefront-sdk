@@ -34,7 +34,7 @@ module Wavefront
       api.post('', body, 'application/json')
     end
 
-    # DELETE /api/v2/derivedmetric/id
+    # DELETE /api/v2/derivedmetric/{id}
     # Delete a specific derived metric definition.
     # Deleting an active derived metric moves it to 'trash', from
     # where it can be restored with an #undelete operation. Deleting
@@ -48,7 +48,8 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/derivedmetric/id
+    # GET /api/v2/derivedmetric/{id}
+    # GET /api/v2/derivedmetric/{id}/history/{version}
     # Get a specific derived metric definition / Get a specific
     # historical version of a specific derived metric definition.
     #
@@ -64,7 +65,7 @@ module Wavefront
       api.get(fragments.uri_concat)
     end
 
-    # PUT /api/v2/derivedmetric/id
+    # PUT /api/v2/derivedmetric/{id}
     # Update a specific derived metric definition.
     #
     # @param id [String] a Wavefront alert ID
@@ -85,7 +86,7 @@ module Wavefront
               'application/json')
     end
 
-    # GET /api/v2/derivedmetric/id/history
+    # GET /api/v2/derivedmetric/{id}/history
     # Get the version history of a derived metric definition.
     #
     # @param id [String] ID of the derived metric
@@ -96,7 +97,7 @@ module Wavefront
       api.get([id, 'history'].uri_concat)
     end
 
-    # POST /api/v2/derivedmetric/id/undelete
+    # POST /api/v2/derivedmetric/{id}/undelete
     # Move a derived metric definition from 'trash' back into active
     # service.
     #

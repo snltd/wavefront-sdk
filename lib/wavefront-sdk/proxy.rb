@@ -17,7 +17,7 @@ module Wavefront
       api.get('', offset: offset, limit: limit)
     end
 
-    # DELETE /api/v2/proxy/id
+    # DELETE /api/v2/proxy/{id}
     # Delete a specific proxy
     #
     # Deleting an active proxy moves it to 'trash', from where it
@@ -32,7 +32,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # GET /api/v2/proxy/id
+    # GET /api/v2/proxy/{id}
     # Get a specific proxy
     #
     # @param id [String] ID of the proxy
@@ -43,7 +43,7 @@ module Wavefront
       api.get(id)
     end
 
-    # POST /api/v2/proxy/id/undelete
+    # POST /api/v2/proxy/{id}/undelete
     # Undelete a specific proxy
     #
     # Move a proxy from 'trash' back into active service.
@@ -56,7 +56,7 @@ module Wavefront
       api.post([id, 'undelete'].uri_concat)
     end
 
-    # PUT /api/v2/proxy/id
+    # PUT /api/v2/proxy/{id}
     # Update the name of a specific proxy
     #
     # Rename a proxy. This changes the human-readable name, not the

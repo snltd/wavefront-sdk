@@ -25,7 +25,7 @@ module Wavefront
       api.post('', nil, 'application/json')
     end
 
-    # DELETE /api/v2/apitoken/id
+    # DELETE /api/v2/apitoken/{id}
     # Delete the specified api token
     #
     # @param id [String] ID of the api token
@@ -36,7 +36,7 @@ module Wavefront
       api.delete(id)
     end
 
-    # PUT /api/v2/apitoken/id
+    # PUT /api/v2/apitoken/{id}
     # Update the name of the specified api token
     #
     # @param id [String] ID of the API token
