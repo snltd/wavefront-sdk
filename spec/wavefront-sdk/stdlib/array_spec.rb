@@ -6,7 +6,7 @@ require_relative '../../../lib/wavefront-sdk/stdlib/array'
 
 # Test extensions to stdlib's Array class
 #
-class ArrayTest < MiniTest::Test
+class ArrayTest < Minitest::Test
   def test_uri_concat
     assert_equal('a/b', %w[a b].uri_concat)
     assert_equal('/a/b', ['', 'a', 'b'].uri_concat)

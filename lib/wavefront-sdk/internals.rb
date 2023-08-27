@@ -8,7 +8,7 @@ module Wavefront
   # Methods to inspect the SDK itselr.
   #
   class Internals
-    API_REGEX = %r{^\s+ # (GET|POST|PUT|DELETE|PATCH) /}.freeze
+    API_REGEX = %r{^\s+ # (GET|POST|PUT|DELETE|PATCH) /}
 
     # @return [Array[Pathname]] SDK API files
     #

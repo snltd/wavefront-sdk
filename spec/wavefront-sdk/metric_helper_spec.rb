@@ -13,7 +13,7 @@ WH_TAGS  = { t1: 'v1', t2: 'v2' }.freeze
 # Tests for the MetricHelper class.
 #
 # rubocop:disable Style/NumericLiterals
-class WavefrontMetricHelperTest < MiniTest::Test
+class WavefrontMetricHelperTest < Minitest::Test
   attr_reader :wf, :wfd
 
   def setup

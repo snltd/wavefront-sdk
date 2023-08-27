@@ -6,7 +6,7 @@ require_relative '../../spec_helper'
 
 # Tests for summarizer
 #
-class WavefronWriterSummaryTest < MiniTest::Test
+class WavefronWriterSummaryTest < Minitest::Test
   attr_reader :wf
 
   def setup

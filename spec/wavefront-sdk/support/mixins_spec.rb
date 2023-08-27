@@ -7,7 +7,7 @@ require 'spy/integration'
 
 # Test SDK mixins
 #
-class WavefrontMixinsTest < MiniTest::Test
+class WavefrontMixinsTest < Minitest::Test
   include Wavefront::Mixins
 
   def test_parse_time

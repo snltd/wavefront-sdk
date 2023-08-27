@@ -15,7 +15,7 @@ WS_CREDS = { proxy: 'wavefront-proxy' }.freeze
 
 # The Proxy class writes to a proxy TCP socket
 #
-class WavefrontWriterSocketTest < MiniTest::Test
+class WavefrontWriterSocketTest < Minitest::Test
   attr_reader :wf, :wf_noop
 
   def setup

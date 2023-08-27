@@ -11,7 +11,7 @@ require_relative 'resources/dummy_points'
 # This class is sufficiently different to the API calling classes
 # that it doesn't use spec helper or inherit anything.
 #
-class WavefrontWriteTest < MiniTest::Test
+class WavefrontWriteTest < Minitest::Test
   attr_reader :wf, :wf_noop, :wf_tags
 
   def setup

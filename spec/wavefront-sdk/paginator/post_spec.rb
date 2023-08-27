@@ -19,7 +19,7 @@ end
 
 # Test POST pagination
 #
-class WavefrontPaginatorPostTest < MiniTest::Test
+class WavefrontPaginatorPostTest < Minitest::Test
   attr_reader :wf, :apicaller, :conn
 
   def setup

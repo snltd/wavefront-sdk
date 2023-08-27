@@ -9,7 +9,7 @@ TSM = 1_517_151_869_523
 
 # Test parse_time class
 #
-class WavefrontParseTimeTest < MiniTest::Test
+class WavefrontParseTimeTest < Minitest::Test
   attr_reader :pts, :ptm
 
   def setup

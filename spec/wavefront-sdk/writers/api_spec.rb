@@ -10,7 +10,7 @@ HEADERS = POST_HEADERS.merge('Content-Type': 'application/octet-stream')
 # The report class test will test that an API call is made. Here all
 # that's left to test is the #validate_credentials method.
 #
-class WavefrontWriterApiTest < MiniTest::Test
+class WavefrontWriterApiTest < Minitest::Test
   attr_reader :wf
 
   def setup

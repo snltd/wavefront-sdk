@@ -17,7 +17,7 @@ WU_CREDS = { socket: UNIX_SOCK }.freeze
 
 # Test UNIX Datagram socket writing
 #
-class WavefrontWriterUnixTest < MiniTest::Test
+class WavefrontWriterUnixTest < Minitest::Test
   attr_reader :wf, :wf_noop
 
   def setup

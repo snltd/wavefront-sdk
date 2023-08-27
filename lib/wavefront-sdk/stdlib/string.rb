@@ -11,6 +11,6 @@ class String
   # @return [String] a URI path
   #
   def tagescape
-    gsub(/"/, '\"')
+    gsub('"', '\"')
   end
 end

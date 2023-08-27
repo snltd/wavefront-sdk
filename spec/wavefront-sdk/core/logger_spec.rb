@@ -7,7 +7,7 @@ require_relative '../../../lib/wavefront-sdk/core/logger'
 
 # Test SDK logger class
 #
-class WavefrontLoggerTest < MiniTest::Test
+class WavefrontLoggerTest < Minitest::Test
   attr_reader :wfl
 
   def setup
