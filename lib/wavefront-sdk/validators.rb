@@ -197,7 +197,7 @@ module Wavefront
     def wf_point_tag?(key, val)
       if key && val && (key.size + val.size < 254) &&
          key =~ /^[\w\-.:]+$/ && val !~ /\\$/
-        return
+        return false
       end
 
       raise Wavefront::Exception::InvalidTag, "#{key}=#{val}"
@@ -589,10 +589,10 @@ module Wavefront
     #   ID is not valid
     #
     def wf_account_id?(id)
-      return true if wf_user_id?(id)
+      true if wf_user_id?(id)
     rescue Wavefront::Exception::InvalidUserId
       begin
-        return true if wf_serviceaccount_id?(id)
+        true if wf_serviceaccount_id?(id)
       rescue Wavefront::Exception::InvalidServiceAccountId
         raise Wavefront::Exception::InvalidAccountId, id
       end

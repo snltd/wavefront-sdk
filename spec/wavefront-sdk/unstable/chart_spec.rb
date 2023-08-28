@@ -6,7 +6,7 @@ require_relative '../../../lib/wavefront-sdk/unstable/chart'
 
 # Unit tests for Chart class
 #
-class WavefrontChartTest < MiniTest::Test
+class WavefrontChartTest < Minitest::Test
   attr_reader :wf
 
   def setup

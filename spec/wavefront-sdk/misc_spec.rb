@@ -6,7 +6,7 @@ require_relative '../../lib/wavefront-sdk/defs/version'
 
 # Tests for things that aren't in the SDK itself.
 #
-class WavefrontMiscTest < MiniTest::Test
+class WavefrontMiscTest < Minitest::Test
   # Check the latest version mentioned in the changelog is the version the SDK
   # defines itself as.
   #

@@ -2,6 +2,9 @@
 
 * Add `Wavefront::Internal` methods to show API coverage.
 
+## 8.0.0 (2023-08-xx)
+* Drop support for Ruby 2.7 (Breaking change.)
+
 ## 7.0.0 (2023-01-19)
 * Drop support for Ruby 2.5. (Breaking change.)
 * Drop support for Ruby 2.6. (Breaking change.)

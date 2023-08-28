@@ -7,7 +7,7 @@ require_relative '../../lib/wavefront-sdk/distribution'
 # Most of the distribution methods are inherited from the Write
 # class so they aren't tested again here.
 #
-class WavefrontDistributionTest < MiniTest::Test
+class WavefrontDistributionTest < Minitest::Test
   attr_reader :wf
 
   def setup

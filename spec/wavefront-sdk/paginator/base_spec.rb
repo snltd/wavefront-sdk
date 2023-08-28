@@ -18,7 +18,7 @@ end
 
 # Paginator tests
 #
-class WavefrontPaginatorBaseTest < MiniTest::Test
+class WavefrontPaginatorBaseTest < Minitest::Test
   attr_reader :wf, :apicaller, :conn
 
   def setup

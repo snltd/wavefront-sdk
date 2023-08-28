@@ -6,7 +6,7 @@ require_relative '../../../lib/wavefront-sdk/stdlib/hash'
 
 # Test extensions to stdlib hash class
 #
-class HashTest < MiniTest::Test
+class HashTest < Minitest::Test
   def test_to_wf_tag
     assert_equal('', {}.to_wf_tag)
     assert_equal('gt1="gv1" gt2="gv2"',

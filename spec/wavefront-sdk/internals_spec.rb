@@ -7,7 +7,7 @@ require_relative '../../lib/wavefront-sdk/internals'
 
 # Tests for internal methods
 #
-class TestInternals < MiniTest::Test
+class TestInternals < Minitest::Test
   attr_reader :t
 
   def setup

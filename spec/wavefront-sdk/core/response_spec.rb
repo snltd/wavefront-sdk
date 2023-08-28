@@ -20,7 +20,7 @@ ERR_RESP = { error: 'HTTP 415 Unsupported Media Type',
 # Unit tests for Response class. Also indirectly tests the Status
 # type.
 #
-class WavefrontResponseTest < MiniTest::Test
+class WavefrontResponseTest < Minitest::Test
   attr_reader :wfg, :wfb, :wfe
 
   def setup

@@ -8,7 +8,7 @@ require_relative '../../../lib/wavefront-sdk/core/exception'
 
 # Test user mixins
 #
-class WavefrontUserMixinsTest < MiniTest::Test
+class WavefrontUserMixinsTest < Minitest::Test
   include Wavefront::Mixin::User
   include Wavefront::Validators
 

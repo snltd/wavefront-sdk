@@ -6,7 +6,7 @@ require_relative '../../lib/wavefront-sdk/spy'
 
 # Unit tests for Spy class
 #
-class WavefrontSpyTest < MiniTest::Test
+class WavefrontSpyTest < Minitest::Test
   attr_reader :wf
 
   def setup

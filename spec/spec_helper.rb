@@ -10,7 +10,7 @@ require_relative 'constants'
 
 # Abstract class which sets up everything needed by the API tests
 #
-class WavefrontTestBase < MiniTest::Test
+class WavefrontTestBase < Minitest::Test
   attr_reader :wf, :wf_noop, :headers, :invalid_id, :valid_id
 
   def initialize(args)

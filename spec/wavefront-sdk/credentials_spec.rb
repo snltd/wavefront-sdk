@@ -10,7 +10,7 @@ CONF2 = RESOURCE_DIR.join('test2.conf')
 
 # Test SDK base class end-to-end
 #
-class WavefrontCredentialsTest < MiniTest::Test
+class WavefrontCredentialsTest < Minitest::Test
   def test_initialize_1
     ENV.delete('WAVEFRONT_ENDPOINT')
     ENV.delete('WAVEFRONT_TOKEN')
@@ -64,7 +64,7 @@ class Giblets < Wavefront::Credentials; end
 
 # And here are the tests
 #
-class GibletsTest < MiniTest::Test
+class GibletsTest < Minitest::Test
   attr_reader :wf, :raw
 
   def setup

@@ -6,7 +6,7 @@ require_relative '../../../lib/wavefront-sdk/core/api'
 
 # Test SDK core API class
 #
-class WavefrontCoreApiTest < MiniTest::Test
+class WavefrontCoreApiTest < Minitest::Test
   attr_reader :wf
 
   def setup

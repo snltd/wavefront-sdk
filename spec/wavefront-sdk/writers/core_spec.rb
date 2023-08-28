@@ -30,7 +30,7 @@ end
 
 # Test methods common to 'write' and 'report'
 #
-class WavefrontCoreWriteTest < MiniTest::Test
+class WavefrontCoreWriteTest < Minitest::Test
   attr_reader :wf, :wf_tags
 
   def setup

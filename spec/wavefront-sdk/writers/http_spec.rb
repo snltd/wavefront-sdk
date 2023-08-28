@@ -10,7 +10,7 @@ WH_CREDS = { proxy: 'wavefront-proxy' }.freeze
 
 # Test HTTP transport
 #
-class WavefrontWriterSocketTest < MiniTest::Test
+class WavefrontWriterSocketTest < Minitest::Test
   attr_reader :wf
 
   def setup

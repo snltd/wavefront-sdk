@@ -19,7 +19,7 @@ end
 
 # Test Wavefront API caller
 #
-class WavefrontApiCallerTest < MiniTest::Test
+class WavefrontApiCallerTest < Minitest::Test
   attr_reader :wf, :wf_noop, :uri_base, :headers
 
   def setup

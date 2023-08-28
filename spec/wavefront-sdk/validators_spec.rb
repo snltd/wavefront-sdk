@@ -8,7 +8,7 @@ require_relative '../../lib/wavefront-sdk/validators'
 
 # Validator tests, obviously. Happy now Rubocop?
 #
-class WavefrontValidatorsTest < MiniTest::Test
+class WavefrontValidatorsTest < Minitest::Test
   include Wavefront::Validators
 
   def good_and_bad(method, exception, good, bad)
