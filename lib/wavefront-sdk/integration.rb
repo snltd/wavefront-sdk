@@ -114,5 +114,15 @@ module Wavefront
     def statuses
       api.get('status')
     end
+
+    # GET /api/v2/integration/manifests/min
+    # Gets all Wavefront integrations as structured in their integration
+    # manifests.
+    #
+    # @return [Wavefront::Response]
+    #
+    def manifests_min
+      api.get('manifests/min')
+    end
   end
 end
