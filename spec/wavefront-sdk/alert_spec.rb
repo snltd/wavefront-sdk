@@ -35,6 +35,23 @@ class WavefrontAlertTest < WavefrontTestBase
     assert_invalid_id { wf.unsnooze(invalid_id) }
   end
 
+  def test_check_query
+    query = {
+      inputQuery: 'string',
+      translatedInput: 'sum(http_requests_total{method="GET"})',
+      queryType: 'PromQL'
+    }
+    assert_posts('/api/v2/alert/checkQuery', query.to_json) do
+      wf.check_query(query)
+    end
+  end
+
+  def test_preview
+    assert_posts('/api/v2/alert/preview', payload.to_json) do
+      wf.preview(payload)
+    end
+  end
+
   def test_summary
     assert_gets('/api/v2/alert/summary') { wf.summary }
   end
