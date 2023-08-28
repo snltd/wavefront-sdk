@@ -133,8 +133,8 @@ module Wavefront
     #
     def post(path, body = nil, ctype = 'text/plain')
       body = body.to_json unless body.is_a?(String)
-      make_call(mk_conn(path,  'Content-Type': ctype,
-                               Accept: 'application/json'),
+      make_call(mk_conn(path, 'Content-Type': ctype,
+                              Accept: 'application/json'),
                 :post, nil, body)
     end
 

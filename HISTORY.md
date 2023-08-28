@@ -1,9 +1,13 @@
 # Changelog
 
-* Add `Wavefront::Internal` methods to show API coverage.
-
 ## 8.0.0 (2023-08-xx)
 * Drop support for Ruby 2.7 (Breaking change.)
+* Bump dependencies.
+* Add `Wavefront::AccessPolicy` class.
+* Add `Wavefront::Cluster` class to cover "wavefront" endpoint.
+* Add `Wavefront::Alert#check_query`.
+* Add `Wavefront::Alert#preview`.
+* Add `Wavefront::Internal` class to show API coverage.
 
 ## 7.0.0 (2023-01-19)
 * Drop support for Ruby 2.5. (Breaking change.)
@@ -15,10 +19,10 @@
 * Change the name of the proxy writer from `socket` to `proxy`. (Breaking
   change.)
 * Change the name of the Unix datagram socket writer from `unix` to `socket`.
-* added `Wavefront::Event#alert_firing_details`.
-* added `Wavefront::Event#alert_queries_slug`.
-* added `Wavefront::Event#events`.
-* added `Wavefront::Event#alert_firings`.
+* Add `Wavefront::Event#alert_firing_details`.
+* Add `Wavefront::Event#alert_queries_slug`.
+* Add `Wavefront::Event#events`.
+* Add `Wavefront::Event#alert_firings`.
 * Add `Wavefront::MetricsPolicy`.
 * Add `Wavefront::Spy#deltas`.
 

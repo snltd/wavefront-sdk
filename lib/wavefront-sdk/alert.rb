@@ -60,7 +60,7 @@ module Wavefront
     end
 
     # GET /api/v2/alert/{id}
-    # GET /api/v2/alert/{id}/history/version
+    # GET /api/v2/alert/{id}/history/{version}
     # Get a specific alert / Get a specific historical version of a
     # specific alert.
     #
@@ -197,6 +197,24 @@ module Wavefront
     def unsnooze(id)
       wf_alert_id?(id)
       api.post([id, 'unsnooze'].uri_concat)
+    end
+
+    # POST /api/v2/alert/checkQuery
+    # Return the type of provided query.
+    # @param query [Hash] description of query
+    # @return [Wavefront::Response]
+    #
+    def check_query(query)
+      api.post('checkQuery', query, 'application/json')
+    end
+
+    # POST /api/v2/alert/preview
+    # Get all the notification preview for a specific alert
+    # @param alert [Hash] description of alert
+    # @return [Wavefront::Response]
+    #
+    def preview(alert)
+      api.post('preview', alert, 'application/json')
     end
 
     # GET /api/v2/alert/summary
