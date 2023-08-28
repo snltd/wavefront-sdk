@@ -37,10 +37,10 @@ class WavefrontAlertTest < WavefrontTestBase
 
   def test_check_query
     query = {
-  inputQuery: "string",
-  translatedInput: 'sum(http_requests_total{method="GET"})',
-  queryType: "PromQL"
-}
+      inputQuery: 'string',
+      translatedInput: 'sum(http_requests_total{method="GET"})',
+      queryType: 'PromQL'
+    }
     assert_posts('/api/v2/alert/checkQuery', query.to_json) do
       wf.check_query(query)
     end
