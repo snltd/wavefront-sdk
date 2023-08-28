@@ -47,6 +47,10 @@ class WavefrontIntegrationTest < WavefrontTestBase
     assert_gets('/api/v2/integration/status') { wf.statuses }
   end
 
+  def test_manifests_min
+    assert_gets('/api/v2/integration/manifests/min') { wf.manifests_min }
+  end
+
   private
 
   def api_class

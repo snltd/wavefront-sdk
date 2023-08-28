@@ -10,6 +10,7 @@
 * Add `Wavefront::Internal` class to show API coverage.
 * Add `Wavefront::Account#admins`.
 * Add `Wavefront::Account#update_perms`.
+* Add `Wavefront::Integration#manifest_min`.
 
 ## 7.0.0 (2023-01-19)
 * Drop support for Ruby 2.5. (Breaking change.)
