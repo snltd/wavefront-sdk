@@ -179,6 +179,18 @@ class WavefrontAccountTest < WavefrontTestBase
     assert_raises(ArgumentError) { wf.validate_accounts }
   end
 
+  def test_admins
+    assert_gets('/api/v2/account/user/admin') { wf.admins }
+  end
+
+  def test_update_perms
+    assert_invalid_id { wf.update_perms(invalid_id, perms_payload) }
+
+    assert_puts("/api/v2/account/user/#{user_id}", perms_payload.to_json) do
+      wf.update_perms(user_id, perms_payload, false)
+    end
+  end
+
   private
 
   def api_class
@@ -203,6 +215,10 @@ class WavefrontAccountTest < WavefrontTestBase
        2659191e-aad4-4302-a94e-9667e1515678]
   end
 
+  def user_id
+    'user@example.com'
+  end
+
   def invalid_role
     %w[bad_role]
   end
@@ -212,7 +228,7 @@ class WavefrontAccountTest < WavefrontTestBase
   end
 
   def id_list
-    %w[sa:test user@example.com]
+    ['sa:test', user_id]
   end
 
   def invalid_permission
@@ -234,5 +250,20 @@ class WavefrontAccountTest < WavefrontTestBase
   def payload
     { emailAddress: id,
       groups: %w[browse] }
+  end
+
+  def perms_payload
+    {
+      identifier: 'user@example.com',
+      groups: [
+        'user_management'
+      ],
+      userGroups: [
+        '8b23136b-ecd2-4cb5-8c92-62477dcc4090'
+      ],
+      roles: [
+        'Role'
+      ]
+    }
   end
 end

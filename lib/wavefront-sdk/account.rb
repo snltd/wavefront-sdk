@@ -44,6 +44,34 @@ module Wavefront
       api.get(id)
     end
 
+    # GET /api/v2/account/user/admin
+    # Get all users with Accounts permission
+    #
+    def admins
+      api.get('user/admin')
+    end
+
+    # PUT /api/v2/account/user/{id}
+    # Update user with given user groups and permissions.
+    #
+    # @param id [String] a Wavefront account ID
+    # @param body [Hash] key-value hash of the parameters you wish
+    #   to change
+    # @param modify [true, false] if true, use {#describe()} to get
+    #   a hash describing the existing object, and modify that with
+    #   the new body. If false, pass the new body straight through.
+    # @return [Wavefront::Response]
+    #
+    def update_perms(id, body, modify = true)
+      wf_account_id?(id)
+      raise ArgumentError unless body.is_a?(Hash)
+
+      return api.put(['user', id], body, 'application/json') unless modify
+
+      api.put(['user', id], hash_for_update(describe(id).response, body),
+              'application/json')
+    end
+
     # POST /api/v2/account/{id}/addRoles
     # Add specific roles to the account (user or service account)
     # @param id [String] ID of the account
