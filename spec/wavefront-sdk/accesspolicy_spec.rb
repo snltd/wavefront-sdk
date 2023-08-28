@@ -31,24 +31,23 @@ class WavefrontAccessPolicyTest < WavefrontTestBase
 
   def payload
     {
-
-  status: {
-    result: "OK",
-    message: "string",
-    code: 0
-  },
-  response: {
-    customer: "string",
-    lastUpdatedMs: 0,
-    policyRules: [
-      {
-        name: "string",
-        description: "string",
-        subnet: "string",
-        action: "ALLOW"
+      status: {
+        result: 'OK',
+        message: 'string',
+        code: 0
+      },
+      response: {
+        customer: 'string',
+        lastUpdatedMs: 0,
+        policyRules: [
+          {
+            name: 'string',
+            description: 'string',
+            subnet: 'string',
+            action: 'ALLOW'
+          }
+        ]
       }
-    ]
-  }
-}
+    }
   end
 end

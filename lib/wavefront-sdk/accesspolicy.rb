@@ -12,8 +12,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def describe
-        api.get('')
-      end
+      api.get('')
     end
 
     # PUT /api/v2/accesspolicy
@@ -32,8 +31,7 @@ module Wavefront
     # @return [Wavefront::Response]
     #
     def validate(ip)
-        api.get('validate', ip)
-      end
+      api.get('validate', ip: ip)
     end
   end
 end
