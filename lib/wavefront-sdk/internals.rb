@@ -59,7 +59,11 @@ module Wavefront
     end
 
     def missing_api_paths
-      remote_api_paths - supported_api_paths
+      # We don't have an explicit method for the many search paths: they're
+      # all bundled together under a generic Wavefront::Search.
+      (remote_api_paths - supported_api_paths).reject do |_method, path|
+        path.start_with?('/api/v2/search/')
+      end
     end
 
     private

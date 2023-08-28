@@ -27,6 +27,20 @@ class WavefrontProxyTest < WavefrontTestBase
     end
   end
 
+  def test_config
+    assert_invalid_id { wf.config(invalid_id) }
+
+    assert_gets("/api/v2/proxy/#{id}/config") { wf.config(id) }
+  end
+
+  def test_preprocessor_rules
+    assert_invalid_id { wf.preprocessor_rules(invalid_id) }
+
+    assert_gets("/api/v2/proxy/#{id}/preprocessorRules") do
+      wf.preprocessor_rules(id)
+    end
+  end
+
   private
 
   def api_class

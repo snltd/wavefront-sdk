@@ -96,5 +96,27 @@ module Wavefront
       wf_proxy_id?(id)
       api.put(id, { shutdown: true }, 'application/json')
     end
+
+    # GET /api/v2/proxy/{id}/config
+    # Get a specific proxy config
+    #
+    # @param id [String] ID of the proxy
+    # @return [Wavefront::Response]
+    #
+    def config(id)
+      wf_proxy_id?(id)
+      api.get([id, 'config'].uri_concat)
+    end
+
+    # GET /api/v2/proxy/{id}/preprocessorRules
+    # Get a specific proxy preprocessor rules
+    #
+    # @param id [String] ID of the proxy
+    # @return [Wavefront::Response]
+    #
+    def preprocessor_rules(id)
+      wf_proxy_id?(id)
+      api.get([id, 'preprocessorRules'].uri_concat)
+    end
   end
 end
