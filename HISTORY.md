@@ -8,6 +8,8 @@
 * Add `Wavefront::Alert#check_query`.
 * Add `Wavefront::Alert#preview`.
 * Add `Wavefront::Internal` class to show API coverage.
+* Add `Wavefront::Account#admins`.
+* Add `Wavefront::Account#update_perms`.
 
 ## 7.0.0 (2023-01-19)
 * Drop support for Ruby 2.5. (Breaking change.)
