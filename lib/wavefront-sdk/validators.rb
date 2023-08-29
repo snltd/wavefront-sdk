@@ -164,8 +164,7 @@ module Wavefront
     #
     # @param version [Integer] the version number to validate
     # @return True if the version is valid
-    # @raise Wavefront::Exception::InvalidVersion if the alert ID is
-    #   not valid
+    # @raise Wavefront::Exception::InvalidVersion if the ID is not valid
     #
     def wf_version?(version)
       version = version.to_i if version.is_a?(String) && version =~ /^\d+$/

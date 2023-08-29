@@ -88,7 +88,7 @@ module Wavefront
     # PUT /api/v2/source/{id}
     # Update metadata (description or tags) for a specific source.
     #
-    # @param id [String] a Wavefront alert ID
+    # @param id [String] a Wavefront source ID
     # @param body [Hash] key-value hash of the parameters you wish
     #   to change
     # @param modify [true, false] if true, use {#describe()} to get

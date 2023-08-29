@@ -16,8 +16,8 @@ module Wavefront
 
     # GET /api/v2/usergroup
     # Get all user groups for a customer
-    # @param offset [Int] alert at which the list begins
-    # @param limit [Int] the number of alerts to return
+    # @param offset [Int] usergroup at which the list begins
+    # @param limit [Int] the number of usergroups to return
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)
