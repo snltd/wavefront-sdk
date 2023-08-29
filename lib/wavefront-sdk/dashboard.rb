@@ -74,7 +74,7 @@ module Wavefront
     # PUT /api/v2/dashboard/{id}
     # Update a specific dashboard.
     #
-    # @param id [String] a Wavefront alert ID
+    # @param id [String] a Wavefront dashboard ID
     # @param body [Hash] key-value hash of the parameters you wish
     #   to change
     # @param modify [true, false] if true, use {#describe()} to get

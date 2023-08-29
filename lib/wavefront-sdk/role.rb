@@ -16,8 +16,8 @@ module Wavefront
 
     # GET /api/v2/role
     # Get all roles for a customer
-    # @param offset [Int] alert at which the list begins
-    # @param limit [Int] the number of alerts to return
+    # @param offset [Int] item at which the list begins
+    # @param limit [Int] the number of items to return
     # @return [Wavefront::Response]
     #
     def list(offset = 0, limit = 100)

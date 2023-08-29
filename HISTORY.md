@@ -13,6 +13,9 @@
 * Add `Wavefront::Integration#manifest_min`.
 * Add `Wavefront::Proxy#config`.
 * Add `Wavefront::Proxy#preprocessor_rules`.
+* Add `version` parameter to `Wavefront::IngestionPolicy#describe`
+* Add `Wavefront::IngestionPolicy#history`
+* Add `Wavefront::IngestionPolicy#revert`
 
 ## 7.0.0 (2023-01-19)
 * Drop support for Ruby 2.5. (Breaking change.)

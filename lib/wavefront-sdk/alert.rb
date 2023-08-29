@@ -13,6 +13,7 @@ module Wavefront
   class Alert < CoreApi
     include Wavefront::Mixin::Acl
     include Wavefront::Mixin::Tag
+    include WavefrontTest::List
 
     def update_keys
       %i[id name target condition displayExpression minutes tag
@@ -76,9 +77,10 @@ module Wavefront
       api.get(fragments.uri_concat)
     end
 
-    # Gets all the versions of the given alert
+    # GET /api/v2/alert/{id}/history
+    # Get the version history of a specific alert
     # @param id [String] ID of the alert
-    # @reutrn [Wavefront::Resonse] where items is an array of integers
+    # @return [Wavefront::Response]
     #
     def versions(id)
       wf_alert_id?(id)

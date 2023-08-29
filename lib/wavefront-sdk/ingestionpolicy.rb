@@ -41,7 +41,7 @@ module Wavefront
     # DELETE /api/v2/usage/ingestionpolicy/{id}
     # Delete a specific ingestion policy
     #
-    # @param id [String] ID of the alert
+    # @param id [String] ID of the ingestion policy
     # @return [Wavefront::Response]
     #
     def delete(id)
@@ -50,21 +50,26 @@ module Wavefront
     end
 
     # GET /api/v2/usage/ingestionpolicy/{id}
+    # GET /api/v2/usage/ingestionpolicy/{id}/history/{version}
     # Get a specific ingestion policy
     #
     # @return [Wavefront::Response]
-    # @param id [String] ID of the proxy
+    # @param id [String] ID of the ingestion policy
+    # @param version [Integer] version of ingestion policy
     # @return [Wavefront::Response]
     #
-    def describe(id)
+    def describe(id, version = nil)
       wf_ingestionpolicy_id?(id)
-      api.get(id)
+      wf_version?(version) if version
+      fragments = [id]
+      fragments += ['history', version] if version
+      api.get(fragments.uri_concat)
     end
 
     # PUT /api/v2/usage/ingestionpolicy/{id}
     # Update a specific ingestion policy
     #
-    # @param id [String] a Wavefront alert ID
+    # @param id [String] ID of the ingestion policy
     # @param body [Hash] key-value hash of the parameters you wish
     #   to change
     # @param modify [true, false] if true, use {#describe()} to get
@@ -80,6 +85,28 @@ module Wavefront
 
       api.put(id, hash_for_update(describe(id).response, body),
               'application/json')
+    end
+
+    # GET /api/v2/usage/ingestionpolicy/{id}/history
+    # Get the version history of ingestion policy
+    # @param id [String] ID of the ingestion policy
+    # @return [Wavefront::Response]
+    #
+    def history(id)
+      wf_ingestionpolicy_id?(id)
+      api.get([id, 'history'].uri_concat)
+    end
+
+    # POST /api/v2/usage/ingestionpolicy/{id}/revert/{version}
+    # Revert to a specific historical version of a ingestion policy
+    # @param id [String] ID of the ingestion policy
+    # @param version [Integer] version to revert to
+    # @return [Wavefront::Response]
+    #
+    def revert(id, version)
+      wf_ingestionpolicy_id?(id)
+      wf_version?(version)
+      api.post([id, 'revert', version].uri_concat, nil, 'application/json')
     end
 
     def update_keys

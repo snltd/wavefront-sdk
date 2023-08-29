@@ -59,7 +59,7 @@ module Wavefront
     # DELETE /api/v2/event/{id}
     # Delete a specific event.
     #
-    # @param id [String] ID of the alert
+    # @param id [String] ID of the event
     # @return [Wavefront::Response]
     #
     def delete(id)
