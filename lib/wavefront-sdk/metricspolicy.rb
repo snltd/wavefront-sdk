@@ -35,7 +35,7 @@ module Wavefront
 
     # POST /api/v2/metricspolicy/revert/{version}
     # Revert to a specific historical version of a metrics policy
-    # @param version [Integer] specify version to describe
+    # @param version [Integer] version to revert to
     # @return [Wavefront::Response]
     #
     def revert(version)

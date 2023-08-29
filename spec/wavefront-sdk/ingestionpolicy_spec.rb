@@ -11,6 +11,17 @@ class WavefrontIngestionPolicyTest < WavefrontTestBase
   include WavefrontTest::Describe
   include WavefrontTest::Update
   include WavefrontTest::Delete
+  include WavefrontTest::History
+
+  def test_revert
+    assert_posts("/api/v2/usage/ingestionpolicy/#{id}/revert/5", nil, :json) do
+      wf.revert(id, 5)
+    end
+
+    assert_raises(Wavefront::Exception::InvalidVersion) { wf.revert(id, 'v5') }
+
+    assert_invalid_id { wf.revert(invalid_id, 5) }
+  end
 
   private
 
