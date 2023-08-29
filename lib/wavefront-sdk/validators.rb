@@ -608,6 +608,17 @@ module Wavefront
       raise Wavefront::Exception::InvalidMonitoredClusterId, id
     end
 
+    # Ensure the given argument is a valid monitored application ID
+    # @param id [String]
+    # @raise Wavefront::Exception::InvalidMonitoredApplicationId if the ID is
+    #   not valid
+    #
+    def wf_monitoredapplication_id?(id)
+      return true if id.is_a?(String) && id.size < 256 && id =~ /^[a-z0-9\-_]+$/
+
+      raise Wavefront::Exception::InvalidMonitoredApplicationId, id
+    end
+
     # Ensure the given value is a valid sampling rate.
     # @param rate [Float]
     # @raise Wavefront::Exception::InvalidSamplingValue
