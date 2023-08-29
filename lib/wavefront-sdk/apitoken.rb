@@ -25,6 +25,24 @@ module Wavefront
       api.post('', nil, 'application/json')
     end
 
+    # GET /api/v2/apitoken/customertokens
+    # Get all api tokens for a customer
+    #
+    def list_customer_tokens
+      api.get('customertokens')
+    end
+
+    # GET /api/v2/apitoken/customertokens/{id}
+    # Get the specified api token for a customer
+    #
+    # @param id [String] ID of the api token
+    # @return [Wavefront::Response]
+    #
+    def describe_customer_token(id)
+      wf_apitoken_id?(id)
+      api.get(['customertokens', id].uri_concat)
+    end
+
     # DELETE /api/v2/apitoken/{id}
     # Delete the specified api token
     #
@@ -98,6 +116,15 @@ module Wavefront
       wf_apitoken_id?(token_id)
       api.put(['serviceaccount', id, token_id].uri_concat,
               { tokenID: token_id, tokenName: name }, 'application/json')
+    end
+
+    # PUT /api/v2/apitoken/customertokens/revoke
+    # Delete the specified api token for a customer
+    #
+    # This appears to be only for use by the web API.
+    #
+    def revoke_customer_token
+      raise 'Unsupported API path'
     end
   end
 end
