@@ -10,6 +10,18 @@ class WavefrontApiTokenTest < WavefrontTestBase
     assert_gets('/api/v2/apitoken') { wf.list }
   end
 
+  def test_list_customer_tokens
+    assert_gets('/api/v2/apitoken/customertokens') { wf.list_customer_tokens }
+  end
+
+  def test_describe_customer_token
+    assert_invalid_id { wf.describe_customer_token(invalid_token_id) }
+
+    assert_gets("/api/v2/apitoken/customertokens/#{token_id}") do
+      wf.describe_customer_token(token_id)
+    end
+  end
+
   def test_create
     assert_posts('/api/v2/apitoken', 'null') { wf.create }
     assert_raises(ArgumentError) { wf.create('test') }

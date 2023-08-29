@@ -16,6 +16,9 @@
 * Add `version` parameter to `Wavefront::IngestionPolicy#describe`
 * Add `Wavefront::IngestionPolicy#history`
 * Add `Wavefront::IngestionPolicy#revert`
+* Add `Wavefront::ApiToken#list_customer_tokens`
+* Add `Wavefront::ApiToken#describe_customer_token`
+* Add `Wavefront::ApiToken#revoke_customer_token`, though it does nothing.
 
 ## 7.0.0 (2023-01-19)
 * Drop support for Ruby 2.5. (Breaking change.)
