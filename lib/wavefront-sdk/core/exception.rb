@@ -53,6 +53,8 @@ module Wavefront
 
     class InvalidMaintenanceWindowId < RuntimeError; end
 
+    class InvalidMonitoredApplicationId < RuntimeError; end
+
     class InvalidMonitoredClusterId < RuntimeError; end
 
     class InvalidMessageId < RuntimeError; end

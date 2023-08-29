@@ -396,6 +396,15 @@ class WavefrontValidatorsTest < Minitest::Test
                  bad)
   end
 
+  def test_wf_managedapplication_id
+    good = %w[test-app other-app application]
+    bad = ['', [], {}, 'a' * 1000, '£"^WR"!']
+    good_and_bad('wf_monitoredapplication_id?',
+                 'InvalidMonitoredApplicationId',
+                 good,
+                 bad)
+  end
+
   def test_wf_sampling_value
     good = [0, 0.01, 0.003, 0.05]
     bad = ['a', 0.1, 0.99, 1, -1, 1.1]
