@@ -664,6 +664,19 @@ module Wavefront
 
       raise Wavefront::Exception::InvalidMetricsPolicyId, id
     end
+
+    # Ensure the given argument is a valid Wavefront Span Sampling Policy ID.
+    # So far as I can tell they're just strings.
+    #
+    # @param id [String] the span sampling policy ID to validate
+    # @return true if the ID is valid
+    # @raise Wavefront::Exception::InvalidSpanSamplingPolicyId if the ID is
+    #   not valid
+    def wf_spansamplingpolicy_id?(id)
+      return true if id.is_a?(String)
+
+      raise Wavefront::Exception::InvalidSpanSamplingPolicyId, id
+    end
   end
   # rubocop:enable Metrics/ModuleLength
 end

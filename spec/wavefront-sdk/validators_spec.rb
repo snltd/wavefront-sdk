@@ -436,4 +436,11 @@ class WavefrontValidatorsTest < Minitest::Test
     bad = %w[fa312fb-5ff4-420d-862d-5d6d99ed6bcf thing 123]
     good_and_bad('wf_metricspolicy_id?', 'InvalidMetricsPolicyId', good, bad)
   end
+
+  def test_wf_spansamplingpolicy_id
+    good = ['My Policy', 'policy', 'etc_etc_etc']
+    bad = [Pathname.pwd, nil]
+    good_and_bad('wf_spansamplingpolicy_id?', 'InvalidSpanSamplingPolicyId',
+                 good, bad)
+  end
 end
