@@ -13,7 +13,6 @@ module Wavefront
   class Alert < CoreApi
     include Wavefront::Mixin::Acl
     include Wavefront::Mixin::Tag
-    include WavefrontTest::List
 
     def update_keys
       %i[id name target condition displayExpression minutes tag

@@ -21,7 +21,7 @@ module Wavefront
       api.get('', offset: offset, limit: limit)
     end
 
-    # /api/v2/monitoredapplication/{application}
+    # GET /api/v2/monitoredapplication/{application}
     # Get a specific application
     #
     # @param id [String, Integer] ID of the application

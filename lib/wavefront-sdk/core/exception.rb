@@ -91,6 +91,8 @@ module Wavefront
 
     class InvalidSourceId < RuntimeError; end
 
+    class InvalidSpanSamplingPolicyId < RuntimeError; end
+
     class InvalidString < RuntimeError; end
 
     class InvalidTag < RuntimeError; end
