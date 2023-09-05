@@ -1,6 +1,6 @@
 # wavefront-sdk
-[![Test](https://github.com/snltd/wavefront-sdk/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/snltd/wavefront-sdk/actions/workflows/test.yml) [![Release](https://github.com/snltd/wavefront-sdk/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/snltd/wavefront-sdk/actions/workflows/release.yml) [![Code Climate](https://codeclimate.com/github/snltd/wavefront-sdk/badges/gpa.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Issue Count](https://codeclimate.com/github/snltd/wavefront-sdk/badges/issue_count.svg)](https://codeclimate.com/github/snltd/wavefront-sdk) [![Gem Version](https://badge.fury.io/rb/wavefront-sdk.svg)](https://badge.fury.io/rb/wavefront-sdk) ![](http://ruby-gem-downloads-badge.herokuapp.com/wavefront-sdk?type=total)
-
+[![Test](https://github.com/snltd/wavefront-sdk/actions/workflows/test.yml/badge.svg)](https://github.com/snltd/wavefront-sdk/actions/workflows/test.yml) [![Release](https://github.com/snltd/wavefront-sdk/actions/workflows/release.yml/badge.svg)](https://github.com/snltd/wavefront-sdk/actions/workflows/release.yml) [![Gem Version](https://badge.fury.io/rb/wavefront-sdk.png)](https://badge.fury.io/rb/wavefront-sdk)
+ 
 This is a Ruby SDK for v2 of
 [Wavefront](https://www.wavefront.com/)'s public API. It aims to be
 more lightweight, consistent, simple, and convenient than an
