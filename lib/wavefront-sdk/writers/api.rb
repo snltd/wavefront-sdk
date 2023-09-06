@@ -21,7 +21,7 @@ module Wavefront
     # indication of failure.
     #
     class Api < Core
-      BATCH_SIZE = 2
+      BATCH_SIZE = 100
 
       def open
         @conn = Wavefront::ApiCaller.new(self, creds, opts)
