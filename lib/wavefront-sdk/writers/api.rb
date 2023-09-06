@@ -68,9 +68,11 @@ module Wavefront
       # API can cope with in a single call, so this might change.
       # @return [Nil]
       #
+      # rubocop:disable Metrics/MethodLength
       def _send_point(body)
         body.each_slice(BATCH_SIZE) do |p|
-          ret = conn.post('/?f=wavefront', p.join("\n"), 'application/octet-stream')
+          ret = conn.post('/?f=wavefront', p.join("\n"),
+                          'application/octet-stream')
 
           if ret.ok?
             logger.log("sent #{BATCH_SIZE} points", :debug)
@@ -81,6 +83,7 @@ module Wavefront
           end
         end
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end
