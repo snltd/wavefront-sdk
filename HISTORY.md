@@ -2,6 +2,7 @@
 
 ## 8.0.0 (2023-09-05)
 * Drop support for Ruby 2.7 (Breaking change.)
+* Correctly report errors when sending points to API.
 * Bump dependencies.
 * Add `Wavefront::AccessPolicy` class.
 * Add `Wavefront::Cluster` class to cover "wavefront" endpoint.

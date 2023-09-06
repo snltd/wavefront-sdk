@@ -47,7 +47,6 @@ module Wavefront
         _send_point(body)
         true
       rescue StandardError => e
-        puts "MERP"
         summary.unsent += body.size
         logger.log('WARNING: failed to send point(s).')
         logger.log(e.to_s, :debug)
@@ -74,8 +73,10 @@ module Wavefront
           ret = conn.post('/?f=wavefront', p.join("\n"), 'application/octet-stream')
 
           if ret.ok?
+            logger.log("sent #{BATCH_SIZE} points", :debug)
             summary.sent += p.count
           else
+            logger.log("failed to send #{BATCH_SIZE} points", :debug)
             summary.unsent += p.count
           end
         end
