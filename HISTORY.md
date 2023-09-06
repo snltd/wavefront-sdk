@@ -1,6 +1,6 @@
 # Changelog
 
-## 8.0.0 (2023-09-05)
+## 8.0.0 (2023-09-06)
 * Drop support for Ruby 2.7 (Breaking change.)
 * Correctly report errors when sending points to API.
 * Bump dependencies.
