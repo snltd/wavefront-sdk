@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.1 (2024-01-19)
+* Add an empty `Wavefront::Writer::Http#close` method, which some clients
+  expect to exist.
+  
 ## 8.0.0 (2023-09-06)
 * Drop support for Ruby 2.7 (Breaking change.)
 * Correctly report errors when sending points to API.
