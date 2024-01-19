@@ -39,6 +39,8 @@ module Wavefront
         100
       end
 
+      def close; end
+
       private
 
       def _send_point(point)
