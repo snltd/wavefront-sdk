@@ -16,7 +16,7 @@ class WavefrontTestBase < Minitest::Test
   def initialize(args)
     require_relative libfile_to_test
     setup_fixtures if respond_to?(:setup_fixtures)
-    super(args)
+    super
   end
 
   def libfile_to_test

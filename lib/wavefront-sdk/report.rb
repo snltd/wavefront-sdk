@@ -12,7 +12,7 @@ module Wavefront
   class Report < Write
     def initialize(creds = {}, opts = {})
       opts[:writer] = :api
-      super(creds, opts)
+      super
     end
   end
 end
